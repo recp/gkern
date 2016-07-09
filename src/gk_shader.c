@@ -151,8 +151,11 @@ gkShaderLoadFromFile(GLenum shaderType,
   GLuint shaderId;
   int    ret;
 
-  ret = fsReadfile(path, "rb", &source);
-  shaderId = gkShaderLoad(shaderType, source);
+  shaderId = 0;
+  ret      = fsReadfile(path, "rb", &source);
+  
+  if (ret == 0)
+    shaderId = gkShaderLoad(shaderType, source);
 
   free(source);
 
