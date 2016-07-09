@@ -10,6 +10,7 @@
 
 #include <OpenGL/gl3.h>
 #include <stdio.h>
+#include <mk.h>
 
 typedef struct GkShader {
   struct GkShader *next;
@@ -38,5 +39,11 @@ gkAttachShaders(GLuint program,
 void
 gkShaderLogInfo(GLuint shaderId,
                 FILE * __restrict file);
+
+void
+gkUniformMatrix(GLint location, MkMatrix *matrix);
+
+void
+gkUniformMatrix4f(GLint location, MkMatrix *matrix);
 
 #endif /* gk_shader_h */

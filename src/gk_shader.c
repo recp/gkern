@@ -11,8 +11,71 @@
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include "fs_utils.h"
+
+typedef void (*gkGLUniformFnf)(GLint location,
+GLsizei count,
+GLboolean transpose,
+const GLfloat *value);
+
+typedef void (*gkGLUniformFnd)(GLint location,
+GLsizei count,
+GLboolean transpose,
+const GLdouble *value);
+
+static gkGLUniformFnf uniformMatrixFnf[][5] = {
+  {0},
+  {0},
+  {
+    NULL,
+    NULL,
+    glUniformMatrix2fv,
+    glUniformMatrix2x3fv,
+    glUniformMatrix2x4fv
+  },
+  {
+    NULL,
+    NULL,
+    glUniformMatrix3x2fv,
+    glUniformMatrix3fv,
+    glUniformMatrix3x4fv
+  },
+  {
+    NULL,
+    NULL,
+    glUniformMatrix4x2fv,
+    glUniformMatrix4x3fv,
+    glUniformMatrix4fv
+  }
+};
+
+static gkGLUniformFnd uniformMatrixFnd[][5] = {
+  {0},
+  {0},
+  {
+    NULL,
+    NULL,
+    glUniformMatrix2dv,
+    glUniformMatrix2x3dv,
+    glUniformMatrix2x4dv
+  },
+  {
+    NULL,
+    NULL,
+    glUniformMatrix3x2dv,
+    glUniformMatrix3dv,
+    glUniformMatrix3x4dv
+  },
+  {
+    NULL,
+    NULL,
+    glUniformMatrix4x2dv,
+    glUniformMatrix4x3dv,
+    glUniformMatrix4dv
+  }
+};
 
 void
 gkShaderLogInfo(GLuint shaderId,
@@ -186,5 +249,38 @@ gkAttachShaders(GLuint program,
 
     if (shaderIter->isValid)
       glAttachShader(program, shaderIter->shaderId);
+  }
+}
+
+void
+gkUniformMatrix4f(GLint location, MkMatrix *matrix) {
+  glUniformMatrix4fv(location,
+                     1,
+                     GL_FALSE,
+                     MkMatrixVal(matrix));
+}
+
+void
+gkUniformMatrix(GLint location, MkMatrix *matrix) {
+
+  assert(matrix->rows < 5
+         && matrix->columns < 5);
+
+  switch (matrix->base.itemSize) {
+    case sizeof(float):
+      uniformMatrixFnf[matrix->rows][matrix->columns](location,
+                                                      1,
+                                                      GL_FALSE,
+                                                      MkMatrixVal(matrix));
+      break;
+
+    case sizeof(double):
+      uniformMatrixFnd[matrix->rows][matrix->columns](location,
+                                                      1,
+                                                      GL_FALSE,
+                                                      MkMatrixVal(matrix));
+      break;
+    default:
+      break;
   }
 }
