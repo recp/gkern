@@ -153,7 +153,7 @@ gkShaderLoadFromFile(GLenum shaderType,
 
   shaderId = 0;
   ret      = fsReadfile(path, "rb", &source);
-  
+
   if (ret == 0)
     shaderId = gkShaderLoad(shaderType, source);
 
@@ -260,28 +260,27 @@ gkUniformMatrix4f(GLint location, MkMatrix *matrix) {
   glUniformMatrix4fv(location,
                      1,
                      GL_FALSE,
-                     MkMatrixVal(matrix));
+                     matrix->value);
 }
 
 void
 gkUniformMatrix(GLint location, MkMatrix *matrix) {
-
   assert(matrix->rows < 5
-         && matrix->columns < 5);
+         && matrix->cols < 5);
 
-  switch (matrix->base.itemSize) {
+  switch (matrix->isize) {
     case sizeof(float):
-      uniformMatrixFnf[matrix->rows][matrix->columns](location,
-                                                      1,
-                                                      GL_FALSE,
-                                                      MkMatrixVal(matrix));
+      uniformMatrixFnf[matrix->rows][matrix->cols](location,
+                                                   1,
+                                                   GL_FALSE,
+                                                   matrix->value);
       break;
 
     case sizeof(double):
-      uniformMatrixFnd[matrix->rows][matrix->columns](location,
-                                                      1,
-                                                      GL_FALSE,
-                                                      MkMatrixVal(matrix));
+      uniformMatrixFnd[matrix->rows][matrix->cols](location,
+                                                   1,
+                                                   GL_FALSE,
+                                                   matrix->value);
       break;
     default:
       break;
