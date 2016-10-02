@@ -7,6 +7,9 @@
 
 #ifndef gk_program_h
 #define gk_program_h
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <OpenGL/gl3.h>
 #include <stdio.h>
@@ -19,4 +22,7 @@ gkProgramLogInfo(GLuint progId,
 bool
 gkProgramIsValid(GLuint progId);
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* gk_program_h */
