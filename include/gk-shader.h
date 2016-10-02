@@ -7,14 +7,16 @@
 
 #ifndef gk_shader_h
 #define gk_shader_h
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#include <cglm.h>
 #include <OpenGL/gl3.h>
 #include <stdio.h>
-#include <mk.h>
 
 typedef struct GkShader {
   struct GkShader *next;
-
   GLuint    shaderId;
   GLuint    shaderType;
   GLboolean isValid;
@@ -41,9 +43,9 @@ gkShaderLogInfo(GLuint shaderId,
                 FILE * __restrict file);
 
 void
-gkUniformMatrix(GLint location, MkMatrix *matrix);
+gkUniformMat4(GLint location, mat4 *matrix);
 
-void
-gkUniformMatrix4f(GLint location, MkMatrix *matrix);
-
+#ifdef __cplusplus
+}
+#endif
 #endif /* gk_shader_h */
