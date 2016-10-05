@@ -194,6 +194,6 @@ gkAttachShaders(GLuint program,
 }
 
 void
-gkUniformMat4(GLint location, mat4 *matrix) {
-  glUniformMatrix4fv(location, 1, GL_FALSE, m[0]);
+gkUniformMat4(GLint location, mat4 matrix) {
+  glUniformMatrix4fv(location, 1, GL_FALSE, matrix[0]);
 }

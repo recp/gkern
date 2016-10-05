@@ -43,7 +43,7 @@ gkShaderLogInfo(GLuint shaderId,
                 FILE * __restrict file);
 
 void
-gkUniformMat4(GLint location, mat4 *matrix);
+gkUniformMat4(GLint location, mat4 matrix);
 
 #ifdef __cplusplus
 }

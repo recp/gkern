@@ -9,8 +9,8 @@
 #define gk_h
 
 #include "gk-common.h"
-#include "mk.h"
 #include "gk-shader.h"
 #include "gk-program.h"
+#include <cglm.h>
 
 #endif /* gk_h */
