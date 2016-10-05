@@ -21,15 +21,25 @@ gkRenderComplex(GkModelInstance * modelInstance);
 
 GkModelInstance *
 gkMakeInstance(GkModelBase *model,
-               mat4 matrix,
                GLint matrixLoc) {
   GkModelInstance *instance;
 
   instance            = calloc(sizeof(*instance), 1);
-  instance->matrix    = matrix;
   instance->matrixLoc = matrixLoc;
   instance->model     = model;
+
+  instance->matrix[0][0] = 1.0f;
+  instance->matrix[1][1] = 1.0f;
+  instance->matrix[2][2] = 1.0f;
+  instance->matrix[3][3] = 1.0f;
+
   return instance;
+}
+
+void
+gkUniformModelMatrix(GkModelInstance *modelInstance) {
+  gkUniformMat4(modelInstance->matrixLoc,
+                modelInstance->matrix);
 }
 
 void

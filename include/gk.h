@@ -61,9 +61,9 @@ typedef struct GkComplexModel {
 typedef struct GkModelInstance {
   GkModelBase *model;
   void        *data;
-  gkOnDraw     onDraw;
+  gkOnDraw     onDraw; 
   gkOnClick    onClick;
-  vec4        *matrix;
+  mat4         matrix;
   GLint        matrixLoc;
   int32_t      flags;
   struct GkModelInstance *next;
@@ -71,8 +71,10 @@ typedef struct GkModelInstance {
 
 GkModelInstance *
 gkMakeInstance(GkModelBase *model,
-               mat4 matrix,
                GLint matrixLoc);
+
+void
+gkUniformModelMatrix(GkModelInstance *modelInstance);
 
 void
 gkRender(GkModelInstance * modelInstance);
