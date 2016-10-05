@@ -89,7 +89,7 @@ gkRenderComplex(GkModelInstance * modelInstance) {
     glBindVertexArray(model->vao[index]);
 
     if (model->base.flags & GK_DRAW_ELEMENTS) {
-      glDrawElements(GL_TRIANGLES,
+      glDrawElements(model->modes[index],
                      model->count[index],
                      GL_UNSIGNED_INT, /* TODO: ? */
                      NULL);
