@@ -35,8 +35,13 @@ typedef void (*gkOnClick)(struct GkModelInstance * instance,
                           float x,
                           float y);
 
+struct GkModelInstance;
+
 typedef struct GkModelBase {
-  void    *data;
+  struct GkModelInstance *instance; /* model instance list        */
+  mat4     matrix;                  /* original model transform   */
+  GLint    matrixLoc;
+  void    *data;                    /* user defined/attached data */
   gkOnDraw onDraw;
   int32_t  flags;
 } GkModelBase;
@@ -73,15 +78,27 @@ typedef struct GkModelInstance {
   struct GkModelInstance *next;
 } GkModelInstance;
 
+typedef struct GkNode {
+  GkModelInstance *model;
+  struct GkNode   *next;
+  struct GkNode   *chld;
+} GkNode;
+
 GkModelInstance *
 gkMakeInstance(GkModelBase *model,
                GLint matrixLoc);
 
 void
-gkUniformModelMatrix(GkModelInstance *modelInstance);
+gkUniformModelMatrix(GkModelBase *modelBase);
 
 void
-gkRender(GkModelInstance * modelInstance);
+gkUniformInstanceMatrix(GkModelInstance *modelInstance);
+
+void
+gkRenderInstance(GkModelInstance * modelInstance);
+
+void
+gkRenderModel(GkModelBase * model);
 
 #ifdef __cplusplus
 }

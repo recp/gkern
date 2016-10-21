@@ -25,7 +25,13 @@ gkMakeInstance(GkModelBase *model,
 }
 
 void
-gkUniformModelMatrix(GkModelInstance *modelInstance) {
+gkUniformModelMatrix(GkModelBase *modelBase) {
+  gkUniformMat4(modelBase->matrixLoc,
+                modelBase->matrix);
+}
+
+void
+gkUniformInstanceMatrix(GkModelInstance *modelInstance) {
   gkUniformMat4(modelInstance->matrixLoc,
                 modelInstance->matrix);
 }
