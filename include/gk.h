@@ -39,12 +39,12 @@ typedef struct GkModelBase {
 
 typedef struct GkModel {
   GkModelBase base;
-  GLuint  *vbo;
-  GLuint  *tex;
-  GLuint   vao;
-  uint32_t vboCount;
-  GLsizei  count;
-  GLenum   mode;
+  GLuint     *vbo;
+  GLuint     *tex;
+  GLuint      vao;
+  uint32_t    vboCount;
+  GLsizei     count;
+  GLenum      mode;
 } GkModel;
 
 typedef struct GkComplexModel {
