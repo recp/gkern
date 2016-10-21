@@ -89,6 +89,9 @@ gkMakeInstance(GkModelBase *model,
                GLint matrixLoc);
 
 void
+gkModelEmptyMatrix(GkModelBase *modelBase);
+
+void
 gkUniformModelMatrix(GkModelBase *modelBase);
 
 void

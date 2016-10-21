@@ -35,3 +35,8 @@ gkUniformInstanceMatrix(GkModelInstance *modelInstance) {
   gkUniformMat4(modelInstance->matrixLoc,
                 modelInstance->matrix);
 }
+
+void
+gkModelEmptyMatrix(GkModelBase *modelBase) {
+  glm_mat4_dup(GLM_MAT4_IDENTITY, modelBase->matrix);
+}
