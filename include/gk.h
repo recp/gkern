@@ -7,10 +7,14 @@
 
 #ifndef gk_h
 #define gk_h
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "gk-common.h"
 #include "gk-shader.h"
 #include "gk-program.h"
+
 #include <cglm.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -79,4 +83,7 @@ gkUniformModelMatrix(GkModelInstance *modelInstance);
 void
 gkRender(GkModelInstance * modelInstance);
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* gk_h */
