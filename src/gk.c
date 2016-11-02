@@ -7,36 +7,36 @@
 
 #include "../include/gk.h"
 
-GkModelInstance *
-gkMakeInstance(GkModelBase *model,
-               GLint matrixLoc) {
-  GkModelInstance *instance;
+GkModelInst *
+gkMakeInstance(GkModelBase *model, GkMatrix *matrix) {
+  GkModelInst *instance, *prevInstance;
 
-  instance            = calloc(sizeof(*instance), 1);
-  instance->matrixLoc = matrixLoc;
-  instance->model     = model;
+  instance         = calloc(sizeof(*instance), 1);
+  instance->matrix = matrix;
+  prevInstance     = NULL;
 
-  instance->matrix[0][0] = 1.0f;
-  instance->matrix[1][1] = 1.0f;
-  instance->matrix[2][2] = 1.0f;
-  instance->matrix[3][3] = 1.0f;
+  if (!model->instances)
+    model->instances = calloc(sizeof(*model->instances), 1);
+  else
+    prevInstance = model->instances->instance;
+
+  model->instances->instance = instance;
+  model->instances->instanceCount++;
+
+  if (prevInstance)
+    instance->next = prevInstance;
 
   return instance;
 }
 
 void
 gkUniformModelMatrix(GkModelBase *modelBase) {
-  gkUniformMat4(modelBase->matrixLoc,
-                modelBase->matrix);
+  gkUniformMat4(modelBase->matrix->index,
+                modelBase->matrix->matrix);
 }
 
 void
-gkUniformInstanceMatrix(GkModelInstance *modelInstance) {
-  gkUniformMat4(modelInstance->matrixLoc,
-                modelInstance->matrix);
-}
-
-void
-gkModelEmptyMatrix(GkModelBase *modelBase) {
-  glm_mat4_dup(GLM_MAT4_IDENTITY, modelBase->matrix);
+gkUniformInstanceMatrix(GkModelInst *instance) {
+  gkUniformMat4(instance->matrix->index,
+                instance->matrix->matrix);
 }

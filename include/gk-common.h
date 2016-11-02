@@ -20,9 +20,11 @@
 #    define GK_EXPORT __declspec(dllimport)
 #  endif
 #  define _gk_hide
+#  define GK_INLINE __forceinline
 #else
 #  define GK_EXPORT   __attribute__((visibility("default")))
 #  define _gk_hide    __attribute__((visibility("hidden")))
+#  define GK_INLINE inline __attribute((always_inline))
 #endif
 
 #define GK_ARRAY_LEN(ARR) sizeof(ARR) / sizeof(ARR[0]);
