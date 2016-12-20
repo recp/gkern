@@ -12,6 +12,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <assert.h>
+#include <limits.h>
 
 #include "fs_utils.h"
 
@@ -108,15 +109,15 @@ gkShaderLoadFromFolder(const char * __restrict path,
   GkShader      *currShader;
   DIR           *dir;
   struct dirent *ent;
-  char          *cwdir;
+  char           cwdir[PATH_MAX];
   int            count;
 
   count      = 0;
   shader     = NULL;
   currShader = NULL;
   lastShader = NULL;
-  cwdir      = getcwd(NULL, 0);
 
+  getcwd(cwdir, 0);
   if (chdir(path) < 0) {
     fprintf(stderr, "Unable change current work dir to specified path!");
     return 0;
