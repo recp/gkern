@@ -167,6 +167,8 @@ gkShaderLoadFromFolder(const char * __restrict path,
 
       lastShader = currShader;
     }
+
+    (void)closedir(dir);
   } else {
     shader = NULL;
     count  = -1;
