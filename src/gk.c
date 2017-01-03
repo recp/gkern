@@ -31,8 +31,8 @@ gkMakeInstance(GkModelBase *model, GkMatrix *matrix) {
 
 void
 gkUniformModelMatrix(GkModelBase *modelBase) {
-  gkUniformMat4(modelBase->matrix->index,
-                modelBase->matrix->matrix);
+  gkUniformMat4(modelBase->cachedMatrix.index,
+                modelBase->cachedMatrix.matrix);
 }
 
 void

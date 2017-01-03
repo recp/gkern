@@ -8,7 +8,8 @@
 #include "../include/gk.h"
 
 void
-gkRenderInstance(GkModelInst *instance) {
+gkRenderInstance(GkModelInst *instance,
+                 GkMatrix    *parentTrans) {
   GkModelBase *model;
 
   model = instance->model;

@@ -25,14 +25,19 @@ extern "C" {
 #include "gk-model.h"
 
 typedef struct GkNode {
+  GkMatrix       cachedMatrix;
+  uint32_t       cachedMatrixIsValid;
+  GkMatrix      *matrix;
   GkModelBase   *model;
   GkModelInst   *instance;
   struct GkNode *next;
   struct GkNode *chld;
+  struct GkNode *nodeInst;
 } GkNode;
 
 typedef struct GkScene {
-  GkNode *rootNode;
+  GkNode   *rootNode;
+  GkMatrix *mat;
 } GkScene;
 
 GkModelInst *
@@ -45,13 +50,16 @@ void
 gkUniformInstanceMatrix(GkModelInst *instance);
 
 void
-gkRenderInstance(GkModelInst *instance);
+gkRenderInstance(GkModelInst *instance,
+                 GkMatrix    *parentTrans);
 
 void
-gkRenderModel(GkModelBase *model);
+gkRenderModel(GkModelBase *model,
+              GkMatrix    *parentTrans);
 
 void
-gkRenderNode(GkNode * node);
+gkRenderNode(GkNode   *node,
+             GkMatrix *parentTrans);
 
 void
 gkRenderScene(GkScene * scene);

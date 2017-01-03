@@ -9,5 +9,14 @@
 
 void
 gkRenderScene(GkScene * scene) {
-  gkRenderNode(scene->rootNode);
+  GkMatrix *cmat;
+  cmat = scene->mat;
+  if (!cmat) {
+    cmat        = malloc(sizeof(*cmat->matrix));
+    cmat->index = 0;
+    glm_mat4_dup(GLM_MAT4_IDENTITY, cmat->matrix);
+  }
+
+  scene->mat = cmat;
+  gkRenderNode(scene->rootNode, cmat);
 }

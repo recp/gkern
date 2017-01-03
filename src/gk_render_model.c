@@ -8,13 +8,32 @@
 #include "../include/gk.h"
 
 void
-gkRenderModel(GkModelBase * modelBase) {
+gkRenderModel(GkModelBase *modelBase,
+              GkMatrix    *parentTrans) {
+  if (parentTrans || !modelBase->cachedMatrixIsValid) {
+    if (modelBase->matrix) {
+      if (modelBase->matrix->index == -1)
+        modelBase->cachedMatrix.index = parentTrans->index;
+      else
+        modelBase->cachedMatrix.index = modelBase->matrix->index;
+
+      glm_mat4_mul(parentTrans->matrix,
+                   modelBase->matrix->matrix,
+                   modelBase->cachedMatrix.matrix);
+    } else {
+      modelBase->cachedMatrix.index = parentTrans->index;
+      glm_mat4_dup(parentTrans->matrix,
+                   modelBase->cachedMatrix.matrix);
+      modelBase->cachedMatrix.index = parentTrans->index;
+    }
+
+    modelBase->cachedMatrixIsValid = 1;
+    gkUniformModelMatrix(modelBase);
+  }
+
   /* pre events */
   if (modelBase->events && modelBase->events->onDraw)
     modelBase->events->onDraw(modelBase, NULL, false);
-
-  if (modelBase->matrix)
-    gkUniformModelMatrix(modelBase);
 
   /* render */
   if (modelBase->flags & GK_COMPLEX) {
