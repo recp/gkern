@@ -35,6 +35,14 @@ typedef struct GkNode {
   struct GkNode *nodeInst;
 } GkNode;
 
+typedef struct GkNodeInst {
+  GkMatrix       cachedMatrix;
+  uint32_t       cachedMatrixIsValid;
+  GkMatrix      *matrix;
+  GkNode        *instance;
+  struct GkNode *next;
+} GkNodeInst;
+
 typedef struct GkScene {
   GkNode   *rootNode;
   GkMatrix *mat;

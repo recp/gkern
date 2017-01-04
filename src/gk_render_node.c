@@ -44,6 +44,9 @@ gkRenderNode(GkNode   *node,
     if (node->chld)
       gkRenderNode(node->chld, cmat);
 
+    if (node->nodeInst)
+      gkRenderNode(node->nodeInst, cmat);
+
     node = node->next;
   }
 }
