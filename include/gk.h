@@ -46,6 +46,7 @@ typedef struct GkNodeInst {
 typedef struct GkScene {
   GkNode   *rootNode;
   GkMatrix *mat;
+  GLint     matrixLoc;
 } GkScene;
 
 GkModelInst *

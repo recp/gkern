@@ -10,26 +10,29 @@
 void
 gkRenderModel(GkModelBase *modelBase,
               GkMatrix    *parentTrans) {
+  GkMatrix *cmat;
+
+  cmat = &modelBase->cachedMatrix;
   if (parentTrans || !modelBase->cachedMatrixIsValid) {
     if (modelBase->matrix) {
       if (modelBase->matrix->index == -1)
-        modelBase->cachedMatrix.index = parentTrans->index;
+        cmat->index = parentTrans->index;
       else
-        modelBase->cachedMatrix.index = modelBase->matrix->index;
+        cmat->index = modelBase->matrix->index;
 
       glm_mat4_mul(parentTrans->matrix,
                    modelBase->matrix->matrix,
-                   modelBase->cachedMatrix.matrix);
+                   cmat->matrix);
     } else {
-      modelBase->cachedMatrix.index = parentTrans->index;
+      cmat->index = parentTrans->index;
       glm_mat4_dup(parentTrans->matrix,
-                   modelBase->cachedMatrix.matrix);
-      modelBase->cachedMatrix.index = parentTrans->index;
+                   cmat->matrix);
     }
 
     modelBase->cachedMatrixIsValid = 1;
-    gkUniformModelMatrix(modelBase);
   }
+
+  gkUniformModelMatrix(modelBase);
 
   /* pre events */
   if (modelBase->events && modelBase->events->onDraw)
