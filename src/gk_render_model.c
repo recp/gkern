@@ -14,21 +14,25 @@ gkRenderModel(GkModelBase *modelBase,
 
   cmat = &modelBase->cachedMatrix;
   if (parentTrans || !modelBase->cachedMatrixIsValid) {
-    if (modelBase->matrix) {
-      if (modelBase->matrix->index == -1)
-        cmat->index = parentTrans->index;
-      else
-        cmat->index = modelBase->matrix->index;
+    if (parentTrans) {
+      if (modelBase->matrix) {
+        if (modelBase->matrix->index == -1)
+          cmat->index = parentTrans->index;
+        else
+          cmat->index = modelBase->matrix->index;
 
-      glm_mat4_mul(parentTrans->matrix,
-                   modelBase->matrix->matrix,
-                   cmat->matrix);
+        glm_mat4_mul(parentTrans->matrix,
+                     modelBase->matrix->matrix,
+                     cmat->matrix);
+      } else {
+        cmat->index = parentTrans->index;
+        glm_mat4_dup(parentTrans->matrix,
+                     cmat->matrix);
+      }
     } else {
-      cmat->index = parentTrans->index;
-      glm_mat4_dup(parentTrans->matrix,
+      glm_mat4_dup(modelBase->matrix->matrix,
                    cmat->matrix);
     }
-
     modelBase->cachedMatrixIsValid = 1;
   }
 

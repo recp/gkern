@@ -15,21 +15,25 @@ gkRenderNode(GkNode   *node,
     if (parentTrans || !node->cachedMatrixIsValid) {
       cmat = &node->cachedMatrix;
 
-      if (node->matrix) {
-        if (node->matrix->index == -1)
+      if (parentTrans) {
+        if (node->matrix) {
+          if (node->matrix->index == -1)
+            cmat->index = parentTrans->index;
+          else
+            cmat->index = node->matrix->index;
+
+          glm_mat4_mul(parentTrans->matrix,
+                       node->matrix->matrix,
+                       cmat->matrix);
+        } else {
+          glm_mat4_dup(parentTrans->matrix,
+                       cmat->matrix);
           cmat->index = parentTrans->index;
-        else
-          cmat->index = node->matrix->index;
-
-        glm_mat4_mul(parentTrans->matrix,
-                     node->matrix->matrix,
-                     cmat->matrix);
+        }
       } else {
-        glm_mat4_dup(parentTrans->matrix,
+        glm_mat4_dup(node->matrix->matrix,
                      cmat->matrix);
-        cmat->index = parentTrans->index;
       }
-
       node->cachedMatrixIsValid = 1;
     } else {
       cmat = NULL;
