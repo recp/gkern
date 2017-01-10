@@ -12,8 +12,8 @@ gkRenderNode(GkNode   *node,
              GkMatrix *parentTrans) {
   while (node) {
     GkMatrix *cmat;
-    if (parentTrans || !node->cachedMatrixIsValid) {
-      cmat = &node->cachedMatrix;
+    if (parentTrans || !(node->flags & GK_USE_CACHED_MATRIX)) {
+      cmat = &node->cmat;
 
       if (parentTrans) {
         if (node->matrix) {
@@ -34,7 +34,7 @@ gkRenderNode(GkNode   *node,
         glm_mat4_dup(node->matrix->matrix,
                      cmat->matrix);
       }
-      node->cachedMatrixIsValid = 1;
+      node->flags |= GK_USE_CACHED_MATRIX;
     } else {
       cmat = NULL;
     }

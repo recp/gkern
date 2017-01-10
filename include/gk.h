@@ -25,8 +25,8 @@ extern "C" {
 #include "gk-model.h"
 
 typedef struct GkNode {
-  GkMatrix       cachedMatrix;
-  uint32_t       cachedMatrixIsValid;
+  GkMatrix       cmat;
+  GkNodeFlags    flags;
   GkMatrix      *matrix;
   GkModelBase   *model;
   GkModelInst   *instance;

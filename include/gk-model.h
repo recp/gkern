@@ -38,8 +38,7 @@ typedef struct GkModelInstList {
 
 typedef struct GkModelBase {
   uint64_t         flags;
-  GkMatrix         cachedMatrix;
-  uint32_t         cachedMatrixIsValid;
+  GkMatrix         cmat;
   GkMatrix        *matrix;
   GkGLEvents      *events;
   GkModelInstList *instances;

@@ -12,8 +12,8 @@ gkRenderModel(GkModelBase *modelBase,
               GkMatrix    *parentTrans) {
   GkMatrix *cmat;
 
-  cmat = &modelBase->cachedMatrix;
-  if (parentTrans || !modelBase->cachedMatrixIsValid) {
+  cmat = &modelBase->cmat;
+  if (parentTrans || !(modelBase->flags & GK_USE_CACHED_MATRIX)) {
     if (parentTrans) {
       if (modelBase->matrix) {
         if (modelBase->matrix->index == -1)
@@ -33,7 +33,7 @@ gkRenderModel(GkModelBase *modelBase,
       glm_mat4_dup(modelBase->matrix->matrix,
                    cmat->matrix);
     }
-    modelBase->cachedMatrixIsValid = 1;
+    modelBase->flags |= GK_USE_CACHED_MATRIX;
   }
 
   gkUniformModelMatrix(modelBase);
