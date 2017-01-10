@@ -7,24 +7,24 @@
 
 #include "../include/gk.h"
 
+static GkMatrix idmat = {
+  1,
+  1,
+  NULL,
+  GLM_MAT4_IDENTITY_INIT,
+  GLM_MAT4_IDENTITY_INIT
+};
+
 void
 gkRenderScene(GkScene * scene) {
-  GkMatrix *cmat;
-  cmat = scene->mat;
-  if (!cmat) {
-    cmat        = malloc(sizeof(*cmat));
-    cmat->index = scene->matrixLoc;
-    glm_mat4_dup(GLM_MAT4_IDENTITY, cmat->matrix);
+#ifdef DEBUG
+  assert(scene->pinfo || "set default program / shader params");
+#endif
 
-    scene->mat = cmat;
-    scene->matrixIsValid = 1;
-    gkRenderNode(scene->rootNode, cmat);
-  } else {
-    if (!scene->matrixIsValid) {
-      gkRenderNode(scene->rootNode, cmat);
-      scene->matrixIsValid = 1;
-    } else {
-      gkRenderNode(scene->rootNode, NULL);
-    }
-  }
+  gkRenderNode(scene,
+               scene->rootNode,
+               &idmat,
+               scene->pinfo);
+
+  scene->pvIsValid = 1;
 }

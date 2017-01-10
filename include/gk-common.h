@@ -30,8 +30,9 @@
 #define GK_ARRAY_LEN(ARR) sizeof(ARR) / sizeof(ARR[0]);
 
 typedef enum GkNodeFlags {
-  GK_USE_CACHED_MATRIX = 1 << 3,
-  GK_NON_UNIFORM_SCALE = 1 << 4
+  GK_HAVE_MATRIX       = 1 << 3,
+  GK_USE_CACHED_MATRIX = 1 << 4,
+  GK_NON_UNIFORM_SCALE = 1 << 5
 } GkNodeFlags;
 
 #endif /* gk_common_h */

@@ -25,8 +25,8 @@ extern "C" {
 #include "gk-model.h"
 
 typedef struct GkNode {
-  GkMatrix       cmat;
   GkNodeFlags    flags;
+  GkProgInfo    *pinfo;
   GkMatrix      *matrix;
   GkModelBase   *model;
   GkModelInst   *instance;
@@ -35,41 +35,36 @@ typedef struct GkNode {
   struct GkNode *nodeInst;
 } GkNode;
 
-typedef struct GkNodeInst {
-  GkMatrix       cachedMatrix;
-  uint32_t       cachedMatrixIsValid;
-  GkMatrix      *matrix;
-  GkNode        *instance;
-  struct GkNode *next;
-} GkNodeInst;
-
 typedef struct GkScene {
-  GkNode   *rootNode;
-  GkMatrix *mat;
-  GLint     matrixLoc;
-  uint32_t  matrixIsValid;
+  mat4        pv;
+  GkNode     *rootNode;
+  GkProgInfo *pinfo;
+  uint32_t    pvIsValid;
 } GkScene;
 
 GkModelInst *
 gkMakeInstance(GkModelBase *model, GkMatrix *matrix);
 
 void
-gkUniformModelMatrix(GkModelBase *modelBase);
+gkUniformMatrix(GkModelBase *modelBase);
 
 void
-gkUniformInstanceMatrix(GkModelInst *instance);
+gkRenderInstance(GkScene     *scene,
+                 GkModelInst *instance,
+                 GkMatrix    *parentMat,
+                 GkProgInfo  *parentProg);
 
 void
-gkRenderInstance(GkModelInst *instance,
-                 GkMatrix    *parentTrans);
+gkRenderModel(GkScene     *scene,
+              GkModelBase *model,
+              GkMatrix    *parentMat,
+              GkProgInfo  *parentProg);
 
 void
-gkRenderModel(GkModelBase *model,
-              GkMatrix    *parentTrans);
-
-void
-gkRenderNode(GkNode   *node,
-             GkMatrix *parentTrans);
+gkRenderNode(GkScene    *scene,
+             GkNode     *node,
+             GkMatrix   *parentMat,
+             GkProgInfo *parentProg);
 
 void
 gkRenderScene(GkScene * scene);

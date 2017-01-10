@@ -8,35 +8,49 @@
 #include "../include/gk.h"
 
 void
-gkRenderModel(GkModelBase *modelBase,
-              GkMatrix    *parentTrans) {
-  GkMatrix *cmat;
+gkRenderModel(GkScene     *scene,
+              GkModelBase *modelBase,
+              GkMatrix    *pmat,
+              GkProgInfo  *pprog) {
+  GkMatrix   *mat;
+  GkProgInfo *prog;
+  uint32_t    updt;
 
-  cmat = &modelBase->cmat;
-  if (parentTrans || !(modelBase->flags & GK_USE_CACHED_MATRIX)) {
-    if (parentTrans) {
-      if (modelBase->matrix) {
-        if (modelBase->matrix->index == -1)
-          cmat->index = parentTrans->index;
-        else
-          cmat->index = modelBase->matrix->index;
+  mat  = modelBase->matrix;
+  prog = modelBase->pinfo;
 
-        glm_mat4_mul(parentTrans->matrix,
-                     modelBase->matrix->matrix,
-                     cmat->matrix);
-      } else {
-        cmat->index = parentTrans->index;
-        glm_mat4_dup(parentTrans->matrix,
-                     cmat->matrix);
-      }
-    } else {
-      glm_mat4_dup(modelBase->matrix->matrix,
-                   cmat->matrix);
+  if (!mat)
+    modelBase->matrix = mat = pmat;
+
+  updt = !pmat->cmatIsValid || !mat->cmatIsValid;
+
+  if (updt){
+    if (pmat != mat) {
+      glm_mat4_mul(pmat->matrix,
+                   mat->matrix,
+                   mat->cmat);
+      mat->cmatIsValid = 0;
     }
-    modelBase->flags |= GK_USE_CACHED_MATRIX;
+
+    if (!mat->cmvp)
+      mat->cmvp = malloc(sizeof(mat4));
+
+    glm_mat4_mul(scene->pv,
+                 mat->cmat,
+                 *mat->cmvp);
+  } else if(!scene->pvIsValid) {
+    if (!mat->cmvp)
+      mat->cmvp = malloc(sizeof(mat4));
+
+    glm_mat4_mul(scene->pv,
+                 mat->cmat,
+                 *mat->cmvp);
   }
 
-  gkUniformModelMatrix(modelBase);
+  if (!prog)
+    modelBase->pinfo = prog = pprog;
+
+  gkUniformMatrix(modelBase);
 
   /* pre events */
   if (modelBase->events && modelBase->events->onDraw)
@@ -83,4 +97,7 @@ gkRenderModel(GkModelBase *modelBase,
   /* post events */
   if (modelBase->events && modelBase->events->onDraw)
     modelBase->events->onDraw(modelBase, NULL, true);
+
+  if(updt && mat != pmat)
+    mat->cmatIsValid = 1;
 }

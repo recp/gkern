@@ -8,8 +8,10 @@
 #include "../include/gk.h"
 
 void
-gkRenderInstance(GkModelInst *instance,
-                 GkMatrix    *parentTrans) {
+gkRenderInstance(GkScene     *scene,
+                 GkModelInst *instance,
+                 GkMatrix    *parentMat,
+                 GkProgInfo  *parentProg) {
   GkModelBase *model;
 
   model = instance->model;
@@ -20,8 +22,6 @@ gkRenderInstance(GkModelInst *instance,
 
   if (model->events && model->events->onDraw)
     model->events->onDraw(model, instance, false);
-
-  gkUniformInstanceMatrix(instance);
 
   /* render */
   if (model->flags & GK_COMPLEX) {

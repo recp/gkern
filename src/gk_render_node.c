@@ -8,48 +8,60 @@
 #include "../include/gk.h"
 
 void
-gkRenderNode(GkNode   *node,
-             GkMatrix *parentTrans) {
+gkRenderNode(GkScene    *scene,
+             GkNode     *node,
+             GkMatrix   *pmat,
+             GkProgInfo *pprog) {
   while (node) {
-    GkMatrix *cmat;
-    if (parentTrans || !(node->flags & GK_USE_CACHED_MATRIX)) {
-      cmat = &node->cmat;
+    GkMatrix   *mat;
+    GkProgInfo *prog;
+    uint32_t    updt;
 
-      if (parentTrans) {
-        if (node->matrix) {
-          if (node->matrix->index == -1)
-            cmat->index = parentTrans->index;
-          else
-            cmat->index = node->matrix->index;
+    mat  = node->matrix;
+    prog = node->pinfo;
 
-          glm_mat4_mul(parentTrans->matrix,
-                       node->matrix->matrix,
-                       cmat->matrix);
-        } else {
-          glm_mat4_dup(parentTrans->matrix,
-                       cmat->matrix);
-          cmat->index = parentTrans->index;
-        }
-      } else {
-        glm_mat4_dup(node->matrix->matrix,
-                     cmat->matrix);
-      }
-      node->flags |= GK_USE_CACHED_MATRIX;
-    } else {
-      cmat = NULL;
+    if (!mat)
+      node->matrix = mat = pmat;
+
+    updt = (!pmat->cmatIsValid || !mat->cmatIsValid);
+
+    if (updt && pmat != mat) {
+      glm_mat4_mul(pmat->cmat,
+                   mat->matrix,
+                   mat->cmat);
+
+      mat->cmatIsValid = 0;
     }
 
+    if (!prog)
+      node->pinfo = prog = pprog;
+
     if (node->model) {
-      gkRenderModel(node->model, cmat);
+      gkRenderModel(scene,
+                    node->model,
+                    mat,
+                    prog);
     } else if (node->instance) {
-      gkRenderInstance(node->instance, cmat);
+      gkRenderInstance(scene,
+                       node->instance,
+                       mat,
+                       prog);
     }
 
     if (node->chld)
-      gkRenderNode(node->chld, cmat);
+      gkRenderNode(scene,
+                   node->chld,
+                   mat,
+                   prog);
 
     if (node->nodeInst)
-      gkRenderNode(node->nodeInst, cmat);
+      gkRenderNode(scene,
+                   node->nodeInst,
+                   mat,
+                   prog);
+
+    if (updt && mat != pmat)
+      mat->cmatIsValid = 1;
 
     node = node->next;
   }
