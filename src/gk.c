@@ -31,17 +31,15 @@ gkMakeInstance(GkModelBase *model, GkMatrix *matrix) {
 
 void
 gkUniformMatrix(GkModelBase *modelBase) {
-  GkMatrix   *mat;
-  GkProgInfo *pinfo;
+  GkFinalMatrix *fmat;
+  GkProgInfo    *pinfo;
 
-  mat   = modelBase->matrix;
+  fmat  = modelBase->matrix->fmat;
   pinfo = modelBase->pinfo;
 
-  gkUniformMat4(pinfo->mvpi, *mat->cmvp);
+  /* Model View Projection Matrix */
+  gkUniformMat4(pinfo->mvpi, fmat->cmvp);
 
-  /* TODO: check GK_NON_UNIFORM_SCALE */
-  if (modelBase->cnmat) {
-    gkUniformMat4(pinfo->nmi, *modelBase->cnmat);
-    glUniform1i(pinfo->unmi, 1);
-  }
+  /* Normal Matrix */
+  gkUniformMat4(pinfo->nmi,  fmat->cnmat);
 }

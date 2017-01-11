@@ -7,6 +7,26 @@
 
 #include "../include/gk.h"
 
+GK_INLINE
+void
+gkCalcFinalMat(GkScene  * __restrict scene,
+               GkMatrix * __restrict mat) {
+  GkFinalMatrix *fmat;
+  fmat = mat->fmat;
+  if (!mat->fmat) {
+    fmat       = malloc(sizeof(*mat->fmat));
+    fmat->refc = 1;
+    mat->fmat  = fmat;
+  }
+
+  glm_mat4_mul(scene->pv,
+               mat->cmat,
+               fmat->cmvp);
+
+  glm_mat4_inv(mat->cmat, fmat->cnmat);
+  glm_mat4_transpose(fmat->cnmat);
+}
+
 void
 gkRenderModel(GkScene     *scene,
               GkModelBase *modelBase,
@@ -32,19 +52,9 @@ gkRenderModel(GkScene     *scene,
       mat->cmatIsValid = 0;
     }
 
-    if (!mat->cmvp)
-      mat->cmvp = malloc(sizeof(mat4));
-
-    glm_mat4_mul(scene->pv,
-                 mat->cmat,
-                 *mat->cmvp);
+    gkCalcFinalMat(scene, mat);
   } else if(!scene->pvIsValid) {
-    if (!mat->cmvp)
-      mat->cmvp = malloc(sizeof(mat4));
-
-    glm_mat4_mul(scene->pv,
-                 mat->cmat,
-                 *mat->cmvp);
+    gkCalcFinalMat(scene, mat);
   }
 
   if (!prog)

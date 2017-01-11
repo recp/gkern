@@ -20,22 +20,28 @@ typedef void (*gkOnClick)(struct GkModelInst * instance,
                           float x,
                           float y);
 
+typedef struct GkFinalMatrix {
+  uint32_t refc;
+  mat4     cmvp;  /* model view projection matrix */
+  mat4     cnmat; /* cached normal matrix   */
+} GkFinalMatrix;
+
 /* some geometries or nodes may not have matrix, 
    so they will use parent's one. */
 typedef struct GkMatrix {
-  uint32_t refc;
-  uint32_t cmatIsValid;
+  uint32_t       refc;
+  uint32_t       cmatIsValid;
   /* 
-   cached MVP: proj * view * model (GkMatrix->cmat)
+   cached MVP and normal matrix: proj * view * model (GkMatrix->cmat)
    because multiple models may share same mvp matrix, to save space we use
    pointer space in every matrix, GkMatrix is allocating by malloc so to meet
    aligment requirements this space will be wasted anyway.
    
    dont change order because mat4 requires 16 byte aligment!
    */
-  mat4    *cmvp; /* TODO: make reference counted */
-  mat4     matrix;
-  mat4     cmat; /* cached matrix multiplied with parent */
+  GkFinalMatrix *fmat;
+  mat4           matrix;
+  mat4           cmat;  /* cached matrix multiplied with parent */
 } GkMatrix;
 
 /* cache program infos, some nodes may use different program and shaders */
@@ -44,7 +50,6 @@ typedef struct GkProgInfo {
   GLint    prog;  /* program                */
   GLint    mvpi;  /* matrix loc             */
   GLint    nmi;   /* normal matrix loc      */
-  GLint    unmi;  /* use normal matrix loc  */
 } GkProgInfo;
 
 typedef struct GkGLEvents {
@@ -59,7 +64,6 @@ typedef struct GkModelInstList {
 
 typedef struct GkModelBase {
   uint64_t         flags;
-  mat4            *cnmat; /* cached normal matrix   */
   GkProgInfo      *pinfo;
   GkMatrix        *matrix;
   GkGLEvents      *events;
