@@ -36,10 +36,12 @@ typedef struct GkNode {
 } GkNode;
 
 typedef struct GkScene {
+  mat4        v;
   mat4        pv;
   GkNode     *rootNode;
   GkProgInfo *pinfo;
   uint32_t    pvIsValid;
+  uint32_t    vIsValid;
 } GkScene;
 
 GkModelInst *

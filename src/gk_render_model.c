@@ -19,12 +19,15 @@ gkCalcFinalMat(GkScene  * __restrict scene,
     mat->fmat  = fmat;
   }
 
-  glm_mat4_mul(scene->pv,
-               mat->cmat,
-               fmat->cmvp);
+  glm_mat4_mul(scene->pv, mat->cmat, fmat->cmvp);
+  glm_mat4_mul(scene->v,  mat->cmat, fmat->cmv);
 
-  glm_mat4_inv(mat->cmat, fmat->cnmat);
-  glm_mat4_transpose(fmat->cnmat);
+  fmat->usenm = !glm_uniscaled(mat->cmat);
+
+  if (fmat->usenm) {
+    glm_mat4_inv(fmat->cmv, fmat->cnmat);
+    glm_mat4_transpose(fmat->cnmat);
+  }
 }
 
 void
@@ -53,7 +56,7 @@ gkRenderModel(GkScene     *scene,
     }
 
     gkCalcFinalMat(scene, mat);
-  } else if(!scene->pvIsValid) {
+  } else if(!scene->pvIsValid || scene->vIsValid) {
     gkCalcFinalMat(scene, mat);
   }
 

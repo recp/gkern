@@ -27,4 +27,5 @@ gkRenderScene(GkScene * scene) {
                scene->pinfo);
 
   scene->pvIsValid = 1;
+  scene->vIsValid  = 1;
 }

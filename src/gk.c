@@ -40,6 +40,12 @@ gkUniformMatrix(GkModelBase *modelBase) {
   /* Model View Projection Matrix */
   gkUniformMat4(pinfo->mvpi, fmat->cmvp);
 
+  /* Model View Matrix */
+  gkUniformMat4(pinfo->mvi, fmat->cmv);
+
   /* Normal Matrix */
-  gkUniformMat4(pinfo->nmi,  fmat->cnmat);
+  if (fmat->usenm)
+    gkUniformMat4(pinfo->nmi,  fmat->cnmat);
+
+  glUniform1i(pinfo->nmui, fmat->usenm);
 }

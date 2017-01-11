@@ -22,8 +22,10 @@ typedef void (*gkOnClick)(struct GkModelInst * instance,
 
 typedef struct GkFinalMatrix {
   uint32_t refc;
+  uint32_t usenm; /* use generated normal matrix when non-uniform scaled */
   mat4     cmvp;  /* model view projection matrix */
-  mat4     cnmat; /* cached normal matrix   */
+  mat4     cmv;   /* model view matrix */
+  mat4     cnmat; /* cached normal matrix */
 } GkFinalMatrix;
 
 /* some geometries or nodes may not have matrix, 
@@ -49,7 +51,9 @@ typedef struct GkProgInfo {
   uint32_t refc;  /* reference count        */
   GLint    prog;  /* program                */
   GLint    mvpi;  /* matrix loc             */
+  GLint    mvi;   /* matrix loc             */
   GLint    nmi;   /* normal matrix loc      */
+  GLint    nmui;  /* use normal matrix loc  */
 } GkProgInfo;
 
 typedef struct GkGLEvents {
