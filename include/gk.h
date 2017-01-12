@@ -28,8 +28,7 @@ typedef struct GkNode {
   GkNodeFlags    flags;
   GkProgInfo    *pinfo;
   GkMatrix      *matrix;
-  GkModelBase   *model;
-  GkModelInst   *instance;
+  GkModelInst   *model;
   struct GkNode *next;
   struct GkNode *chld;
   struct GkNode *nodeInst;
@@ -45,20 +44,14 @@ typedef struct GkScene {
 } GkScene;
 
 GkModelInst *
-gkMakeInstance(GkModelBase *model, GkMatrix *matrix);
+gkMakeInstance(GkModelBase *model);
 
 void
-gkUniformMatrix(GkModelBase *modelBase);
-
-void
-gkRenderInstance(GkScene     *scene,
-                 GkModelInst *instance,
-                 GkMatrix    *parentMat,
-                 GkProgInfo  *parentProg);
+gkUniformMatrix(GkModelInst *modelInst);
 
 void
 gkRenderModel(GkScene     *scene,
-              GkModelBase *model,
+              GkModelInst *modelInst,
               GkMatrix    *parentMat,
               GkProgInfo  *parentProg);
 

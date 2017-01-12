@@ -69,9 +69,8 @@ typedef struct GkModelInstList {
 typedef struct GkModelBase {
   uint64_t         flags;
   GkProgInfo      *pinfo;
-  GkMatrix        *matrix;
   GkGLEvents      *events;
-  GkModelInstList *instances;
+  GkModelInstList *instances; /* TODO: */
 } GkModelBase;
 
 typedef struct GkModel {
@@ -96,7 +95,6 @@ typedef struct GkComplexModel {
 typedef struct GkModelInst {
   GkModelBase        *model;
   GkMatrix           *matrix;
-  GkGLEvents         *events;
   struct GkModelInst *next;
   uint64_t            flags;
   char                data[]; /* private field */

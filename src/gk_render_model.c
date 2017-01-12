@@ -32,18 +32,20 @@ gkCalcFinalMat(GkScene  * __restrict scene,
 
 void
 gkRenderModel(GkScene     *scene,
-              GkModelBase *modelBase,
+              GkModelInst *modelInst,
               GkMatrix    *pmat,
               GkProgInfo  *pprog) {
-  GkMatrix   *mat;
-  GkProgInfo *prog;
-  uint32_t    updt;
+  GkModelBase *modelBase;
+  GkMatrix    *mat;
+  GkProgInfo  *prog;
+  uint32_t     updt;
 
-  mat  = modelBase->matrix;
-  prog = modelBase->pinfo;
+  modelBase = modelInst->model;
+  mat       = modelInst->matrix;
+  prog      = modelBase->pinfo;
 
   if (!mat)
-    modelBase->matrix = mat = pmat;
+    modelInst->matrix = mat = pmat;
 
   updt = !pmat->cmatIsValid || !mat->cmatIsValid;
 
@@ -63,7 +65,7 @@ gkRenderModel(GkScene     *scene,
   if (!prog)
     modelBase->pinfo = prog = pprog;
 
-  gkUniformMatrix(modelBase);
+  gkUniformMatrix(modelInst);
 
   /* pre events */
   if (modelBase->events && modelBase->events->onDraw)

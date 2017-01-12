@@ -8,12 +8,11 @@
 #include "../include/gk.h"
 
 GkModelInst *
-gkMakeInstance(GkModelBase *model, GkMatrix *matrix) {
+gkMakeInstance(GkModelBase *model) {
   GkModelInst *instance, *prevInstance;
 
-  instance         = calloc(sizeof(*instance), 1);
-  instance->matrix = matrix;
-  prevInstance     = NULL;
+  instance     = calloc(sizeof(*instance), 1);
+  prevInstance = NULL;
 
   if (!model->instances)
     model->instances = calloc(sizeof(*model->instances), 1);
@@ -22,7 +21,8 @@ gkMakeInstance(GkModelBase *model, GkMatrix *matrix) {
 
   model->instances->instance = instance;
   model->instances->instanceCount++;
-
+  instance->model = model;
+  
   if (prevInstance)
     instance->next = prevInstance;
 
@@ -30,12 +30,15 @@ gkMakeInstance(GkModelBase *model, GkMatrix *matrix) {
 }
 
 void
-gkUniformMatrix(GkModelBase *modelBase) {
+gkUniformMatrix(GkModelInst *modelInst) {
+  GkModelBase   *model;
   GkFinalMatrix *fmat;
   GkProgInfo    *pinfo;
 
-  fmat  = modelBase->matrix->fmat;
-  pinfo = modelBase->pinfo;
+  model = modelInst->model;
+
+  fmat  = modelInst->matrix->fmat;
+  pinfo = model->pinfo;
 
   /* Model View Projection Matrix */
   gkUniformMat4(pinfo->mvpi, fmat->cmvp);

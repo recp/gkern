@@ -36,17 +36,11 @@ gkRenderNode(GkScene    *scene,
     if (!prog)
       node->pinfo = prog = pprog;
 
-    if (node->model) {
+    if (node->model)
       gkRenderModel(scene,
                     node->model,
                     mat,
                     prog);
-    } else if (node->instance) {
-      gkRenderInstance(scene,
-                       node->instance,
-                       mat,
-                       prog);
-    }
 
     if (node->chld)
       gkRenderNode(scene,
