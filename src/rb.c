@@ -451,7 +451,10 @@ rb_find(RBTree *tree, void *key) {
     iter = iter->chld[cmpRet < 0];
   }
 
-  return iter;
+  if (!iter || iter == tree->nullNode)
+    return NULL;
+
+  return iter->val;
 }
 
 int
