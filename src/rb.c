@@ -135,7 +135,9 @@ rb_insert(RBTree *tree,
   RBNode *X, *P, *G, *Q, *W;
   int sQ, sG, sP, sX;
 
-  newnode      = calloc(sizeof(*newnode), 1);
+  newnode = malloc(sizeof(*newnode));
+  newnode->chld[RB_LEFT]  = tree->nullNode;
+  newnode->chld[RB_RIGHT] = tree->nullNode;
   newnode->key = key;
   newnode->val = val;
 
