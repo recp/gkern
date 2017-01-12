@@ -13,6 +13,7 @@ typedef void (*RBPrintFn)(void *);
 
 typedef struct RBNode {
   void          *key;
+  void          *val;
   struct RBNode *chld[2];
   uint8_t        color;
 } RBNode;
@@ -34,12 +35,14 @@ RBTree*
 rb_newtree_ptr();
 
 void
-rb_insert(RBTree *tree, void *key);
+rb_insert(RBTree *tree,
+          void *key,
+          void *val);
 
 void
 rb_remove(RBTree *tree, void *key);
 
-RBNode *
+void *
 rb_find(RBTree *tree, void *key);
 
 int

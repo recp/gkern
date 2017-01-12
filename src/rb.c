@@ -128,13 +128,16 @@ rb_destroy(RBTree *tree) {
 }
 
 void
-rb_insert(RBTree *tree, void *key) {
+rb_insert(RBTree *tree,
+          void   *key,
+          void   *val) {
   RBNode *newnode;
   RBNode *X, *P, *G, *Q, *W;
   int sQ, sG, sP, sX;
 
   newnode      = calloc(sizeof(*newnode), 1);
   newnode->key = key;
+  newnode->val = val;
 
   if (tree->root->chld[RB_RIGHT] == tree->nullNode) {
     RB_MKBLCK(newnode);
@@ -431,7 +434,7 @@ rb_remove(RBTree *tree, void *key) {
   free(toDel);
 }
 
-RBNode *
+void *
 rb_find(RBTree *tree, void *key) {
   RBNode *iter;
 
