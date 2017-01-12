@@ -102,4 +102,11 @@ typedef struct GkModelInst {
   char                data[]; /* private field */
 } GkModelInst;
 
+void
+gk_model_add(GkModelBase * __restrict model,
+             void        * __restrict source);
+
+GkModelBase*
+gk_model_find(void * __restrict source);
+
 #endif /* gk_model_h */
