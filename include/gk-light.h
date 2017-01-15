@@ -30,18 +30,18 @@ typedef GkLight GkDirectionalLight;
 
 typedef struct GkPointLight {
   GkLight base;
-  float   constantAttenuation;
-  float   linearAttenuation;
-  float   quadraticAttenuation;
+  float   constAttn;
+  float   linearAttn;
+  float   quadAttn;
 } GkPointLight;
 
 typedef struct GkSpotLight {
   GkLight base;
-  float   constantAttenuation;
-  float   linearAttenuation;
-  float   quadraticAttenuation;
+  float   constAttn;
+  float   linearAttn;
+  float   quadAttn;
   float   falloffAngle;
-  float   falloffExponent;
+  float   falloffExp;
 } GkSpotLight;
 
 #endif /* gk_light_h */
