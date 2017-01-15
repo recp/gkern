@@ -57,6 +57,7 @@ typedef struct GkScene {
   GkLight    *lights;
   uint32_t    pvIsValid;
   uint32_t    vIsValid;
+  GLenum      usage;
 } GkScene;
 
 GkModelInst *
