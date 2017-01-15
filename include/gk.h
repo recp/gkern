@@ -11,9 +11,24 @@
 extern "C" {
 #endif
 
+#include <cglm.h>
+
+typedef struct GkColorRGBA {
+  float R;
+  float G;
+  float B;
+  float A;
+} GkColorRGBA;
+
+typedef union GkColor {
+  GkColorRGBA rgba;
+  vec4        vec;
+} GkColor;
+
 #include "gk-common.h"
 #include "gk-shader.h"
 #include "gk-program.h"
+#include "gk-light.h"
 
 #include <stdlib.h>
 #include <cglm.h>
@@ -39,6 +54,7 @@ typedef struct GkScene {
   mat4        pv;
   GkNode     *rootNode;
   GkProgInfo *pinfo;
+  GkLight    *lights;
   uint32_t    pvIsValid;
   uint32_t    vIsValid;
 } GkScene;
