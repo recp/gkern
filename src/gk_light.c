@@ -84,7 +84,7 @@ gkUniformLight(struct GkScene * __restrict scene,
                   dir);
 
       loc = gkGetUniformLoc(prog, buf, "direction");
-      glUniform4fv(loc, 1, dir);
+      glUniform3fv(loc, 1, dir);
       break;
     }
 
@@ -119,7 +119,7 @@ gkUniformLight(struct GkScene * __restrict scene,
   }
 
   loc = gkGetUniformLoc(prog, buf, "ambient");
-  glUniform4fv(loc, 4, amb);
+  glUniform3fv(loc, 1, amb);
 
   loc = gkGetUniformLoc(prog, buf, "enabled");
   glUniform1i(loc, enabled);
@@ -131,11 +131,11 @@ gkUniformLight(struct GkScene * __restrict scene,
   glUniform1i(loc, isLocal);
 
   loc = gkGetUniformLoc(prog, buf, "color");
-  glUniform4fv(loc, 1, light->color.vec);
+  glUniform3fv(loc, 1, light->color.vec);
 
   loc = gkGetUniformLoc(prog, buf, "position");
 
-  glUniform4fv(loc,
+  glUniform3fv(loc,
                1,
                node->matrix->fmat->cmv[3]);
   light->isvalid = 1;
