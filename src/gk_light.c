@@ -80,9 +80,9 @@ gkUniformLight(struct GkScene * __restrict scene,
       glUniform1f(loc, spot->quadAttn);
 
       /* cone direction */
-      glm_vec_sub(node->matrix->fmat->cmv[3],
-                  gkDefaultDir,
-                  dir);
+      glm_vec_scale(node->matrix->fmat->cmv[3],
+                    -1.0f,
+                    dir);
 
       loc = gkGetUniformLoc(prog, buf, "direction");
       glUniform3fv(loc, 1, dir);
