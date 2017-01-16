@@ -45,7 +45,8 @@ gkUniformLight(struct GkScene * __restrict scene,
     index = light->index;
   }
 
-  node = light->node;
+  enabled = light->enabled;
+  node    = light->node;
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "lights");

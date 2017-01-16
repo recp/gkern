@@ -36,6 +36,7 @@ typedef struct GkLight {
   GkColor          color;
   GLint            index;
   uint8_t          isvalid;
+  uint8_t          enabled;
 } GkLight;
 
 typedef GkLight GkAmbientLight;
