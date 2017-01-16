@@ -21,8 +21,15 @@ typedef enum GkLightType {
   GK_LIGHT_TYPE_CUSTOM      = 5
 } GkLightType;
 
+/* for scene, because node can have multiple light instancs */
+typedef struct GkLightRef {
+  struct GkLightRef *prev;
+  struct GkLightRef *next;
+} GkLightRef;
+
 struct GkNode;
 typedef struct GkLight {
+  GkLightRef       ref;
   struct GkLight  *next;
   struct GkNode   *node;
   GkLightType      type;

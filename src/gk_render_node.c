@@ -7,6 +7,21 @@
 
 #include "../include/gk.h"
 
+GK_INLINE
+void
+gkCalcViewMat(GkScene  * __restrict scene,
+              GkMatrix * __restrict mat) {
+  GkFinalMatrix *fmat;
+  fmat = mat->fmat;
+  if (!mat->fmat) {
+    fmat       = malloc(sizeof(*mat->fmat));
+    fmat->refc = 1;
+    mat->fmat  = fmat;
+  }
+
+  glm_mat4_mul(scene->v, mat->cmat, fmat->cmv);
+}
+
 void
 gkRenderNode(GkScene    *scene,
              GkNode     *node,
@@ -35,6 +50,9 @@ gkRenderNode(GkScene    *scene,
 
     if (!prog)
       node->pinfo = prog = pprog;
+
+    if (node->light)
+      gkCalcViewMat(scene, mat);
 
     if (node->model)
       gkRenderModel(scene,
@@ -89,6 +107,9 @@ gkPrepNode(GkScene    *scene,
 
     if (node->chld)
       gkPrepNode(scene, node->chld, mat, prog);
+
+    if (node->light)
+      gkCalcViewMat(scene, mat);
 
     if (node->nodeInst)
       gkPrepNode(scene, node->nodeInst, mat, prog);

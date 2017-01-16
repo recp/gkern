@@ -11,26 +11,32 @@
 /* default light direction */
 static vec3 gkDefaultDir = {0, 0, -1};
 
-GLuint
+GLint
 gkGetUniformLoc(GLuint prog,
                 char  * __restrict buf,
                 char  * __restrict name) {
+  char *pBuf;
+
+  GLint loc;
   if (!buf)
     return glGetUniformLocation(prog, name);
 
-  buf = strrchr(buf, '.') + 1;
-  strcpy(buf, name);
-  return glGetUniformLocation(prog, buf);
+  pBuf = strrchr(buf, '.') + 1;
+  strcpy(pBuf, name);
+
+  loc = glGetUniformLocation(prog, buf);
+  return loc;
 }
 
 void
 gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light) {
-  char     buf[256];
-  GLuint   loc;
-  GLuint   prog;
-  GLuint   enabled, isLocal, isSpot;
-  GLint    index;
+  GkNode *node;
+  char    buf[256];
+  GLint   loc;
+  GLint   prog;
+  GLint   enabled, isLocal, isSpot;
+  GLint   index;
 
   if (light->index == -1) {
     light->index = index = scene->lastLightIndex++;
@@ -39,11 +45,13 @@ gkUniformLight(struct GkScene * __restrict scene,
     index = light->index;
   }
 
+  node = light->node;
+
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "lights");
   sprintf(buf + strlen("lights"), "[%d].", index);
 
-  prog = light->node->pinfo->prog;
+  prog = node->pinfo->prog;
 
   vec3 amb = {0.5, 0.5, 0.5};
 
@@ -71,7 +79,7 @@ gkUniformLight(struct GkScene * __restrict scene,
       glUniform1f(loc, spot->quadAttn);
 
       /* cone direction */
-      glm_vec_sub(light->node->matrix->cmat[3],
+      glm_vec_sub(node->matrix->fmat->cmv[3],
                   gkDefaultDir,
                   dir);
 
@@ -127,7 +135,9 @@ gkUniformLight(struct GkScene * __restrict scene,
 
   loc = gkGetUniformLoc(prog, buf, "position");
 
-  glGetUniformfv(prog, loc, light->node->matrix->fmat->cmv[3]);
+  glGetUniformfv(prog,
+                 loc,
+                 node->matrix->fmat->cmv[3]);
   light->isvalid = 1;
 }
 
@@ -136,12 +146,12 @@ gkUniformLights(struct GkScene * __restrict scene) {
   GkLight *light;
   GLuint   loc;
 
-  light = scene->lights;
+  light = (GkLight *)scene->lights;
   while (light) {
     if (!light->isvalid)
       gkUniformLight(scene, light);
 
-    light = light->next;
+    light = (GkLight *)light->ref.next;
   }
 
   scene->lightsAreValid = 1;

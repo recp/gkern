@@ -44,6 +44,7 @@ typedef struct GkNode {
   GkProgInfo    *pinfo;
   GkMatrix      *matrix;
   GkModelInst   *model;
+  GkLight       *light;
   struct GkNode *next;
   struct GkNode *chld;
   struct GkNode *nodeInst;
@@ -54,7 +55,7 @@ typedef struct GkScene {
   mat4        pv;
   GkNode     *rootNode;
   GkProgInfo *pinfo;
-  GkLight    *lights;
+  GkLightRef *lights;
   uint32_t    lightCount;
   uint32_t    lastLightIndex;
   uint8_t     pvIsValid;
