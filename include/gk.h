@@ -55,6 +55,7 @@ typedef struct GkScene {
   GkNode     *rootNode;
   GkProgInfo *pinfo;
   GkLight    *lights;
+  uint32_t    lightCount;
   uint32_t    pvIsValid;
   uint32_t    vIsValid;
   GLenum      usage;
