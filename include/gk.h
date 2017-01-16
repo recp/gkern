@@ -56,8 +56,10 @@ typedef struct GkScene {
   GkProgInfo *pinfo;
   GkLight    *lights;
   uint32_t    lightCount;
-  uint32_t    pvIsValid;
-  uint32_t    vIsValid;
+  uint32_t    lastLightIndex;
+  uint8_t     pvIsValid;
+  uint8_t     vIsValid;
+  uint8_t     lightsAreValid;
   GLenum      usage;
 } GkScene;
 
@@ -72,6 +74,12 @@ gkRenderModel(GkScene     *scene,
               GkModelInst *modelInst,
               GkMatrix    *parentMat,
               GkProgInfo  *parentProg);
+
+void
+gkPrepNode(GkScene    *scene,
+           GkNode     *node,
+           GkMatrix   *pmat,
+           GkProgInfo *pprog);
 
 void
 gkRenderNode(GkScene    *scene,

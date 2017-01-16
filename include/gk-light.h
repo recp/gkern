@@ -10,6 +10,9 @@
 
 #include <cglm.h>
 
+struct GkScene;
+struct GkNode;
+
 typedef enum GkLightType {
   GK_LIGHT_TYPE_AMBIENT     = 1,
   GK_LIGHT_TYPE_DIRECTIONAL = 2,
@@ -18,15 +21,21 @@ typedef enum GkLightType {
   GK_LIGHT_TYPE_CUSTOM      = 5
 } GkLightType;
 
+struct GkNode;
 typedef struct GkLight {
-  struct GkLight *next;
-  GkLightType     type;
-  float           intensity;
-  GkColor         color;
+  struct GkLight  *next;
+  struct GkNode   *node;
+  GkLightType      type;
+  GkColor          color;
+  GLint            index;
+  uint8_t          isvalid;
 } GkLight;
 
 typedef GkLight GkAmbientLight;
-typedef GkLight GkDirectionalLight;
+
+typedef struct GkDirectionalLight {
+  GkLight base;
+} GkDirectionalLight;
 
 typedef struct GkPointLight {
   GkLight base;
@@ -37,11 +46,19 @@ typedef struct GkPointLight {
 
 typedef struct GkSpotLight {
   GkLight base;
+  vec3    direction;
   float   constAttn;
   float   linearAttn;
   float   quadAttn;
   float   falloffAngle;
   float   falloffExp;
 } GkSpotLight;
+
+void
+gkUniformLights(struct GkScene * __restrict scene);
+
+void
+gkUniformLight(struct GkScene * __restrict scene,
+               GkLight        * __restrict light);
 
 #endif /* gk_light_h */

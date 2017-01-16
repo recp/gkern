@@ -21,6 +21,15 @@ gkRenderScene(GkScene * scene) {
   assert(scene->pinfo || "set default program / shader params");
 #endif
 
+  if (!scene->lightsAreValid) {
+    gkPrepNode(scene,
+               scene->rootNode,
+               &idmat,
+               scene->pinfo);
+
+    gkUniformLights(scene);
+  }
+
   gkRenderNode(scene,
                scene->rootNode,
                &idmat,
