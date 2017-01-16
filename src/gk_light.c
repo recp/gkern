@@ -64,8 +64,8 @@ gkUniformLight(struct GkScene * __restrict scene,
       spot = (GkSpotLight *)light;
       isLocal = isSpot  = 1;
 
-      loc = gkGetUniformLoc(prog, buf, "falloffAngle");
-      glUniform1f(loc, spot->falloffAngle);
+      loc = gkGetUniformLoc(prog, buf, "falloffCos");
+      glUniform1f(loc, spot->falloffCosine);
 
       loc = gkGetUniformLoc(prog, buf, "falloffExp");
       glUniform1f(loc, spot->falloffExp);
