@@ -105,11 +105,11 @@ gkPrepNode(GkScene    *scene,
     if (!prog)
       node->pinfo = prog = pprog;
 
-    if (node->chld)
-      gkPrepNode(scene, node->chld, mat, prog);
-
     if (node->light)
       gkCalcViewMat(scene, mat);
+
+    if (node->chld)
+      gkPrepNode(scene, node->chld, mat, prog);
 
     if (node->nodeInst)
       gkPrepNode(scene, node->nodeInst, mat, prog);
