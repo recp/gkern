@@ -41,13 +41,13 @@ typedef union GkColor {
 
 typedef struct GkNode {
   GkNodeFlags    flags;
-  GkProgInfo    *pinfo;
-  GkMatrix      *matrix;
-  GkModelInst   *model;
-  GkLight       *light;
+  GkProgInfo    *pinfo;    /* program info, node may use different shaders */
+  GkMatrix      *matrix;   /* matrix info */
+  GkModelInst   *model;    /* model instance, only instances! */
+  GkLight       *light;    /* TODO: save space if there is no light */
   struct GkNode *next;
   struct GkNode *chld;
-  struct GkNode *nodeInst;
+  struct GkNode *nodeInst; /* node instance */
 } GkNode;
 
 typedef struct GkScene {
