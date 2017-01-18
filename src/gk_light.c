@@ -31,12 +31,13 @@ gkGetUniformLoc(GLuint prog,
 void
 gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light) {
-  GkNode *node;
-  char    buf[256];
-  GLint   loc;
-  GLint   prog;
-  GLint   enabled, isLocal, isSpot;
-  GLint   index;
+  GkNode        *node;
+  GkFinalMatrix *fmat;
+  char  buf[256];
+  GLint loc;
+  GLint prog;
+  GLint enabled, isLocal, isSpot;
+  GLint index;
 
   if (light->index == -1) {
     light->index = index = scene->lastLightIndex++;
@@ -47,6 +48,7 @@ gkUniformLight(struct GkScene * __restrict scene,
 
   enabled = light->enabled;
   node    = light->node;
+  fmat    = node->matrix->fmat;
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "lights");
@@ -80,9 +82,10 @@ gkUniformLight(struct GkScene * __restrict scene,
       glUniform1f(loc, spot->quadAttn);
 
       /* cone direction */
-      glm_vec_rotate_m4(node->matrix->fmat->cmv,
+      glm_vec_rotate_m4(node->matrix->cmat,
                         gkDefaultDir,
                         dir);
+
       loc = gkGetUniformLoc(prog, buf, "direction");
       glUniform3fv(loc, 1, dir);
       break;
@@ -135,9 +138,8 @@ gkUniformLight(struct GkScene * __restrict scene,
 
   loc = gkGetUniformLoc(prog, buf, "position");
 
-  glUniform3fv(loc,
-               1,
-               node->matrix->fmat->cmv[3]);
+  /* position must be in view space */
+  glUniform3fv(loc, 1, fmat->cmv[3]);
   light->isvalid = 1;
 }
 
