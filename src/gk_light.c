@@ -41,7 +41,6 @@ gkUniformLight(struct GkScene * __restrict scene,
 
   if (light->index == -1) {
     light->index = index = scene->lastLightIndex++;
-    scene->lightCount++;
   } else {
     index = light->index;
   }
@@ -141,12 +140,14 @@ gkUniformLight(struct GkScene * __restrict scene,
   /* position must be in view space */
   glUniform3fv(loc, 1, fmat->cmv[3]);
   light->isvalid = 1;
+
+  loc = glGetUniformLocation(prog, "lightCount");
+  glUniform1i(loc, scene->lightCount);
 }
 
 void
 gkUniformLights(struct GkScene * __restrict scene) {
   GkLight *light;
-  GLuint   loc;
 
   light = (GkLight *)scene->lights;
   while (light) {
