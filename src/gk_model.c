@@ -16,12 +16,12 @@ gk_mdl_init() {
 }
 
 void
-gk_model_add(GkModelBase * __restrict model,
-             void        * __restrict source) {
+gk_model_add(GkModel * __restrict model,
+             void    * __restrict source) {
   rb_insert(gk_mdltree, source, model);
 }
 
-GkModelBase*
+GkModel*
 gk_model_find(void * __restrict source) {
   return rb_find(gk_mdltree, source);
 }

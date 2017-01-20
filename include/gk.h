@@ -29,6 +29,7 @@ typedef union GkColor {
 #include "gk-shader.h"
 #include "gk-program.h"
 #include "gk-light.h"
+#include "gk-material.h"
 
 #include <stdlib.h>
 #include <cglm.h>
@@ -65,7 +66,7 @@ typedef struct GkScene {
 } GkScene;
 
 GkModelInst *
-gkMakeInstance(GkModelBase *model);
+gkMakeInstance(GkModel *model);
 
 void
 gkUniformMatrix(GkModelInst *modelInst);

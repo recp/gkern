@@ -8,7 +8,7 @@
 #include "../include/gk.h"
 
 GkModelInst *
-gkMakeInstance(GkModelBase *model) {
+gkMakeInstance(GkModel *model) {
   GkModelInst *instance, *prevInstance;
 
   instance     = calloc(sizeof(*instance), 1);
@@ -31,7 +31,7 @@ gkMakeInstance(GkModelBase *model) {
 
 void
 gkUniformMatrix(GkModelInst *modelInst) {
-  GkModelBase   *model;
+  GkModel       *model;
   GkFinalMatrix *fmat;
   GkProgInfo    *pinfo;
 

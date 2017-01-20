@@ -8,11 +8,10 @@
 #ifndef gk_model_h
 #define gk_model_h
 
-struct GkModelBase;
 struct GkModel;
 struct GkModelInst;
 
-typedef void (*gkOnDraw)(struct GkModelBase * model,
+typedef void (*gkOnDraw)(struct GkModel     * model,
                          struct GkModelInst * instance,
                          bool finished);
 
@@ -66,45 +65,55 @@ typedef struct GkModelInstList {
   uint64_t            instanceCount;
 } GkModelInstList;
 
-typedef struct GkModelBase {
-  uint64_t         flags;
-  GkProgInfo      *pinfo;
-  GkGLEvents      *events;
-  GkModelInstList *instances; /* TODO: */
-} GkModelBase;
+typedef struct GkBuffer {
+  GLuint  vbo;
+  GLsizei size;
+  GLuint  semantic;
+  GLenum  usage;
+  GLenum  type;
+  GLenum  target;
 
-typedef struct GkModel {
-  GkModelBase base;
-  GLuint     *vbo;
+  struct GkBuffer *prev;
+  struct GkBuffer *next;
+} GkBuffer;
+
+typedef struct GkPrimitive {
+  GLuint      flags;
   GLuint      vao;
-  GLsizei     vboCount;
+  GkBuffer   *bufs;
+  GkMaterial *material;
+  GLsizei     bufc;
   GLsizei     count;
   GLenum      mode;
+
+  struct GkPrimitive *prev;
+  struct GkPrimitive *next;
+} GkPrimitive;
+
+typedef struct GkModel {
+  GkPrimitive     *prim;
+  GkProgInfo      *pinfo;
+  GkMaterial      *material;
+  GkGLEvents      *events;
+  GkModelInstList *instances; /* TODO: */
+  uint32_t         flags;
+  uint32_t         primc;
 } GkModel;
 
-typedef struct GkComplexModel {
-  GkModelBase base;
-  GLuint     *vao;
-  GLuint     *vbo;
-  GLsizei    *count;
-  GLenum     *modes;
-  GLsizei     vaoCount;
-  GLsizei     vboCount;
-} GkComplexModel;
-
 typedef struct GkModelInst {
-  GkModelBase        *model;
+  GkModel            *model;
   GkMatrix           *matrix;
+  GkMaterial        **material; /* instances may use different materials */
   struct GkModelInst *next;
   uint64_t            flags;
-  char                data[]; /* private field */
+  char                data[];   /* private field */
 } GkModelInst;
 
 void
-gk_model_add(GkModelBase * __restrict model,
-             void        * __restrict source);
+gk_model_add(GkModel * __restrict model,
+             void    * __restrict source);
 
-GkModelBase*
+GkModel*
 gk_model_find(void * __restrict source);
 
 #endif /* gk_model_h */

@@ -35,14 +35,15 @@ gkRenderModel(GkScene     *scene,
               GkModelInst *modelInst,
               GkMatrix    *pmat,
               GkProgInfo  *pprog) {
-  GkModelBase *modelBase;
+  GkModel     *model;
+  GkPrimitive *primi;
   GkMatrix    *mat;
   GkProgInfo  *prog;
   uint32_t     updt;
 
-  modelBase = modelInst->model;
-  mat       = modelInst->matrix;
-  prog      = modelBase->pinfo;
+  model = modelInst->model;
+  mat   = modelInst->matrix;
+  prog  = model->pinfo;
 
   if (!mat)
     modelInst->matrix = mat = pmat;
@@ -63,55 +64,35 @@ gkRenderModel(GkScene     *scene,
   }
 
   if (!prog)
-    modelBase->pinfo = prog = pprog;
+    model->pinfo = prog = pprog;
 
   gkUniformMatrix(modelInst);
 
   /* pre events */
-  if (modelBase->events && modelBase->events->onDraw)
-    modelBase->events->onDraw(modelBase, NULL, false);
+  if (model->events && model->events->onDraw)
+    model->events->onDraw(model, NULL, false);
 
   /* render */
-  if (modelBase->flags & GK_COMPLEX) {
-    GkComplexModel *model;
-    uint32_t        index;
+  primi = model->prim;
+  while (primi) {
+    glBindVertexArray(primi->vao);
 
-    model = (GkComplexModel *)modelBase;
-
-    for (index = 0; index < model->vaoCount; index++) {
-      glBindVertexArray(model->vao[index]);
-
-      if (modelBase->flags & GK_DRAW_ELEMENTS) {
-        glDrawElements(model->modes[index],
-                       model->count[index],
-                       GL_UNSIGNED_INT, /* TODO: ? */
-                       NULL);;
-      } else if (modelBase->flags & GK_DRAW_ARRAYS) {
-        glDrawArrays(model->modes[index],
-                     0,
-                     model->count[index]);
-      }
-    }
-  } else {
-    GkModel *model;
-    model = (GkModel *)modelBase;
-
-    glBindVertexArray(model->vao);
-
-    if (modelBase->flags & GK_DRAW_ELEMENTS)
-      glDrawElements(model->mode,
-                     model->count,
+    if (primi->flags & GK_DRAW_ELEMENTS)
+      glDrawElements(primi->mode,
+                     primi->count,
                      GL_UNSIGNED_INT, /* TODO: ? */
                      NULL);
-    else if (modelBase->flags & GK_DRAW_ARRAYS)
-      glDrawArrays(model->mode, 0, model->count);
+    else if (primi->flags & GK_DRAW_ARRAYS)
+      glDrawArrays(primi->mode, 0, primi->count);
+
+    primi = primi->next;
   }
 
   glBindVertexArray(0);
 
   /* post events */
-  if (modelBase->events && modelBase->events->onDraw)
-    modelBase->events->onDraw(modelBase, NULL, true);
+  if (model->events && model->events->onDraw)
+    model->events->onDraw(model, NULL, true);
 
   if(updt && mat != pmat)
     mat->cmatIsValid = 1;
