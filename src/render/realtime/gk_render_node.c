@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk.h"
+#include "../../../include/gk.h"
 
 GK_INLINE
 void

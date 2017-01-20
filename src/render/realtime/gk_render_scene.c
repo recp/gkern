@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk.h"
+#include "../../../include/gk.h"
 
 static GkMatrix idmat = {
   1,
