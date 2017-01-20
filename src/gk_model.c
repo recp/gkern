@@ -6,7 +6,7 @@
  */
 
 #include "gk_model.h"
-#include "rb.h"
+#include "../include/gk-rb.h"
 
 static RBTree *gk_mdltree;
 

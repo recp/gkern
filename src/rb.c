@@ -21,7 +21,7 @@
  * cX: color of X
  */
 
-#include "rb.h"
+#include "../include/gk-rb.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
