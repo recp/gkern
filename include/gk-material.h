@@ -11,7 +11,8 @@
 struct GkModelInst;
 
 typedef enum GkMaterialType {
-  GK_MATERIAL_PHONG
+  GK_MATERIAL_PHONG = 1,
+  GK_MATERIAL_BLINN = 2
 } GkMaterialType;
 
 typedef struct GkColorOrTex {
@@ -38,6 +39,8 @@ typedef struct GkPhong {
   float         transparency;
   float         indexOfRefraction;
 } GkPhong;
+
+typedef GkPhong GkBlinn;
 
 typedef struct GkMaterial {
   GkTechnique   *technique;

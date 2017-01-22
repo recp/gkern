@@ -37,7 +37,8 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
   strcpy(buf, "material.");
 
   technique = material->technique;
-  if (technique->type == GK_MATERIAL_PHONG) {
+  if (technique->type == GK_MATERIAL_PHONG
+      || technique->type == GK_MATERIAL_BLINN) {
     GkPhong *phong;
     phong  = (GkPhong *)material->technique;
 
