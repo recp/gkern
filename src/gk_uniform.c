@@ -12,15 +12,18 @@ GLint
 gkGetUniformLoc(GLuint prog,
                 char  * __restrict buf,
                 char  * __restrict name) {
-  char *pBuf;
+  char  *pBuf;
+  size_t attrlen;
+  GLint  loc;
 
-  GLint loc;
   if (!buf)
     return glGetUniformLocation(prog, name);
 
   pBuf = strrchr(buf, '.') + 1;
   strcpy(pBuf, name);
 
-  loc = glGetUniformLocation(prog, buf);
+  attrlen = strlen(pBuf);
+  loc     = glGetUniformLocation(prog, buf);
+  memset((buf + strlen(buf)) - attrlen, '\0', attrlen);
   return loc;
 }
