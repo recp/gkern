@@ -39,8 +39,6 @@ gkUniformLight(struct GkScene * __restrict scene,
 
   prog = node->pinfo->prog;
 
-  vec3 amb = {0.5, 0.5, 0.5};
-
   switch (light->type) {
     case GK_LIGHT_TYPE_SPOT: {
       GkSpotLight *spot;
@@ -104,9 +102,6 @@ gkUniformLight(struct GkScene * __restrict scene,
       return;
   }
 
-  loc = gkGetUniformLoc(prog, buf, "ambient");
-  glUniform3fv(loc, 1, amb);
-
   loc = gkGetUniformLoc(prog, buf, "enabled");
   glUniform1i(loc, enabled);
 
@@ -117,7 +112,7 @@ gkUniformLight(struct GkScene * __restrict scene,
   glUniform1i(loc, isLocal);
 
   loc = gkGetUniformLoc(prog, buf, "color");
-  glUniform3fv(loc, 1, light->color.vec);
+  glUniform4fv(loc, 1, light->color.vec);
 
   loc = gkGetUniformLoc(prog, buf, "position");
 
