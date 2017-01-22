@@ -15,10 +15,12 @@ void
 gkUniformMaterial(struct GkScene     * __restrict scene,
                   struct GkModelInst * __restrict modelInst) {
   GkMaterial    *material;
+  GkTechnique   *technique;
   GkFinalMatrix *fmat;
   GkProgInfo    *pinfo;
   char           buf[256];
   GLint          loc;
+  GLuint         locui;
   GLuint         prog;
 
   material = modelInst->material;
@@ -34,7 +36,8 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "material.");
 
-  if (material->technique->type == GK_MATERIAL_PHONG) {
+  technique = material->technique;
+  if (technique->type == GK_MATERIAL_PHONG) {
     GkPhong *phong;
     phong  = (GkPhong *)material->technique;
 
@@ -68,4 +71,10 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
     loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
     glUniform1f(loc, phong->indexOfRefraction);
   }
+
+  locui = glGetSubroutineIndex(prog,
+                               GL_FRAGMENT_SHADER,
+                               technique->subroutine);
+
+  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &locui);
 }
