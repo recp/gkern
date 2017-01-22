@@ -103,7 +103,7 @@ typedef struct GkModel {
 typedef struct GkModelInst {
   GkModel            *model;
   GkMatrix           *matrix;
-  GkMaterial        **material; /* instances may use different materials */
+  GkMaterial        *material; /* instances may use different materials */
   struct GkModelInst *next;
   uint64_t            flags;
   char                data[];   /* private field */
