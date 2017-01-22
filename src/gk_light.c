@@ -17,6 +17,7 @@ gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light) {
   GkNode        *node;
   GkFinalMatrix *fmat;
+  vec4  amb;
   char  buf[256];
   GLint loc;
   GLint prog;
@@ -38,6 +39,9 @@ gkUniformLight(struct GkScene * __restrict scene,
   sprintf(buf + strlen("lights"), "[%d].", index);
 
   prog = node->pinfo->prog;
+
+  /* TODO: default ambient of light source */
+  glm_vec4_dup((vec4){0.0, 0.0, 0.0, 1.0}, amb);
 
   switch (light->type) {
     case GK_LIGHT_TYPE_SPOT: {
@@ -101,6 +105,9 @@ gkUniformLight(struct GkScene * __restrict scene,
       printf("TODO: custom lights currently are unsupported\n");
       return;
   }
+
+  loc = gkGetUniformLoc(prog, buf, "ambient");
+  glUniform4fv(loc, 1, amb);
 
   loc = gkGetUniformLoc(prog, buf, "enabled");
   glUniform1i(loc, enabled);
