@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "gk_uniform.h"
+#include "default/gk_def_effect.h"
 
 void
 gkUniformMaterial(struct GkScene     * __restrict scene,
@@ -26,8 +27,10 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
   material = modelInst->material;
   if (!material)
     material = modelInst->model->material;
+
+  /* apply default material */
   if (!material)
-    return;
+    material = gk_def_material();
 
   pinfo = modelInst->model->pinfo;
   fmat  = modelInst->matrix->fmat;
