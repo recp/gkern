@@ -57,12 +57,8 @@ typedef struct GkLambert {
 typedef struct GkConstant {
   GkTechnique   base;
   GkColorOrTex  emission;
-  GkColorOrTex  ambient;
-  GkColorOrTex  diffuse;
-  GkColorOrTex  specular;
   GkColorOrTex  reflective;
   GkColorOrTex  transparent;
-  float         shininess;
   float         reflectivity;
   float         transparency;
   float         indexOfRefraction;

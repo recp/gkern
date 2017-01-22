@@ -98,7 +98,29 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
 
     loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
     glUniform1f(loc, lambert->indexOfRefraction);
+  } else if (technique->type == GK_MATERIAL_CONSTANT) {
+    GkConstant *constant;
+    constant  = (GkConstant *)material->technique;
+
+    loc = gkGetUniformLoc(prog, buf, "emission.color");
+    glUniform4fv(loc, 1, constant->emission.color.vec);
+
+    loc = gkGetUniformLoc(prog, buf, "reflective.color");
+    glUniform4fv(loc, 1, constant->reflective.color.vec);
+
+    loc = gkGetUniformLoc(prog, buf, "transparent.color");
+    glUniform4fv(loc, 1, constant->transparent.color.vec);
+
+    loc = gkGetUniformLoc(prog, buf, "reflectivity");
+    glUniform1f(loc, constant->reflectivity);
+
+    loc = gkGetUniformLoc(prog, buf, "transparency");
+    glUniform1f(loc, constant->transparency);
+
+    loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
+    glUniform1f(loc, constant->indexOfRefraction);
   }
+
 
   locui = glGetSubroutineIndex(prog,
                                GL_FRAGMENT_SHADER,
