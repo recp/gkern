@@ -18,14 +18,15 @@ typedef struct GkColorOrTex {
   GkColor color;
 } GkColorOrTex;
 
-typedef struct GkMatrialBase {
-  GkMaterialType       type;
-  uint32_t             index;
-  struct GkMatrialBase *next;
-} GkMatrialBase;
+typedef struct GkTechnique {
+  GkMaterialType      type;
+  uint32_t            index; /* subroutine index */
+  char               *subroutine;
+  struct GkTechnique *next;
+} GkTechnique;
 
 typedef struct GkPhong {
-  GkMatrialBase base;
+  GkTechnique   base;
   GkColorOrTex  emission;
   GkColorOrTex  ambient;
   GkColorOrTex  diffuse;
@@ -39,7 +40,7 @@ typedef struct GkPhong {
 } GkPhong;
 
 typedef struct GkMaterial {
-  GkMatrialBase *technique;
+  GkTechnique   *technique;
   uint8_t        isvalid;
   uint8_t        enabled;
 } GkMaterial;
