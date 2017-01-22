@@ -6,6 +6,7 @@
  */
 
 #include "../../../include/gk.h"
+#include "../../../include/gk-material.h"
 
 GK_INLINE
 void
@@ -67,6 +68,7 @@ gkRenderModel(GkScene     *scene,
     model->pinfo = prog = pprog;
 
   gkUniformMatrix(modelInst);
+  gkUniformMaterial(scene, modelInst);
 
   /* pre events */
   if (model->events && model->events->onDraw)

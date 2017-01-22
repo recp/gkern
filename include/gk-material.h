@@ -8,6 +8,8 @@
 #ifndef gk_material_h
 #define gk_material_h
 
+struct GkModelInst;
+
 typedef enum GkMaterialType {
   GK_MATERIAL_PHONG
 } GkMaterialType;
@@ -41,5 +43,9 @@ typedef struct GkMaterial {
   uint8_t        isvalid;
   uint8_t        enabled;
 } GkMaterial;
+
+void
+gkUniformMaterial(struct GkScene    * __restrict scene,
+                  struct GkModelInst * __restrict modelInst);
 
 #endif /* gk_material_h */
