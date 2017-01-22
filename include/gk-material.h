@@ -11,8 +11,10 @@
 struct GkModelInst;
 
 typedef enum GkMaterialType {
-  GK_MATERIAL_PHONG = 1,
-  GK_MATERIAL_BLINN = 2
+  GK_MATERIAL_PHONG    = 1,
+  GK_MATERIAL_BLINN    = 2,
+  GK_MATERIAL_LAMBERT  = 3,
+  GK_MATERIAL_CONSTANT = 4
 } GkMaterialType;
 
 typedef struct GkColorOrTex {
@@ -39,6 +41,32 @@ typedef struct GkPhong {
   float         transparency;
   float         indexOfRefraction;
 } GkPhong;
+
+typedef struct GkLambert {
+  GkTechnique   base;
+  GkColorOrTex  emission;
+  GkColorOrTex  ambient;
+  GkColorOrTex  diffuse;
+  GkColorOrTex  reflective;
+  GkColorOrTex  transparent;
+  float         reflectivity;
+  float         transparency;
+  float         indexOfRefraction;
+} GkLambert;
+
+typedef struct GkConstant {
+  GkTechnique   base;
+  GkColorOrTex  emission;
+  GkColorOrTex  ambient;
+  GkColorOrTex  diffuse;
+  GkColorOrTex  specular;
+  GkColorOrTex  reflective;
+  GkColorOrTex  transparent;
+  float         shininess;
+  float         reflectivity;
+  float         transparency;
+  float         indexOfRefraction;
+} GkConstant;
 
 typedef GkPhong GkBlinn;
 

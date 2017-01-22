@@ -71,6 +71,33 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
 
     loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
     glUniform1f(loc, phong->indexOfRefraction);
+  } else if (technique->type == GK_MATERIAL_LAMBERT) {
+    GkLambert *lambert;
+    lambert  = (GkLambert *)material->technique;
+
+    loc = gkGetUniformLoc(prog, buf, "ambient.color");
+    glUniform4fv(loc, 1, lambert->ambient.color.vec);
+
+    loc = gkGetUniformLoc(prog, buf, "diffuse.color");
+    glUniform4fv(loc, 1, lambert->diffuse.color.vec);
+
+    loc = gkGetUniformLoc(prog, buf, "emission.color");
+    glUniform4fv(loc, 1, lambert->emission.color.vec);
+
+    loc = gkGetUniformLoc(prog, buf, "reflective.color");
+    glUniform4fv(loc, 1, lambert->reflective.color.vec);
+
+    loc = gkGetUniformLoc(prog, buf, "transparent.color");
+    glUniform4fv(loc, 1, lambert->transparent.color.vec);
+
+    loc = gkGetUniformLoc(prog, buf, "reflectivity");
+    glUniform1f(loc, lambert->reflectivity);
+
+    loc = gkGetUniformLoc(prog, buf, "transparency");
+    glUniform1f(loc, lambert->transparency);
+
+    loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
+    glUniform1f(loc, lambert->indexOfRefraction);
   }
 
   locui = glGetSubroutineIndex(prog,
