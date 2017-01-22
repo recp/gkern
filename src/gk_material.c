@@ -39,22 +39,22 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
     phong  = (GkPhong *)material->technique;
 
     loc = gkGetUniformLoc(prog, buf, "ambient.color");
-    glUniform3fv(loc, 1, phong->ambient.color.vec);
+    glUniform4fv(loc, 1, phong->ambient.color.vec);
 
     loc = gkGetUniformLoc(prog, buf, "diffuse.color");
-    glUniform3fv(loc, 1, phong->diffuse.color.vec);
+    glUniform4fv(loc, 1, phong->diffuse.color.vec);
 
     loc = gkGetUniformLoc(prog, buf, "specular.color");
-    glUniform3fv(loc, 1, phong->specular.color.vec);
+    glUniform4fv(loc, 1, phong->specular.color.vec);
 
     loc = gkGetUniformLoc(prog, buf, "emission.color");
-    glUniform3fv(loc, 1, phong->emission.color.vec);
+    glUniform4fv(loc, 1, phong->emission.color.vec);
 
     loc = gkGetUniformLoc(prog, buf, "reflective.color");
-    glUniform3fv(loc, 1, phong->reflective.color.vec);
+    glUniform4fv(loc, 1, phong->reflective.color.vec);
 
     loc = gkGetUniformLoc(prog, buf, "transparent.color");
-    glUniform3fv(loc, 1, phong->transparent.color.vec);
+    glUniform4fv(loc, 1, phong->transparent.color.vec);
 
     loc = gkGetUniformLoc(prog, buf, "shininess");
     glUniform1f(loc, phong->shininess);
@@ -62,7 +62,7 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
     loc = gkGetUniformLoc(prog, buf, "reflectivity");
     glUniform1f(loc, phong->reflectivity);
 
-    loc = gkGetUniformLoc(prog, buf, "transparent");
+    loc = gkGetUniformLoc(prog, buf, "transparency");
     glUniform1f(loc, phong->transparency);
 
     loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
