@@ -30,6 +30,7 @@ typedef union GkColor {
 #include "gk-program.h"
 #include "gk-light.h"
 #include "gk-material.h"
+#include "gk-bbox.h"
 #include "gk-geom-types.h"
 
 #include <stdlib.h>
@@ -59,6 +60,7 @@ typedef struct GkScene {
   GkNode     *rootNode;
   GkProgInfo *pinfo;
   GkLightRef *lights;
+  GkBBox     *bbox;
   uint32_t    lightCount;
   uint32_t    lastLightIndex;
   uint8_t     pvIsValid;
