@@ -61,6 +61,7 @@ typedef struct GkScene {
   GkProgInfo *pinfo;
   GkLightRef *lights;
   GkBBox     *bbox;
+  GkRect      vrect;
   uint32_t    lightCount;
   uint32_t    lastLightIndex;
   uint8_t     pvIsValid;
