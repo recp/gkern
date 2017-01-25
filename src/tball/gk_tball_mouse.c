@@ -42,7 +42,8 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
       break;
     case GK_MOUSE_MOVE:
       if (tball->moving == true) {
-        vec3   from, to, axis;
+        vec4   axis;
+        vec3   from, to;
         versor q;
         float  angle;
 
@@ -52,6 +53,8 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
 
         angle = acosf(glm_vec_dot(from, to));
 
+        axis[3] = 0;
+        glm_mat4_mulv(scene->vinv, axis, axis);
         glm_quatv(q, angle, axis);
         glm_quat_normalize(q);
         glm_quat_mat4(q, tball->trans);

@@ -55,6 +55,7 @@ typedef struct GkNode {
 
 typedef struct GkScene {
   mat4        v;
+  mat4        vinv;
   mat4        pv;
   GkMatrix   *trans; /* free camera */
   GkNode     *rootNode;
