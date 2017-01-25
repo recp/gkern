@@ -51,11 +51,11 @@ gkUniformLight(struct GkScene * __restrict scene,
       spot = (GkSpotLight *)light;
       isLocal = isSpot  = 1;
 
-      loc = gkGetUniformLoc(prog, buf, "falloffCos");
-      glUniform1f(loc, spot->falloffCosine);
+      loc = gkGetUniformLoc(prog, buf, "cutoffCos");
+      glUniform1f(loc, spot->cutoffCosine);
 
-      loc = gkGetUniformLoc(prog, buf, "falloffExp");
-      glUniform1f(loc, spot->falloffExp);
+      loc = gkGetUniformLoc(prog, buf, "cutoffExp");
+      glUniform1f(loc, spot->cutoffExp);
 
       loc = gkGetUniformLoc(prog, buf, "constAttn");
       glUniform1f(loc, spot->constAttn);
