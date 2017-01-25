@@ -30,6 +30,7 @@ typedef union GkColor {
 #include "gk-program.h"
 #include "gk-light.h"
 #include "gk-material.h"
+#include "gk-geom-types.h"
 
 #include <stdlib.h>
 #include <cglm.h>
@@ -54,6 +55,7 @@ typedef struct GkNode {
 typedef struct GkScene {
   mat4        v;
   mat4        pv;
+  GkMatrix   *trans; /* free camera */
   GkNode     *rootNode;
   GkProgInfo *pinfo;
   GkLightRef *lights;

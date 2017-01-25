@@ -6,25 +6,25 @@
  */
 
 #include "../../../include/gk.h"
-
-static GkMatrix idmat = {
-  1,
-  1,
-  NULL,
-  GLM_MAT4_IDENTITY_INIT,
-  GLM_MAT4_IDENTITY_INIT
-};
+#include "../../default/gk_transform.h"
 
 void
 gkRenderScene(GkScene * scene) {
+  GkMatrix *trans;
+
 #ifdef DEBUG
   assert(scene->pinfo || "set default program / shader params");
 #endif
 
+  if (scene->trans)
+    trans = scene->trans;
+  else
+    trans = gk_def_idmat();
+
   if (!scene->lightsAreValid) {
     gkPrepNode(scene,
                scene->rootNode,
-               &idmat,
+               trans,
                scene->pinfo);
 
     gkUniformLights(scene);
@@ -32,9 +32,10 @@ gkRenderScene(GkScene * scene) {
 
   gkRenderNode(scene,
                scene->rootNode,
-               &idmat,
+               trans,
                scene->pinfo);
 
-  scene->pvIsValid = 1;
-  scene->vIsValid  = 1;
+  trans->cmatIsValid = 1;
+  scene->pvIsValid   = 1;
+  scene->vIsValid    = 1;
 }
