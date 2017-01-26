@@ -50,6 +50,6 @@ gk_tball_init(GkTrackball * __restrict tball,
               GkBBox      * __restrict bbox);
 
 void
-gkTrackballFree(GkTrackball *tball);
+gk_tball_free(GkTrackball *tball);
 
 #endif /* gk_trackball_h */

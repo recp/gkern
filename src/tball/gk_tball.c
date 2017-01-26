@@ -53,7 +53,7 @@ gk_tball_init(GkTrackball * __restrict tball,
 }
 
 void
-gkTrackballFree(GkTrackball *tball) {
+gk_tball_free(GkTrackball *tball) {
   free(tball);
 }
 
