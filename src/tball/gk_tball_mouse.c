@@ -39,6 +39,9 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
     case GK_MOUSE_DOWN:
       tball->start  = event->point;
       tball->moving = true;
+
+      if (tball->cb)
+        tball->cb(tball, GK_TRACKBALL_EVENT_BEGIN);
       break;
     case GK_MOUSE_MOVE:
       if (tball->moving == true) {
@@ -68,6 +71,9 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
                    scene->trans->matrix,
                    scene->trans->matrix);
       scene->trans->cmatIsValid = 0;
+
+      if (tball->cb)
+        tball->cb(tball, GK_TRACKBALL_EVENT_END);
       break;
     }
   }

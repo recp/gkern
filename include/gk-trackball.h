@@ -15,13 +15,24 @@
 #include <stdbool.h>
 
 struct GkScene;
+struct GkTrackball;
+
+typedef enum GkTrackballEventType {
+  GK_TRACKBALL_EVENT_BEGIN = 0,
+  GK_TRACKBALL_EVENT_END   = 1
+} GkTrackballEventType;
+
+typedef void (*GkTrackballEventCb)(struct GkTrackball *tball,
+                                   GkTrackballEventType event);
 
 typedef struct GkTrackball {
+  void                  *data;
   struct GkScene        *scene;
   GkBBox                *bbox;   /* bounding box which is tball attached to */
   GkMatrix              *matrix; /* attached node's matrix */
   GkMouseEvent           mouse;
   GkMouseEventWithStruct mouse2;
+  GkTrackballEventCb     cb;
   GkPoint                start;
   mat4                   trans;
   bool                   enabled;
