@@ -45,7 +45,7 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
       break;
     case GK_MOUSE_MOVE:
       if (tball->moving == true) {
-        vec4   axis, from, to;
+        vec3   axis, from, to;
         versor q;
         float  angle;
 
