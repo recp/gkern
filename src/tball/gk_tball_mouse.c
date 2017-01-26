@@ -50,7 +50,7 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
         gk_tall_vec(tball, event->point, to);
         glm_vec_cross(from, to, axis);
 
-        angle = acosf(glm_vec_dot(from, to));
+        angle = acosf(glm_vec_dot(from, to)) * tball->velocity;
 
         glm_mat4_mulv3(scene->vinv, axis, axis);
         glm_quatv(q, angle, axis);

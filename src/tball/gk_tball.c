@@ -31,8 +31,9 @@ gk_tball_init(GkTrackball * __restrict tball,
   GkMatrix *trans;
   assert(tball && scene && bbox && "invalid params!");
 
-  tball->scene = scene;
-  tball->bbox  = bbox;
+  tball->scene    = scene;
+  tball->bbox     = bbox;
+  tball->velocity = 2.5f;
 
   trans = scene->trans;
   if (!trans) {
@@ -62,33 +63,26 @@ gk_tall_vec(GkTrackball * __restrict tball,
             vec3    vec) {
   mat4    m;
   GkPoint c;
-  GkRect  vrect;
-  float   x, y, z, r, r2, d;
+  GkRect  vrc;
+  float   d;
 
   glm_mat4_mul(tball->scene->pv,
                tball->matrix->cmat,
                m);
 
-  vrect = tball->scene->vrect;
-  r = tball->bbox->radius;
-  c = gk_project2d(vrect,
-                   m,
-                   tball->bbox->center);
+  /* use unit sphere if needed tball->bbox->radius is available! */
 
-  x = (p.x - c.x) / (vrect.size.w * 0.5f);
-  y = (p.y - c.y) / (vrect.size.h * 0.5f);
+  vrc = tball->scene->vrect;
+  c   = gk_project2d(vrc, m, tball->bbox->center);
 
-  r2 = r * r;
-  d = x * x + y * y;
+  vec[0] = (p.x - c.x) / vrc.size.w;
+  vec[1] = (p.y - c.y) / vrc.size.h;
+  d      = vec[0] * vec[0] + vec[1] * vec[1];
 
-  if (d <= r2 * 0.5f)
-    z = sqrtf(r2 - d);
+  if (d <= 0.5f)
+    vec[2] = sqrtf(1.0f - d);
   else
-    z = r2 * 0.5f / sqrtf(d);
-
-  vec[0] = x;
-  vec[1] = y;
-  vec[2] = z / r;
+    vec[2] = 0.5f / sqrtf(d);
 
   glm_vec_normalize(vec);
 }

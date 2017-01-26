@@ -26,6 +26,7 @@ typedef struct GkTrackball {
   mat4                   trans;
   bool                   enabled;
   bool                   moving;
+  float                  velocity;
 } GkTrackball;
 
 GkTrackball*
