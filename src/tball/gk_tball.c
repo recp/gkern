@@ -64,7 +64,7 @@ gk_tall_vec(GkTrackball * __restrict tball,
   mat4    m;
   GkPoint c;
   GkRect  vrc;
-  float   d;
+  float   x, y, z, d;
 
   glm_mat4_mul(tball->scene->pv,
                tball->matrix->cmat,
@@ -75,14 +75,18 @@ gk_tall_vec(GkTrackball * __restrict tball,
   vrc = tball->scene->vrect;
   c   = gk_project2d(vrc, m, tball->bbox->center);
 
-  vec[0] = (p.x - c.x) / vrc.size.w;
-  vec[1] = (p.y - c.y) / vrc.size.h;
-  d      = vec[0] * vec[0] + vec[1] * vec[1];
+  x = (p.x - c.x) / vrc.size.w;
+  y = (p.y - c.y) / vrc.size.h;
+  d = x * x + y * y;
 
   if (d <= 0.5f)
-    vec[2] = sqrtf(1.0f - d);
+    z = sqrtf(1.0f - d);
   else
-    vec[2] = 0.5f / sqrtf(d);
+    z = 0.5f / sqrtf(d);
+
+  vec[0] = x;
+  vec[1] = y;
+  vec[2] = z;
 
   glm_vec_normalize(vec);
 }
