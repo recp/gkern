@@ -52,7 +52,4 @@ gk_tball_init(GkTrackball * __restrict tball,
 void
 gkTrackballFree(GkTrackball *tball);
 
-void
-gkTrackballReset(GkTrackball *tball);
-
 #endif /* gk_trackball_h */
