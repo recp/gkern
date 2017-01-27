@@ -44,10 +44,10 @@ GkTrackball*
 gk_tball_new();
 
 void
-gk_tball_init(GkTrackball * __restrict tball,
-              GkScene     * __restrict scene,
-              GkNode      * __restrict node,
-              GkBBox      * __restrict bbox);
+gk_tball_attach(GkTrackball * __restrict tball,
+                GkScene     * __restrict scene,
+                GkNode      * __restrict node,
+                GkBBox      * __restrict bbox);
 
 void
 gk_tball_free(GkTrackball *tball);
