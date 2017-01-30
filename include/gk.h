@@ -32,6 +32,7 @@ typedef union GkColor {
 #include "gk-material.h"
 #include "gk-bbox.h"
 #include "gk-geom-types.h"
+#include "gk-image.h"
 
 #include <stdlib.h>
 #include <cglm.h>
