@@ -9,9 +9,6 @@
 #include "gk_uniform.h"
 #include <string.h>
 
-/* default light direction */
-static vec3 gkDefaultDir = {0, 0, -1};
-
 void
 gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light) {
@@ -67,8 +64,8 @@ gkUniformLight(struct GkScene * __restrict scene,
       glUniform1f(loc, spot->quadAttn);
 
       /* cone direction */
-      glm_vec_rotate_m4(node->matrix->cmat,
-                        gkDefaultDir,
+      glm_vec_rotate_m4(fmat->cmv,
+                        spot->direction,
                         dir);
 
       loc = gkGetUniformLoc(prog, buf, "direction");
