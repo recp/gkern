@@ -94,17 +94,14 @@ gkUniformLight(struct GkScene * __restrict scene,
       return;
   }
 
-  loc = gkGetUniformLoc(prog, buf, "ambient");
-  glUniform4fv(loc, 1, amb);
-
   loc = gkGetUniformLoc(prog, buf, "enabled");
   glUniform1i(loc, enabled);
 
-  loc = gkGetUniformLoc(prog, buf, "isSpot");
-  glUniform1i(loc, isSpot);
+  loc = gkGetUniformLoc(prog, buf, "type");
+  glUniform1ui(loc, light->type);
 
-  loc = gkGetUniformLoc(prog, buf, "isLocal");
-  glUniform1i(loc, isLocal);
+  loc = gkGetUniformLoc(prog, buf, "ambient");
+  glUniform4fv(loc, 1, amb);
 
   loc = gkGetUniformLoc(prog, buf, "color");
   glUniform4fv(loc, 1, light->color.vec);
