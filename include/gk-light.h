@@ -32,6 +32,7 @@ typedef struct GkLight {
   GkLightRef       ref;
   struct GkLight  *next;
   struct GkNode   *node;
+  vec3             direction;
   GkLightType      type;
   GkColor          color;
   GLint            index;
@@ -54,7 +55,6 @@ typedef struct GkPointLight {
 
 typedef struct GkSpotLight {
   GkLight base;
-  vec3    direction;
   float   constAttn;
   float   linearAttn;
   float   quadAttn;
