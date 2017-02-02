@@ -8,25 +8,15 @@
 #include "gk_model.h"
 #include "../include/gk-rb.h"
 
-static RBTree *gk_mdltree;
-
 void
-gk_mdl_init() {
-  gk_mdltree = rb_newtree_ptr();
-}
-
-void
-gk_model_add(GkModel * __restrict model,
-             void    * __restrict source) {
-  rb_insert(gk_mdltree, source, model);
+gk_model_add(GkContext * __restrict ctx,
+             GkModel   * __restrict model,
+             void      * __restrict source) {
+  rb_insert(ctx->mdltree, source, model);
 }
 
 GkModel*
-gk_model_find(void * __restrict source) {
-  return rb_find(gk_mdltree, source);
-}
-
-void
-gk_mdl_deinit() {
-  rb_destroy(gk_mdltree);
+gk_model_find(GkContext * __restrict ctx,
+              void      * __restrict source) {
+  return rb_find(ctx->mdltree, source);
 }

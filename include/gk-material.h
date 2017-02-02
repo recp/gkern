@@ -72,6 +72,18 @@ typedef struct GkMaterial {
   uint8_t        enabled;
 } GkMaterial;
 
+GkPhong*
+gkMaterialNewPhong();
+
+GkBlinn*
+gkMaterialNewBlinn();
+
+GkLambert*
+gkMaterialNewLambert();
+
+GkConstant*
+gkMaterialNewConstant();
+
 void
 gkUniformMaterial(struct GkScene    * __restrict scene,
                   struct GkModelInst * __restrict modelInst);

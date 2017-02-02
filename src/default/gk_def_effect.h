@@ -14,4 +14,16 @@
 GkMaterial*
 gk_def_material();
 
+GkPhong*
+gk_def_material_phong();
+
+GkBlinn*
+gk_def_material_blinn();
+
+GkLambert*
+gk_def_material_lambert();
+
+GkConstant*
+gk_def_material_constant();
+
 #endif /* gk_def_effect_h */

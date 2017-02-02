@@ -11,11 +11,11 @@
 void
 GK_CONSTRUCTOR
 gk__init() {
-  gk_mdl_init();
+
 }
 
 void
 GK_DESTRUCTOR
 gk__cleanup() {
-  gk_mdl_deinit();
+
 }

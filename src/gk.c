@@ -7,6 +7,22 @@
 
 #include "../include/gk.h"
 
+GkContext*
+gkContextNew() {
+  GkContext *ctx;
+
+  ctx = malloc(sizeof(*ctx));
+  ctx->mdltree = rb_newtree_ptr();
+  
+  return ctx;
+}
+
+void
+gkContextFree(GkContext *ctx) {
+  rb_destroy(ctx->mdltree);
+  free(ctx);
+}
+
 GkModelInst *
 gkMakeInstance(GkModel *model) {
   GkModelInst *instance, *prevInstance;

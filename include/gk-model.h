@@ -10,6 +10,7 @@
 
 struct GkModel;
 struct GkModelInst;
+struct GkContext;
 
 typedef void (*gkOnDraw)(struct GkModel     * model,
                          struct GkModelInst * instance,
@@ -110,10 +111,12 @@ typedef struct GkModelInst {
 } GkModelInst;
 
 void
-gk_model_add(GkModel * __restrict model,
+gk_model_add(struct GkContext * __restrict ctx,
+             GkModel * __restrict model,
              void    * __restrict source);
 
 GkModel*
-gk_model_find(void * __restrict source);
+gk_model_find(struct GkContext * __restrict ctx,
+              void * __restrict source);
 
 #endif /* gk_model_h */

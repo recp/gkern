@@ -5,12 +5,12 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk.h"
-#include "../include/gk-material.h"
+#include "../../include/gk.h"
+#include "../../include/gk-material.h"
 #include <string.h>
 
-#include "gk_uniform.h"
-#include "default/gk_def_effect.h"
+#include "../gk_uniform.h"
+#include "../default/gk_def_effect.h"
 
 void
 gkUniformMaterial(struct GkScene     * __restrict scene,

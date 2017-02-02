@@ -42,6 +42,11 @@ typedef union GkColor {
 #define GK_COMPLEX       (1 << 2)
 
 #include "gk-model.h"
+#include "gk-rb.h"
+
+typedef struct GkContext {
+  RBTree *mdltree;
+} GkContext;
 
 typedef struct GkNode {
   GkNodeFlags    flags;
@@ -71,6 +76,12 @@ typedef struct GkScene {
   uint8_t     lightsAreValid;
   GLenum      usage;
 } GkScene;
+
+GkContext*
+gkContextNew();
+
+void
+gkContextFree(GkContext *ctx);
 
 GkModelInst *
 gkMakeInstance(GkModel *model);
