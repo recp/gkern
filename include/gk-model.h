@@ -46,16 +46,6 @@ typedef struct GkMatrix {
   mat4           cmat;  /* cached matrix multiplied with parent */
 } GkMatrix;
 
-/* cache program infos, some nodes may use different program and shaders */
-typedef struct GkProgInfo {
-  uint32_t refc;  /* reference count        */
-  GLint    prog;  /* program                */
-  GLint    mvpi;  /* matrix loc             */
-  GLint    mvi;   /* matrix loc             */
-  GLint    nmi;   /* normal matrix loc      */
-  GLint    nmui;  /* use normal matrix loc  */
-} GkProgInfo;
-
 typedef struct GkGLEvents {
   gkOnDraw  onDraw;
   gkOnClick onClick;
