@@ -9,7 +9,7 @@ Currently this library only renders using OpenGL, but in the future other apis l
 - Utils for loading shaders
 - Default shaders/materials and default program
   - You don't have to write shaders (vertex, fragment) but you can if you want
-- Transforms caching
+- Caching transforms
   - cache world transforms (Model Matrix) in nodes
   - cache ViewModel matrix
   - cache ProjectViewModel matrix
