@@ -35,3 +35,4 @@ MIT. check the LICENSE file
 # Notes
 - This library is still unshaped, wait this until AssetKit finished. 
 - After finished this AssetKit and library, I'll publish documentation and update README.
+- Also check [simple-collada-viewer](https://github.com/recp/simple-collada-viewer) repo to see an example to how to use this
