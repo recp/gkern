@@ -74,6 +74,13 @@ gkRenderModel(GkScene     *scene,
   if (model->events && model->events->onDraw)
     model->events->onDraw(model, NULL, false);
 
+  /* TODO: multi thread ? */
+  /* each node, model may use different program/shaders */
+  if (scene->currentProgram != model->pinfo->prog) {
+    glUseProgram(model->pinfo->prog);
+    model->pinfo->prog = scene->currentProgram;
+  }
+
   /* render */
   primi = model->prim;
   while (primi) {

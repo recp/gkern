@@ -75,6 +75,7 @@ typedef struct GkScene {
   uint8_t     vIsValid;
   uint8_t     lightsAreValid;
   GLenum      usage;
+  GLuint      currentProgram;
 } GkScene;
 
 GkContext*
