@@ -9,19 +9,22 @@ Currently this library only renders using OpenGL, but in the future other apis l
 - Utils for loading shaders
 - Default shaders/materials and default program
   - You don't have to write shaders (vertex, fragment) but you can if you want
-- Cache transforms 
+- Transforms caching
   - cache world transforms (Model Matrix) in nodes
   - cache ViewModel matrix
   - cache ProjectViewModel matrix
+  - optimize space requirements
 - If model matrix doesn't have uniform scale then you must provide `Normal Matrix`, you don't have to do that with `libgk` , libgk checks this situation and sends NormalMatrix to shader if necessary and a boolean about this. This way will improve performance by avoid extra calc (inverse, mul) and copy ops.
 - Render scene, node, model
 - Common materials
   - Send all materials to shaders (uniform material)
 - Lights, Multiple lights
   - Send all lights to shaders (uniform light)
+- Each node, model may use different program/shaders, child nodes can override parent shaders
 - Built-in trackball
 
 # Todo
+- [ ] Multithread rendering
 - [ ] Don't render models which are outside of view frustum using bounding box
 - [ ] Textures
 - [ ] ... 
