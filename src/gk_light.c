@@ -18,7 +18,7 @@ gkUniformLight(struct GkScene * __restrict scene,
   char  buf[256];
   GLint loc;
   GLint prog;
-  GLint enabled, isLocal, isSpot;
+  GLint enabled;
   GLint index;
 
   if (light->index == -1) {
@@ -45,7 +45,6 @@ gkUniformLight(struct GkScene * __restrict scene,
       GkSpotLight *spot;
 
       spot = (GkSpotLight *)light;
-      isLocal = isSpot  = 1;
 
       loc = gkGetUniformLoc(prog, buf, "cutoffCos");
       glUniform1f(loc, spot->cutoffCosine);
@@ -68,8 +67,6 @@ gkUniformLight(struct GkScene * __restrict scene,
       GkPointLight *point;
 
       point = (GkPointLight *)light;
-      isLocal = 1;
-      isSpot  = 0;
 
       loc = gkGetUniformLoc(prog, buf, "constAttn");
       glUniform1f(loc, point->constAttn);
@@ -81,14 +78,9 @@ gkUniformLight(struct GkScene * __restrict scene,
       glUniform1f(loc, point->quadAttn);
       break;
     }
-    case GK_LIGHT_TYPE_DIRECTIONAL: {
-      isLocal = isSpot = 0;
+    case GK_LIGHT_TYPE_DIRECTIONAL:
+    case GK_LIGHT_TYPE_AMBIENT:
       break;
-    }
-    case GK_LIGHT_TYPE_AMBIENT: {
-      isLocal = isSpot = 0;
-      break;
-    }
     default:
       printf("TODO: custom lights currently are unsupported\n");
       return;

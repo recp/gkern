@@ -17,7 +17,6 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
                   struct GkModelInst * __restrict modelInst) {
   GkMaterial    *material;
   GkTechnique   *technique;
-  GkFinalMatrix *fmat;
   GkProgInfo    *pinfo;
   char           buf[256];
   GLint          loc;
@@ -33,7 +32,6 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
     material = gk_def_material();
 
   pinfo = modelInst->model->pinfo;
-  fmat  = modelInst->matrix->fmat;
   prog  = pinfo->prog;
 
   /* TODO: read uniform structure/names from options */

@@ -13,12 +13,10 @@ void
 gkImageLoad(GkImage * __restrict image,
             void    * __restrict data) {
   GkImageMip *mip;
-  int         lvl;
 
   if (!image->index)
     glGenTextures(1, &image->index);
 
-  lvl = 0;
   mip = &image->mips;
 
   glBindTexture(image->target, image->index);
