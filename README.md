@@ -27,6 +27,7 @@ Currently this library only renders using OpenGL, but in the future other apis l
 - [ ] Multithread rendering
 - [ ] Don't render models which are outside of view frustum using bounding box
 - [ ] Textures
+- [ ] Instanced Rendering
 - [ ] ... 
 
 # Build 
