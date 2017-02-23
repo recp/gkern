@@ -38,7 +38,7 @@ gkUniformLight(struct GkScene * __restrict scene,
   prog = node->pinfo->prog;
 
   /* TODO: default ambient of light source */
-  glm_vec4_dup((vec4){0.0, 0.0, 0.0, 1.0}, amb);
+  glm_vec4_copy((vec4){0.0, 0.0, 0.0, 1.0}, amb);
 
   switch (light->type) {
     case GK_LIGHT_TYPE_SPOT: {

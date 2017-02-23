@@ -41,8 +41,8 @@ gk_tball_attach(GkTrackball * __restrict tball,
     trans->refc        = 1;
     trans->cmatIsValid = 0;
 
-    glm_mat4_dup(GLM_MAT4_IDENTITY, trans->matrix);
-    glm_mat4_dup(GLM_MAT4_IDENTITY, trans->cmat);
+    glm_mat4_copy(GLM_MAT4_IDENTITY, trans->matrix);
+    glm_mat4_copy(GLM_MAT4_IDENTITY, trans->cmat);
     scene->trans = trans;
   }
 

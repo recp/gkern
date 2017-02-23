@@ -14,7 +14,7 @@ gk_project2d(GkRect rect, mat4 mvp, vec3 v) {
   vec4    pos4;
   GkPoint p;
 
-  glm_vec_dup(v, pos4);
+  glm_vec_copy(v, pos4);
   pos4[3] = 1.0f;
 
   glm_mat4_mulv(mvp, pos4, pos4);
