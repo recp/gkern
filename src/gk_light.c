@@ -7,6 +7,8 @@
 
 #include "../include/gk.h"
 #include "gk_uniform.h"
+#include "default/ak_def_light.h"
+#include "gk_matrix.h"
 #include <string.h>
 
 void
@@ -122,6 +124,18 @@ gkUniformLights(struct GkScene * __restrict scene) {
   GkLight *light;
 
   light = (GkLight *)scene->lights;
+  if (!light) {
+    if (!scene->rootNode || !scene->rootNode->matrix)
+      return;
+
+    light = gk_def_lights();
+    light->isvalid = false;
+    light->node    = scene->rootNode;
+
+    scene->lightCount = 1;
+    gkCalcFinalMat(scene, scene->rootNode->matrix);
+  }
+
   while (light) {
     if (!light->isvalid)
       gkUniformLight(scene, light);
