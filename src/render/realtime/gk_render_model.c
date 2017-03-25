@@ -7,29 +7,7 @@
 
 #include "../../../include/gk.h"
 #include "../../../include/gk-material.h"
-
-GK_INLINE
-void
-gkCalcFinalMat(GkScene  * __restrict scene,
-               GkMatrix * __restrict mat) {
-  GkFinalMatrix *fmat;
-  fmat = mat->fmat;
-  if (!mat->fmat) {
-    fmat       = malloc(sizeof(*mat->fmat));
-    fmat->refc = 1;
-    mat->fmat  = fmat;
-  }
-
-  glm_mat4_mul(scene->pv, mat->cmat, fmat->cmvp);
-  glm_mat4_mul(scene->v,  mat->cmat, fmat->cmv);
-
-  fmat->usenm = !glm_uniscaled(mat->cmat);
-
-  if (fmat->usenm) {
-    glm_mat4_inv(fmat->cmv, fmat->cnmat);
-    glm_mat4_transpose(fmat->cnmat);
-  }
-}
+#include "../../gk_matrix.h"
 
 void
 gkRenderModel(GkScene     *scene,

@@ -6,21 +6,7 @@
  */
 
 #include "../../../include/gk.h"
-
-GK_INLINE
-void
-gkCalcViewMat(GkScene  * __restrict scene,
-              GkMatrix * __restrict mat) {
-  GkFinalMatrix *fmat;
-  fmat = mat->fmat;
-  if (!mat->fmat) {
-    fmat       = malloc(sizeof(*mat->fmat));
-    fmat->refc = 1;
-    mat->fmat  = fmat;
-  }
-
-  glm_mat4_mul(scene->v, mat->cmat, fmat->cmv);
-}
+#include "../../gk_matrix.h"
 
 void
 gkRenderNode(GkScene    *scene,
