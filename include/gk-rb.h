@@ -45,8 +45,11 @@ rb_insert(RBTree *tree,
 void
 rb_remove(RBTree *tree, void *key);
 
-void *
+void*
 rb_find(RBTree *tree, void *key);
+
+RBNode*
+rb_find_node(RBTree *tree, void *key);
 
 int
 rb_parent(RBTree *tree,
