@@ -94,7 +94,7 @@ rb_newtree(RBCmpFn cmp, RBPrintFn print) {
   RBTree *tree;
   RBNode *rootNode, *nullNode;
 
-  tree     = calloc(sizeof(*tree));
+  tree     = calloc(sizeof(*tree), 1);
   rootNode = calloc(sizeof(*rootNode), 1);
   nullNode = calloc(sizeof(*rootNode), 1);
 
