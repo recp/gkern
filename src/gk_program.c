@@ -83,10 +83,10 @@ gkDefaultProgram() {
   glDeleteShader(vert);
   glDeleteShader(frag);
 
-  pinfo->mvpi = glGetUniformLocation(program, "MVP");;
-  pinfo->mvi  = glGetUniformLocation(program, "MV");;
-  pinfo->nmi  = glGetUniformLocation(program, "NM");;
-  pinfo->nmui = glGetUniformLocation(program, "NMU");;
+  pinfo->mvpi = glGetUniformLocation(program, "MVP");
+  pinfo->mvi  = glGetUniformLocation(program, "MV");
+  pinfo->nmi  = glGetUniformLocation(program, "NM");
+  pinfo->nmui = glGetUniformLocation(program, "NMU");
   pinfo->prog = program;
   pinfo->refc = 1;
 
