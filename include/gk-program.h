@@ -32,6 +32,13 @@ gkProgramLogInfo(GLuint progId,
 bool
 gkProgramIsValid(GLuint progId);
 
+GkProgInfo*
+gkNewProgram(GLuint vertShader,
+             GLuint fragShader,
+             GLint  modelViewProjection,
+             GLint  modelView,
+             GLint  normalMatrix,
+             GLint  useNormalMatrix);
 
 GkProgInfo*
 gkDefaultProgram();

@@ -53,6 +53,45 @@ gkProgramIsValid(GLuint progId) {
 }
 
 GkProgInfo*
+gkNewProgram(GLuint vertShader,
+             GLuint fragShader,
+             GLint  modelViewProjection,
+             GLint  modelView,
+             GLint  normalMatrix,
+             GLint  useNormalMatrix) {
+  static GkProgInfo *pinfo = NULL;
+  GLuint program;
+
+  if (pinfo)
+    return pinfo;
+
+  pinfo   = calloc(sizeof(*pinfo), 1);
+  program = glCreateProgram();
+
+  glAttachShader(program, vertShader);
+  glAttachShader(program, fragShader);
+  glLinkProgram(program);
+
+#ifdef DEBUG
+  if (!gkProgramIsValid(program)) {
+    gkProgramLogInfo(program, stderr);
+    exit(-1);
+  }
+#endif
+
+  glUseProgram(program);
+
+  pinfo->mvpi = modelViewProjection;
+  pinfo->mvi  = modelView;
+  pinfo->nmi  = normalMatrix;
+  pinfo->nmui = useNormalMatrix;
+  pinfo->prog = program;
+  pinfo->refc = 1;
+  
+  return pinfo;
+}
+
+GkProgInfo*
 gkDefaultProgram() {
   static GkProgInfo *pinfo = NULL;
   GLuint program;
