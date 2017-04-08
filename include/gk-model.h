@@ -8,6 +8,8 @@
 #ifndef gk_model_h
 #define gk_model_h
 
+#include "gk-common.h"
+
 struct GkModel;
 struct GkModelInst;
 struct GkContext;

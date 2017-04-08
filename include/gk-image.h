@@ -10,6 +10,8 @@
 #ifndef gk_image_h
 #define gk_image_h
 
+#include "gk-common.h"
+
 typedef struct GkImageMip {
   struct GkImageMip *next;
   GLvoid            *data;

@@ -8,6 +8,7 @@
 #ifndef gk_mouse_h
 #define gk_mouse_h
 
+#include "gk-common.h"
 #include "gk-geom-types.h"
 
 typedef enum GkMouseState {

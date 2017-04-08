@@ -8,6 +8,7 @@
 #ifndef gk_trackball_h
 #define gk_trackball_h
 
+#include "gk-common.h"
 #include "gk-geom-types.h"
 #include "gk-mouse.h"
 

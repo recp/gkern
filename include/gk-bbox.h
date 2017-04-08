@@ -8,6 +8,8 @@
 #ifndef gk_bbox_h
 #define gk_bbox_h
 
+#include "gk-common.h"
+
 typedef struct GkBBox {
   float min[3];
   float max[3];

@@ -11,6 +11,7 @@
 extern "C" {
 #endif
 
+#include "gk-common.h"
 #include <OpenGL/gl3.h>
 #include <stdio.h>
 #include <stdbool.h>

@@ -8,6 +8,7 @@
 #ifndef gk_transform_h
 #define gk_transform_h
 
+#include "gk-common.h"
 #include <cglm.h>
 
 GkPoint

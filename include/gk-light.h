@@ -8,6 +8,7 @@
 #ifndef gk_light_h
 #define gk_light_h
 
+#include "gk-common.h"
 #include <cglm.h>
 
 struct GkScene;

@@ -8,6 +8,8 @@
 #ifndef gk_material_h
 #define gk_material_h
 
+#include "gk-common.h"
+
 struct GkModelInst;
 
 typedef enum GkMaterialType {
