@@ -56,7 +56,7 @@ gkRenderModel(GkScene     *scene,
   /* each node, model may use different program/shaders */
   if (scene->currentProgram != model->pinfo->prog) {
     glUseProgram(model->pinfo->prog);
-    model->pinfo->prog = scene->currentProgram;
+    scene->currentProgram = model->pinfo->prog;
   }
 
   /* render */
