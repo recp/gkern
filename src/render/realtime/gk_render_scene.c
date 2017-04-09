@@ -14,7 +14,15 @@ gkRenderScene(GkScene * scene) {
 
 #ifdef DEBUG
   assert(scene->pinfo || "set default program / shader params");
+#else
+  /* there is no program! */
+  return;
 #endif
+
+  if (gkCurrentProgram() != scene->pinfo->prog) {
+    glUseProgram(scene->pinfo->prog);
+    scene->currentProgram = scene->pinfo->prog;
+  }
 
   if (scene->trans)
     trans = scene->trans;
