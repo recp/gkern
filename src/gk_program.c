@@ -53,12 +53,7 @@ gkProgramIsValid(GLuint progId) {
 }
 
 GkProgInfo*
-gkNewProgram(GLuint vertShader,
-             GLuint fragShader,
-             GLint  modelViewProjection,
-             GLint  modelView,
-             GLint  normalMatrix,
-             GLint  useNormalMatrix) {
+gkNewProgram(GkShader *shaders) {
   static GkProgInfo *pinfo = NULL;
   GLuint program;
 
@@ -68,8 +63,7 @@ gkNewProgram(GLuint vertShader,
   pinfo   = calloc(sizeof(*pinfo), 1);
   program = glCreateProgram();
 
-  glAttachShader(program, vertShader);
-  glAttachShader(program, fragShader);
+  gkAttachShaders(program, shaders);
   glLinkProgram(program);
 
 #ifdef DEBUG
@@ -81,24 +75,21 @@ gkNewProgram(GLuint vertShader,
 
   glUseProgram(program);
 
-  pinfo->mvpi = modelViewProjection;
-  pinfo->mvi  = modelView;
-  pinfo->nmi  = normalMatrix;
-  pinfo->nmui = useNormalMatrix;
+  pinfo->mvpi = glGetUniformLocation(program, "MVP");
+  pinfo->mvi  = glGetUniformLocation(program, "MV");
+  pinfo->nmi  = glGetUniformLocation(program, "NM");
+  pinfo->nmui = glGetUniformLocation(program, "NMU");
   pinfo->prog = program;
   pinfo->refc = 1;
-  
+
   return pinfo;
 }
 
 GkProgInfo*
 gkDefaultProgram() {
-  static GkProgInfo *pinfo = NULL;
-  GLuint program;
-  GLuint vert, frag;
-
-  if (pinfo)
-    return pinfo;
+  GkProgInfo *pinfo;
+  GLuint      program;
+  GLuint      vert, frag;
 
   pinfo   = calloc(sizeof(*pinfo), 1);
   program = glCreateProgram();

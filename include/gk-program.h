@@ -13,6 +13,8 @@ extern "C" {
 
 #include "gk-common.h"
 #include "gk-rb.h"
+#include "gk-shader.h"
+
 #include <OpenGL/gl3.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -38,12 +40,7 @@ bool
 gkProgramIsValid(GLuint progId);
 
 GkProgInfo*
-gkNewProgram(GLuint vertShader,
-             GLuint fragShader,
-             GLint  modelViewProjection,
-             GLint  modelView,
-             GLint  normalMatrix,
-             GLint  useNormalMatrix);
+gkNewProgram(GkShader *shaders);
 
 GkProgInfo*
 gkDefaultProgram();
