@@ -78,7 +78,7 @@ gk_vertRemoveAttrib(const char *name) {
   GLint index;
 
   attrib = rb_find(gk_attribIndTree, (void *)name);
-  if (attrib != NULL)
+  if (attrib == NULL)
     return -1;
 
   index = attrib->index;
