@@ -6,7 +6,6 @@
  */
 
 #include "../include/gk-program.h"
-#include "../include/gk-program.h"
 #include "../include/gk-vertex.h"
 #include "../include/gk-rb.h"
 
@@ -17,6 +16,7 @@ extern
 void
 ak_vertFreeAttrib(RBTree *tree, RBNode *node);
 
+static
 void
 ak_progInitVertInf(GkProgInfo * __restrict prog) {
   prog->attribc           = 0;
@@ -24,6 +24,22 @@ ak_progInitVertInf(GkProgInfo * __restrict prog) {
   prog->attribs           = rb_newtree_str();
   prog->attribs->freeFn   = free;
   prog->attribs->freeNode = ak_vertFreeAttrib;
+}
+
+GLint
+gk_progAttribIndex(GkProgInfo * __restrict prog,
+                   const char * __restrict name) {
+  GkVertexAttrib *attrib;
+
+  /* use global */
+  if (!prog->attribs)
+    return gk_vertAttribIndex(name);
+
+  attrib = rb_find(prog->attribs, (void *)name);
+  if (attrib != NULL)
+    return attrib->index;
+
+  return -1;
 }
 
 void

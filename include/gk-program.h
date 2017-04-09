@@ -48,6 +48,10 @@ gkNewProgram(GLuint vertShader,
 GkProgInfo*
 gkDefaultProgram();
 
+GLint
+gk_progAttribIndex(GkProgInfo * __restrict prog,
+                   const char * __restrict name);
+
 void
 gk_progSetAttribs(GkProgInfo * __restrict prog,
                   size_t      count,
