@@ -63,6 +63,9 @@ gk_progRemoveAttrib(GkProgInfo * __restrict prog,
                     const char * __restrict name,
                     bool                    shrink);
 
+GLint
+gkCurrentProgram();
+
 #ifdef __cplusplus
 }
 #endif

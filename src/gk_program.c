@@ -119,3 +119,10 @@ gkDefaultProgram() {
 
   return pinfo;
 }
+
+GLint
+gkCurrentProgram() {
+  GLint prog;
+  glGetIntegerv(GL_CURRENT_PROGRAM, &prog);
+  return prog;
+}
