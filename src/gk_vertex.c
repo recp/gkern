@@ -12,6 +12,13 @@
 static RBTree  *gk_attribIndTree;
 static uint32_t gk_attribIndLast;
 
+static const size_t gk_attribNamesCount = 3;
+static const char *gk_attribNames[] = {
+  "POSITION",
+  "NORMAL",
+  "TEXTURE0"
+};
+
 void
 ak_vertFreeAttrib(RBTree *tree, RBNode *node) {
   GkVertexAttrib *attrib;
@@ -22,6 +29,17 @@ ak_vertFreeAttrib(RBTree *tree, RBNode *node) {
   attrib = node->val;
 
   tree->freeFn((char *)attrib->name);
+  tree->freeFn(attrib);
+}
+
+void
+ak_vertFreeAttribConst(RBTree *tree, RBNode *node) {
+  GkVertexAttrib *attrib;
+
+  if (node == tree->nullNode)
+    return;
+
+  attrib = node->val;
   tree->freeFn(attrib);
 }
 
@@ -87,7 +105,10 @@ gk_verta_init() {
   gk_attribIndLast = 0;
   gk_attribIndTree = rb_newtree_str();
   gk_attribIndTree->freeFn   = free;
-  gk_attribIndTree->freeNode = ak_vertFreeAttrib;
+  gk_attribIndTree->freeNode = ak_vertFreeAttribConst;
+
+  gk_vertSetAttribs(gk_attribNamesCount,
+                    gk_attribNames);
 }
 
 void
