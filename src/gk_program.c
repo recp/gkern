@@ -54,11 +54,8 @@ gkProgramIsValid(GLuint progId) {
 
 GkProgInfo*
 gkNewProgram(GkShader *shaders) {
-  static GkProgInfo *pinfo = NULL;
+  static GkProgInfo *pinfo;
   GLuint program;
-
-  if (pinfo)
-    return pinfo;
 
   pinfo   = calloc(sizeof(*pinfo), 1);
   program = glCreateProgram();
