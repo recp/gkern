@@ -45,7 +45,8 @@ typedef union GkColor {
 #include "gk-rb.h"
 
 typedef struct GkContext {
-  RBTree *mdltree;
+  RBTree     *mdltree;
+  GkProgInfo *pinfo; /* top-level program */
 } GkContext;
 
 typedef struct GkNode {
@@ -79,7 +80,7 @@ typedef struct GkScene {
 } GkScene;
 
 GkContext*
-gkContextNew();
+gkContextNew(GkProgInfo * __restrict pinfo);
 
 void
 gkContextFree(GkContext *ctx);

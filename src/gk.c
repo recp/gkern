@@ -8,12 +8,17 @@
 #include "../include/gk.h"
 
 GkContext*
-gkContextNew() {
+gkContextNew(GkProgInfo * __restrict pinfo) {
   GkContext *ctx;
 
   ctx = malloc(sizeof(*ctx));
   ctx->mdltree = rb_newtree_ptr();
-  
+
+  if (!pinfo)
+    ctx->pinfo = gkDefaultProgram();
+  else
+    ctx->pinfo = pinfo;
+
   return ctx;
 }
 
