@@ -67,10 +67,8 @@ gk_tall_vec(GkTrackball * __restrict tball,
   float   x, y, z, d;
 
   glm_mat4_mul(tball->scene->pv,
-               tball->matrix->cmat,
+               tball->matrix->matrix,
                m);
-
-  /* use unit sphere if needed tball->bbox->radius is available! */
 
   vrc = tball->scene->vrect;
   c   = gk_project2d(vrc, m, tball->bbox->center);
