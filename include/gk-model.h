@@ -9,6 +9,8 @@
 #define gk_model_h
 
 #include "gk-common.h"
+#include "gk-program.h"
+#include "gk-material.h"
 
 struct GkModel;
 struct GkModelInst;

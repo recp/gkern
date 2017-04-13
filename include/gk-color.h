@@ -11,6 +11,8 @@
 extern "C" {
 #endif
 
+#include <cglm.h>
+
 typedef struct GkColorRGBA {
   float R;
   float G;

@@ -37,7 +37,7 @@ typedef struct GkLight {
   vec3             direction;
   GkLightType      type;
   GkColor          color;
-  GLint            index;
+  int32_t          index;
   uint8_t          isvalid;
   uint8_t          enabled;
   uint8_t          readonly;
