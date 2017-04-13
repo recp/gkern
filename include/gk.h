@@ -19,6 +19,9 @@ extern "C" {
 #include "gk-bbox.h"
 #include "gk-geom-types.h"
 #include "gk-image.h"
+#include "gk-model.h"
+#include "gk-rb.h"
+#include "gk-node.h"
 
 #include <stdlib.h>
 #include <cglm.h>
@@ -27,24 +30,10 @@ extern "C" {
 #define GK_DRAW_ARRAYS   (1 << 1)
 #define GK_COMPLEX       (1 << 2)
 
-#include "gk-model.h"
-#include "gk-rb.h"
-
 typedef struct GkContext {
   RBTree     *mdltree;
   GkProgInfo *pinfo; /* top-level program */
 } GkContext;
-
-typedef struct GkNode {
-  GkNodeFlags    flags;
-  GkProgInfo    *pinfo;    /* program info, node may use different shaders */
-  GkMatrix      *matrix;   /* matrix info */
-  GkModelInst   *model;    /* model instance, only instances! */
-  GkLight       *light;    /* TODO: save space if there is no light */
-  struct GkNode *next;
-  struct GkNode *chld;
-  struct GkNode *nodeInst; /* node instance */
-} GkNode;
 
 typedef struct GkScene {
   mat4        v;
@@ -71,7 +60,7 @@ gkContextNew(GkProgInfo * __restrict pinfo);
 void
 gkContextFree(GkContext *ctx);
 
-GkModelInst *
+GkModelInst*
 gkMakeInstance(GkModel *model);
 
 void
