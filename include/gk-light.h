@@ -9,6 +9,7 @@
 #define gk_light_h
 
 #include "gk-common.h"
+#include "gk-color.h"
 #include <cglm.h>
 
 struct GkScene;

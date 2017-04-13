@@ -11,20 +11,6 @@
 extern "C" {
 #endif
 
-#include <cglm.h>
-
-typedef struct GkColorRGBA {
-  float R;
-  float G;
-  float B;
-  float A;
-} GkColorRGBA;
-
-typedef union GkColor {
-  GkColorRGBA rgba;
-  vec4        vec;
-} GkColor;
-
 #include "gk-common.h"
 #include "gk-shader.h"
 #include "gk-program.h"

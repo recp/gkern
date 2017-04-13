@@ -9,6 +9,7 @@
 #define gk_material_h
 
 #include "gk-common.h"
+#include "gk-color.h"
 
 struct GkModelInst;
 
