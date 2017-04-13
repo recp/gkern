@@ -30,6 +30,9 @@ typedef struct GkNode {
   struct GkNode *nodeInst; /* node instance */
 } GkNode;
 
+void
+gkMakeNodeMatrix(GkNode * __restrict node);
+
 #ifdef __cplusplus
 }
 #endif
