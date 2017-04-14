@@ -17,6 +17,7 @@
 
 struct GkScene;
 struct GkTrackball;
+struct GkNode;
 
 typedef enum GkTrackballEventType {
   GK_TRACKBALL_EVENT_BEGIN = 0,
@@ -29,6 +30,7 @@ typedef void (*GkTrackballEventCb)(struct GkTrackball *tball,
 typedef struct GkTrackball {
   void                  *data;
   struct GkScene        *scene;
+  struct GkNode         *node;
   GkBBox                *bbox;   /* bounding box which is tball attached to */
   GkMatrix              *matrix; /* attached node's matrix */
   GkMouseEvent           mouse;

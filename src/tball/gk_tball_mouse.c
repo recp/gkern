@@ -45,7 +45,8 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
       break;
     case GK_MOUSE_MOVE:
       if (tball->moving == true) {
-        vec3   axis, from, to;
+        mat4   rot = GLM_MAT4_IDENTITY_INIT;
+        vec3   axis, from, to, tran;
         versor q;
         float  angle;
 
@@ -58,7 +59,18 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
         glm_mat4_mulv3(scene->vinv, axis, axis);
         glm_quatv(q, angle, axis);
         glm_quat_normalize(q);
+
+        /* rotate around center */
+        glm_vec_sub(tball->bbox->center,
+                    tball->node->matrix->matrix[3],
+                    tran);
+
         glm_quat_mat4(q, tball->trans);
+        glm_translate(rot, tran);
+        glm_mat4_mul(rot, tball->trans, tball->trans);
+
+        glm_vec_flipsign(tran);
+        glm_translate(tball->trans, tran);
 
         glm_mat4_mul(tball->trans,
                      scene->trans->matrix,

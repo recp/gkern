@@ -50,6 +50,8 @@ gk_tball_attach(GkTrackball * __restrict tball,
     tball->matrix = node->matrix;
   else
     tball->matrix = gk_def_idmat();
+
+  tball->node = node;
 }
 
 void
