@@ -91,8 +91,10 @@ gkDefaultProgram() {
   pinfo   = calloc(sizeof(*pinfo), 1);
   program = glCreateProgram();
 
-  vert = gkShaderLoad(GL_VERTEX_SHADER,   gk_def_shader_vert());
-  frag = gkShaderLoad(GL_FRAGMENT_SHADER, gk_def_shader_frag());
+  vert = gkShaderLoad(GL_VERTEX_SHADER,
+                      gk_def_shader_vert(GK_DEF_SHADER_DEFAULT));
+  frag = gkShaderLoad(GL_FRAGMENT_SHADER,
+                      gk_def_shader_frag(GK_DEF_SHADER_DEFAULT));
 
   glAttachShader(program, vert);
   glAttachShader(program, frag);
