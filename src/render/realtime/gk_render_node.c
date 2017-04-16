@@ -37,8 +37,12 @@ gkRenderNode(GkScene    *scene,
     if (!prog)
       node->pinfo = prog = pprog;
 
-    if (node->light)
-      gkCalcViewMat(scene, mat);
+    if (node->light) {
+      if (!mat->fmat || updt){
+        gkCalcViewMat(scene, mat);
+        gkUniformLightPos(node);
+      }
+    }
 
     if (node->model)
       gkRenderModel(scene,

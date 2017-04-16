@@ -72,4 +72,7 @@ void
 gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light);
 
+void
+gkUniformLightPos(struct GkNode * __restrict node);
+
 #endif /* gk_light_h */
