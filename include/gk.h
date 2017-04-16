@@ -23,6 +23,7 @@ extern "C" {
 #include "gk-rb.h"
 #include "gk-node.h"
 #include "gk-transform.h"
+#include "gk-camera.h"
 
 #include <stdlib.h>
 #include <cglm.h>
@@ -37,14 +38,20 @@ typedef struct GkContext {
 } GkContext;
 
 typedef enum GkSceneFlags {
-  GK_SCENE_FLAGS_NONE      = 0,
-  GK_SCENE_FLAGS_DRAW_BBOX = 1 << 0,
+  GK_SCENEF_NONE          = 0,
+  GK_SCENEF_DRAW_BBOX     = 1 << 0,
+  GK_SCENEF_UPDT_VIEW     = 1 << 1,
+  GK_SCENEF_UPDT_VIEWPROJ = 1 << 2,
+  GK_SCENEF_UPDT_LIGHTS   = 1 << 3,
+  GK_SCENEF_INIT          = GK_SCENEF_UPDT_VIEW
+                            | GK_SCENEF_UPDT_VIEWPROJ
+                            | GK_SCENEF_UPDT_LIGHTS,
 } GkSceneFlags;
 
+GK_MAKE_C_ENUM(GkSceneFlags)
+
 typedef struct GkScene {
-  mat4         v;
-  mat4         vinv;
-  mat4         pv;
+  GkCamera    *camera;
   GkMatrix    *trans; /* free camera */
   GkNode      *rootNode;
   GkProgInfo  *pinfo;
@@ -53,9 +60,6 @@ typedef struct GkScene {
   GkRect       vrect;
   uint32_t     lightCount;
   uint32_t     lastLightIndex;
-  uint8_t      pvIsValid;
-  uint8_t      vIsValid;
-  uint8_t      lightsAreValid;
   GLenum       usage;
   GLuint       currentProgram;
   GkSceneFlags flags;

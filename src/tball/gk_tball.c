@@ -68,7 +68,7 @@ gk_tall_vec(GkTrackball * __restrict tball,
   GkRect  vrc;
   float   x, y, z, d;
 
-  glm_mat4_mul(tball->scene->pv,
+  glm_mat4_mul(tball->scene->camera->projView,
                tball->matrix->matrix,
                m);
 

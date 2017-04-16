@@ -30,7 +30,7 @@ gkRenderScene(GkScene * scene) {
   else
     trans = gk_def_idmat();
 
-  if (!scene->lightsAreValid) {
+  if (scene->flags & GK_SCENEF_UPDT_LIGHTS) {
     gkPrepNode(scene,
                scene->rootNode,
                trans,
@@ -45,10 +45,9 @@ gkRenderScene(GkScene * scene) {
                scene->pinfo);
 
   trans->cmatIsValid = 1;
-  scene->pvIsValid   = 1;
-  scene->vIsValid    = 1;
+  scene->flags &= ~(GK_SCENEF_UPDT_VIEWPROJ | GK_SCENEF_UPDT_VIEW);
 
-  if ((scene->flags & GK_SCENE_FLAGS_DRAW_BBOX)
+  if ((scene->flags & GK_SCENEF_DRAW_BBOX)
       && scene->bbox)
     gkDrawBBox(scene,
                scene->rootNode->matrix->cmat,

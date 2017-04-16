@@ -39,7 +39,7 @@ gkRenderModel(GkScene     *scene,
     }
 
     gkCalcFinalMat(scene, mat);
-  } else if(!scene->pvIsValid || scene->vIsValid) {
+  } else if(scene->flags & (GK_SCENEF_UPDT_VIEW | GK_SCENEF_UPDT_VIEWPROJ)) {
     gkCalcFinalMat(scene, mat);
   }
 

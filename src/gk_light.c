@@ -143,6 +143,5 @@ gkUniformLights(struct GkScene * __restrict scene) {
     light = (GkLight *)light->ref.next;
   }
 
-  scene->lightsAreValid = 1;
+  scene->flags &= ~GK_SCENEF_UPDT_LIGHTS;
 }
-
