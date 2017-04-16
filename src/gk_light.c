@@ -163,6 +163,7 @@ gkUniformLights(struct GkScene * __restrict scene) {
     light = gk_def_lights();
     light->isvalid = false;
     light->node    = scene->rootNode;
+    scene->rootNode->light = light;
 
     scene->lightCount = 1;
     gkCalcFinalMat(scene, scene->rootNode->matrix);

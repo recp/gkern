@@ -38,10 +38,8 @@ gkRenderNode(GkScene    *scene,
       node->pinfo = prog = pprog;
 
     if (node->light) {
-      if (!mat->fmat || updt){
+      if (!mat->fmat || updt)
         gkCalcViewMat(scene, mat);
-        gkUniformLightPos(node);
-      }
     }
 
     if (node->model)
@@ -95,8 +93,12 @@ gkPrepNode(GkScene    *scene,
     if (!prog)
       node->pinfo = prog = pprog;
 
-    if (node->light)
+    if (node->light) {
       gkCalcViewMat(scene, mat);
+
+      if (!mat->cmatIsValid)
+        gkUniformLightPos(node);
+    }
 
     if (node->chld)
       gkPrepNode(scene, node->chld, mat, prog);

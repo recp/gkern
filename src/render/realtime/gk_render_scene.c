@@ -30,14 +30,17 @@ gkRenderScene(GkScene * scene) {
   else
     trans = gk_def_idmat();
 
-  if (scene->flags & GK_SCENEF_UPDT_LIGHTS) {
-    gkPrepNode(scene,
-               scene->rootNode,
-               trans,
-               scene->pinfo);
+  /* for collect all lights once 
+     TODO: optimize it
+   */
+  gkPrepNode(scene,
+             scene->rootNode,
+             trans,
+             scene->pinfo);
 
+  /* uniform lights */
+  if (scene->flags & GK_SCENEF_UPDT_LIGHTS)
     gkUniformLights(scene);
-  }
 
   gkRenderNode(scene,
                scene->rootNode,
