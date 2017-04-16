@@ -11,6 +11,7 @@
 #include "gk-common.h"
 #include "gk-color.h"
 
+struct GkScene;
 struct GkModelInst;
 
 typedef enum GkMaterialType {
@@ -88,7 +89,7 @@ GkConstant*
 gkMaterialNewConstant();
 
 void
-gkUniformMaterial(struct GkScene    * __restrict scene,
+gkUniformMaterial(struct GkScene     * __restrict scene,
                   struct GkModelInst * __restrict modelInst);
 
 #endif /* gk_material_h */

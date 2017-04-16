@@ -22,6 +22,7 @@ extern "C" {
 #include "gk-model.h"
 #include "gk-rb.h"
 #include "gk-node.h"
+#include "gk-transform.h"
 
 #include <stdlib.h>
 #include <cglm.h>
