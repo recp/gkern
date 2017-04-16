@@ -11,6 +11,7 @@
 #include "gk-common.h"
 #include "gk-program.h"
 #include "gk-material.h"
+#include "gk-bbox.h"
 
 struct GkModel;
 struct GkModelInst;
@@ -85,12 +86,18 @@ typedef struct GkPrimitive {
   struct GkPrimitive *next;
 } GkPrimitive;
 
+typedef enum GkModelFlags {
+  GK_MODEL_FLAGS_NONE      = 0,
+  GK_MODEL_FLAGS_DRAW_BBOX = 1 << 0,
+} GkModelFlags;
+
 typedef struct GkModel {
   GkPrimitive     *prim;
   GkProgInfo      *pinfo;
   GkMaterial      *material;
   GkGLEvents      *events;
   GkModelInstList *instances; /* TODO: */
+  GkBBox          *bbox;
   uint32_t         flags;
   uint32_t         primc;
 } GkModel;
@@ -98,7 +105,7 @@ typedef struct GkModel {
 typedef struct GkModelInst {
   GkModel            *model;
   GkMatrix           *matrix;
-  GkMaterial        *material; /* instances may use different materials */
+  GkMaterial         *material; /* instances may use different materials */
   struct GkModelInst *next;
   uint64_t            flags;
   char                data[];   /* private field */

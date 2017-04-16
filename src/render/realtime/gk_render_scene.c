@@ -7,6 +7,7 @@
 
 #include "../../../include/gk.h"
 #include "../../default/gk_transform.h"
+#include "../../../include/prims/gk-cube.h"
 
 void
 gkRenderScene(GkScene * scene) {
@@ -46,4 +47,11 @@ gkRenderScene(GkScene * scene) {
   trans->cmatIsValid = 1;
   scene->pvIsValid   = 1;
   scene->vIsValid    = 1;
+
+  if ((scene->flags & GK_SCENE_FLAGS_DRAW_BBOX)
+      && scene->bbox)
+    gkDrawBBox(scene,
+               scene->rootNode->matrix->cmat,
+               scene->bbox->min,
+               scene->bbox->max);
 }

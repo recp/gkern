@@ -69,7 +69,8 @@ gkInitCube() {
 }
 
 void
-gkDrawBBox(GkMatrix * __restrict world,
+gkDrawBBox(GkScene * __restrict scene,
+           mat4 world,
            vec3 min,
            vec3 max) {
   GkProgInfo *cubePinfo;
@@ -90,9 +91,11 @@ gkDrawBBox(GkMatrix * __restrict world,
   glm_vec_sub(max, min, size);
   glm_vec_center(max, min, center);
 
-  glm_scale(tran, size);
   glm_translate(tran, center);
-  glm_mat4_mul(world->fmat->cmvp, tran, tran);
+  glm_scale(tran, size);
+
+  glm_mat4_mul(world, tran, tran);
+  glm_mat4_mul(scene->pv, tran, tran);
 
   gkUniformMat4(cubePinfo->mvpi, tran);
 

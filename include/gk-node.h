@@ -25,6 +25,7 @@ typedef struct GkNode {
   GkMatrix      *matrix;   /* matrix info */
   GkModelInst   *model;    /* model instance, only instances! */
   GkLight       *light;    /* TODO: save space if there is no light */
+  GkBBox        *bbox;
   struct GkNode *next;
   struct GkNode *chld;
   struct GkNode *nodeInst; /* node instance */

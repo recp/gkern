@@ -7,6 +7,7 @@
 
 #include "../../../include/gk.h"
 #include "../../../include/gk-material.h"
+#include "../../../include/prims/gk-cube.h"
 #include "../../gk_matrix.h"
 
 void
@@ -83,4 +84,11 @@ gkRenderModel(GkScene     *scene,
 
   if(updt && mat != pmat)
     mat->cmatIsValid = 1;
+
+  if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX)
+      && model->bbox)
+    gkDrawBBox(scene,
+               mat->cmat,
+               model->bbox->min,
+               model->bbox->max);
 }

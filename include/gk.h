@@ -35,23 +35,29 @@ typedef struct GkContext {
   GkProgInfo *pinfo; /* top-level program */
 } GkContext;
 
+typedef enum GkSceneFlags {
+  GK_SCENE_FLAGS_NONE      = 0,
+  GK_SCENE_FLAGS_DRAW_BBOX = 1 << 0,
+} GkSceneFlags;
+
 typedef struct GkScene {
-  mat4        v;
-  mat4        vinv;
-  mat4        pv;
-  GkMatrix   *trans; /* free camera */
-  GkNode     *rootNode;
-  GkProgInfo *pinfo;
-  GkLightRef *lights;
-  GkBBox     *bbox;
-  GkRect      vrect;
-  uint32_t    lightCount;
-  uint32_t    lastLightIndex;
-  uint8_t     pvIsValid;
-  uint8_t     vIsValid;
-  uint8_t     lightsAreValid;
-  GLenum      usage;
-  GLuint      currentProgram;
+  mat4         v;
+  mat4         vinv;
+  mat4         pv;
+  GkMatrix    *trans; /* free camera */
+  GkNode      *rootNode;
+  GkProgInfo  *pinfo;
+  GkLightRef  *lights;
+  GkBBox      *bbox;
+  GkRect       vrect;
+  uint32_t     lightCount;
+  uint32_t     lastLightIndex;
+  uint8_t      pvIsValid;
+  uint8_t      vIsValid;
+  uint8_t      lightsAreValid;
+  GLenum       usage;
+  GLuint       currentProgram;
+  GkSceneFlags flags;
 } GkScene;
 
 GkContext*
