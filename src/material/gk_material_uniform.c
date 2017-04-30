@@ -11,6 +11,7 @@
 
 #include "../gk_uniform.h"
 #include "../default/gk_def_effect.h"
+#include "gk_colortex_uniform.h"
 
 void
 gkUniformMaterial(struct GkScene     * __restrict scene,
@@ -43,23 +44,12 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
     GkPhong *phong;
     phong  = (GkPhong *)material->technique;
 
-    loc = gkGetUniformLoc(prog, buf, "ambient.color");
-    glUniform4fv(loc, 1, phong->ambient.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "diffuse.color");
-    glUniform4fv(loc, 1, phong->diffuse.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "specular.color");
-    glUniform4fv(loc, 1, phong->specular.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "emission.color");
-    glUniform4fv(loc, 1, phong->emission.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "reflective.color");
-    glUniform4fv(loc, 1, phong->reflective.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "transparent.color");
-    glUniform4fv(loc, 1, phong->transparent.color.vec);
+    gkUniformColorOrTex(&phong->ambient,     buf, "ambient",     prog);
+    gkUniformColorOrTex(&phong->diffuse,     buf, "diffuse",     prog);
+    gkUniformColorOrTex(&phong->specular,    buf, "specular",    prog);
+    gkUniformColorOrTex(&phong->emission,    buf, "emission",    prog);
+    gkUniformColorOrTex(&phong->reflective,  buf, "reflective",  prog);
+    gkUniformColorOrTex(&phong->transparent, buf, "transparent", prog);
 
     loc = gkGetUniformLoc(prog, buf, "shininess");
     glUniform1f(loc, phong->shininess);
@@ -76,20 +66,11 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
     GkLambert *lambert;
     lambert  = (GkLambert *)material->technique;
 
-    loc = gkGetUniformLoc(prog, buf, "ambient.color");
-    glUniform4fv(loc, 1, lambert->ambient.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "diffuse.color");
-    glUniform4fv(loc, 1, lambert->diffuse.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "emission.color");
-    glUniform4fv(loc, 1, lambert->emission.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "reflective.color");
-    glUniform4fv(loc, 1, lambert->reflective.color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "transparent.color");
-    glUniform4fv(loc, 1, lambert->transparent.color.vec);
+    gkUniformColorOrTex(&lambert->ambient,     buf, "ambient",     prog);
+    gkUniformColorOrTex(&lambert->diffuse,     buf, "diffuse",     prog);
+    gkUniformColorOrTex(&lambert->emission,    buf, "emission",    prog);
+    gkUniformColorOrTex(&lambert->reflective,  buf, "reflective",  prog);
+    gkUniformColorOrTex(&lambert->transparent, buf, "transparent", prog);
 
     loc = gkGetUniformLoc(prog, buf, "reflectivity");
     glUniform1f(loc, lambert->reflectivity);
@@ -102,6 +83,10 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
   } else if (technique->type == GK_MATERIAL_CONSTANT) {
     GkConstant *constant;
     constant  = (GkConstant *)material->technique;
+
+    gkUniformColorOrTex(&constant->emission,    buf, "emission",    prog);
+    gkUniformColorOrTex(&constant->reflective,  buf, "reflective",  prog);
+    gkUniformColorOrTex(&constant->transparent, buf, "transparent", prog);
 
     loc = gkGetUniformLoc(prog, buf, "emission.color");
     glUniform4fv(loc, 1, constant->emission.color.vec);
@@ -121,7 +106,6 @@ gkUniformMaterial(struct GkScene     * __restrict scene,
     loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
     glUniform1f(loc, constant->indexOfRefraction);
   }
-
 
   locui = glGetSubroutineIndex(prog,
                                GL_FRAGMENT_SHADER,
