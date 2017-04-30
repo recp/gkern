@@ -22,9 +22,16 @@ typedef enum GkMaterialType {
   GK_MATERIAL_CONSTANT = 4
 } GkMaterialType;
 
+typedef enum GkColorMethod {
+  GK_ONLY_USE_COLOR    = 5,
+  GK_ONLY_USE_TEX      = 6,
+  GK_MIX_COLOR_AND_TEX = 7
+} GkColorMethod;
+
 typedef struct GkColorOrTex {
-  GkColor    color;
-  GkTexture *tex;
+  GkColor       color;
+  GkTexture    *tex;
+  GkColorMethod method;
 } GkColorOrTex;
 
 typedef struct GkTechnique {
