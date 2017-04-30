@@ -10,6 +10,7 @@
 
 #include "gk-common.h"
 #include "gk-color.h"
+#include "gk-texture.h"
 
 struct GkScene;
 struct GkModelInst;
@@ -22,7 +23,8 @@ typedef enum GkMaterialType {
 } GkMaterialType;
 
 typedef struct GkColorOrTex {
-  GkColor color;
+  GkColor    color;
+  GkTexture *tex;
 } GkColorOrTex;
 
 typedef struct GkTechnique {
