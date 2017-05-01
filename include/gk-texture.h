@@ -11,6 +11,7 @@
 #include "gk-common.h"
 #include "gk-image.h"
 #include "gk-color.h"
+#include <stdbool.h>
 
 typedef enum GkWrapMode {
   GK_WRAP_MODE_WRAP        = 0,
@@ -51,13 +52,22 @@ typedef struct GkSampler {
   unsigned long   mipMaxLevel;
   unsigned long   mipMinLevel;
   float           mipBias;
+
+  GLuint          unit; /* TEXTURE UNIT */
 } GkSampler;
 
 typedef struct GkTexture {
+  struct GkTexture *next;
   GkImage          *image;
   GkSampler        *sampler;
-  struct GkTexture *next;
-  GLuint            texId;
+  GLuint            index;
+  GLenum            target; /* 1D, 2D, 3D, cube... */
+  GLenum            internalFormat;
+  GLenum            swizzle[4];
 } GkTexture;
 
-#endif /* gk_texture_h */,
+void
+gkTexLoad(GkTexture * __restrict tex,
+          bool                   ismutable);
+
+#endif /* gk_texture_h */

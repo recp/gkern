@@ -24,21 +24,12 @@ typedef struct GkImageMip {
 
 typedef struct GkImage {
   GkImageMip  mips;
-  GLuint      index;  /* texture id */
-  GLenum      target; /* 1D, 2D, 3D, cube... */
-  GLenum      iformat;
-  GLenum      format;
-  GLenum      type;
-  GLenum      swizzle[4];
-  GLuint      lastlevel;
+  GLenum      format; /* RGB, RGBA...                 */
+  GLenum      type;   /* GL_UNSIGNED_BYTE, GL_FLOAT...*/
   GLsizei     mipLevels;
   GLsizei     slices;
   GLsizeiptr  sliceStride;
   size_t      totalsize;
 } GkImage;
-
-void
-gkImageLoad(GkImage * __restrict image,
-            void    * __restrict data);
 
 #endif /* gk_image_h */
