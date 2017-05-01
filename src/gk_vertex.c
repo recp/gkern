@@ -16,7 +16,7 @@ static const size_t gk_attribNamesCount = 3;
 static const char *gk_attribNames[] = {
   "POSITION",
   "NORMAL",
-  "TEXTURE"
+  "TEXCOORD"
 };
 
 void
