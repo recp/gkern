@@ -8,6 +8,7 @@
 #include "../../../include/gk.h"
 #include "../../../include/gk-material.h"
 #include "../../../include/prims/gk-cube.h"
+#include "../../default/gk_def_effect.h"
 #include "../../gk_matrix.h"
 
 void
@@ -19,6 +20,7 @@ gkRenderModel(GkScene     *scene,
   GkPrimitive *primi;
   GkMatrix    *mat;
   GkProgInfo  *prog;
+  GkMaterial  *material;
   uint32_t     updt;
 
   model = modelInst->model;
@@ -47,8 +49,17 @@ gkRenderModel(GkScene     *scene,
     model->pinfo = prog = pprog;
 
   gkUniformMatrix(modelInst);
-  gkUniformMaterial(scene, modelInst);
 
+  /* model's material */
+  if (!modelInst->prims
+      || modelInst->material
+      || modelInst->model->material) {
+    material = modelInst->material;
+    if (!material)
+      material = modelInst->model->material;
+
+    gkUniformMaterial(prog, material);
+  }
   /* pre events */
   if (model->events && model->events->onDraw)
     model->events->onDraw(model, NULL, false);
@@ -64,6 +75,18 @@ gkRenderModel(GkScene     *scene,
   primi = model->prim;
   while (primi) {
     glBindVertexArray(primi->vao);
+
+    /* instance primitive specific effects */
+    if (modelInst->prims) {
+      GkPrimInst *primInst;
+      primInst = rb_find(modelInst->prims, primi);
+
+      material = NULL;
+      if (primInst)
+        material = primInst->material;
+
+      gkUniformMaterial(prog, material);
+    }
 
     if (primi->flags & GK_DRAW_ELEMENTS)
       glDrawElements(primi->mode,

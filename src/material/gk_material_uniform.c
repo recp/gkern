@@ -14,26 +14,19 @@
 #include "gk_colortex_uniform.h"
 
 void
-gkUniformMaterial(struct GkScene     * __restrict scene,
-                  struct GkModelInst * __restrict modelInst) {
-  GkMaterial    *material;
+gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
+                  struct GkMaterial * __restrict material) {
   GkTechnique   *technique;
-  GkProgInfo    *pinfo;
   char           buf[256];
   GLint          loc;
   GLuint         locui;
   GLuint         prog;
 
-  material = modelInst->material;
-  if (!material)
-    material = modelInst->model->material;
-
   /* apply default material */
   if (!material)
     material = gk_def_material();
 
-  pinfo = modelInst->model->pinfo;
-  prog  = pinfo->prog;
+  prog = pinfo->prog;
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "material.");

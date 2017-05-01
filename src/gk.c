@@ -43,11 +43,32 @@ gkMakeInstance(GkModel *model) {
   model->instances->instance = instance;
   model->instances->instanceCount++;
   instance->model = model;
-  
+
   if (prevInstance)
     instance->next = prevInstance;
 
   return instance;
+}
+
+GkPrimInst*
+gkMakePrimInst(GkModelInst *modelInst,
+               GkPrimitive *prim) {
+  GkPrimInst *primInst;
+
+  if (!modelInst->prims)
+    modelInst->prims = rb_newtree_ptr();
+
+  primInst = rb_find(modelInst->prims, prim);
+  if (primInst)
+    return primInst;
+
+  primInst = calloc(sizeof(*primInst), 1);
+  primInst->prim     = prim;
+  primInst->material = NULL;
+
+  rb_insert(modelInst->prims, prim, primInst);
+
+  return primInst;
 }
 
 void

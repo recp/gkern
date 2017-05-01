@@ -74,6 +74,10 @@ gkContextFree(GkContext *ctx);
 GkModelInst*
 gkMakeInstance(GkModel *model);
 
+GkPrimInst*
+gkMakePrimInst(GkModelInst *modelInst,
+               GkPrimitive *prim);
+
 void
 gkUniformMatrix(GkModelInst *modelInst);
 

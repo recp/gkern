@@ -61,6 +61,11 @@ typedef struct GkPrimitive {
   struct GkPrimitive *next;
 } GkPrimitive;
 
+typedef struct GkPrimInst {
+  GkPrimitive *prim;
+  GkMaterial  *material;
+} GkPrimInst;
+
 typedef enum GkModelFlags {
   GK_MODEL_FLAGS_NONE      = 0,
   GK_MODEL_FLAGS_DRAW_BBOX = 1 << 0,
@@ -80,6 +85,7 @@ typedef struct GkModel {
 typedef struct GkModelInst {
   GkModel            *model;
   GkMatrix           *matrix;
+  RBTree             *prims;    /* to customize each primitive material  */
   GkMaterial         *material; /* instances may use different materials */
   struct GkModelInst *next;
   uint64_t            flags;
