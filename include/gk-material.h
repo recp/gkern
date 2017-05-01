@@ -23,10 +23,10 @@ typedef enum GkMaterialType {
 } GkMaterialType;
 
 typedef enum GkColorMethod {
-  GK_DISCARD           = 0,
-  GK_ONLY_USE_TEX      = 1,
-  GK_ONLY_USE_COLOR    = 2,
-  GK_MIX_COLOR_AND_TEX = 3
+  GK_DISCARD       = 0,
+  GK_ONLY_TEX      = 1,
+  GK_ONLY_COLOR    = 2,
+  GK_MIX_COLOR_TEX = 3
 } GkColorMethod;
 
 typedef struct GkColorOrTex {
