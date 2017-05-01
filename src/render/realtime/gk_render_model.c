@@ -20,7 +20,7 @@ gkRenderModel(GkScene     *scene,
   GkPrimitive *primi;
   GkMatrix    *mat;
   GkProgInfo  *prog;
-  GkMaterial  *material;
+  GkMaterial  *modelMaterial;
   uint32_t     updt;
 
   model = modelInst->model;
@@ -51,14 +51,15 @@ gkRenderModel(GkScene     *scene,
   gkUniformMatrix(modelInst);
 
   /* model's material */
+  modelMaterial = NULL;
   if (!modelInst->prims
       || modelInst->material
       || modelInst->model->material) {
-    material = modelInst->material;
-    if (!material)
-      material = modelInst->model->material;
+    modelMaterial = modelInst->material;
+    if (!modelMaterial)
+      modelMaterial = modelInst->model->material;
 
-    gkUniformMaterial(prog, material);
+    gkUniformMaterial(prog, modelMaterial);
   }
   /* pre events */
   if (model->events && model->events->onDraw)
@@ -79,9 +80,10 @@ gkRenderModel(GkScene     *scene,
     /* instance primitive specific effects */
     if (modelInst->prims) {
       GkPrimInst *primInst;
-      primInst = rb_find(modelInst->prims, primi);
+      GkMaterial *material;
 
-      material = NULL;
+      primInst = rb_find(modelInst->prims, primi);
+      material = modelMaterial;
       if (primInst)
         material = primInst->material;
 
