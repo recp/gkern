@@ -61,6 +61,7 @@ gkRenderModel(GkScene     *scene,
 
     gkUniformMaterial(prog, modelMaterial);
   }
+
   /* pre events */
   if (model->events && model->events->onDraw)
     model->events->onDraw(model, NULL, false);
@@ -101,7 +102,9 @@ gkRenderModel(GkScene     *scene,
     primi = primi->next;
   }
 
+  /* reset the state */
   glBindVertexArray(0);
+  /* TODO: unbind all textures */
 
   /* post events */
   if (model->events && model->events->onDraw)

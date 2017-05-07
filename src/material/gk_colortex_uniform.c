@@ -49,11 +49,16 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
   if ((method == GK_ONLY_TEX
       || method == GK_MIX_COLOR_TEX)
       && crtx->tex) {
-    GLuint unit;
+    GkTexture *tex;
+    GLuint     unit;
 
+    tex  = crtx->tex;
     unit = 0;
-    if (crtx->tex->sampler)
-      unit = crtx->tex->sampler->unit;
+    if (tex->sampler) {
+      unit = tex->sampler->unit;
+      glActiveTexture(GL_TEXTURE0 + unit);
+      glBindTexture(tex->target, tex->index);
+    }
 
     strcpy(uname + startOff, "tex");
     loc = gkGetUniformLoc(prog, buf, uname);
