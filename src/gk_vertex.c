@@ -12,7 +12,7 @@
 static RBTree  *gk_attribIndTree;
 static uint32_t gk_attribIndLast;
 
-static const size_t gk_attribNamesCount = 3;
+static const size_t gk_attribNamesCount = 5;
 static const char *gk_attribNames[] = {
   "POSITION",
   "NORMAL",
