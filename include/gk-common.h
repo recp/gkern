@@ -27,7 +27,7 @@
 #  define GK_INLINE inline __attribute((always_inline))
 #endif
 
-#define GK_ARRAY_LEN(ARR) sizeof(ARR) / sizeof(ARR[0]);
+#define GK_ARRAY_LEN(ARR) (sizeof(ARR) / sizeof(ARR[0]))
 
 typedef enum GkNodeFlags {
   GK_HAVE_MATRIX       = 1 << 3,
