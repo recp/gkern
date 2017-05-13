@@ -18,6 +18,29 @@ gkSetCamera(struct GkScene * __restrict scene,
 }
 
 GkCamera*
+gkMakeCameraForScene(GkScene *scene) {
+  vec3  target;
+  vec3  eye;
+  mat4  view, proj;
+  float aspectRatio;
+
+  aspectRatio = scene->vrect.size.w / scene->vrect.size.h;
+  glm_vec_copy(scene->bbox->center, target);
+
+  glm_vec_sub(scene->bbox->max, target, eye);
+  glm_vec_scale(eye, 2.5f, eye); // TODO: read this as option
+  glm_vec_add(target, eye, eye);
+
+  glm_perspective_default(aspectRatio, proj);
+  glm_lookat(eye,
+             target,
+             (vec3){0.0f, 1.0f, 0.0f}, // TODO: read this as option
+             view);
+
+  return gkMakeCamera(proj, view);
+}
+
+GkCamera*
 gkMakeCamera(mat4 proj, mat4 view) {
   GkCamera *cam;
 

@@ -29,6 +29,9 @@ typedef struct GkCamera {
 } GkCamera;
 
 GkCamera*
+gkMakeCameraForScene(struct GkScene *scene);
+
+GkCamera*
 gkMakeCamera(mat4 proj, mat4 view);
 
 GkCamera*
