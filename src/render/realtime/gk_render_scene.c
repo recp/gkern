@@ -15,7 +15,8 @@ gkRenderScene(GkScene * scene) {
 
   if (!scene
       || ((scene->flags & GK_SCENEF_ONCE)
-          && !(scene->flags & GK_SCENEF_NEEDS_RENDER)))
+          && !(scene->flags & GK_SCENEF_NEEDS_RENDER))
+      || scene->flags & GK_SCENEF_RENDERING)
     return;
 
 #ifdef DEBUG
@@ -25,7 +26,9 @@ gkRenderScene(GkScene * scene) {
   return;
 #endif
 
-   scene->flags &= ~GK_SCENEF_RENDERED;
+  scene->flags &= ~GK_SCENEF_RENDERED;
+  scene->flags |= GK_SCENEF_RENDERING;
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (gkCurrentProgram() != scene->pinfo->prog) {
@@ -66,5 +69,6 @@ gkRenderScene(GkScene * scene) {
                scene->bbox->max);
 
   scene->flags &= ~GK_SCENEF_NEEDS_RENDER;
+  scene->flags &= ~GK_SCENEF_RENDERING;
   scene->flags |= GK_SCENEF_RENDERED;
 }

@@ -44,8 +44,9 @@ typedef enum GkSceneFlags {
   GK_SCENEF_UPDT_VIEWPROJ = 1 << 2,
   GK_SCENEF_UPDT_LIGHTS   = 1 << 3,
   GK_SCENEF_ONCE          = 1 << 4,
-  GK_SCENEF_RENDERED      = 1 << 5,
-  GK_SCENEF_RENDER        = 1 << 6,
+  GK_SCENEF_RENDERING     = 1 << 5,
+  GK_SCENEF_RENDERED      = 1 << 6,
+  GK_SCENEF_RENDER        = 1 << 7,
   GK_SCENEF_NEEDS_RENDER  = GK_SCENEF_RENDER
                             | GK_SCENEF_UPDT_VIEW
                             | GK_SCENEF_UPDT_VIEWPROJ
