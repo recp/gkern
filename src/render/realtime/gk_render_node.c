@@ -16,31 +16,9 @@ gkRenderNode(GkScene    *scene,
   while (node) {
     GkMatrix   *mat;
     GkProgInfo *prog;
-    uint32_t    updt;
 
     mat  = node->matrix;
     prog = node->pinfo;
-
-    if (!mat)
-      node->matrix = mat = pmat;
-
-    updt = (!pmat->cmatIsValid || !mat->cmatIsValid);
-
-    if (updt && pmat != mat) {
-      glm_mat4_mul(pmat->cmat,
-                   mat->matrix,
-                   mat->cmat);
-
-      mat->cmatIsValid = 0;
-    }
-
-    if (!prog)
-      node->pinfo = prog = pprog;
-
-    if (node->light) {
-      if (!mat->fmat || updt)
-        gkCalcViewMat(scene, mat);
-    }
 
     if (node->model)
       gkRenderModel(scene,
@@ -59,9 +37,6 @@ gkRenderNode(GkScene    *scene,
                    node->nodeInst,
                    mat,
                    prog);
-
-    if (updt && mat != pmat)
-      mat->cmatIsValid = 1;
 
     node = node->next;
   }
@@ -86,7 +61,9 @@ gkPrepNode(GkScene    *scene,
     updt = (!pmat->cmatIsValid || !mat->cmatIsValid);
 
     if (updt && pmat != mat) {
-      glm_mat4_mul(pmat->cmat, mat->matrix, mat->cmat);
+      glm_mat4_mul(pmat->cmat,
+                   mat->matrix,
+                   mat->cmat);
       mat->cmatIsValid = 0;
     }
 
@@ -99,6 +76,12 @@ gkPrepNode(GkScene    *scene,
       if (!mat->cmatIsValid)
         gkUniformLightPos(node);
     }
+
+    if (node->model)
+      gkPrepModel(scene,
+                  node->model,
+                  mat,
+                  prog);
 
     if (node->chld)
       gkPrepNode(scene, node->chld, mat, prog);

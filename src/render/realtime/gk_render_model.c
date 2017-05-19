@@ -12,15 +12,13 @@
 #include "../../gk_matrix.h"
 
 void
-gkRenderModel(GkScene     *scene,
-              GkModelInst *modelInst,
-              GkMatrix    *pmat,
-              GkProgInfo  *pprog) {
+gkPrepModel(GkScene     *scene,
+            GkModelInst *modelInst,
+            GkMatrix    *pmat,
+            GkProgInfo  *pprog) {
   GkModel     *model;
-  GkPrimitive *primi;
   GkMatrix    *mat;
   GkProgInfo  *prog;
-  GkMaterial  *modelMaterial;
   uint32_t     updt;
 
   model = modelInst->model;
@@ -41,12 +39,31 @@ gkRenderModel(GkScene     *scene,
     }
 
     gkCalcFinalMat(scene, mat);
-  } else if(scene->flags & (GK_SCENEF_UPDT_VIEW | GK_SCENEF_UPDT_VIEWPROJ)) {
+  } else if(scene->flags & GK_SCENEF_UPDT_VIEWPROJ) {
     gkCalcFinalMat(scene, mat);
   }
 
   if (!prog)
     model->pinfo = prog = pprog;
+
+  if(updt && mat != pmat)
+    mat->cmatIsValid = 1;
+}
+
+void
+gkRenderModel(GkScene     *scene,
+              GkModelInst *modelInst,
+              GkMatrix    *pmat,
+              GkProgInfo  *pprog) {
+  GkModel     *model;
+  GkPrimitive *primi;
+  GkMatrix    *mat;
+  GkProgInfo  *prog;
+  GkMaterial  *modelMaterial;
+
+  model = modelInst->model;
+  mat   = modelInst->matrix;
+  prog  = model->pinfo;
 
   gkUniformMatrix(modelInst);
 
@@ -109,9 +126,6 @@ gkRenderModel(GkScene     *scene,
   /* post events */
   if (model->events && model->events->onDraw)
     model->events->onDraw(model, NULL, true);
-
-  if(updt && mat != pmat)
-    mat->cmatIsValid = 1;
 
   if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX)
       && model->bbox)

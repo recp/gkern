@@ -49,6 +49,9 @@ gkRenderScene(GkScene * scene) {
              trans,
              scene->pinfo);
 
+  trans->cmatIsValid = 1;
+  scene->flags &= ~(GK_SCENEF_UPDT_VIEWPROJ);
+
   /* uniform lights */
   if (scene->flags & GK_SCENEF_UPDT_LIGHTS)
     gkUniformLights(scene);
@@ -57,9 +60,6 @@ gkRenderScene(GkScene * scene) {
                scene->rootNode,
                trans,
                scene->pinfo);
-
-  trans->cmatIsValid = 1;
-  scene->flags &= ~(GK_SCENEF_UPDT_VIEWPROJ | GK_SCENEF_UPDT_VIEW);
 
   if ((scene->flags & GK_SCENEF_DRAW_BBOX)
       && scene->bbox)
