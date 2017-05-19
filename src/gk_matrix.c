@@ -18,13 +18,16 @@ gkCalcViewMat(GkScene  * __restrict scene,
     mat->fmat  = fmat;
   }
 
-  glm_mat4_mul(scene->camera->view, mat->cmat, fmat->cmv);
+  glm_mat4_mul(scene->camera->view,
+               mat->cmat,
+               fmat->cmv);
 }
 
 void
 gkCalcFinalMat(GkScene  * __restrict scene,
                GkMatrix * __restrict mat) {
   GkFinalMatrix *fmat;
+
   fmat = mat->fmat;
   if (!mat->fmat) {
     fmat       = malloc(sizeof(*mat->fmat));
@@ -32,13 +35,13 @@ gkCalcFinalMat(GkScene  * __restrict scene,
     mat->fmat  = fmat;
   }
 
-  glm_mat4_mul(scene->camera->projView,
-               mat->cmat,
-               fmat->cmvp);
-
   glm_mat4_mul(scene->camera->view,
                mat->cmat,
                fmat->cmv);
+
+  glm_mat4_mul(scene->camera->proj,
+               fmat->cmv,
+               fmat->cmvp);
 
   fmat->usenm = !glm_uniscaled(mat->cmat);
 

@@ -24,6 +24,7 @@ typedef struct GkCamera {
   mat4          view;
   mat4          world;
   mat4          projView;
+  vec3          dir;
   GkCameraFlags flags;
   GkMatrix     *trans;
 } GkCamera;
@@ -44,5 +45,21 @@ gkSetCamera(struct GkScene * __restrict scene,
 void
 gkResizeCamera(GkCamera * __restrict camera,
                float aspectRatio);
+
+void
+gkUpdateCameraView(GkCamera * __restrict cam);
+
+void
+gkUpdateCameraWorld(GkCamera * __restrict cam);
+
+void
+gkZoom(struct GkScene * __restrict scene,
+       float distance);
+
+void
+gkZoomInOneUnit(struct GkScene * __restrict scene);
+
+void
+gkZoomOutOneUnit(struct GkScene * __restrict scene);
 
 #endif /* gk_camera_h */

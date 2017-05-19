@@ -83,3 +83,48 @@ gkResizeCamera(GkCamera * __restrict camera,
                camera->view,
                camera->projView);
 }
+
+void
+gkUpdateCameraView(GkCamera * __restrict cam) {
+  glm_mat4_inv(cam->world, cam->view);
+  glm_mat4_mul(cam->proj,
+               cam->view,
+               cam->projView);
+}
+
+void
+gkUpdateCameraWorld(GkCamera * __restrict cam) {
+  glm_vec_rotate_m4(cam->world, cam->dir, cam->dir);
+  glm_mat4_inv(cam->world, cam->view);
+  glm_mat4_mul(cam->proj,
+               cam->view,
+               cam->projView);
+}
+
+void
+gkZoom(GkScene * __restrict scene,
+       float distance) {
+  GkCamera *cam;
+  vec3      dir;
+
+  if (!(cam = scene->camera) || distance == 0.0f)
+    return;
+
+  glm_vec_rotate_m4(cam->world, cam->dir, dir);
+  glm_vec_scale(dir, distance, dir);
+  glm_vec_add(cam->world[3], dir, cam->world[3]);
+
+  gkUpdateCameraView(cam);
+
+  scene->flags |= GK_SCENEF_UPDT_VIEW;
+}
+
+void
+gkZoomInOneUnit(GkScene * __restrict scene) {
+  gkZoom(scene, 1.0f);
+}
+
+void
+gkZoomOutOneUnit(GkScene * __restrict scene) {
+  gkZoom(scene, -1.0f);
+}
