@@ -116,7 +116,7 @@ gkZoom(GkScene * __restrict scene,
 
   gkUpdateCameraView(cam);
 
-  scene->flags |= GK_SCENEF_UPDT_VIEW;
+  scene->flags |= GK_SCENEF_UPDT_VIEW | GK_SCENEF_RENDER;
 }
 
 void

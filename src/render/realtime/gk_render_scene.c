@@ -13,12 +13,20 @@ void
 gkRenderScene(GkScene * scene) {
   GkMatrix *trans;
 
+  if (!scene
+      || ((scene->flags & GK_SCENEF_ONCE)
+          && !(scene->flags & GK_SCENEF_NEEDS_RENDER)))
+    return;
+
 #ifdef DEBUG
-  assert(scene->pinfo || "set default program / shader params");
+  assert(scene->pinfo && "set default program / shader params");
 #else
   /* there is no program! */
   return;
 #endif
+
+   scene->flags &= ~GK_SCENEF_RENDERED;
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (gkCurrentProgram() != scene->pinfo->prog) {
     glUseProgram(scene->pinfo->prog);
@@ -56,4 +64,7 @@ gkRenderScene(GkScene * scene) {
                scene->rootNode->matrix->cmat,
                scene->bbox->min,
                scene->bbox->max);
+
+  scene->flags &= ~GK_SCENEF_NEEDS_RENDER;
+  scene->flags |= GK_SCENEF_RENDERED;
 }

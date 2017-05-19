@@ -37,13 +37,26 @@ typedef enum GkNodeFlags {
 
 #ifdef __cplusplus
 #define GK_MAKE_C_ENUM(ENM)                                                    \
-inline ENM operator|=(ENM a, ENM b) {                                          \
-  return static_cast<ENM>(static_cast<int>(a) | static_cast<int>(b));          \
+inline ENM operator|=(ENM& a, ENM b) {                                         \
+  return (a = static_cast<ENM>(static_cast<int>(a) | static_cast<int>(b)));    \
+}                                                                              \
+                                                                               \
+inline ENM operator&=(ENM& a, ENM b) {                                         \
+  return (a = static_cast<ENM>(static_cast<int>(a) & static_cast<int>(b)));    \
+}                                                                              \
+                                                                               \
+inline ENM operator~(ENM a) {                                                  \
+  return static_cast<ENM>(~static_cast<int>(a));                               \
 }                                                                              \
                                                                                \
 inline ENM operator|(ENM a, ENM b) {                                           \
   return static_cast<ENM>(static_cast<int>(a) | static_cast<int>(b));          \
+}                                                                              \
+                                                                               \
+inline ENM operator&(ENM a, ENM b) {                                           \
+  return static_cast<ENM>(static_cast<int>(a) & static_cast<int>(b));          \
 }
+
 #else
 #define GK_MAKE_C_ENUM(ENM) 
 #endif
