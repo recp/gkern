@@ -22,6 +22,10 @@ gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
   GLuint         locui;
   GLuint         prog;
 
+  if (pinfo->lastMaterial == material
+      && !pinfo->updtMaterials)
+    return;
+
   /* apply default material */
   if (!material)
     material = gk_def_material();
@@ -105,4 +109,7 @@ gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
                                technique->subroutine);
 
   glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &locui);
+
+  pinfo->lastMaterial  = material;
+  pinfo->updtMaterials = false;
 }

@@ -19,6 +19,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdbool.h>
 
+struct GkMaterial;
+
 /* cache program infos, some nodes may use different program and shaders */
 typedef struct GkProgInfo {
   uint32_t refc;    /* reference count                                       */
@@ -30,6 +32,10 @@ typedef struct GkProgInfo {
   uint32_t attribc; /* attrib count                                          */
   uint32_t attribl; /* last used attrib index, don't edit manually!          */
   RBTree  *attribs; /* attribs                                               */
+
+  struct GkMaterial *lastMaterial;
+  bool               updtLights;
+  bool               updtMaterials;
 } GkProgInfo;
 
 void

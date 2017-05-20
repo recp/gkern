@@ -52,10 +52,6 @@ gkRenderScene(GkScene * scene) {
   trans->flags |= GK_MATRIXF_CMAT_ISVALID;
   scene->flags &= ~(GK_SCENEF_UPDT_VIEWPROJ);
 
-  /* uniform lights */
-  if (scene->flags & GK_SCENEF_UPDT_LIGHTS)
-    gkUniformLights(scene);
-
   gkRenderNode(scene,
                scene->rootNode,
                trans,
@@ -68,6 +64,7 @@ gkRenderScene(GkScene * scene) {
                scene->bbox->min,
                scene->bbox->max);
 
+  scene->flags &= ~GK_SCENEF_UPDT_LIGHTS;
   scene->flags &= ~GK_SCENEF_NEEDS_RENDER;
   scene->flags &= ~GK_SCENEF_RENDERING;
   scene->flags |= GK_SCENEF_RENDERED;

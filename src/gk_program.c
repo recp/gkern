@@ -78,6 +78,8 @@ gkNewProgram(GkShader *shaders) {
   pinfo->nmui = glGetUniformLocation(program, "NMU");
   pinfo->prog = program;
   pinfo->refc = 1;
+  pinfo->updtLights    = 1;
+  pinfo->updtMaterials = 1;
 
   return pinfo;
 }
@@ -118,7 +120,9 @@ gkDefaultProgram() {
   pinfo->nmui = glGetUniformLocation(program, "NMU");
   pinfo->prog = program;
   pinfo->refc = 1;
-
+  pinfo->updtLights    = 1;
+  pinfo->updtMaterials = 1;
+  
   return pinfo;
 }
 

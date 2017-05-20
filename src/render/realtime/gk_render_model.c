@@ -67,6 +67,10 @@ gkRenderModel(GkScene     *scene,
 
   gkUniformMatrix(modelInst);
 
+  /* uniform lights for this program */
+  if (prog->updtLights)
+    gkUniformLights(scene, prog);
+
   /* model's material */
   modelMaterial = NULL;
   if (!modelInst->prims
@@ -76,7 +80,10 @@ gkRenderModel(GkScene     *scene,
     if (!modelMaterial)
       modelMaterial = modelInst->model->material;
 
-    gkUniformMaterial(prog, modelMaterial);
+    /* avoid uniform cached material if possible */
+    if (prog->lastMaterial != modelMaterial
+        || prog->updtMaterials)
+      gkUniformMaterial(prog, modelMaterial);
   }
 
   /* pre events */
@@ -105,7 +112,10 @@ gkRenderModel(GkScene     *scene,
       if (primInst)
         material = primInst->material;
 
-      gkUniformMaterial(prog, material);
+      /* avoid uniform cached material if possible */
+      if (prog->lastMaterial != material
+          || prog->updtMaterials)
+        gkUniformMaterial(prog, material);
     }
 
     if (primi->flags & GK_DRAW_ELEMENTS)

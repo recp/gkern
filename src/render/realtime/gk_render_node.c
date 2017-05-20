@@ -20,6 +20,10 @@ gkRenderNode(GkScene    *scene,
     mat  = node->matrix;
     prog = node->pinfo;
 
+    /* uniform lights for this program */
+    if (prog->updtLights)
+      gkUniformLights(scene, prog);
+
     if (node->model)
       gkRenderModel(scene,
                     node->model,

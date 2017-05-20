@@ -13,9 +13,9 @@
 
 void
 gkUniformLight(struct GkScene * __restrict scene,
-               GkLight        * __restrict light) {
-  GkNode        *node;
-  GkFinalMatrix *fmat;
+               GkLight        * __restrict light,
+               GkProgInfo     * __restrict pinfo,
+               mat4                        transView) {
   vec4  amb, dir;
   char  buf[256];
   GLint loc;
@@ -29,14 +29,12 @@ gkUniformLight(struct GkScene * __restrict scene,
     index = light->index;
 
   enabled = light->enabled;
-  node    = light->node;
-  fmat    = node->matrix->fmat;
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "lights");
   sprintf(buf + strlen("lights"), "[%d].", index);
 
-  prog = node->pinfo->prog;
+  prog = pinfo->prog;
 
   /* TODO: default ambient of light source */
   glm_vec4_copy((vec4){0.0, 0.0, 0.0, 1.0}, amb);
@@ -102,10 +100,10 @@ gkUniformLight(struct GkScene * __restrict scene,
   loc = gkGetUniformLoc(prog, buf, "position");
 
   /* position must be in view space */
-  glUniform3fv(loc, 1, fmat->cmv[3]);
+  glUniform3fv(loc, 1, transView[3]);
 
   /* light/cone direction */
-  glm_vec_rotate_m4(fmat->cmv,
+  glm_vec_rotate_m4(transView,
                     light->direction,
                     dir);
 
@@ -152,29 +150,40 @@ gkUniformLightPos(GkNode * __restrict node) {
 }
 
 void
-gkUniformLights(struct GkScene * __restrict scene) {
+gkUniformLights(struct GkScene * __restrict scene,
+                GkProgInfo     * __restrict pinfo) {
   GkLight *light;
 
   light = (GkLight *)scene->lights;
   if (!light) {
-    if (!scene->rootNode || !scene->rootNode->matrix)
-      return;
-
-    light = gk_def_lights();
-    light->isvalid = false;
-    light->node    = scene->rootNode;
-    scene->rootNode->light = light;
-
+    light             = gk_def_lights();
+    light->isvalid    = false;
     scene->lightCount = 1;
-    gkCalcFinalMat(scene, scene->rootNode->matrix);
   }
 
   while (light) {
-    if (!light->isvalid)
-      gkUniformLight(scene, light);
+    if (!light->isvalid) {
+      if (light->node) {
+        GkNode        *node;
+        GkFinalMatrix *fmat;
+
+        node = light->node;
+        fmat = node->matrix->fmat;
+
+        gkUniformLight(scene,
+                       light,
+                       pinfo,
+                       fmat->cmv);
+      } else {
+        gkUniformLight(scene,
+                       light,
+                       pinfo,
+                       GLM_MAT4_IDENTITY);
+      }
+    }
 
     light = (GkLight *)light->ref.next;
   }
 
-  scene->flags &= ~GK_SCENEF_UPDT_LIGHTS;
+  pinfo->updtLights = 0;
 }
