@@ -12,9 +12,18 @@
 #include "gk-geom-types.h"
 #include <cglm.h>
 
+typedef enum GkMatrixFlags {
+  GK_MATRIXF_NONE         = 0,
+  GK_MATRIXF_CMAT         = 1 << 1,
+  GK_MATRIXF_CMAT_ISVALID = (1 << 2) | GK_MATRIXF_CMAT,
+  GK_MATRIXF_FMAT         = 1 << 3,
+  GK_MATRIXF_FMAT_MV      = 1 << 4,
+  GK_MATRIXF_FMAT_MVP     = 1 << 5,
+  GK_MATRIXF_FMAT_NORMAT  = 1 << 6  /* use normal matrix or not */
+} GkMatrixFlags;
+
 typedef struct GkFinalMatrix {
   uint32_t refc;
-  uint32_t usenm; /* use generated normal matrix when non-uniform scaled */
   mat4     cmvp;  /* model view projection matrix */
   mat4     cmv;   /* model view matrix */
   mat4     cnmat; /* cached normal matrix */
@@ -24,7 +33,8 @@ typedef struct GkFinalMatrix {
  so they will use parent's one. */
 typedef struct GkMatrix {
   uint32_t       refc;
-  uint32_t       cmatIsValid;
+  GkMatrixFlags  flags;
+
   /*
    cached MVP and normal matrix: proj * view * model (GkMatrix->cmat)
    because multiple models may share same mvp matrix, to save space we use

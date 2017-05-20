@@ -21,6 +21,8 @@ gkCalcViewMat(GkScene  * __restrict scene,
   glm_mat4_mul(scene->camera->view,
                mat->cmat,
                fmat->cmv);
+
+  mat->flags |= GK_MATRIXF_FMAT | GK_MATRIXF_FMAT_MV;
 }
 
 void
@@ -43,11 +45,16 @@ gkCalcFinalMat(GkScene  * __restrict scene,
                fmat->cmv,
                fmat->cmvp);
 
-  fmat->usenm = !glm_uniscaled(mat->cmat);
+  if (glm_uniscaled(mat->cmat)) {
+    mat->flags &= ~GK_MATRIXF_FMAT_NORMAT;
+  } else {
+    mat->flags |= GK_MATRIXF_FMAT_NORMAT;
 
-  if (fmat->usenm) {
     glm_mat4_inv(fmat->cmv, fmat->cnmat);
     glm_mat4_transpose(fmat->cnmat);
   }
-}
 
+  mat->flags |= GK_MATRIXF_FMAT
+                | GK_MATRIXF_FMAT_MV
+                | GK_MATRIXF_FMAT_MVP;
+}

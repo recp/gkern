@@ -28,14 +28,14 @@ gkPrepModel(GkScene     *scene,
   if (!mat)
     modelInst->matrix = mat = pmat;
 
-  updt = !pmat->cmatIsValid || !mat->cmatIsValid;
+  updt = !((pmat->flags & mat->flags) & GK_MATRIXF_CMAT_ISVALID);
 
   if (updt){
     if (pmat != mat) {
       glm_mat4_mul(pmat->matrix,
                    mat->matrix,
                    mat->cmat);
-      mat->cmatIsValid = 0;
+      mat->flags &= ~GK_MATRIXF_CMAT_ISVALID;
     }
 
     gkCalcFinalMat(scene, mat);
@@ -47,7 +47,7 @@ gkPrepModel(GkScene     *scene,
     model->pinfo = prog = pprog;
 
   if(updt && mat != pmat)
-    mat->cmatIsValid = 1;
+    mat->flags |= GK_MATRIXF_CMAT_ISVALID;
 }
 
 void

@@ -15,7 +15,7 @@ gkMakeNodeMatrix(GkNode * __restrict node) {
     return;
 
   mat              = malloc(sizeof(*mat));
-  mat->cmatIsValid = 0;
+  mat->flags       = 0;
   mat->refc        = 1;
   mat->fmat        = NULL;
   node->matrix     = mat;

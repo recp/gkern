@@ -38,8 +38,8 @@ gk_tball_attach(GkTrackball * __restrict tball,
   trans = scene->trans;
   if (!trans) {
     trans = malloc(sizeof(*trans));
-    trans->refc        = 1;
-    trans->cmatIsValid = 0;
+    trans->refc   = 1;
+    trans->flags &= ~GK_MATRIXF_CMAT_ISVALID;
 
     glm_mat4_copy(GLM_MAT4_IDENTITY, trans->matrix);
     glm_mat4_copy(GLM_MAT4_IDENTITY, trans->cmat);

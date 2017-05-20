@@ -75,7 +75,7 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
         glm_mat4_mul(tball->trans,
                      scene->trans->matrix,
                      scene->trans->cmat);
-        scene->trans->cmatIsValid = 0;
+        scene->trans->flags &= ~GK_MATRIXF_CMAT_ISVALID;
         scene->flags |= GK_SCENEF_RENDER;
       }
       break;
@@ -83,7 +83,7 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
       glm_mat4_mul(tball->trans,
                    scene->trans->matrix,
                    scene->trans->matrix);
-      scene->trans->cmatIsValid = 0;
+      scene->trans->flags &= ~GK_MATRIXF_CMAT_ISVALID;
       scene->flags |= GK_SCENEF_RENDER;
 
       if (tball->cb)

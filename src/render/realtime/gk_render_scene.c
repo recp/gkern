@@ -49,7 +49,7 @@ gkRenderScene(GkScene * scene) {
              trans,
              scene->pinfo);
 
-  trans->cmatIsValid = 1;
+  trans->flags |= GK_MATRIXF_CMAT_ISVALID;
   scene->flags &= ~(GK_SCENEF_UPDT_VIEWPROJ);
 
   /* uniform lights */

@@ -76,6 +76,7 @@ gkUniformMatrix(GkModelInst *modelInst) {
   GkModel       *model;
   GkFinalMatrix *fmat;
   GkProgInfo    *pinfo;
+  int            usenm;
 
   model = modelInst->model;
 
@@ -89,8 +90,10 @@ gkUniformMatrix(GkModelInst *modelInst) {
   gkUniformMat4(pinfo->mvi, fmat->cmv);
 
   /* Normal Matrix */
-  if (fmat->usenm)
+  usenm = (modelInst->matrix->flags & GK_MATRIXF_FMAT_NORMAT) != 0;
+
+  if (usenm)
     gkUniformMat4(pinfo->nmi,  fmat->cnmat);
 
-  glUniform1i(pinfo->nmui, fmat->usenm);
+  glUniform1i(pinfo->nmui, usenm);
 }

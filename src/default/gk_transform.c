@@ -9,7 +9,7 @@
 
 GkMatrix gkdef_idmat = {
   1,
-  1,
+  0,
   NULL,
   GLM_MAT4_IDENTITY_INIT,
   GLM_MAT4_IDENTITY_INIT
