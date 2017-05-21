@@ -44,7 +44,9 @@ GkCamera*
 gkMakeCamera(mat4 proj, mat4 view) {
   GkCamera *cam;
 
-  cam = malloc(sizeof(*cam));
+  cam = calloc(sizeof(*cam), 1);
+
+  glm_vec_copy((vec3){0.0f, 0.0f, -1.0f}, cam->dir);
 
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->view);
@@ -61,7 +63,9 @@ GkCamera*
 gkMakeCameraByWorld(mat4 proj, mat4 view) {
   GkCamera *cam;
 
-  cam = malloc(sizeof(*cam));
+  cam = calloc(sizeof(*cam), 1);
+
+  glm_vec_copy((vec3){0.0f, 0.0f, -1.0f}, cam->dir);
 
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->world);
