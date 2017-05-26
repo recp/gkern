@@ -29,6 +29,9 @@
 
 #define GK_ARRAY_LEN(ARR) (sizeof(ARR) / sizeof(ARR[0]))
 
+#define GK_STRINGIFY(...)  #__VA_ARGS__
+#define GK_STRINGIFY2(x)   GK_STRINGIFY(x)
+
 typedef enum GkNodeFlags {
   GK_HAVE_MATRIX       = 1 << 3,
   GK_USE_CACHED_MATRIX = 1 << 4,
