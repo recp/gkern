@@ -14,55 +14,55 @@
 void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
-            GkMatrix    *pmat,
+            GkTransform *ptr,
             GkProgInfo  *pprog) {
   GkModel     *model;
-  GkMatrix    *mat;
+  GkTransform *tr;
   GkProgInfo  *prog;
   uint32_t     updt;
 
   model = modelInst->model;
-  mat   = modelInst->matrix;
+  tr    = modelInst->trans;
   prog  = model->pinfo;
 
-  if (!mat)
-    modelInst->matrix = mat = pmat;
+  if (!tr)
+    modelInst->trans = tr = ptr;
 
-  updt = !((pmat->flags & mat->flags) & GK_MATRIXF_CMAT_ISVALID);
+  updt = !((ptr->flags & tr->flags) & GK_TRANSF_WORLD_ISVALID);
 
   if (updt){
-    if (pmat != mat) {
-      glm_mat4_mul(pmat->matrix,
-                   mat->matrix,
-                   mat->cmat);
-      mat->flags &= ~GK_MATRIXF_CMAT_ISVALID;
+    if (ptr != tr) {
+      glm_mat4_mul(ptr->world,
+                   tr->local,
+                   tr->world);
+      tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
     }
 
-    gkCalcFinalMat(scene, mat);
+    gkCalcFinalMat(scene, tr);
   } else if(scene->flags & GK_SCENEF_UPDT_VIEWPROJ) {
-    gkCalcFinalMat(scene, mat);
+    gkCalcFinalMat(scene, tr);
   }
 
   if (!prog)
     model->pinfo = prog = pprog;
 
-  if(updt && mat != pmat)
-    mat->flags |= GK_MATRIXF_CMAT_ISVALID;
+  if(updt && tr != ptr)
+    tr->flags |= GK_TRANSF_WORLD_ISVALID;
 }
 
 void
 gkRenderModel(GkScene     *scene,
               GkModelInst *modelInst,
-              GkMatrix    *pmat,
+              GkTransform *ptr,
               GkProgInfo  *pprog) {
   GkModel     *model;
   GkPrimitive *primi;
-  GkMatrix    *mat;
+  GkTransform *tr;
   GkProgInfo  *prog;
   GkMaterial  *modelMaterial;
 
   model = modelInst->model;
-  mat   = modelInst->matrix;
+  tr    = modelInst->trans;
   prog  = model->pinfo;
 
   gkUniformMatrix(modelInst);
@@ -140,7 +140,7 @@ gkRenderModel(GkScene     *scene,
   if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX)
       && model->bbox)
     gkDrawBBox(scene,
-               mat->cmat,
+               tr->world,
                model->bbox->min,
                model->bbox->max);
 }

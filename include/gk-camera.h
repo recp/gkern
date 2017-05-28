@@ -26,7 +26,7 @@ typedef struct GkCamera {
   mat4          projView;
   vec3          dir;
   GkCameraFlags flags;
-  GkMatrix     *trans;
+  GkTransform   *trans;
 } GkCamera;
 
 GkCamera*

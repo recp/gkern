@@ -8,53 +8,53 @@
 #include "gk_matrix.h"
 
 void
-gkCalcViewMat(GkScene  * __restrict scene,
-              GkMatrix * __restrict mat) {
-  GkFinalMatrix *fmat;
-  fmat = mat->fmat;
-  if (!mat->fmat) {
-    fmat       = malloc(sizeof(*mat->fmat));
-    fmat->refc = 1;
-    mat->fmat  = fmat;
+gkCalcViewMat(GkScene     * __restrict scene,
+              GkTransform * __restrict tr) {
+  GkFinalTransform *ftr;
+  ftr = tr->ftr;
+  if (!tr->ftr) {
+    ftr       = malloc(sizeof(*tr->ftr));
+    ftr->refc = 1;
+    tr->ftr  = ftr;
   }
 
   glm_mat4_mul(scene->camera->view,
-               mat->cmat,
-               fmat->cmv);
+               tr->world,
+               ftr->mv);
 
-  mat->flags |= GK_MATRIXF_FMAT | GK_MATRIXF_FMAT_MV;
+  tr->flags |= GK_TRANSF_FMAT | GK_TRANSF_FMAT_MV;
 }
 
 void
-gkCalcFinalMat(GkScene  * __restrict scene,
-               GkMatrix * __restrict mat) {
-  GkFinalMatrix *fmat;
+gkCalcFinalMat(GkScene     * __restrict scene,
+               GkTransform * __restrict tr) {
+  GkFinalTransform *ftr;
 
-  fmat = mat->fmat;
-  if (!mat->fmat) {
-    fmat       = malloc(sizeof(*mat->fmat));
-    fmat->refc = 1;
-    mat->fmat  = fmat;
+  ftr = tr->ftr;
+  if (!tr->ftr) {
+    ftr       = malloc(sizeof(*tr->ftr));
+    ftr->refc = 1;
+    tr->ftr   = ftr;
   }
 
   glm_mat4_mul(scene->camera->view,
-               mat->cmat,
-               fmat->cmv);
+               tr->world,
+               ftr->mv);
 
   glm_mat4_mul(scene->camera->proj,
-               fmat->cmv,
-               fmat->cmvp);
+               ftr->mv,
+               ftr->mvp);
 
-  if (glm_uniscaled(mat->cmat)) {
-    mat->flags &= ~GK_MATRIXF_FMAT_NORMAT;
+  if (glm_uniscaled(tr->world)) {
+    tr->flags &= ~GK_TRANSF_FMAT_NORMAT;
   } else {
-    mat->flags |= GK_MATRIXF_FMAT_NORMAT;
+    tr->flags |= GK_TRANSF_FMAT_NORMAT;
 
-    glm_mat4_inv(fmat->cmv, fmat->cnmat);
-    glm_mat4_transpose(fmat->cnmat);
+    glm_mat4_inv(ftr->mv, ftr->nm);
+    glm_mat4_transpose(ftr->nm);
   }
 
-  mat->flags |= GK_MATRIXF_FMAT
-                | GK_MATRIXF_FMAT_MV
-                | GK_MATRIXF_FMAT_MVP;
+  tr->flags |= GK_TRANSF_FMAT
+               | GK_TRANSF_FMAT_MV
+               | GK_TRANSF_FMAT_MVP;
 }

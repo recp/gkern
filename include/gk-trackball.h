@@ -31,8 +31,8 @@ typedef struct GkTrackball {
   void                  *data;
   struct GkScene        *scene;
   struct GkNode         *node;
-  GkBBox                *bbox;   /* bounding box which is tball attached to */
-  GkMatrix              *matrix; /* attached node's matrix */
+  GkBBox                *bbox;      /* attached node's bounding box  */
+  GkTransform           *nodeTrans; /* attached node's transform     */
   GkMouseEvent           mouse;
   GkMouseEventWithStruct mouse2;
   GkTrackballEventCb     cb;

@@ -23,7 +23,7 @@ extern "C" {
 typedef struct GkNode {
   GkNodeFlags    flags;
   GkProgInfo    *pinfo;    /* program info, node may use different shaders */
-  GkMatrix      *matrix;   /* matrix info */
+  GkTransform   *trans;    /* transform */
   GkModelInst   *model;    /* model instance, only instances! */
   GkLight       *light;    /* TODO: save space if there is no light */
   GkBBox        *bbox;

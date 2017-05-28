@@ -62,7 +62,7 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
 
         /* rotate around center */
         glm_vec_sub(tball->bbox->center,
-                    tball->node->matrix->matrix[3],
+                    tball->node->trans->local[3],
                     tran);
 
         glm_quat_mat4(q, tball->trans);
@@ -73,17 +73,17 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
         glm_translate(tball->trans, tran);
 
         glm_mat4_mul(tball->trans,
-                     scene->trans->matrix,
-                     scene->trans->cmat);
-        scene->trans->flags &= ~GK_MATRIXF_CMAT_ISVALID;
+                     scene->trans->local,
+                     scene->trans->world);
+        scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
         scene->flags |= GK_SCENEF_RENDER;
       }
       break;
     case GK_MOUSE_UP: {
       glm_mat4_mul(tball->trans,
-                   scene->trans->matrix,
-                   scene->trans->matrix);
-      scene->trans->flags &= ~GK_MATRIXF_CMAT_ISVALID;
+                   scene->trans->local,
+                   scene->trans->local);
+      scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
       scene->flags |= GK_SCENEF_RENDER;
 
       if (tball->cb)

@@ -118,18 +118,18 @@ gkUniformLight(struct GkScene * __restrict scene,
 
 void
 gkUniformLightPos(GkNode * __restrict node) {
-  GkFinalMatrix *fmat;
-  GkLight       *light;
-  vec4           dir;
-  char           buf[32];
-  GLint          loc, prog;
+  GkFinalTransform *ftr;
+  GkLight          *light;
+  vec4              dir;
+  char              buf[32];
+  GLint             loc, prog;
 
   light = node->light;
   if (light->index == -1)
     return;
 
-  fmat  = node->matrix->fmat;
-  prog  = node->pinfo->prog;
+  ftr  = node->trans->ftr;
+  prog = node->pinfo->prog;
 
   strcpy(buf, "lights");
   while (light) {
@@ -137,10 +137,10 @@ gkUniformLightPos(GkNode * __restrict node) {
     loc = gkGetUniformLoc(prog, buf, "position");
 
     /* position must be in view space */
-    glUniform3fv(loc, 1, fmat->cmv[3]);
+    glUniform3fv(loc, 1, ftr->mv[3]);
 
     /* light/cone direction */
-    glm_vec_rotate_m4(fmat->cmv, light->direction, dir);
+    glm_vec_rotate_m4(ftr->mv, light->direction, dir);
 
     loc = gkGetUniformLoc(prog, buf, "direction");
     glUniform3fv(loc, 1, dir);
@@ -164,16 +164,16 @@ gkUniformLights(struct GkScene * __restrict scene,
   while (light) {
     if (!light->isvalid) {
       if (light->node) {
-        GkNode        *node;
-        GkFinalMatrix *fmat;
+        GkNode           *node;
+        GkFinalTransform *ftr;
 
         node = light->node;
-        fmat = node->matrix->fmat;
+        ftr  = node->trans->ftr;
 
         gkUniformLight(scene,
                        light,
                        pinfo,
-                       fmat->cmv);
+                       ftr->mv);
       } else {
         gkUniformLight(scene,
                        light,

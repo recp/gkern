@@ -73,27 +73,27 @@ gkMakePrimInst(GkModelInst *modelInst,
 
 void
 gkUniformMatrix(GkModelInst *modelInst) {
-  GkModel       *model;
-  GkFinalMatrix *fmat;
-  GkProgInfo    *pinfo;
-  int            usenm;
+  GkModel          *model;
+  GkFinalTransform *ftr;
+  GkProgInfo       *pinfo;
+  int               usenm;
 
   model = modelInst->model;
 
-  fmat  = modelInst->matrix->fmat;
+  ftr   = modelInst->trans->ftr;
   pinfo = model->pinfo;
 
   /* Model View Projection Matrix */
-  gkUniformMat4(pinfo->mvpi, fmat->cmvp);
+  gkUniformMat4(pinfo->mvpi, ftr->mvp);
 
   /* Model View Matrix */
-  gkUniformMat4(pinfo->mvi, fmat->cmv);
+  gkUniformMat4(pinfo->mvi, ftr->mv);
 
   /* Normal Matrix */
-  usenm = (modelInst->matrix->flags & GK_MATRIXF_FMAT_NORMAT) != 0;
+  usenm = (modelInst->trans->flags & GK_TRANSF_FMAT_NORMAT) != 0;
 
   if (usenm)
-    gkUniformMat4(pinfo->nmi,  fmat->cnmat);
+    gkUniformMat4(pinfo->nmi,  ftr->nm);
 
   glUniform1i(pinfo->nmui, usenm);
 }

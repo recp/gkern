@@ -9,15 +9,15 @@
 
 void
 gkMakeNodeMatrix(GkNode * __restrict node) {
-  GkMatrix *mat;
+  GkTransform *tr;
 
-  if (node->matrix)
+  if (node->trans)
     return;
 
-  mat              = malloc(sizeof(*mat));
-  mat->flags       = 0;
-  mat->refc        = 1;
-  mat->fmat        = NULL;
-  node->matrix     = mat;
-  node->flags     |= GK_HAVE_MATRIX;
+  tr           = malloc(sizeof(*tr));
+  tr->flags    = 0;
+  tr->refc     = 1;
+  tr->ftr      = NULL;
+  node->trans  = tr;
+  node->flags |= GK_HAVE_MATRIX;
 }

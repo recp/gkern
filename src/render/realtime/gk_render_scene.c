@@ -11,7 +11,7 @@
 
 void
 gkRenderScene(GkScene * scene) {
-  GkMatrix *trans;
+  GkTransform *trans;
 
   if (!scene
       || ((scene->flags & GK_SCENEF_ONCE)
@@ -49,7 +49,7 @@ gkRenderScene(GkScene * scene) {
              trans,
              scene->pinfo);
 
-  trans->flags |= GK_MATRIXF_CMAT_ISVALID;
+  trans->flags |= GK_TRANSF_WORLD_ISVALID;
   scene->flags &= ~(GK_SCENEF_UPDT_VIEWPROJ);
 
   gkRenderNode(scene,
@@ -60,7 +60,7 @@ gkRenderScene(GkScene * scene) {
   if ((scene->flags & GK_SCENEF_DRAW_BBOX)
       && scene->bbox)
     gkDrawBBox(scene,
-               scene->rootNode->matrix->cmat,
+               scene->rootNode->trans->world,
                scene->bbox->min,
                scene->bbox->max);
 

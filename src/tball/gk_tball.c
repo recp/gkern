@@ -28,7 +28,7 @@ gk_tball_attach(GkTrackball * __restrict tball,
                 GkScene     * __restrict scene,
                 GkNode      * __restrict node,
                 GkBBox      * __restrict bbox) {
-  GkMatrix *trans;
+  GkTransform *trans;
   assert(tball && scene && bbox && "invalid params!");
 
   tball->scene    = scene;
@@ -39,17 +39,17 @@ gk_tball_attach(GkTrackball * __restrict tball,
   if (!trans) {
     trans = malloc(sizeof(*trans));
     trans->refc   = 1;
-    trans->flags &= ~GK_MATRIXF_CMAT_ISVALID;
+    trans->flags  = GK_TRANSF_NONE;
 
-    glm_mat4_copy(GLM_MAT4_IDENTITY, trans->matrix);
-    glm_mat4_copy(GLM_MAT4_IDENTITY, trans->cmat);
+    glm_mat4_copy(GLM_MAT4_IDENTITY, trans->local);
+    glm_mat4_copy(GLM_MAT4_IDENTITY, trans->world);
     scene->trans = trans;
   }
 
   if (node)
-    tball->matrix = node->matrix;
+    tball->nodeTrans = node->trans;
   else
-    tball->matrix = gk_def_idmat();
+    tball->nodeTrans = gk_def_idmat();
 
   tball->node = node;
 }
@@ -69,7 +69,7 @@ gk_tall_vec(GkTrackball * __restrict tball,
   float   x, y, z, d;
 
   glm_mat4_mul(tball->scene->camera->projView,
-               tball->matrix->matrix,
+               tball->nodeTrans->local,
                m);
 
   vrc = tball->scene->vrect;

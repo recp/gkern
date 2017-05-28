@@ -9,15 +9,15 @@
 #include "../../gk_matrix.h"
 
 void
-gkRenderNode(GkScene    *scene,
-             GkNode     *node,
-             GkMatrix   *pmat,
-             GkProgInfo *pprog) {
+gkRenderNode(GkScene     *scene,
+             GkNode      *node,
+             GkTransform *ptr,
+             GkProgInfo  *pprog) {
   while (node) {
-    GkMatrix   *mat;
+    GkTransform *tr;
     GkProgInfo *prog;
 
-    mat  = node->matrix;
+    tr   = node->trans;
     prog = node->pinfo;
 
     /* uniform lights for this program */
@@ -27,19 +27,19 @@ gkRenderNode(GkScene    *scene,
     if (node->model)
       gkRenderModel(scene,
                     node->model,
-                    mat,
+                    tr,
                     prog);
 
     if (node->chld)
       gkRenderNode(scene,
                    node->chld,
-                   mat,
+                   tr,
                    prog);
 
     if (node->nodeInst)
       gkRenderNode(scene,
                    node->nodeInst,
-                   mat,
+                   tr,
                    prog);
 
     node = node->next;
@@ -47,38 +47,38 @@ gkRenderNode(GkScene    *scene,
 }
 
 void
-gkPrepNode(GkScene    *scene,
-           GkNode     *node,
-           GkMatrix   *pmat,
-           GkProgInfo *pprog) {
+gkPrepNode(GkScene     *scene,
+           GkNode      *node,
+           GkTransform *ptr,
+           GkProgInfo  *pprog) {
   while (node) {
-    GkMatrix   *mat;
-    GkProgInfo *prog;
-    uint32_t    updt;
+    GkTransform *tr;
+    GkProgInfo  *prog;
+    uint32_t     updt;
 
-    mat  = node->matrix;
+    tr   = node->trans;
     prog = node->pinfo;
 
-    if (!mat)
-      node->matrix = mat = pmat;
+    if (!tr)
+      node->trans = tr = ptr;
 
-    updt = !((pmat->flags & mat->flags) & GK_MATRIXF_CMAT_ISVALID);
+    updt = !((ptr->flags & tr->flags) & GK_TRANSF_WORLD_ISVALID);
 
-    if (updt && pmat != mat) {
-      glm_mat4_mul(pmat->cmat,
-                   mat->matrix,
-                   mat->cmat);
-      mat->flags &= ~GK_MATRIXF_CMAT_ISVALID;
+    if (updt && ptr != tr) {
+      glm_mat4_mul(ptr->world,
+                   tr->local,
+                   tr->world);
+      tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
     }
 
     if (!prog)
       node->pinfo = prog = pprog;
 
     if (node->light) {
-      if (!(mat->flags & GK_MATRIXF_CMAT_ISVALID)
-          || !(mat->flags & GK_MATRIXF_FMAT_MV)
+      if (!(tr->flags & GK_TRANSF_WORLD_ISVALID)
+          || !(tr->flags & GK_TRANSF_FMAT_MV)
           || scene->flags & GK_SCENEF_UPDT_VIEW) {
-        gkCalcViewMat(scene, mat);
+        gkCalcViewMat(scene, tr);
         gkUniformLightPos(node);
       }
     }
@@ -86,17 +86,17 @@ gkPrepNode(GkScene    *scene,
     if (node->model)
       gkPrepModel(scene,
                   node->model,
-                  mat,
+                  tr,
                   prog);
 
     if (node->chld)
-      gkPrepNode(scene, node->chld, mat, prog);
+      gkPrepNode(scene, node->chld, tr, prog);
 
     if (node->nodeInst)
-      gkPrepNode(scene, node->nodeInst, mat, prog);
+      gkPrepNode(scene, node->nodeInst, tr, prog);
 
-    if (updt && mat != pmat)
-      mat->flags |= GK_MATRIXF_CMAT_ISVALID;
+    if (updt && tr != ptr)
+      tr->flags |= GK_TRANSF_WORLD_ISVALID;
     
     node = node->next;
   }

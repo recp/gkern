@@ -14,11 +14,6 @@
 struct GkScene;
 
 void
-gkDrawCube(GkMatrix * __restrict world,
-           vec3 min,
-           vec3 max);
-
-void
 gkDrawBBox(struct GkScene * __restrict scene,
            mat4 world,
            vec3 min,

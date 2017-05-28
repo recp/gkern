@@ -7,7 +7,7 @@
 
 #include "gk_transform.h"
 
-GkMatrix gkdef_idmat = {
+GkTransform gkdef_idmat = {
   1,
   0,
   NULL,
@@ -16,7 +16,7 @@ GkMatrix gkdef_idmat = {
 };
 
 
-GkMatrix *
+GkTransform *
 gk_def_idmat() {
   return &gkdef_idmat;
 }

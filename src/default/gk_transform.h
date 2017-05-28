@@ -11,7 +11,7 @@
 #include "../../include/gk.h"
 #include "../../include/gk-material.h"
 
-GkMatrix *
+GkTransform *
 gk_def_idmat();
 
 #endif /* gk_def_transform_h */

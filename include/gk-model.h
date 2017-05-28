@@ -84,7 +84,7 @@ typedef struct GkModel {
 
 typedef struct GkModelInst {
   GkModel            *model;
-  GkMatrix           *matrix;
+  GkTransform        *trans;
   RBTree             *prims;    /* to customize each primitive material  */
   GkMaterial         *material; /* instances may use different materials */
   struct GkModelInst *next;

@@ -59,7 +59,7 @@ GK_MAKE_C_ENUM(GkSceneFlags)
 
 typedef struct GkScene {
   GkCamera    *camera;
-  GkMatrix    *trans; /* free camera */
+  GkTransform *trans; /* free camera */
   GkNode      *rootNode;
   GkProgInfo  *pinfo;
   GkLightRef  *lights;
@@ -91,26 +91,26 @@ gkUniformMatrix(GkModelInst *modelInst);
 void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
-            GkMatrix    *pmat,
+            GkTransform *ptr,
             GkProgInfo  *pprog);
 
 void
 gkRenderModel(GkScene     *scene,
               GkModelInst *modelInst,
-              GkMatrix    *parentMat,
-              GkProgInfo  *parentProg);
+              GkTransform *ptr,
+              GkProgInfo  *pprog);
 
 void
-gkPrepNode(GkScene    *scene,
-           GkNode     *node,
-           GkMatrix   *pmat,
-           GkProgInfo *pprog);
+gkPrepNode(GkScene     *scene,
+           GkNode      *node,
+           GkTransform *ptr,
+           GkProgInfo  *pprog);
 
 void
-gkRenderNode(GkScene    *scene,
-             GkNode     *node,
-             GkMatrix   *parentMat,
-             GkProgInfo *parentProg);
+gkRenderNode(GkScene     *scene,
+             GkNode      *node,
+             GkTransform *ptr,
+             GkProgInfo  *pprog);
 
 void
 gkRenderScene(GkScene * scene);
