@@ -9,7 +9,8 @@
 
 GkTransform gkdef_idmat = {
   1,
-  0,
+  GK_TRANSF_LOCAL_ISVALID,
+  NULL,
   NULL,
   GLM_MAT4_IDENTITY_INIT,
   GLM_MAT4_IDENTITY_INIT

@@ -32,6 +32,9 @@ gkPrepModel(GkScene     *scene,
 
   if (updt){
     if (ptr != tr) {
+      if (!GK_FLG(tr->flags, GK_TRANSF_LOCAL_ISVALID))
+        gkTransformCombine(tr);
+
       glm_mat4_mul(ptr->world,
                    tr->local,
                    tr->world);

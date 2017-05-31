@@ -9,6 +9,86 @@
 #include "../include/gk-geom-types.h"
 #include "../include/gk-transform.h"
 
+void
+gkTransformCombine(GkTransform * __restrict trans) {
+  mat4 mat = GLM_MAT4_IDENTITY_INIT;
+  GkTransformItem *ti;
+
+  if ((ti = trans->item)) {
+    mat4 tmp;
+
+    do {
+      switch (ti->type) {
+        case GK_TRANS_MATRIX: {
+          GkMatrix *matrix;
+          matrix = (GkMatrix *)ti;
+
+          glm_mat4_mul(mat, matrix->value, mat);
+          break;
+        }
+        case GK_TRANS_LOOK_AT: {
+          GkLookAt *lookAt;
+          lookAt = (GkLookAt *)ti;
+
+          glm_lookat(lookAt->value[0],
+                     lookAt->value[1],
+                     lookAt->value[2],
+                     tmp);
+
+          /* because this is view matrix */
+          glm_inv_tr(tmp);
+          glm_mat4_mul(mat, tmp, mat);
+          break;
+        }
+        case GK_TRANS_ROTATE: {
+          GkRotate *rotate;
+
+          rotate = (GkRotate *)ti;
+          glm_rotate_make(tmp, rotate->value[3], rotate->value);
+          glm_mat4_mul(mat, tmp, mat);
+          break;
+        }
+        case GK_TRANS_SCALE: {
+          GkScale *scale;
+          scale = (GkScale *)ti;
+
+          glm_scale_make(tmp, scale->value);
+          glm_mat4_mul(mat, tmp, mat);
+          break;
+        }
+        case GK_TRANS_TRANSLATE: {
+          GkTranslate *translate;
+          translate = (GkTranslate *)ti;
+
+          glm_translate_make(tmp, translate->value);
+          glm_mat4_mul(mat, tmp, mat);
+          break;
+        }
+        case GK_TRANS_SKEW: {
+          /* TODO:
+             GkSkew *skew;
+             skew = (GkSkew *)ti;
+
+             glm_mat4_mul(mat, tmp, mat);
+           */
+          break;
+        }
+        /* unitialized transform? */
+        default:
+          goto ret;
+          break;
+      }
+      
+      ti = ti->next;
+    } while (ti);
+  }
+
+ret:
+  glm_mat4_copy(mat, trans->local);
+
+  trans->flags |= GK_TRANSF_LOCAL_ISVALID;
+}
+
 GkPoint
 gk_project2d(GkRect rect, mat4 mvp, vec3 v) {
   vec4    pos4;

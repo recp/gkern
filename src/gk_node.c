@@ -8,7 +8,7 @@
 #include "../include/gk-node.h"
 
 void
-gkMakeNodeMatrix(GkNode * __restrict node) {
+gkMakeNodeTransform(GkNode * __restrict node) {
   GkTransform *tr;
 
   if (node->trans)
@@ -17,6 +17,7 @@ gkMakeNodeMatrix(GkNode * __restrict node) {
   tr           = malloc(sizeof(*tr));
   tr->flags    = 0;
   tr->refc     = 1;
+  tr->item     = NULL;
   tr->ftr      = NULL;
   node->trans  = tr;
   node->flags |= GK_HAVE_MATRIX;

@@ -32,6 +32,8 @@
 #define GK_STRINGIFY(...)  #__VA_ARGS__
 #define GK_STRINGIFY2(x)   GK_STRINGIFY(x)
 
+#define GK_FLG(FLAGS, FLAG) ((FLAGS & FLAG) == FLAG)
+
 typedef enum GkNodeFlags {
   GK_HAVE_MATRIX       = 1 << 3,
   GK_USE_CACHED_MATRIX = 1 << 4,

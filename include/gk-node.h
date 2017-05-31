@@ -33,7 +33,7 @@ typedef struct GkNode {
 } GkNode;
 
 void
-gkMakeNodeMatrix(GkNode * __restrict node);
+gkMakeNodeTransform(GkNode * __restrict node);
 
 #ifdef __cplusplus
 }
