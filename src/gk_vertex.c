@@ -22,6 +22,18 @@ static const char *gk_attribNames[] = {
 };
 
 void
+gk_vertFreeAttrib(RBTree *tree, RBNode *node);
+
+void
+gk_vertFreeAttribConst(RBTree *tree, RBNode *node);
+
+void
+gk_verta_init(void);
+
+void
+gk_verta_deinit(void);
+
+void
 gk_vertFreeAttrib(RBTree *tree, RBNode *node) {
   GkVertexAttrib *attrib;
 
