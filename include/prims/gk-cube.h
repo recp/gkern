@@ -20,9 +20,9 @@ gkDrawBBox(struct GkScene * __restrict scene,
            vec3 max);
 
 void
-gkInitCube();
+gkInitCube(void);
 
 void
-gkReleaseCube();
+gkReleaseCube(void);
 
 #endif /* gk_cube_h */

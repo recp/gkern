@@ -14,16 +14,16 @@
 
 extern
 void
-ak_vertFreeAttrib(RBTree *tree, RBNode *node);
+gk_vertFreeAttrib(RBTree *tree, RBNode *node);
 
 static
 void
-ak_progInitVertInf(GkProgInfo * __restrict prog) {
+gk_progInitVertInf(GkProgInfo * __restrict prog) {
   prog->attribc           = 0;
   prog->attribl           = 0;
   prog->attribs           = rb_newtree_str();
   prog->attribs->freeFn   = free;
-  prog->attribs->freeNode = ak_vertFreeAttrib;
+  prog->attribs->freeNode = gk_vertFreeAttrib;
 }
 
 GLint
@@ -49,7 +49,7 @@ gk_progSetAttribs(GkProgInfo * __restrict prog,
   size_t i;
 
   if (!prog->attribs)
-    ak_progInitVertInf(prog);
+    gk_progInitVertInf(prog);
 
   /* remove prev attribs (not free) */
   if (prog->attribs->count != 0)

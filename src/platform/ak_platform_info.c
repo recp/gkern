@@ -18,7 +18,7 @@ void  *gk_glcontext    = NULL;
 GLint *gk_glcontextPLI = NULL;
 
 void
-gk_pl_fetchPLI();
+gk_pl_fetchPLI(void);
 
 GLint
 gkPlatfomInfo(GkPlatformInfo pli) {

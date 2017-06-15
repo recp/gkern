@@ -22,7 +22,7 @@ static const char *gk_attribNames[] = {
 };
 
 void
-ak_vertFreeAttrib(RBTree *tree, RBNode *node) {
+gk_vertFreeAttrib(RBTree *tree, RBNode *node) {
   GkVertexAttrib *attrib;
 
   if (node == tree->nullNode)
@@ -35,7 +35,7 @@ ak_vertFreeAttrib(RBTree *tree, RBNode *node) {
 }
 
 void
-ak_vertFreeAttribConst(RBTree *tree, RBNode *node) {
+gk_vertFreeAttribConst(RBTree *tree, RBNode *node) {
   GkVertexAttrib *attrib;
 
   if (node == tree->nullNode)
@@ -107,7 +107,7 @@ gk_verta_init() {
   gk_attribIndLast = 0;
   gk_attribIndTree = rb_newtree_str();
   gk_attribIndTree->freeFn   = free;
-  gk_attribIndTree->freeNode = ak_vertFreeAttribConst;
+  gk_attribIndTree->freeNode = gk_vertFreeAttribConst;
 
   gk_vertSetAttribs(gk_attribNamesCount,
                     gk_attribNames);

@@ -88,16 +88,16 @@ typedef struct GkMaterial {
 } GkMaterial;
 
 GkPhong*
-gkMaterialNewPhong();
+gkMaterialNewPhong(void);
 
 GkBlinn*
-gkMaterialNewBlinn();
+gkMaterialNewBlinn(void);
 
 GkLambert*
-gkMaterialNewLambert();
+gkMaterialNewLambert(void);
 
 GkConstant*
-gkMaterialNewConstant();
+gkMaterialNewConstant(void);
 
 void
 gkUniformMaterial(struct GkProgInfo * __restrict pinfo,

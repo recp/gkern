@@ -12,6 +12,6 @@
 #include "../../include/gk-light.h"
 
 GkLight*
-gk_def_lights();
+gk_def_lights(void);
 
 #endif /* ak_def_light_h */

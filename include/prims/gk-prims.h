@@ -12,6 +12,6 @@
 #include "gk-cube.h"
 
 void
-gkReleasePrims();
+gkReleasePrims(void);
 
 #endif /* gk_prims_h */

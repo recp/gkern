@@ -11,9 +11,9 @@
 #include "../include/gk.h"
 
 void
-gk_mdl_init();
+gk_mdl_init(void);
 
 void
-gk_mdl_deinit();
+gk_mdl_deinit(void);
 
 #endif /* gk_src_model_h */

@@ -9,10 +9,18 @@
 #include "gk_common.h"
 
 void
-gk_verta_init();
+gk_verta_init(void);
 
 void
-gk_verta_deinit();
+gk_verta_deinit(void);
+
+void
+GK_CONSTRUCTOR
+gk__init(void);
+
+void
+GK_DESTRUCTOR
+gk__cleanup(void);
 
 void
 GK_CONSTRUCTOR

@@ -11,6 +11,6 @@
 #include "../../include/gk.h"
 
 GkProgInfo*
-gk_prog_cube();
+gk_prog_cube(void);
 
 #endif /* gk_def_prog_h */

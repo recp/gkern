@@ -12,18 +12,18 @@
 #include "../../include/gk-material.h"
 
 GkMaterial*
-gk_def_material();
+gk_def_material(void);
 
 GkPhong*
-gk_def_material_phong();
+gk_def_material_phong(void);
 
 GkBlinn*
-gk_def_material_blinn();
+gk_def_material_blinn(void);
 
 GkLambert*
-gk_def_material_lambert();
+gk_def_material_lambert(void);
 
 GkConstant*
-gk_def_material_constant();
+gk_def_material_constant(void);
 
 #endif /* gk_def_effect_h */

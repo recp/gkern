@@ -49,7 +49,7 @@ GkProgInfo*
 gkNewProgram(GkShader *shaders);
 
 GkProgInfo*
-gkDefaultProgram();
+gkDefaultProgram(void);
 
 GLint
 gk_progAttribIndex(GkProgInfo * __restrict prog,
@@ -70,7 +70,7 @@ gk_progRemoveAttrib(GkProgInfo * __restrict prog,
                     bool                    shrink);
 
 GLint
-gkCurrentProgram();
+gkCurrentProgram(void);
 
 #ifdef __cplusplus
 }

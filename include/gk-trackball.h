@@ -44,7 +44,7 @@ typedef struct GkTrackball {
 } GkTrackball;
 
 GkTrackball*
-gk_tball_new();
+gk_tball_new(void);
 
 void
 gk_tball_attach(GkTrackball * __restrict tball,
