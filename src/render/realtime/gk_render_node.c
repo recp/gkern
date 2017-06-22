@@ -24,11 +24,17 @@ gkRenderNode(GkScene     *scene,
     if (prog->updtLights)
       gkUniformLights(scene, prog);
 
-    if (node->model)
-      gkRenderModel(scene,
-                    node->model,
-                    tr,
-                    prog);
+    if (node->model) {
+      GkModelInst *modelInst;
+      modelInst = node->model;
+      do {
+        gkRenderModel(scene,
+                      modelInst,
+                      tr,
+                      prog);
+        modelInst = modelInst->next;
+      } while (modelInst);
+    }
 
     if (node->chld)
       gkRenderNode(scene,
@@ -87,11 +93,17 @@ gkPrepNode(GkScene     *scene,
       }
     }
 
-    if (node->model)
-      gkPrepModel(scene,
-                  node->model,
-                  tr,
-                  prog);
+    if (node->model) {
+      GkModelInst *modelInst;
+      modelInst = node->model;
+      do {
+        gkPrepModel(scene,
+                    modelInst,
+                    tr,
+                    prog);
+        modelInst = modelInst->next;
+      } while (modelInst);
+    }
 
     if (node->chld)
       gkPrepNode(scene, node->chld, tr, prog);
