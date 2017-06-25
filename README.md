@@ -4,7 +4,8 @@ Basically this is a rendering library/kernel. The main purpose was render [Asset
 
 libgk doesn't depend on AssetKit, so there are another library to load AssetKit content to libgk called [assetkit-gl](https://github.com/recp/assetkit-gl), you can see how to load contents to libgk in this library. Because libgk doesn't provide loading contents, in the future maybe it will.
 
-Currently this library only renders using OpenGL, but in the future other apis like `Vulkan`, `DirectX`, `Metal` are considered to be supported!
+Currently this library only renders using OpenGL, but in the future other apis like `Vulkan`, `DirectX`, `Metal` are considered to be supported! 
+
 # Features:
 - Utils for loading shaders
 - Default shaders/materials and default program
@@ -24,9 +25,15 @@ Currently this library only renders using OpenGL, but in the future other apis l
 - Built-in trackball
 
 # Todo
+- [ ] Transparency in common profile
+- [ ] Frustum culling
+- [ ] Occlusion Culling
+- [ ] Level of Detail for mesh
+- [ ] Separate common profile into multiple small shaders to reduce branching in GPU
 - [ ] Multithread rendering
-- [ ] Don't render models which are outside of view frustum using bounding box
 - [ ] Textures
+
+   - [x] 2D textures for common profile
 - [ ] Instanced Rendering
 - [ ] ... 
 
