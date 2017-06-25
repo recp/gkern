@@ -46,8 +46,6 @@ gkMakeCamera(mat4 proj, mat4 view) {
 
   cam = calloc(sizeof(*cam), 1);
 
-  glm_vec_copy((vec3){0.0f, 0.0f, -1.0f}, cam->dir);
-
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->view);
   glm_mat4_mul(proj, view, cam->projView);
@@ -64,8 +62,6 @@ gkMakeCameraByWorld(mat4 proj, mat4 view) {
   GkCamera *cam;
 
   cam = calloc(sizeof(*cam), 1);
-
-  glm_vec_copy((vec3){0.0f, 0.0f, -1.0f}, cam->dir);
 
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->world);
@@ -98,7 +94,6 @@ gkUpdateCameraView(GkCamera * __restrict cam) {
 
 void
 gkUpdateCameraWorld(GkCamera * __restrict cam) {
-  glm_vec_rotate_m4(cam->world, cam->dir, cam->dir);
   glm_mat4_inv(cam->world, cam->view);
   glm_mat4_mul(cam->proj,
                cam->view,
@@ -114,10 +109,10 @@ gkZoom(GkScene * __restrict scene,
   if (!(cam = scene->camera) || distance == 0.0f)
     return;
 
-  glm_vec_rotate_m4(cam->world, cam->dir, dir);
-  glm_vec_scale(dir, distance, dir);
+  glm_vec_normalize_to(cam->world[2], dir);
+  glm_vec_scale(dir, -distance, dir);
   glm_vec_add(cam->world[3], dir, cam->world[3]);
-
+  
   gkUpdateCameraView(cam);
 
   scene->flags |= GK_SCENEF_UPDT_VIEW | GK_SCENEF_RENDER;
