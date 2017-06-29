@@ -101,4 +101,11 @@ GkModel*
 gk_model_find(struct GkContext * __restrict ctx,
               void * __restrict source);
 
+GkModelInst*
+gkMakeInstance(GkModel *model);
+
+GkPrimInst*
+gkMakePrimInst(GkModelInst *modelInst,
+               GkPrimitive *prim);
+
 #endif /* gk_model_h */
