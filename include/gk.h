@@ -70,6 +70,7 @@ typedef struct GkScene {
   GLenum       usage;
   GLuint       currentProgram;
   GkSceneFlags flags;
+  float        fpsApprx;
 } GkScene;
 
 GkContext*

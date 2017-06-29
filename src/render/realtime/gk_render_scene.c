@@ -8,16 +8,20 @@
 #include "../../../include/gk.h"
 #include "../../default/gk_transform.h"
 #include "../../../include/prims/gk-cube.h"
+#include "../../../include/gk-time.h"
 
 void
 gkRenderScene(GkScene * scene) {
   GkTransform *trans;
+  double       start, end;
+
+  start = gkGetTime();
 
   if (!scene
       || ((scene->flags & GK_SCENEF_ONCE)
           && !(scene->flags & GK_SCENEF_NEEDS_RENDER))
       || scene->flags & GK_SCENEF_RENDERING)
-    return;
+  return;
 
 #ifdef DEBUG
   assert(scene->pinfo && "set default program / shader params");
@@ -68,4 +72,8 @@ gkRenderScene(GkScene * scene) {
   scene->flags &= ~GK_SCENEF_NEEDS_RENDER;
   scene->flags &= ~GK_SCENEF_RENDERING;
   scene->flags |= GK_SCENEF_RENDERED;
+
+  end = gkGetTime();
+
+  scene->fpsApprx = 1.0 / (end - start);
 }
