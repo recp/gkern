@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../include/gk.h"
-#include "../../include/gk-platform.h"
+#include "../../include/gk/gk.h"
+#include "../../include/gk/platform.h"
 
 /* Default expected values */
 GLint GK_PLI[] =

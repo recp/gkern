@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../include/gk.h"
-#include "../../include/gk-coord.h"
+#include "../../include/gk/gk.h"
+#include "../../include/gk/coord.h"
 
 void
 gk_moveOrigin(vec3 position,

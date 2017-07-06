@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk-node.h"
+#include "../include/gk/node.h"
 
 void
 gkMakeNodeTransform(GkNode * __restrict node) {

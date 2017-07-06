@@ -8,8 +8,8 @@
 #ifndef ak_def_light_h
 #define ak_def_light_h
 
-#include "../../include/gk.h"
-#include "../../include/gk-light.h"
+#include "../../include/gk/gk.h"
+#include "../../include/gk/light.h"
 
 GkLight*
 gk_def_lights(void);

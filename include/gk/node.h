@@ -11,11 +11,11 @@
 extern "C" {
 #endif
 
-#include "gk-common.h"
-#include "gk-light.h"
-#include "gk-bbox.h"
-#include "gk-model.h"
-#include "gk-transform.h"
+#include "common.h"
+#include "light.h"
+#include "bbox.h"
+#include "model.h"
+#include "transform.h"
   
 #include <stdlib.h>
 #include <cglm.h>

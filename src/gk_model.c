@@ -6,7 +6,7 @@
  */
 
 #include "gk_model.h"
-#include "../include/gk-rb.h"
+#include "../include/gk/rb.h"
 
 void
 gk_model_add(GkContext * __restrict ctx,

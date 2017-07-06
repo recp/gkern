@@ -8,8 +8,8 @@
 #ifndef gk_tball_mouse_h
 #define gk_tball_mouse_h
 
-#include "../../include/gk.h"
-#include "../../include/gk-trackball.h"
+#include "../../include/gk/gk.h"
+#include "../../include/gk/trackball.h"
 
 void
 gk_tball_mouse_ws(GkMouseEventStruct *event);

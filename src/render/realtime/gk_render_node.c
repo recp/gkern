@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../../include/gk.h"
+#include "../../../include/gk/gk.h"
 #include "../../gk_matrix.h"
 
 void

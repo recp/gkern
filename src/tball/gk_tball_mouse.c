@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../include/gk.h"
-#include "../../include/gk-trackball.h"
+#include "../../include/gk/gk.h"
+#include "../../include/gk/trackball.h"
 #include "gk_tball.h"
 #include "gk_tball_mouse.h"
 

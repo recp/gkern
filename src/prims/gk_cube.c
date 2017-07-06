@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../include/prims/gk-cube.h"
+#include "../../include/gk/prims/cube.h"
 #include "../default/gk_def_prog.h"
 #include <limits.h>
 

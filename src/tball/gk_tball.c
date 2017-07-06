@@ -7,7 +7,7 @@
 
 #include "gk_tball.h"
 #include "gk_tball_mouse.h"
-#include "../../include/gk-transform.h"
+#include "../../include/gk/transform.h"
 #include "../default/gk_transform.h"
 #include <string.h>
 

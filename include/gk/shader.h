@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include "gk-common.h"
+#include "common.h"
 #include <cglm.h>
 #include <OpenGL/gl3.h>
 #include <stdio.h>

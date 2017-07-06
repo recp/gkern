@@ -10,7 +10,7 @@
 #ifndef gk_image_h
 #define gk_image_h
 
-#include "gk-common.h"
+#include "common.h"
 
 typedef struct GkImageMip {
   struct GkImageMip *next;

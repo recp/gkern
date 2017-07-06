@@ -8,8 +8,8 @@
 #ifndef gk_prims_h
 #define gk_prims_h
 
-#include "../gk-common.h"
-#include "gk-cube.h"
+#include "../common.h"
+#include "cube.h"
 
 void
 gkReleasePrims(void);

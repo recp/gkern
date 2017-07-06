@@ -8,8 +8,8 @@
 #ifndef gk_def_transform_h
 #define gk_def_transform_h
 
-#include "../../include/gk.h"
-#include "../../include/gk-material.h"
+#include "../../include/gk/gk.h"
+#include "../../include/gk/material.h"
 
 GkTransform *
 gk_def_idmat(void);

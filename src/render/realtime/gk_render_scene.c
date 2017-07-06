@@ -5,10 +5,10 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../../include/gk.h"
+#include "../../../include/gk/gk.h"
 #include "../../default/gk_transform.h"
-#include "../../../include/prims/gk-cube.h"
-#include "../../../include/gk-time.h"
+#include "../../../include/gk/prims/cube.h"
+#include "../../../include/gk/time.h"
 
 void
 gkRenderScene(GkScene * scene) {

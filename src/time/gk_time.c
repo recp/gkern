@@ -7,8 +7,8 @@
 
 #include "gk_time.h"
 #include "../gk_common.h"
-#include "../../include/gk.h"
-#include "../../include/gk-time.h"
+#include "../../include/gk/gk.h"
+#include "../../include/gk/time.h"
 #include <time.h>
 
 #ifdef __APPLE__

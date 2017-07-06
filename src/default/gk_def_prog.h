@@ -8,7 +8,7 @@
 #ifndef gk_def_prog_h
 #define gk_def_prog_h
 
-#include "../../include/gk.h"
+#include "../../include/gk/gk.h"
 
 GkProgInfo*
 gk_prog_cube(void);

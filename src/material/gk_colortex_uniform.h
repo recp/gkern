@@ -8,7 +8,7 @@
 #ifndef gk_colortex_uniform_h
 #define gk_colortex_uniform_h
 
-#include "../../include/gk.h"
+#include "../../include/gk/gk.h"
 
 void
 gkUniformColorOrTex(GkColorOrTex * __restrict crtx,

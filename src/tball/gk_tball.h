@@ -8,9 +8,9 @@
 #ifndef gk_tball_h
 #define gk_tball_h
 
-#include "../../include/gk.h"
-#include "../../include/gk-trackball.h"
-#include "../../include/gk-geom-types.h"
+#include "../../include/gk/gk.h"
+#include "../../include/gk/trackball.h"
+#include "../../include/gk/geom-types.h"
 
 void
 gk_tall_vec(GkTrackball * __restrict tball,

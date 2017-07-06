@@ -8,7 +8,7 @@
 #ifndef gk_def_shader_h
 #define gk_def_shader_h
 
-#include "../../../include/gk.h"
+#include "../../../include/gk/gk.h"
 
 typedef enum GK_DEF_SHADER {
   GK_DEF_SHADER_DEFAULT = 0,

@@ -8,9 +8,9 @@
 #ifndef gk_texture_h
 #define gk_texture_h
 
-#include "gk-common.h"
-#include "gk-image.h"
-#include "gk-color.h"
+#include "common.h"
+#include "image.h"
+#include "color.h"
 #include <stdbool.h>
 
 typedef enum GkWrapMode {

@@ -8,7 +8,7 @@
 #ifndef gk_uniform_h
 #define gk_uniform_h
 
-#include "../include/gk.h"
+#include "../include/gk/gk.h"
 
 GLint
 gkGetUniformLoc(GLuint prog,

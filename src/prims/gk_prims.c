@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../include/prims/gk-prims.h"
+#include "../../include/gk/prims/prims.h"
 
 void
 gkReleasePrims() {

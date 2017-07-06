@@ -11,9 +11,9 @@
 extern "C" {
 #endif
 
-#include "gk-common.h"
-#include "gk-rb.h"
-#include "gk-shader.h"
+#include "common.h"
+#include "rb.h"
+#include "shader.h"
 
 #include <OpenGL/gl3.h>
 #include <stdio.h>

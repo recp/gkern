@@ -8,8 +8,8 @@
 #ifndef gk_transform_h
 #define gk_transform_h
 
-#include "gk-common.h"
-#include "gk-geom-types.h"
+#include "common.h"
+#include "geom-types.h"
 #include <cglm.h>
 
 typedef enum GkTransformFlags {

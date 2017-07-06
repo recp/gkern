@@ -8,11 +8,11 @@
 #ifndef gk_model_h
 #define gk_model_h
 
-#include "gk-common.h"
-#include "gk-program.h"
-#include "gk-material.h"
-#include "gk-bbox.h"
-#include "gk-transform.h"
+#include "common.h"
+#include "program.h"
+#include "material.h"
+#include "bbox.h"
+#include "transform.h"
 
 struct GkModel;
 struct GkModelInst;

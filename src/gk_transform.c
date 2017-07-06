@@ -5,9 +5,9 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk.h"
-#include "../include/gk-geom-types.h"
-#include "../include/gk-transform.h"
+#include "../include/gk/gk.h"
+#include "../include/gk/geom-types.h"
+#include "../include/gk/transform.h"
 
 void
 gkTransformCombine(GkTransform * __restrict trans) {

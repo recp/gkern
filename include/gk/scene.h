@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include "gk-common.h"
+#include "common.h"
 
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE          = 0,

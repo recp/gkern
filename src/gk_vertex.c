@@ -5,9 +5,9 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk.h"
-#include "../include/gk-vertex.h"
-#include "../include/gk-rb.h"
+#include "../include/gk/gk.h"
+#include "../include/gk/vertex.h"
+#include "../include/gk/rb.h"
 
 static RBTree  *gk_attribIndTree;
 static uint32_t gk_attribIndLast;

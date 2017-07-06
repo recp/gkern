@@ -11,21 +11,21 @@
 extern "C" {
 #endif
 
-#include "gk-common.h"
-#include "gk-shader.h"
-#include "gk-program.h"
-#include "gk-light.h"
-#include "gk-material.h"
-#include "gk-bbox.h"
-#include "gk-geom-types.h"
-#include "gk-image.h"
-#include "gk-model.h"
-#include "gk-rb.h"
-#include "gk-node.h"
-#include "gk-transform.h"
-#include "gk-camera.h"
-#include "gk-scene.h"
-#include "gk-render.h"
+#include "common.h"
+#include "shader.h"
+#include "program.h"
+#include "light.h"
+#include "material.h"
+#include "bbox.h"
+#include "geom-types.h"
+#include "image.h"
+#include "model.h"
+#include "rb.h"
+#include "node.h"
+#include "transform.h"
+#include "camera.h"
+#include "scene.h"
+#include "render.h"
 
 #include <stdlib.h>
 #include <cglm.h>

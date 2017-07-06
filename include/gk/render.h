@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include "gk-common.h"
+#include "common.h"
 
 void
 gkUniformMatrix(GkModelInst *modelInst);

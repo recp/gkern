@@ -8,7 +8,7 @@
 #ifndef gk_camera_h
 #define gk_camera_h
 
-#include "gk-common.h"
+#include "common.h"
 #include <cglm.h>
 
 struct GkScene;

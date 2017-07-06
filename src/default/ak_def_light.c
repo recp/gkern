@@ -6,7 +6,7 @@
  */
 
 #include "ak_def_light.h"
-#include "../../include/gk-material.h"
+#include "../../include/gk/material.h"
 #include <stdbool.h>
 
 GkDirectionalLight gkdef_light_directional = {

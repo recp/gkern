@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk.h"
+#include "../include/gk/gk.h"
 #include "gk_uniform.h"
 #include "default/ak_def_light.h"
 #include "gk_matrix.h"

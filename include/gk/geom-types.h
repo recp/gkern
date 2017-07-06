@@ -8,7 +8,7 @@
 #ifndef gk_geom_types_h
 #define gk_geom_types_h
 
-#include "gk-common.h"
+#include "common.h"
 
 typedef struct GkPoint {
   float x;

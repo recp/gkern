@@ -8,7 +8,7 @@
 #ifndef gk_src_matrix_h
 #define gk_src_matrix_h
 
-#include "../include/gk.h"
+#include "../include/gk/gk.h"
 
 void
 gkCalcViewMat(GkScene     * __restrict scene,

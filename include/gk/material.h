@@ -8,9 +8,9 @@
 #ifndef gk_material_h
 #define gk_material_h
 
-#include "gk-common.h"
-#include "gk-color.h"
-#include "gk-texture.h"
+#include "common.h"
+#include "color.h"
+#include "texture.h"
 
 struct GkScene;
 struct GkModelInst;

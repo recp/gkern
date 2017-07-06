@@ -8,8 +8,8 @@
 #ifndef gk_cube_h
 #define gk_cube_h
 
-#include "../gk-common.h"
-#include "../gk-model.h"
+#include "../common.h"
+#include "../model.h"
 
 struct GkScene;
 

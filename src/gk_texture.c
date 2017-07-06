@@ -5,9 +5,9 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk.h"
-#include "../include/gk-image.h"
-#include "../include/gk-texture.h"
+#include "../include/gk/gk.h"
+#include "../include/gk/image.h"
+#include "../include/gk/texture.h"
 #include <OpenGL/gl3ext.h>
 
 void

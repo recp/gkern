@@ -8,8 +8,8 @@
 #ifndef gk_light_h
 #define gk_light_h
 
-#include "gk-common.h"
-#include "gk-color.h"
+#include "common.h"
+#include "color.h"
 #include <cglm.h>
 
 struct GkScene;

@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk.h"
-#include "../include/gk-geom-types.h"
+#include "../include/gk/gk.h"
+#include "../include/gk/geom-types.h"
 
 GkPoint
 gk_rect_center(GkRect rect) {

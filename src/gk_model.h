@@ -8,7 +8,7 @@
 #ifndef gk_src_model_h
 #define gk_src_model_h
 
-#include "../include/gk.h"
+#include "../include/gk/gk.h"
 
 void
 gk_mdl_init(void);

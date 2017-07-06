@@ -8,7 +8,7 @@
 #ifndef gk_coord_h
 #define gk_coord_h
 
-#include "gk-common.h"
+#include "common.h"
 #include <cglm.h>
 
 void

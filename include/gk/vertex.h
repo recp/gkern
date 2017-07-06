@@ -8,8 +8,8 @@
 #ifndef gk_vertex_h
 #define gk_vertex_h
 
-#include "gk-common.h"
-#include "gk-program.h"
+#include "common.h"
+#include "program.h"
 
 /* same as AkInputSemantic but AssetKit is not required! */
 
