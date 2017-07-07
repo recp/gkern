@@ -27,7 +27,8 @@ gkRenderScene(GkScene * scene) {
   assert(scene->pinfo && "set default program / shader params");
 #else
   /* there is no program! */
-  return;
+  if (!scene->pinfo)
+    return;
 #endif
 
   scene->flags &= ~GK_SCENEF_RENDERED;
