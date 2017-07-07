@@ -12,8 +12,9 @@ extern "C" {
 #endif
 
 #include "common.h"
-#include "rb.h"
 #include "shader.h"
+
+#include <ds/rb.h>
 
 #include <OpenGL/gl3.h>
 #include <stdio.h>

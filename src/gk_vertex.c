@@ -7,7 +7,7 @@
 
 #include "../include/gk/gk.h"
 #include "../include/gk/vertex.h"
-#include "../include/gk/rb.h"
+#include <ds/rb.h>
 
 static RBTree  *gk_attribIndTree;
 static uint32_t gk_attribIndLast;
@@ -42,8 +42,8 @@ gk_vertFreeAttrib(RBTree *tree, RBNode *node) {
 
   attrib = node->val;
 
-  tree->freeFn((char *)attrib->name);
-  tree->freeFn(attrib);
+  tree->alc->free((char *)attrib->name);
+  tree->alc->free(attrib);
 }
 
 void
@@ -54,7 +54,7 @@ gk_vertFreeAttribConst(RBTree *tree, RBNode *node) {
     return;
 
   attrib = node->val;
-  tree->freeFn(attrib);
+  tree->alc->free(attrib);
 }
 
 GLint
@@ -118,8 +118,7 @@ void
 gk_verta_init() {
   gk_attribIndLast = 0;
   gk_attribIndTree = rb_newtree_str();
-  gk_attribIndTree->freeFn   = free;
-  gk_attribIndTree->freeNode = gk_vertFreeAttribConst;
+  gk_attribIndTree->onFreeNode = gk_vertFreeAttribConst;
 
   gk_vertSetAttribs(gk_attribNamesCount,
                     gk_attribNames);

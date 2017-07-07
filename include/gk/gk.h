@@ -20,12 +20,13 @@ extern "C" {
 #include "geom-types.h"
 #include "image.h"
 #include "model.h"
-#include "rb.h"
 #include "node.h"
 #include "transform.h"
 #include "camera.h"
 #include "scene.h"
 #include "render.h"
+
+#include <ds/rb.h>
 
 #include <stdlib.h>
 #include <cglm.h>

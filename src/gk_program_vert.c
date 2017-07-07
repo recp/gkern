@@ -7,7 +7,8 @@
 
 #include "../include/gk/program.h"
 #include "../include/gk/vertex.h"
-#include "../include/gk/rb.h"
+
+#include <ds/rb.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -19,11 +20,10 @@ gk_vertFreeAttrib(RBTree *tree, RBNode *node);
 static
 void
 gk_progInitVertInf(GkProgInfo * __restrict prog) {
-  prog->attribc           = 0;
-  prog->attribl           = 0;
-  prog->attribs           = rb_newtree_str();
-  prog->attribs->freeFn   = free;
-  prog->attribs->freeNode = gk_vertFreeAttrib;
+  prog->attribc             = 0;
+  prog->attribl             = 0;
+  prog->attribs             = rb_newtree_str();
+  prog->attribs->onFreeNode = gk_vertFreeAttrib;
 }
 
 GLint
