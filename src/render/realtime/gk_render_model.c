@@ -5,9 +5,9 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../../include/gk.h"
-#include "../../../include/gk-material.h"
-#include "../../../include/prims/gk-cube.h"
+#include "../../../include/gk/gk.h"
+#include "../../../include/gk/material.h"
+#include "../../../include/gk/prims/cube.h"
 #include "../../default/gk_def_effect.h"
 #include "../../gk_matrix.h"
 
