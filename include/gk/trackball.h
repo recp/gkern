@@ -12,7 +12,7 @@
 #include "geom-types.h"
 #include "mouse.h"
 
-#include <cglm.h>
+#include <cglm/cglm.h>
 #include <stdbool.h>
 
 struct GkScene;

@@ -18,7 +18,7 @@ extern "C" {
 #include "transform.h"
   
 #include <stdlib.h>
-#include <cglm.h>
+#include <cglm/cglm.h>
 
 typedef struct GkNode {
   GkNodeFlags    flags;

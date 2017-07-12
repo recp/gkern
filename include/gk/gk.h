@@ -29,7 +29,7 @@ extern "C" {
 #include <ds/rb.h>
 
 #include <stdlib.h>
-#include <cglm.h>
+#include <cglm/cglm.h>
 
 #define GK_DRAW_ELEMENTS (1 << 0)
 #define GK_DRAW_ARRAYS   (1 << 1)

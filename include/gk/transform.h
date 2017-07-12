@@ -10,7 +10,7 @@
 
 #include "common.h"
 #include "geom-types.h"
-#include <cglm.h>
+#include <cglm/cglm.h>
 
 typedef enum GkTransformFlags {
   GK_TRANSF_NONE          =  0,

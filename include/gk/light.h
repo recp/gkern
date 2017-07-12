@@ -10,7 +10,7 @@
 
 #include "common.h"
 #include "color.h"
-#include <cglm.h>
+#include <cglm/cglm.h>
 
 struct GkScene;
 struct GkNode;

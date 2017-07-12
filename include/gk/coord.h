@@ -9,7 +9,7 @@
 #define gk_coord_h
 
 #include "common.h"
-#include <cglm.h>
+#include <cglm/cglm.h>
 
 void
 gk_moveOrigin(vec3 position,

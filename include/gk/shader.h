@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 #include "common.h"
-#include <cglm.h>
+#include <cglm/cglm.h>
 #include <OpenGL/gl3.h>
 #include <stdio.h>
 

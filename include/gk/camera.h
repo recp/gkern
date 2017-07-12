@@ -9,7 +9,7 @@
 #define gk_camera_h
 
 #include "common.h"
-#include <cglm.h>
+#include <cglm/cglm.h>
 
 struct GkScene;
 
