@@ -45,12 +45,12 @@ typedef struct GkTechnique {
 
 typedef struct GkPhong {
   GkTechnique   base;
-  GkColorOrTex  emission;
-  GkColorOrTex  ambient;
-  GkColorOrTex  diffuse;
-  GkColorOrTex  specular;
-  GkColorOrTex  reflective;
-  GkColorOrTex  transparent;
+  GkColorOrTex *emission;
+  GkColorOrTex *ambient;
+  GkColorOrTex *diffuse;
+  GkColorOrTex *specular;
+  GkColorOrTex *reflective;
+  GkColorOrTex *transparent;
   float         shininess;
   float         reflectivity;
   float         transparency;
@@ -59,11 +59,11 @@ typedef struct GkPhong {
 
 typedef struct GkLambert {
   GkTechnique   base;
-  GkColorOrTex  emission;
-  GkColorOrTex  ambient;
-  GkColorOrTex  diffuse;
-  GkColorOrTex  reflective;
-  GkColorOrTex  transparent;
+  GkColorOrTex *emission;
+  GkColorOrTex *ambient;
+  GkColorOrTex *diffuse;
+  GkColorOrTex *reflective;
+  GkColorOrTex *transparent;
   float         reflectivity;
   float         transparency;
   float         indexOfRefraction;
@@ -71,9 +71,9 @@ typedef struct GkLambert {
 
 typedef struct GkConstant {
   GkTechnique   base;
-  GkColorOrTex  emission;
-  GkColorOrTex  reflective;
-  GkColorOrTex  transparent;
+  GkColorOrTex *emission;
+  GkColorOrTex *reflective;
+  GkColorOrTex *transparent;
   float         reflectivity;
   float         transparency;
   float         indexOfRefraction;

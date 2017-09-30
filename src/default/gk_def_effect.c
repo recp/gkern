@@ -7,17 +7,22 @@
 
 #include "gk_def_effect.h"
 
+GkColorOrTex gkdef_clr_blk = { .color = { 0.0, 0.0, 0.0, 1.0 },
+                               NULL, GK_ONLY_COLOR };
+GkColorOrTex gkdef_clr_wht = { .color = { 0.0, 0.0, 0.0, 1.0 },
+                               NULL, GK_ONLY_COLOR };
+
 GkPhong gkdef_phong = {
   .base = {
     .type       = GK_MATERIAL_PHONG,
     .subroutine = "phong"
   },
-  .emission    = { .color = { 0.0, 0.0, 0.0, 1.0 }, NULL, GK_ONLY_COLOR },
-  .ambient     = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .diffuse     = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .specular    = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .reflective  = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .transparent = { .color = { 0.0, 0.0, 0.0, 1.0 }, NULL, GK_ONLY_COLOR  },
+  .emission          = NULL,
+  .ambient           = NULL,
+  .diffuse           = &gkdef_clr_wht,
+  .specular          = &gkdef_clr_wht,
+  .reflective        = NULL,
+  .transparent       = NULL,
   .shininess         = 1.0,
   .reflectivity      = 1.0,
   .transparency      = 0.0,
@@ -29,12 +34,12 @@ GkBlinn gkdef_blinn = {
     .type       = GK_MATERIAL_BLINN,
     .subroutine = "blinn"
   },
-  .emission    = { .color = { 0.0, 0.0, 0.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .ambient     = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .diffuse     = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .specular    = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .reflective  = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .transparent = { .color = { 0.0, 0.0, 0.0, 1.0 }, NULL, GK_ONLY_COLOR  },
+  .emission          = NULL,
+  .ambient           = NULL,
+  .diffuse           = &gkdef_clr_wht,
+  .specular          = &gkdef_clr_wht,
+  .reflective        = NULL,
+  .transparent       = NULL,
   .shininess         = 1.0,
   .reflectivity      = 1.0,
   .transparency      = 0.0,
@@ -46,11 +51,11 @@ GkLambert gkdef_lambert = {
     .type       = GK_MATERIAL_LAMBERT,
     .subroutine = "lambert"
   },
-  .emission    = { .color = { 0.0, 0.0, 0.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .ambient     = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .diffuse     = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .reflective  = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .transparent = { .color = { 0.0, 0.0, 0.0, 1.0 }, NULL, GK_ONLY_COLOR  },
+  .emission          = NULL,
+  .ambient           = NULL,
+  .diffuse           = &gkdef_clr_wht,
+  .reflective        = NULL,
+  .transparent       = NULL,
   .reflectivity      = 1.0,
   .transparency      = 0.0,
   .indexOfRefraction = 1.0
@@ -61,9 +66,9 @@ GkConstant gkdef_constant = {
     .type       = GK_MATERIAL_CONSTANT,
     .subroutine = "constant"
   },
-  .emission    = { .color = { 0.0, 0.0, 0.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .reflective  = { .color = { 1.0, 1.0, 1.0, 1.0 }, NULL, GK_ONLY_COLOR  },
-  .transparent = { .color = { 0.0, 0.0, 0.0, 1.0 }, NULL, GK_ONLY_COLOR  },
+  .emission          = NULL,
+  .reflective        = NULL,
+  .transparent       = NULL,
   .reflectivity      = 1.0,
   .transparency      = 0.0,
   .indexOfRefraction = 1.0
