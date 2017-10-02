@@ -51,6 +51,12 @@ gkShaderLogInfo(GLuint shaderId,
 void
 gkUniformMat4(GLint location, mat4 matrix);
 
+GkShader*
+gkShaderByName(const char *name);
+
+void
+gkShaderSetName(GkShader *shader, const char *name);
+
 #ifdef __cplusplus
 }
 #endif

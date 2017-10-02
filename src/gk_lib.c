@@ -9,6 +9,7 @@
 #include "gk_common.h"
 #include "time/gk_time.h"
 
+#include "shader/shader.h"
 #include "gk_program.h"
 
 void
@@ -30,6 +31,7 @@ GK_CONSTRUCTOR
 gk__init() {
   gk_verta_init();
   gk_time_init();
+  gk_shaders_init();
   gk_prog_init();
 }
 
@@ -37,6 +39,7 @@ void
 GK_DESTRUCTOR
 gk__cleanup() {
   gk_prog_deinit();
+  gk_shaders_deinit();
   gk_time_deinit();
   gk_verta_deinit();
 }
