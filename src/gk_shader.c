@@ -84,6 +84,26 @@ gkShaderLoad(GLenum shaderType,
 }
 
 GLuint
+gkShaderLoadN(GLenum  shaderType,
+              char   *source[],
+              size_t  count) {
+  char  *src;
+  size_t i, len;
+
+  len = 0;
+  for (i = 0; i < count; i++)
+    len +=  strlen(source[i]);
+
+  src = malloc(len + 1);
+  src[0] = '\0';
+
+  for (i = 0; i < count; i++)
+    strcat(src, source[i]);
+
+  return gkShaderLoad(shaderType, src);
+}
+
+GLuint
 gkShaderLoadFromFile(GLenum shaderType,
                      const char * path) {
   char * source;
@@ -103,7 +123,7 @@ gkShaderLoadFromFile(GLenum shaderType,
 
 int
 gkShaderLoadFromFolder(const char * __restrict path,
-                       GkShader ** __restrict dest) {
+                       GkShader  ** __restrict dest) {
   GkShader      *shader;
   GkShader      *lastShader;
   GkShader      *currShader;
@@ -124,9 +144,7 @@ gkShaderLoadFromFolder(const char * __restrict path,
   }
 
   if ((dir = opendir(path))) {
-
     while ((ent = readdir(dir))) {
-
       const char *fname;
       const char *ext;
       const char *dot;
@@ -178,7 +196,7 @@ gkShaderLoadFromFolder(const char * __restrict path,
   chdir(cwdir);
 
   *dest = shader;
-  
+
   return count;
 }
 
