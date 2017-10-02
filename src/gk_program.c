@@ -9,8 +9,14 @@
 #include "../include/gk/shader.h"
 #include "default/shader/gk_def_shader.h"
 
+#include "gk_program.h"
+
 #include <stdlib.h>
 #include <string.h>
+
+#include <ds/rb.h>
+
+static RBTree *gk_progs;
 
 void
 gkProgramLogInfo(GLuint progId,
@@ -132,3 +138,30 @@ gkCurrentProgram() {
   glGetIntegerv(GL_CURRENT_PROGRAM, &prog);
   return prog;
 }
+
+GkProgInfo*
+gkGetOrCreatProg(char       *name,
+                 GkProgInfo *(creatCb)(char *name, void *userData),
+                 void       *userData) {
+  GkProgInfo *pinfo;
+  if ((pinfo = rb_find(gk_progs, (void *)name)))
+    return pinfo;
+
+  if ((pinfo = creatCb(name, userData))) {
+    rb_insert(gk_progs, (void *)name, pinfo);
+    return pinfo;
+  }
+
+  return NULL;
+}
+
+void
+gk_prog_init() {
+  gk_progs = rb_newtree_str();
+}
+
+void
+gk_prog_deinit() {
+  rb_destroy(gk_progs);
+}
+

@@ -73,6 +73,11 @@ gk_progRemoveAttrib(GkProgInfo * __restrict prog,
 GLint
 gkCurrentProgram(void);
 
+GkProgInfo*
+gkGetOrCreatProg(char       *name,
+                 GkProgInfo *(creatCb)(char *name, void *userData),
+                 void       *userData);
+
 #ifdef __cplusplus
 }
 #endif
