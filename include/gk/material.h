@@ -12,6 +12,7 @@
 #include "color.h"
 #include "texture.h"
 
+struct GkPass;
 struct GkScene;
 struct GkModelInst;
 struct GkProgInfo;
@@ -24,15 +25,13 @@ typedef enum GkMaterialType {
 } GkMaterialType;
 
 typedef enum GkColorMethod {
-  GK_DISCARD       = 0,
-  GK_ONLY_TEX      = 1,
-  GK_ONLY_COLOR    = 2,
-  GK_MIX_COLOR_TEX = 3
+  GK_COLOR_DISCARD = 0,
+  GK_COLOR_TEX     = 1,
+  GK_COLOR_COLOR   = 2
 } GkColorMethod;
 
 typedef struct GkColorOrTex {
-  GkColor       color;
-  GkTexture    *tex;
+  void         *val;
   GkColorMethod method;
 } GkColorOrTex;
 
@@ -40,6 +39,7 @@ typedef struct GkTechnique {
   GkMaterialType      type;
   uint32_t            index; /* subroutine index */
   char               *subroutine;
+  struct GkPass      *pass;
   struct GkTechnique *next;
 } GkTechnique;
 

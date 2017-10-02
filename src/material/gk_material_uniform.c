@@ -99,15 +99,6 @@ gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
     if (constant->transparent)
       gkUniformColorOrTex(constant->transparent, buf, "transparent", prog);
 
-    loc = gkGetUniformLoc(prog, buf, "emission.color");
-    glUniform4fv(loc, 1, constant->emission->color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "reflective.color");
-    glUniform4fv(loc, 1, constant->reflective->color.vec);
-
-    loc = gkGetUniformLoc(prog, buf, "transparent.color");
-    glUniform4fv(loc, 1, constant->transparent->color.vec);
-
     loc = gkGetUniformLoc(prog, buf, "reflectivity");
     glUniform1f(loc, constant->reflectivity);
 

@@ -26,33 +26,30 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
 
   method = crtx->method;
 
-  if (method != GK_DISCARD
-      && method != GK_ONLY_COLOR
-      && method != GK_ONLY_TEX
-      && method != GK_MIX_COLOR_TEX)
-    method = GK_DISCARD;
+  if (method != GK_COLOR_DISCARD
+      && method != GK_COLOR_COLOR
+      && method != GK_COLOR_TEX)
+    method = GK_COLOR_DISCARD;
 
   strcpy(uname + startOff, "method");
   loc = gkGetUniformLoc(prog, buf, uname);
   glUniform1ui(loc, (uint32_t)crtx->method);
 
-  if (method == GK_DISCARD)
+  if (method == GK_COLOR_DISCARD || !crtx->val)
     return;
 
-  if (method == GK_ONLY_COLOR
-      || method == GK_MIX_COLOR_TEX) {
+  if (method == GK_COLOR_COLOR) {
+    GkColor *color;
+
+    color = crtx->val;
     strcpy(uname + startOff, "color");
     loc = gkGetUniformLoc(prog, buf, uname);
-    glUniform4fv(loc, 1, crtx->color.vec);
-  }
-
-  if ((method == GK_ONLY_TEX
-      || method == GK_MIX_COLOR_TEX)
-      && crtx->tex) {
+    glUniform4fv(loc, 1, color->vec);
+  } else if (method == GK_COLOR_TEX) {
     GkTexture *tex;
     GLuint     unit;
 
-    tex  = crtx->tex;
+    tex  = crtx->val;
     unit = 0;
     if (tex->sampler) {
       unit = tex->sampler->unit;

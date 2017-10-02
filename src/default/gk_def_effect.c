@@ -7,10 +7,13 @@
 
 #include "gk_def_effect.h"
 
-GkColorOrTex gkdef_clr_blk = { .color = { 0.0, 0.0, 0.0, 1.0 },
-                               NULL, GK_ONLY_COLOR };
-GkColorOrTex gkdef_clr_wht = { .color = { 0.0, 0.0, 0.0, 1.0 },
-                               NULL, GK_ONLY_COLOR };
+GkColor gkdef_clr__blk = { 0.0, 0.0, 0.0, 1.0 };
+GkColor gkdef_clr__wht = { 0.0, 0.0, 0.0, 1.0 };
+
+GkColorOrTex gkdef_clr_blk = { .val    = &gkdef_clr__blk,
+                               .method = GK_COLOR_COLOR };
+GkColorOrTex gkdef_clr_wht = { .val    = &gkdef_clr__wht,
+                               .method = GK_COLOR_COLOR };
 
 GkPhong gkdef_phong = {
   .base = {
