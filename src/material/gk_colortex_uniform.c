@@ -15,14 +15,8 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
                     char         * __restrict buf,
                     char         * __restrict name,
                     GLuint                    prog) {
-  char          uname[64];
   GLint         loc;
   GkColorMethod method;
-  size_t        startOff;
-
-  strcpy(uname, name);
-  strcpy(uname + strlen(uname), ".");
-  startOff = strlen(uname);
 
   method = crtx->method;
 
@@ -31,10 +25,6 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
       && method != GK_COLOR_TEX)
     method = GK_COLOR_DISCARD;
 
-  strcpy(uname + startOff, "method");
-  loc = gkGetUniformLoc(prog, buf, uname);
-  glUniform1ui(loc, (uint32_t)crtx->method);
-
   if (method == GK_COLOR_DISCARD || !crtx->val)
     return;
 
@@ -42,8 +32,7 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
     GkColor *color;
 
     color = crtx->val;
-    strcpy(uname + startOff, "color");
-    loc = gkGetUniformLoc(prog, buf, uname);
+    loc = gkGetUniformLoc(prog, buf, name);
     glUniform4fv(loc, 1, color->vec);
   } else if (method == GK_COLOR_TEX) {
     GkTexture *tex;
@@ -57,8 +46,7 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
       glBindTexture(tex->target, tex->index);
     }
 
-    strcpy(uname + startOff, "tex");
-    loc = gkGetUniformLoc(prog, buf, uname);
+    loc = gkGetUniformLoc(prog, buf, name);
     glUniform1i(loc, unit);
   }
 }
