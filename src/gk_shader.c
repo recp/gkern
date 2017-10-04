@@ -95,7 +95,7 @@ gkShaderLoadN(GLenum  shaderType,
     len +=  strlen(source[i]);
 
   src = malloc(len + 1);
-  src[0] = '\0';
+  src[0] = src[len] = '\0';
 
   for (i = 0; i < count; i++)
     strcat(src, source[i]);
