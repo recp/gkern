@@ -78,6 +78,12 @@ gkUniformLight(struct GkScene    * __restrict scene,
                mat4                           transView);
 
 void
+gkUniformSingleLight(struct GkScene    * __restrict scene,
+                     GkLight           * __restrict light,
+                     struct GkProgInfo * __restrict pinfo,
+                     mat4                           transView);
+
+void
 gkUniformLightPos(struct GkNode * __restrict node);
 
 #endif /* gk_light_h */
