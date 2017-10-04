@@ -17,25 +17,25 @@ void main() {
   Ld     = max(0.0, dot(vNormal, L));
 
   fragColor =
-#ifdef diffuse_tex
+\n#ifdef diffuse_tex\n
   lightc * texture(tex2D[material.diffuse], vTexCoord[material.diffuse]) * Ld
-#elif defined(diffuse_color)
+\n#elif defined(diffuse_color)\n
   lightc * material.diffuse * Ld
-#else
+\n#else\n
   lightc * vec4(0, 0, 0, 1)
-#endif
+\n#endif\n
 
-#ifdef ambient_tex
+\n#ifdef ambient_tex\n
   + texture(tex2D[material.ambient], vTexCoord[material.ambient])
-#elif defined(ambient_color)
+\n#elif defined(ambient_color)\n
   + material.ambient
-#endif
+\n#endif\n
 
-#ifdef emission_tex
+\n#ifdef emission_tex\n
   + texture(tex2D[material.emission], vTexCoord[material.emission])
-#elif defined(emission_color)
+\n#elif defined(emission_color)\n
   + material.emission
-#endif
+\n#endif\n
 ;
 
 }

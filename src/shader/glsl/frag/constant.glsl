@@ -16,17 +16,17 @@ void main() {
   lightc = light.color * a;
 
   fragColor =
-#ifdef ambient_tex
+\n#ifdef ambient_tex\n
   texture(tex2D[material.ambient], vTexCoord[material.ambient])
-#elif defined(ambient_color)
+\n#elif defined(ambient_color)\n
   material.ambient
-#endif
+\n#endif\n
 
-#ifdef emission_tex
+\n#ifdef emission_tex\n
   + texture(tex2D[material.emission], vTexCoord[material.emission])
-#elif defined(emission_color)
+\n#elif defined(emission_color)\n
   + material.emission
-#endif
+\n#endif\n
 ;
 
 }

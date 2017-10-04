@@ -20,7 +20,7 @@ gk__fillAttribs(GkColorOrTex * __restrict matAttribs[6],
 
 static
 GkProgInfo*
-gk_cratProgForCmnMat(char *name, void *userData);
+gk_creatProgForCmnMat(char *name, void *userData);
 
 size_t
 gkShaderNameFor(GkTechnique * __restrict techn,
@@ -74,6 +74,8 @@ gkShaderFlagsFor(GkTechnique * __restrict techn,
   pFragFlags   = *fragFlags;
   pVertFlags   = *vertFlags;
 
+  pVertFlags[0] = pFragFlags[0] = '\0';
+
   gk__fillAttribs(matAttribs, techn);
 
   texCount = 0;
@@ -84,15 +86,15 @@ gkShaderFlagsFor(GkTechnique * __restrict techn,
       continue;
 
     pdiff = pFragFlags - *fragFlags;
-    if (pdiff < 64) {
-      fragFlags = realloc(fragFlags, fragFlagsLen + 256);
+    if (pFragFlags != *fragFlags && pdiff < 64) {
+      *fragFlags = realloc(*fragFlags, fragFlagsLen + 256);
       fragFlagsLen += 256;
       pFragFlags = *fragFlags + pdiff;
     }
 
     pdiff = pVertFlags - *vertFlags;
-    if (pdiff < 64) {
-      vertFlags = realloc(vertFlags, vertFlagsLen + 256);
+    if (pVertFlags != *vertFlags && pdiff < 64) {
+      *vertFlags = realloc(*vertFlags, vertFlagsLen + 256);
       vertFlagsLen += 256;
       pVertFlags = *vertFlags + pdiff;
     }
@@ -128,26 +130,29 @@ gkShaderFlagsFor(GkTechnique * __restrict techn,
 GkShader*
 gkShadersFor(GkTechnique * __restrict techn) {
   GkShader *vert, *frag;
-  char     *fragSource[4], *vertSource[2];
+  char     *fragSource[5], *vertSource[3];
+
+  /* TODO: create dynamic by platform */
+  vertSource[0] = fragSource[0] = "\n#version 410 \n";
 
   switch (techn->type) {
     case GK_MATERIAL_PHONG:
-      fragSource[3] =
+      fragSource[4] =
 #include "glsl/frag/phong.glsl"
       ;
       break;
     case GK_MATERIAL_BLINN:
-      fragSource[3] =
+      fragSource[4] =
 #include "glsl/frag/blinn.glsl"
       ;
       break;
     case GK_MATERIAL_LAMBERT:
-      fragSource[3] =
+      fragSource[4] =
 #include "glsl/frag/lambert.glsl"
       ;
       break;
     case GK_MATERIAL_CONSTANT:
-      fragSource[3] =
+      fragSource[4] =
 #include "glsl/frag/constant.glsl"
       ;
       break;
@@ -155,34 +160,34 @@ gkShadersFor(GkTechnique * __restrict techn) {
       return NULL;
   }
 
-  fragSource[1] =
+  fragSource[2] =
 #include "glsl/frag/common.glsl"
   ;
 
-  fragSource[2] =
+  fragSource[3] =
 #include "glsl/frag/lights.glsl"
   ;
 
-  gkShaderFlagsFor(techn, vertSource, fragSource);
+  gkShaderFlagsFor(techn, &vertSource[1], &fragSource[1]);
 
   vert = (GkShader *)calloc(sizeof(*vert), 1);
   vert->isValid    = 1;
   vert->shaderType = GL_VERTEX_SHADER;
 
-  vertSource[1] =
+  vertSource[2] =
 #include "glsl/vert/common.glsl"
   ;
 
   vert->shaderId = gkShaderLoadN(vert->shaderType,
                                  vertSource,
-                                 2);
+                                 3);
 
   frag = (GkShader *)calloc(sizeof(*frag), 1);
   frag->isValid    = 1;
   frag->shaderType = GL_FRAGMENT_SHADER;
   frag->shaderId   = gkShaderLoadN(frag->shaderType,
                                    fragSource,
-                                   4);
+                                   5);
 
   vert->next = frag;
 
@@ -195,12 +200,12 @@ gkGetOrCreatProgForCmnMat(GkMaterial *mat) {
 
   (void)gkShaderNameFor(mat->technique, name, NULL);
 
-  return gkGetOrCreatProg(name, gk_cratProgForCmnMat, mat);
+  return gkGetOrCreatProg(name, gk_creatProgForCmnMat, mat);
 }
 
 static
 GkProgInfo*
-gk_cratProgForCmnMat(char *name, void *userData) {
+gk_creatProgForCmnMat(char *name, void *userData) {
   GkShader   *shaders;
   GkMaterial *mat;
 

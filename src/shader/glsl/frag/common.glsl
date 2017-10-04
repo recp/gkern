@@ -6,52 +6,50 @@
  */
 
 GK_STRINGIFY(
-\n#version 410 \n
-
 struct Material {
 \n#ifdef emision_tex\n
   uint emission;
-\n#elif emission_color\n
+\n#elif defined(emission_color)\n
   vec4 emission;
-\n#endif
+\n#endif\n
 
 \n#ifdef ambient_tex\n
   uint ambient;
-\n#elif ambient_color\n
+\n#elif defined(ambient_color)\n
   vec4 ambient;
-\n#endif
+\n#endif\n
 
 \n#ifdef specular_tex\n
   uint specular;
-\n#elif specular_color\n
+\n#elif defined(specular_color)\n
   vec4 specular;
-\n#endif
+\n#endif\n
 
 \n#ifdef reflective_tex\n
   uint reflective;
-\n#elif reflective_color\n
+\n#elif defined(reflective_color)\n
   vec4 reflective;
-\n#endif
+\n#endif\n
 
 \n#ifdef transparent_tex\n
   uint transparent;
-\n#elif transparent_color\n
+\n#elif defined(transparent_color)\n
   vec4 transparent;
-\n#endif
+\n#endif\n
 
 \n#ifdef diffuse_tex\n
   uint diffuse;
-\n#elif diffuse_color\n
+\n#elif defined(diffuse_color)\n
   vec4 diffuse;
-\n#endif
+\n#endif\n
 
 \n#if defined(transparent_tex) || defined(transparent_color)\n
   float transparency;
-\n#endif
+\n#endif\n
 
 \n#if defined(reflective_tex) || defined(reflective_color)\n
   float reflectivity;
-\n#endif
+\n#endif\n
 
   float shininess;
   float indexOfRefraction;
