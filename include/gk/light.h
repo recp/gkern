@@ -35,6 +35,7 @@ typedef struct GkLight {
   GkLightRef       ref;
   struct GkLight  *next;
   struct GkNode   *node;
+  const char      *name;
   vec3             direction;
   GkLightType      type;
   GkColor          color;

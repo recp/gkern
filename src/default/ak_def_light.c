@@ -11,6 +11,7 @@
 
 GkDirectionalLight gkdef_light_directional = {
   .base = {
+    .name      = "directional",
     .ref       = {NULL, NULL},
     .next      = NULL,
     .node      = NULL,
