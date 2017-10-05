@@ -6,6 +6,10 @@
  */
 
 GK_STRINGIFY(
+\n#define AmbientlLight    0x00000001u \n
+\n#define DirectionalLight 0x00000002u \n
+\n#define PointLight       0x00000003u \n
+\n#define SpotLight        0x00000004u \n
 struct Light {
   vec4  ambient;
   vec4  color;
@@ -19,16 +23,12 @@ struct Light {
   float quadAttn;
 };
 
-subroutine
-float
-lightTechnique(inout vec3 L);
 
-uniform            Light          light;
-subroutine uniform lightTechnique lightTechn;
+uniform Light light;
+uniform uint  lightType;
 
 // lights
 
-subroutine(lightTechnique)
 float
 point(inout vec3 L) {
   float dist;
@@ -40,7 +40,6 @@ point(inout vec3 L) {
                 + light.quadAttn * dist * dist);
 }
 
-subroutine(lightTechnique)
 float
 spot(inout vec3 L) {
   float dist;
@@ -59,7 +58,6 @@ spot(inout vec3 L) {
                                           + light.quadAttn * dist * dist);
 }
 
-subroutine(lightTechnique)
 float
 directional(inout vec3 L) {
   L = -light.direction;

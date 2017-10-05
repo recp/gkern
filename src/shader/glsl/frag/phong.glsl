@@ -11,7 +11,21 @@ void main() {
   vec3  L;
   float a, Ld, Ls;
 
-  a      = lightTechn(L);
+  switch (lightType) {
+    case SpotLight:
+      a = spot(L);
+      break;
+    case PointLight:
+      a = point(L);
+      break;
+    case DirectionalLight:
+      a = directional(L);
+      break;
+    default:
+      discard;
+      return;
+  }
+
   lightc = light.color * a;
 
   Ld = max(0.0, dot(vNormal, L));
