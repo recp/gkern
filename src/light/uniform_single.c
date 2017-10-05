@@ -20,15 +20,6 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   char  buf[256];
   GLint loc;
   GLint prog;
-  GLint enabled;
-  GLint index;
-
-  if (light->index == -1)
-    light->index = index = scene->lastLightIndex++;
-  else
-    index = light->index;
-
-  enabled = light->enabled;
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "light.");

@@ -89,10 +89,14 @@ gkShaderLoadN(GLenum  shaderType,
               size_t  count) {
   char  *src;
   size_t i, len;
+  GLuint ret;
 
   len = 0;
   for (i = 0; i < count; i++)
-    len +=  strlen(source[i]);
+    len += strlen(source[i]);
+
+  if (len == 0)
+    return -1;
 
   src = malloc(len + 1);
   src[0] = src[len] = '\0';
@@ -100,7 +104,10 @@ gkShaderLoadN(GLenum  shaderType,
   for (i = 0; i < count; i++)
     strcat(src, source[i]);
 
-  return gkShaderLoad(shaderType, src);
+  ret = gkShaderLoad(shaderType, src);
+  free(src);
+
+  return ret;
 }
 
 GLuint

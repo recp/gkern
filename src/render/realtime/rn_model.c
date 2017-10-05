@@ -19,12 +19,10 @@ void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
             GkTransform *ptr) {
-  GkModel     *model;
   GkTransform *tr;
   uint32_t     updt;
 
-  model = modelInst->model;
-  tr    = modelInst->trans;
+  tr = modelInst->trans;
 
   if (!tr)
     modelInst->trans = tr = ptr;
