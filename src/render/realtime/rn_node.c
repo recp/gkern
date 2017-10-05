@@ -11,27 +11,18 @@
 void
 gkRenderNode(GkScene     *scene,
              GkNode      *node,
-             GkTransform *ptr,
-             GkProgInfo  *pprog) {
+             GkTransform *ptr) {
   while (node) {
     GkTransform *tr;
-    GkProgInfo *prog;
 
-    tr   = node->trans;
-    prog = node->pinfo;
-
-    /* uniform lights for this program */
-    if (prog->updtLights)
-      gkUniformLights(scene, prog);
-
+    tr = node->trans;
     if (node->model) {
       GkModelInst *modelInst;
       modelInst = node->model;
       do {
         gkRenderModel(scene,
                       modelInst,
-                      tr,
-                      prog);
+                      tr);
         modelInst = modelInst->next;
       } while (modelInst);
     }
@@ -39,14 +30,12 @@ gkRenderNode(GkScene     *scene,
     if (node->chld)
       gkRenderNode(scene,
                    node->chld,
-                   tr,
-                   prog);
+                   tr);
 
     if (node->nodeInst)
       gkRenderNode(scene,
                    node->nodeInst,
-                   tr,
-                   prog);
+                   tr);
 
     node = node->next;
   }
@@ -55,15 +44,12 @@ gkRenderNode(GkScene     *scene,
 void
 gkPrepNode(GkScene     *scene,
            GkNode      *node,
-           GkTransform *ptr,
-           GkProgInfo  *pprog) {
+           GkTransform *ptr) {
   while (node) {
     GkTransform *tr;
-    GkProgInfo  *prog;
     uint32_t     updt;
 
-    tr   = node->trans;
-    prog = node->pinfo;
+    tr = node->trans;
 
     if (!tr)
       node->trans = tr = ptr;
@@ -81,9 +67,6 @@ gkPrepNode(GkScene     *scene,
       tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
     }
 
-    if (!prog)
-      node->pinfo = prog = pprog;
-
     if (node->light) {
       if (!(tr->flags & GK_TRANSF_WORLD_ISVALID)
           || !(tr->flags & GK_TRANSF_FMAT_MV)
@@ -99,17 +82,16 @@ gkPrepNode(GkScene     *scene,
       do {
         gkPrepModel(scene,
                     modelInst,
-                    tr,
-                    prog);
+                    tr);
         modelInst = modelInst->next;
       } while (modelInst);
     }
 
     if (node->chld)
-      gkPrepNode(scene, node->chld, tr, prog);
+      gkPrepNode(scene, node->chld, tr);
 
     if (node->nodeInst)
-      gkPrepNode(scene, node->nodeInst, tr, prog);
+      gkPrepNode(scene, node->nodeInst, tr);
 
     if (updt && tr != ptr)
       tr->flags |= GK_TRANSF_WORLD_ISVALID;

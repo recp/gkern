@@ -104,3 +104,27 @@ gk_project2d(GkRect rect, mat4 mvp, vec3 v) {
   p.y = rect.origin.y + rect.size.h * (pos4[1] + 1.0f) * 0.5f;
   return p;
 }
+
+void
+gkUniformTransform(struct GkProgInfo * __restrict pinfo,
+                   GkTransform       * __restrict trans) {
+  GkFinalTransform *ftr;
+  int               usenm;
+
+  ftr = trans->ftr;
+
+  /* Model View Projection Matrix */
+  gkUniformMat4(pinfo->mvpi, ftr->mvp);
+
+  /* Model View Matrix */
+  gkUniformMat4(pinfo->mvi, ftr->mv);
+
+  /* Normal Matrix */
+  usenm = (trans->flags & GK_TRANSF_FMAT_NORMAT) != 0;
+
+  if (usenm)
+  gkUniformMat4(pinfo->nmi,  ftr->nm);
+
+  glUniform1i(pinfo->nmui, usenm);
+}
+

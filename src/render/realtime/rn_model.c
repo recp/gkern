@@ -9,21 +9,22 @@
 #include "../../../include/gk/material.h"
 #include "../../../include/gk/prims/cube.h"
 #include "../../default/gk_def_effect.h"
+#include "../../default/ak_def_light.h"
 #include "../../gk_matrix.h"
+
+#include "rn_light.h"
+#include "rn_material.h"
 
 void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
-            GkTransform *ptr,
-            GkProgInfo  *pprog) {
+            GkTransform *ptr) {
   GkModel     *model;
   GkTransform *tr;
-  GkProgInfo  *prog;
   uint32_t     updt;
 
   model = modelInst->model;
   tr    = modelInst->trans;
-  prog  = model->pinfo;
 
   if (!tr)
     modelInst->trans = tr = ptr;
@@ -46,9 +47,6 @@ gkPrepModel(GkScene     *scene,
     gkCalcFinalMat(scene, tr);
   }
 
-  if (!prog)
-    model->pinfo = prog = pprog;
-
   if(updt && tr != ptr)
     tr->flags |= GK_TRANSF_WORLD_ISVALID;
 }
@@ -56,23 +54,14 @@ gkPrepModel(GkScene     *scene,
 void
 gkRenderModel(GkScene     *scene,
               GkModelInst *modelInst,
-              GkTransform *ptr,
-              GkProgInfo  *pprog) {
+              GkTransform *ptr) {
   GkModel     *model;
   GkPrimitive *primi;
   GkTransform *tr;
-  GkProgInfo  *prog;
   GkMaterial  *modelMaterial;
 
   model = modelInst->model;
   tr    = modelInst->trans;
-  prog  = model->pinfo;
-
-  gkUniformMatrix(modelInst);
-
-  /* uniform lights for this program */
-  if (prog->updtLights)
-    gkUniformLights(scene, prog);
 
   /* model's material */
   modelMaterial = NULL;
@@ -82,52 +71,21 @@ gkRenderModel(GkScene     *scene,
     modelMaterial = modelInst->material;
     if (!modelMaterial)
       modelMaterial = modelInst->model->material;
-
-    /* avoid uniform cached material if possible */
-    if (prog->lastMaterial != modelMaterial
-        || prog->updtMaterials)
-      gkUniformMaterial(prog, modelMaterial);
   }
 
   /* pre events */
   if (model->events && model->events->onDraw)
     model->events->onDraw(model, NULL, false);
 
-  /* TODO: multi thread ? */
-  /* each node, model may use different program/shaders */
-  if (scene->currentProgram != model->pinfo->prog) {
-    glUseProgram(model->pinfo->prog);
-    scene->currentProgram = model->pinfo->prog;
-  }
-
   /* render */
   primi = model->prim;
   while (primi) {
     glBindVertexArray(primi->vao);
 
-    /* instance primitive specific effects */
-    if (modelInst->prims) {
-      GkPrimInst *primInst;
-      GkMaterial *material;
-
-      primInst = rb_find(modelInst->prims, primi);
-      material = modelMaterial;
-      if (primInst)
-        material = primInst->material;
-
-      /* avoid uniform cached material if possible */
-      if (prog->lastMaterial != material
-          || prog->updtMaterials)
-        gkUniformMaterial(prog, material);
-    }
-
-    if (primi->flags & GK_DRAW_ELEMENTS)
-      glDrawElements(primi->mode,
-                     primi->count,
-                     GL_UNSIGNED_INT, /* TODO: ? */
-                     NULL);
-    else if (primi->flags & GK_DRAW_ARRAYS)
-      glDrawArrays(primi->mode, 0, primi->count);
+    gkApplyMaterials(scene,
+                     primi,
+                     modelInst,
+                     modelMaterial);
 
     primi = primi->next;
   }

@@ -36,11 +36,6 @@ gkRenderScene(GkScene * scene) {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if (gkCurrentProgram() != scene->pinfo->prog) {
-    glUseProgram(scene->pinfo->prog);
-    scene->currentProgram = scene->pinfo->prog;
-  }
-
   if (scene->trans)
     trans = scene->trans;
   else
@@ -51,16 +46,14 @@ gkRenderScene(GkScene * scene) {
    */
   gkPrepNode(scene,
              scene->rootNode,
-             trans,
-             scene->pinfo);
+             trans);
 
   trans->flags |= GK_TRANSF_WORLD_ISVALID;
   scene->flags &= ~(GK_SCENEF_UPDT_VIEWPROJ);
 
   gkRenderNode(scene,
                scene->rootNode,
-               trans,
-               scene->pinfo);
+               trans);
 
   if ((scene->flags & GK_SCENEF_DRAW_BBOX)
       && scene->bbox)

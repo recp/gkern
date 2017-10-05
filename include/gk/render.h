@@ -19,26 +19,22 @@ gkUniformMatrix(GkModelInst *modelInst);
 void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
-            GkTransform *ptr,
-            GkProgInfo  *pprog);
+            GkTransform *ptr);
 
 void
 gkRenderModel(GkScene     *scene,
               GkModelInst *modelInst,
-              GkTransform *ptr,
-              GkProgInfo  *pprog);
+              GkTransform *ptr);
 
 void
 gkPrepNode(GkScene     *scene,
            GkNode      *node,
-           GkTransform *ptr,
-           GkProgInfo  *pprog);
+           GkTransform *ptr);
 
 void
 gkRenderNode(GkScene     *scene,
              GkNode      *node,
-             GkTransform *ptr,
-             GkProgInfo  *pprog);
+             GkTransform *ptr);
 
 void
 gkRenderScene(GkScene * scene);
