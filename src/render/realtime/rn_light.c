@@ -13,6 +13,7 @@
 #include "../../gk_matrix.h"
 
 #include "rn_light.h"
+#include "rn_pass.h"
 
 void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
@@ -59,4 +60,3 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
 
   pinfo->updtLights = 0;
 }
-

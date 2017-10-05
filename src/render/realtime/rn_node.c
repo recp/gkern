@@ -72,7 +72,6 @@ gkPrepNode(GkScene     *scene,
           || !(tr->flags & GK_TRANSF_FMAT_MV)
           || scene->flags & GK_SCENEF_UPDT_VIEW) {
         gkCalcViewMat(scene, tr);
-        gkUniformLightPos(node);
       }
     }
 

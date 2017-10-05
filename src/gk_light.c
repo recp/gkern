@@ -117,39 +117,6 @@ gkUniformLight(struct GkScene * __restrict scene,
 }
 
 void
-gkUniformLightPos(GkNode * __restrict node) {
-  GkFinalTransform *ftr;
-  GkLight          *light;
-  vec4              dir;
-  char              buf[32];
-  GLint             loc, prog;
-
-  light = node->light;
-  if (light->index == -1)
-    return;
-
-  ftr  = node->trans->ftr;
-  prog = node->pinfo->prog;
-
-  strcpy(buf, "lights");
-  while (light) {
-    sprintf(buf + strlen("lights"), "[%d].", light->index);
-    loc = gkGetUniformLoc(prog, buf, "position");
-
-    /* position must be in view space */
-    glUniform3fv(loc, 1, ftr->mv[3]);
-
-    /* light/cone direction */
-    glm_vec_rotate_m4(ftr->mv, light->direction, dir);
-
-    loc = gkGetUniformLoc(prog, buf, "direction");
-    glUniform3fv(loc, 1, dir);
-
-    light = light->next;
-  }
-}
-
-void
 gkUniformLights(struct GkScene * __restrict scene,
                 GkProgInfo     * __restrict pinfo) {
   GkLight *light;
