@@ -67,12 +67,11 @@ gkPrepNode(GkScene     *scene,
       tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
     }
 
-    if (node->light) {
-      if (!(tr->flags & GK_TRANSF_WORLD_ISVALID)
-          || !(tr->flags & GK_TRANSF_FMAT_MV)
-          || scene->flags & GK_SCENEF_UPDT_VIEW) {
-        gkCalcViewMat(scene, tr);
-      }
+    if (node->light
+        && (!(GK_FLG(tr->flags, GK_TRANSF_WORLD_ISVALID))
+            || !(GK_FLG(tr->flags, GK_TRANSF_FMAT_MV))
+            || GK_FLG(scene->flags, GK_SCENEF_UPDT_VIEW))) {
+      gkCalcViewMat(scene, tr);
     }
 
     if (node->model) {

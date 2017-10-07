@@ -29,7 +29,7 @@ gkPrepModel(GkScene     *scene,
 
   updt = !((ptr->flags & tr->flags) & GK_TRANSF_WORLD_ISVALID);
 
-  if (updt){
+  if (updt) {
     if (ptr != tr) {
       if (!GK_FLG(tr->flags, GK_TRANSF_LOCAL_ISVALID))
         gkTransformCombine(tr);

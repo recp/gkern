@@ -56,13 +56,13 @@ gkApplyMaterials(GkScene     * __restrict scene,
 
     primInst = rb_find(modelInst->prims, prim);
     if (primInst)
-    material = primInst->material;
+      material = primInst->material;
     else
-    material = prim->material;
+      material = prim->material;
   }
 
   if (!material)
-  material = modelMaterial;
+    material = modelMaterial;
 
   gkApplyMaterial(scene,
                   modelInst,

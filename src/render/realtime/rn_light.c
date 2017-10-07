@@ -19,9 +19,9 @@ void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
                      GkPrimitive * __restrict prim,
                      GkProgInfo  * __restrict pinfo) {
-  GkLight *light;
+  GkLight *firstLight, *light;
   GLint    loc;
-
+  
   light = (GkLight *)scene->lights;
   if (!light) {
     light             = gk_def_lights();
@@ -29,7 +29,16 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
     scene->lightCount = 1;
   }
 
+  firstLight = light;
+
   do {
+    if (light != firstLight) {
+      glDepthFunc(GL_EQUAL);
+      glEnable(GL_BLEND);
+      glBlendEquation(GL_FUNC_ADD);
+      glBlendFunc(GL_ONE, GL_ONE);
+    }
+
     if (!light->isvalid) {
       if (light->node) {
         GkNode           *node;
@@ -58,5 +67,6 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
     light = (GkLight *)light->ref.next;
   } while (light);
 
-  pinfo->updtLights = 0;
+  glDepthFunc(GL_LESS);
+  glDisable(GL_BLEND);
 }

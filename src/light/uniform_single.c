@@ -93,6 +93,4 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
 
   loc = gkGetUniformLoc(prog, buf, "direction");
   glUniform3fv(loc, 1, dir);
-
-  light->isvalid = 1;
 }
