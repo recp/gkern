@@ -39,7 +39,7 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
       glBlendFunc(GL_ONE, GL_ONE);
     }
 
-    if (!light->isvalid) {
+    if (light != pinfo->lastLight) {
       if (light->node) {
         GkNode           *node;
         GkFinalTransform *ftr;
@@ -57,10 +57,12 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
                              pinfo,
                              GLM_MAT4_IDENTITY);
       }
-    }
 
-    loc = glGetUniformLocation(pinfo->prog, "lightType");
-    glUniform1ui(loc, light->type);
+      loc = glGetUniformLocation(pinfo->prog, "lightType");
+      glUniform1ui(loc, light->type);
+
+      pinfo->lastLight = light;
+    }
 
     gkRenderPrim(scene, prim);
 

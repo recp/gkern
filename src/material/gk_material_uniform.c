@@ -33,7 +33,7 @@ gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
   prog = pinfo->prog;
 
   /* TODO: read uniform structure/names from options */
-  strcpy(buf, "material.");
+  strcpy(buf, "mat.");
 
   technique = material->technique;
   if (technique->type == GK_MATERIAL_PHONG

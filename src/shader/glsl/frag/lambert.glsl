@@ -32,23 +32,23 @@ void main() {
 
   fragColor =
 \n#ifdef diffuse_tex\n
-  lightc * texture(tex2D[material.diffuse], vTexCoord[material.diffuse]) * Ld
+  lightc * texture(tex2D[mat.diffuse], vTexCoord[mat.diffuse]) * Ld
 \n#elif defined(diffuse_color)\n
-  lightc * material.diffuse * Ld
+  lightc * mat.diffuse * Ld
 \n#else\n
   lightc * vec4(0, 0, 0, 1)
 \n#endif\n
 
 \n#ifdef ambient_tex\n
-  + texture(tex2D[material.ambient], vTexCoord[material.ambient])
+  + texture(tex2D[mat.ambient], vTexCoord[mat.ambient])
 \n#elif defined(ambient_color)\n
-  + material.ambient
+  + mat.ambient
 \n#endif\n
 
 \n#ifdef emission_tex\n
-  + texture(tex2D[material.emission], vTexCoord[material.emission])
+  + texture(tex2D[mat.emission], vTexCoord[mat.emission])
 \n#elif defined(emission_color)\n
-  + material.emission
+  + mat.emission
 \n#endif\n
 ;
 

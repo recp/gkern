@@ -15,6 +15,7 @@
 struct GkScene;
 struct GkNode;
 struct GkProgInfo;
+struct GkColorOrTex;
 
 typedef enum GkLightType {
   GK_LIGHT_TYPE_AMBIENT     = 1,
@@ -32,17 +33,18 @@ typedef struct GkLightRef {
 
 struct GkNode;
 typedef struct GkLight {
-  GkLightRef       ref;
-  struct GkLight  *next;
-  struct GkNode   *node;
-  const char      *name;
-  vec3             direction;
-  GkLightType      type;
-  GkColor          color;
-  int32_t          index;
-  uint8_t          isvalid;
-  uint8_t          enabled;
-  uint8_t          readonly;
+  GkLightRef      ref;
+  struct GkLight *next;
+  struct GkNode  *node;
+  const char     *name;
+  vec4           *ambient;
+  vec3            direction;
+  GkLightType     type;
+  GkColor         color;
+  int32_t         index;
+  uint8_t         isvalid;
+  uint8_t         enabled;
+  uint8_t         readonly;
 } GkLight;
 
 typedef GkLight GkAmbientLight;

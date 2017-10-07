@@ -16,8 +16,8 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
                      GkLight        * __restrict light,
                      GkProgInfo     * __restrict pinfo,
                      mat4                        transView) {
-  vec4  amb, dir;
-  char  buf[256];
+  vec4  dir;
+  char  buf[32];
   GLint loc;
   GLint prog;
 
@@ -25,9 +25,6 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   strcpy(buf, "light.");
 
   prog = pinfo->prog;
-
-  /* TODO: default ambient of light source */
-  glm_vec4_copy((vec4){0.0, 0.0, 0.0, 1.0}, amb);
 
   switch (light->type) {
     case GK_LIGHT_TYPE_SPOT: {
@@ -75,8 +72,10 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
       return;
   }
 
-  loc = gkGetUniformLoc(prog, buf, "ambient");
-  glUniform4fv(loc, 1, amb);
+  if (light->ambient) {
+    loc = gkGetUniformLoc(prog, buf, "ambient");
+    glUniform4fv(loc, 1, *light->ambient);
+  }
 
   loc = gkGetUniformLoc(prog, buf, "color");
   glUniform4fv(loc, 1, light->color.vec);

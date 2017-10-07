@@ -55,7 +55,7 @@ struct Material {
   float indexOfRefraction;
 };
 
-uniform Material material;
+uniform Material mat;
 
 in vec3 vPosition;
 in vec3 vNormal;

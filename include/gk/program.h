@@ -21,6 +21,7 @@ extern "C" {
 #include <stdbool.h>
 
 struct GkMaterial;
+struct GkLight;
 
 /* cache program infos, some nodes may use different program and shaders */
 typedef struct GkProgInfo {
@@ -35,6 +36,7 @@ typedef struct GkProgInfo {
   RBTree  *attribs; /* attribs                                               */
 
   struct GkMaterial *lastMaterial;
+  struct GkLight    *lastLight;
   bool               updtLights;
   bool               updtMaterials;
 } GkProgInfo;
