@@ -148,7 +148,7 @@ gkGetOrCreatProg(char       *name,
     return pinfo;
 
   if ((pinfo = creatCb(name, userData))) {
-    rb_insert(gk_progs, (void *)name, pinfo);
+    rb_insert(gk_progs, (void *)strdup(name), pinfo);
     return pinfo;
   }
 

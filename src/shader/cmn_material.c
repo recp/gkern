@@ -35,9 +35,17 @@ gkShaderNameFor(GkTechnique * __restrict techn,
   gk__fillAttribs(matAttribs, techn);
 
   pname  = nameBuff;
-  pname += sprintf(nameBuff,
-                   prefix ? "%sphong_" : "phong_",
-                   prefix);
+
+  if (prefix) {
+    pname += sprintf(nameBuff,
+                     "%s%d_",
+                     prefix,
+                     techn->type);
+  } else {
+    pname += sprintf(nameBuff,
+                     "%d_",
+                     techn->type);
+  }
 
   for (i = 0; i < 6; i++) {
     if (!matAttribs[i])
@@ -202,7 +210,7 @@ gkGetOrCreatProgForCmnMat(GkMaterial *mat) {
 
   (void)gkShaderNameFor(mat->technique, name, NULL);
 
-  return gkGetOrCreatProg(strdup(name),
+  return gkGetOrCreatProg(name,
                           gk_creatProgForCmnMat,
                           mat);
 }
@@ -212,8 +220,6 @@ GkProgInfo*
 gk_creatProgForCmnMat(char *name, void *userData) {
   GkShader   *shaders;
   GkMaterial *mat;
-
-  free(name);
 
   mat = userData;
   if ((shaders = gkShadersFor(mat->technique)))
