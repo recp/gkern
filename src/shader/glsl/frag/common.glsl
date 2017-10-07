@@ -7,52 +7,57 @@
 
 GK_STRINGIFY(
 struct Material {
-\n#ifdef emision_tex\n
+\n#ifdef EMISSION_TEX\n
   uint emission;
-\n#elif defined(emission_color)\n
+\n#elif defined(EMISSION_COLOR)\n
   vec4 emission;
 \n#endif\n
 
-\n#ifdef ambient_tex\n
+\n#ifdef AMBIENT_TEX\n
   uint ambient;
-\n#elif defined(ambient_color)\n
+\n#elif defined(AMBIENT_COLOR)\n
   vec4 ambient;
 \n#endif\n
 
-\n#ifdef specular_tex\n
+\n#ifdef SPECULAR_TEX\n
   uint specular;
-\n#elif defined(specular_color)\n
+\n#elif defined(SPECULAR_COLOR)\n
   vec4 specular;
 \n#endif\n
 
-\n#ifdef reflective_tex\n
+\n#ifdef REFLECTIVE_TEX\n
   uint reflective;
-\n#elif defined(reflective_color)\n
+\n#elif defined(REFLECTIVE_COLOR)\n
   vec4 reflective;
 \n#endif\n
 
-\n#ifdef transparent_tex\n
+\n#ifdef TRANSP_TEX\n
   uint transparent;
-\n#elif defined(transparent_color)\n
+\n#elif defined(TRANSP_COLOR)\n
   vec4 transparent;
 \n#endif\n
 
-\n#ifdef diffuse_tex\n
+\n#ifdef DIFFUSE_TEX\n
   uint diffuse;
-\n#elif defined(diffuse_color)\n
+\n#elif defined(DIFFUSE_COLOR)\n
   vec4 diffuse;
 \n#endif\n
 
-\n#if defined(transparent_tex) || defined(transparent_color)\n
+\n#if defined(TRANSP_TEX) || defined(TRANSP_COLOR)\n
   float transparency;
 \n#endif\n
 
-\n#if defined(reflective_tex) || defined(reflective_color)\n
+\n#if defined(REFLECTIVE_TEX) || defined(REFLECTIVE_COLOR)\n
   float reflectivity;
 \n#endif\n
 
-  float shininess;
+\n#ifdef INDEX_OF_REFR\n
   float indexOfRefraction;
+\n#endif\n
+
+\n#ifdef SHININESS\n
+  float shininess;
+\n#endif\n
 };
 
 uniform Material mat;

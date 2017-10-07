@@ -36,29 +36,29 @@ void main() {
              mat.shininess);
 
   fragColor =
-\n#ifdef diffuse_tex\n
+\n#ifdef DIFFUSE_TEX\n
   lightc * texture(tex2D[mat.diffuse], vTexCoord[mat.diffuse]) * Ld
-\n#elif defined(diffuse_color)\n
+\n#elif defined(DIFFUSE_COLOR)\n
   lightc * mat.diffuse * Ld
 \n#else\n
   lightc * vec4(0, 0, 0, 1)
 \n#endif\n
 
-\n#ifdef ambient_tex\n
+\n#ifdef AMBIENT_TEX\n
   + texture(tex2D[mat.ambient], vTexCoord[mat.ambient])
-\n#elif defined(ambient_color)\n
+\n#elif defined(AMBIENT_COLOR)\n
   + mat.ambient
 \n#endif\n
 
-\n#ifdef emission_tex\n
+\n#ifdef EMISSION_TEX\n
   + texture(tex2D[mat.emission], vTexCoord[mat.emission])
-\n#elif defined(emission_color)\n
+\n#elif defined(EMISSION_COLOR)\n
   + mat.emission
 \n#endif\n
 
-\n#ifdef specular_tex\n
+\n#ifdef SPECULAR_TEX\n
   +  lightc * texture(tex2D[mat.specular], vTexCoord[mat.specular]) * Ls
-\n#elif defined(specular_color)\n
+\n#elif defined(SPECULAR_COLOR)\n
   +  lightc * mat.specular * Ls
 \n#endif\n
 ;

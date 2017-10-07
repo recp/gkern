@@ -15,7 +15,8 @@
 
 static
 void
-gk__fillAttribs(GkColorOrTex * __restrict matAttribs[6],
+gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
+                float       ** __restrict shininess,
                 GkTechnique  * __restrict techn);
 
 static
@@ -27,12 +28,12 @@ gkShaderNameFor(GkTechnique * __restrict techn,
                 char        * __restrict nameBuff,
                 char        * __restrict prefix) {
   char         *pname;
-  GkColorOrTex *matAttribs[6];
+  GkColorOrTex *matAttribs[4];
   int32_t       i;
 
   char matAttribsPrefix[] = "dsaert";
 
-  gk__fillAttribs(matAttribs, techn);
+  gk__fillAttribs(matAttribs, NULL, techn);
 
   pname  = nameBuff;
 
@@ -47,7 +48,7 @@ gkShaderNameFor(GkTechnique * __restrict techn,
                      techn->type);
   }
 
-  for (i = 0; i < 6; i++) {
+  for (i = 0; i < 4; i++) {
     if (!matAttribs[i])
       continue;
 
@@ -57,6 +58,7 @@ gkShaderNameFor(GkTechnique * __restrict techn,
                      matAttribs[i]->method);
   }
 
+  /* TODO: transparent, reflectivity */
   return nameBuff - pname;
 }
 
@@ -65,17 +67,18 @@ gkShaderFlagsFor(GkTechnique * __restrict techn,
                  char       ** __restrict vertFlags,
                  char       ** __restrict fragFlags) {
   char   *pFragFlags, *pVertFlags;
+  float  *shininess;
   size_t  fragFlagsLen, vertFlagsLen;
   int32_t i, texCount;
 
-  GkColorOrTex *matAttribs[6];
+  GkColorOrTex *matAttribs[4];
   char *matAttribsNames[] = {
-    "diffuse",
-    "specular",
-    "ambient",
-    "emission",
-    "reflective",
-    "transparent"
+    "DIFFUSE",
+    "SPECULAR",
+    "AMBIENT",
+    "EMISSION",
+    "REFLECTIVE",
+    "TRANSPARENT"
   };
 
   fragFlagsLen = vertFlagsLen = PAGE_SIZE;
@@ -86,10 +89,11 @@ gkShaderFlagsFor(GkTechnique * __restrict techn,
 
   pVertFlags[0] = pFragFlags[0] = '\0';
 
-  gk__fillAttribs(matAttribs, techn);
+  shininess = NULL;
+  gk__fillAttribs(matAttribs, &shininess, techn);
 
   texCount = 0;
-  for (i = 0; i < 6; i++) {
+  for (i = 0; i < 4; i++) {
     ptrdiff_t pdiff;
 
     if (!matAttribs[i])
@@ -112,18 +116,24 @@ gkShaderFlagsFor(GkTechnique * __restrict techn,
     switch (matAttribs[i]->method) {
       case GK_COLOR_COLOR:
         pFragFlags += sprintf(pFragFlags,
-                              "\n#define %s_color\n",
+                              "\n#define %s_COLOR\n",
                               matAttribsNames[i]);
         break;
       case GK_COLOR_TEX:
         texCount++;
         pFragFlags += sprintf(pFragFlags,
-                              "\n#define %s_tex\n",
+                              "\n#define %s_TEX\n",
                               matAttribsNames[i]);
         break;
       default:
         continue;
     }
+  }
+
+  /* TODO: transparent, reflectivity */
+
+  if (shininess) {
+    pFragFlags = strcpy(pFragFlags, "\n#define SHININESS\n");
   }
 
   if (texCount > 0) {
@@ -230,7 +240,8 @@ gk_creatProgForCmnMat(char *name, void *userData) {
 
 static
 void
-gk__fillAttribs(GkColorOrTex * __restrict matAttribs[6],
+gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
+                float       ** __restrict shininess,
                 GkTechnique  * __restrict techn) {
   switch (techn->type) {
     case GK_MATERIAL_PHONG:
@@ -241,8 +252,9 @@ gk__fillAttribs(GkColorOrTex * __restrict matAttribs[6],
       matAttribs[1] = phong->specular;
       matAttribs[2] = phong->ambient;
       matAttribs[3] = phong->emission;
-      matAttribs[4] = phong->reflective;
-      matAttribs[5] = phong->transparent;
+
+      if (shininess)
+        *shininess = &phong->shininess;
       break;
     }
     case GK_MATERIAL_LAMBERT: {
@@ -252,8 +264,6 @@ gk__fillAttribs(GkColorOrTex * __restrict matAttribs[6],
       matAttribs[1] = NULL;
       matAttribs[2] = lambert->ambient;
       matAttribs[3] = lambert->emission;
-      matAttribs[4] = lambert->reflective;
-      matAttribs[5] = lambert->transparent;
       break;
     }
     case GK_MATERIAL_CONSTANT: {
@@ -263,8 +273,6 @@ gk__fillAttribs(GkColorOrTex * __restrict matAttribs[6],
       matAttribs[1] = NULL;
       matAttribs[2] = NULL;
       matAttribs[3] = constant->emission;
-      matAttribs[4] = constant->reflective;
-      matAttribs[5] = constant->transparent;
       break;
     }
 

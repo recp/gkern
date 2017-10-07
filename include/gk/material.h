@@ -49,12 +49,7 @@ typedef struct GkPhong {
   GkColorOrTex *ambient;
   GkColorOrTex *diffuse;
   GkColorOrTex *specular;
-  GkColorOrTex *reflective;
-  GkColorOrTex *transparent;
   float         shininess;
-  float         reflectivity;
-  float         transparency;
-  float         indexOfRefraction;
 } GkPhong;
 
 typedef struct GkLambert {
@@ -62,27 +57,38 @@ typedef struct GkLambert {
   GkColorOrTex *emission;
   GkColorOrTex *ambient;
   GkColorOrTex *diffuse;
-  GkColorOrTex *reflective;
-  GkColorOrTex *transparent;
-  float         reflectivity;
-  float         transparency;
-  float         indexOfRefraction;
 } GkLambert;
 
 typedef struct GkConstant {
   GkTechnique   base;
   GkColorOrTex *emission;
-  GkColorOrTex *reflective;
-  GkColorOrTex *transparent;
-  float         reflectivity;
-  float         transparency;
-  float         indexOfRefraction;
 } GkConstant;
 
 typedef GkPhong GkBlinn;
 
+typedef enum GkAlphaMode {
+  GK_ALPHA_OPAQUE,
+  GK_ALPHA_MASK,
+  GK_ALPHA_BLEND
+} GkAlphaMode;
+
+typedef struct GkTransparent {
+  GkColorOrTex *color;
+  GkAlphaMode   mode;
+  float         amount;
+  float         cutoff;
+} GkTransparent;
+
+typedef struct GkReflective {
+  GkColorOrTex *color;
+  float         amount;
+} GkReflective;
+
 typedef struct GkMaterial {
   GkTechnique   *technique;
+  GkTransparent *transparent;
+  GkReflective  *reflective;
+  float          indexOfRefraction;
   uint8_t        isvalid;
   uint8_t        enabled;
 } GkMaterial;

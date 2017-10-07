@@ -20,16 +20,11 @@ GkPhong gkdef_phong = {
     .type       = GK_MATERIAL_PHONG,
     .subroutine = "phong"
   },
-  .emission          = NULL,
-  .ambient           = NULL,
-  .diffuse           = &gkdef_clr_wht,
-  .specular          = &gkdef_clr_wht,
-  .reflective        = NULL,
-  .transparent       = NULL,
-  .shininess         = 1.0,
-  .reflectivity      = 1.0,
-  .transparency      = 0.0,
-  .indexOfRefraction = 1.0
+  .emission  = NULL,
+  .ambient   = NULL,
+  .diffuse   = &gkdef_clr_wht,
+  .specular  = &gkdef_clr_wht,
+  .shininess = 1.0
 };
 
 GkBlinn gkdef_blinn = {
@@ -37,16 +32,11 @@ GkBlinn gkdef_blinn = {
     .type       = GK_MATERIAL_BLINN,
     .subroutine = "blinn"
   },
-  .emission          = NULL,
-  .ambient           = NULL,
-  .diffuse           = &gkdef_clr_wht,
-  .specular          = &gkdef_clr_wht,
-  .reflective        = NULL,
-  .transparent       = NULL,
-  .shininess         = 1.0,
-  .reflectivity      = 1.0,
-  .transparency      = 0.0,
-  .indexOfRefraction = 1.0
+  .emission  = NULL,
+  .ambient   = NULL,
+  .diffuse   = &gkdef_clr_wht,
+  .specular  = &gkdef_clr_wht,
+  .shininess = 1.0,
 };
 
 GkLambert gkdef_lambert = {
@@ -54,14 +44,9 @@ GkLambert gkdef_lambert = {
     .type       = GK_MATERIAL_LAMBERT,
     .subroutine = "lambert"
   },
-  .emission          = NULL,
-  .ambient           = NULL,
-  .diffuse           = &gkdef_clr_wht,
-  .reflective        = NULL,
-  .transparent       = NULL,
-  .reflectivity      = 1.0,
-  .transparency      = 0.0,
-  .indexOfRefraction = 1.0
+  .emission = NULL,
+  .ambient  = NULL,
+  .diffuse  = &gkdef_clr_wht,
 };
 
 GkConstant gkdef_constant = {
@@ -69,12 +54,7 @@ GkConstant gkdef_constant = {
     .type       = GK_MATERIAL_CONSTANT,
     .subroutine = "constant"
   },
-  .emission          = NULL,
-  .reflective        = NULL,
-  .transparent       = NULL,
-  .reflectivity      = 1.0,
-  .transparency      = 0.0,
-  .indexOfRefraction = 1.0
+  .emission = NULL
 };
 
 GkPhong*
@@ -98,9 +78,12 @@ gk_def_material_constant() {
 }
 
 GkMaterial gkdef_material = {
-  .technique = &gkdef_phong.base,
-  .isvalid   = 1,
-  .enabled   = 1
+  .technique         = &gkdef_phong.base,
+  .isvalid           = 1,
+  .enabled           = 1,
+  .reflective        = NULL,
+  .transparent       = NULL,
+  .indexOfRefraction = 1.0
 };
 
 GkMaterial*

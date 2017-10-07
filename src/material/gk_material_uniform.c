@@ -16,11 +16,11 @@
 void
 gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
                   struct GkMaterial * __restrict material) {
-  GkTechnique   *technique;
-  char           buf[256];
-  GLint          loc;
-  GLuint         locui;
-  GLuint         prog;
+  GkTechnique *technique;
+  char         buf[256];
+  GLint        loc;
+  GLuint       locui;
+  GLuint       prog;
 
   if (pinfo->lastMaterial == material
       && !pinfo->updtMaterials)
@@ -42,72 +42,68 @@ gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
     phong  = (GkPhong *)material->technique;
 
     if (phong->ambient)
-      gkUniformColorOrTex(phong->ambient,     buf, "ambient",     prog);
+      gkUniformColorOrTex(phong->ambient,  buf, "ambient",  prog);
     if (phong->diffuse)
-      gkUniformColorOrTex(phong->diffuse,     buf, "diffuse",     prog);
+      gkUniformColorOrTex(phong->diffuse,  buf, "diffuse",  prog);
     if (phong->specular)
-      gkUniformColorOrTex(phong->specular,    buf, "specular",    prog);
+      gkUniformColorOrTex(phong->specular, buf, "specular", prog);
     if (phong->emission)
-      gkUniformColorOrTex(phong->emission,    buf, "emission",    prog);
-    if (phong->reflective)
-      gkUniformColorOrTex(phong->reflective,  buf, "reflective",  prog);
-    if (phong->transparent)
-      gkUniformColorOrTex(phong->transparent, buf, "transparent", prog);
+      gkUniformColorOrTex(phong->emission, buf, "emission", prog);
 
     loc = gkGetUniformLoc(prog, buf, "shininess");
     glUniform1f(loc, phong->shininess);
-
-    loc = gkGetUniformLoc(prog, buf, "reflectivity");
-    glUniform1f(loc, phong->reflectivity);
-
-    loc = gkGetUniformLoc(prog, buf, "transparency");
-    glUniform1f(loc, phong->transparency);
-
-    loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
-    glUniform1f(loc, phong->indexOfRefraction);
   } else if (technique->type == GK_MATERIAL_LAMBERT) {
     GkLambert *lambert;
     lambert  = (GkLambert *)material->technique;
 
     if (lambert->ambient)
-      gkUniformColorOrTex(lambert->ambient,     buf, "ambient",     prog);
+      gkUniformColorOrTex(lambert->ambient,  buf, "ambient",  prog);
     if (lambert->diffuse)
-      gkUniformColorOrTex(lambert->diffuse,     buf, "diffuse",     prog);
+      gkUniformColorOrTex(lambert->diffuse,  buf, "diffuse",  prog);
     if (lambert->emission)
-      gkUniformColorOrTex(lambert->emission,    buf, "emission",    prog);
-    if (lambert->reflective)
-      gkUniformColorOrTex(lambert->reflective,  buf, "reflective",  prog);
-    if (lambert->transparent)
-      gkUniformColorOrTex(lambert->transparent, buf, "transparent", prog);
-
-    loc = gkGetUniformLoc(prog, buf, "reflectivity");
-    glUniform1f(loc, lambert->reflectivity);
-
-    loc = gkGetUniformLoc(prog, buf, "transparency");
-    glUniform1f(loc, lambert->transparency);
-
-    loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
-    glUniform1f(loc, lambert->indexOfRefraction);
+      gkUniformColorOrTex(lambert->emission, buf, "emission", prog);
   } else if (technique->type == GK_MATERIAL_CONSTANT) {
     GkConstant *constant;
     constant  = (GkConstant *)material->technique;
 
     if (constant->emission)
-      gkUniformColorOrTex(constant->emission,    buf, "emission",    prog);
-    if (constant->reflective)
-      gkUniformColorOrTex(constant->reflective,  buf, "reflective",  prog);
-    if (constant->transparent)
-      gkUniformColorOrTex(constant->transparent, buf, "transparent", prog);
+      gkUniformColorOrTex(constant->emission, buf, "emission", prog);
+  }
 
-    loc = gkGetUniformLoc(prog, buf, "reflectivity");
-    glUniform1f(loc, constant->reflectivity);
+  if (material->transparent) {
+    GkTransparent *transp;
+
+    transp = material->transparent;
+    if (transp->color) {
+      gkUniformColorOrTex(transp->color,
+                          buf,
+                          "transparent",
+                          prog);
+    } else {
+      loc = gkGetUniformLoc(prog, buf, "transparent");
+      glUniform4fv(loc, 1, (vec4){1.0f, 1.0f, 1.0f, 1.0f});
+    }
 
     loc = gkGetUniformLoc(prog, buf, "transparency");
-    glUniform1f(loc, constant->transparency);
-
-    loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
-    glUniform1f(loc, constant->indexOfRefraction);
+    glUniform1f(loc, transp->amount);
   }
+
+  if (material->reflective) {
+    GkReflective *refl;
+    refl = material->reflective;
+
+    if (refl->color)
+      gkUniformColorOrTex(refl->color,
+                          buf,
+                          "reflective",
+                          prog);
+
+    loc = gkGetUniformLoc(prog, buf, "reflectivity");
+    glUniform1f(loc, refl->amount);
+  }
+
+  loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
+  glUniform1f(loc, material->indexOfRefraction);
 
   locui = glGetSubroutineIndex(prog,
                                GL_FRAGMENT_SHADER,
