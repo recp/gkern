@@ -19,7 +19,6 @@ gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
   GkTechnique *technique;
   char         buf[256];
   GLint        loc;
-  GLuint       locui;
   GLuint       prog;
 
   if (pinfo->lastMaterial == material
@@ -104,12 +103,6 @@ gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
 
   loc = gkGetUniformLoc(prog, buf, "indexOfRefraction");
   glUniform1f(loc, material->indexOfRefraction);
-
-  locui = glGetSubroutineIndex(prog,
-                               GL_FRAGMENT_SHADER,
-                               technique->subroutine);
-
-  glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &locui);
 
   pinfo->lastMaterial  = material;
   pinfo->updtMaterials = false;
