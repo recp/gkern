@@ -36,7 +36,11 @@ gkApplyMaterial(GkScene     * __restrict scene,
       if (pinfo->lastMaterial != material)
         gkUniformMaterial(pinfo, material);
 
-      gkRenderPass(scene, modelInst, prim, pass);
+      gkRenderPass(scene,
+                   modelInst,
+                   prim,
+                   material,
+                   pass);
     }
 
     pass = pass->next;

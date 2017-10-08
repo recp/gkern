@@ -15,4 +15,9 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
                      GkPrimitive * __restrict prim,
                      GkProgInfo  * __restrict pinfo);
 
+void
+gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
+                           GkPrimitive * __restrict prim,
+                           GkProgInfo  * __restrict pinfo);
+
 #endif /* render_light_h */

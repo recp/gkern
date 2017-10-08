@@ -28,6 +28,7 @@ void
 gkRenderPass(GkScene     * __restrict scene,
              GkModelInst * __restrict modelInst,
              GkPrimitive * __restrict prim,
+             GkMaterial  * __restrict material,
              GkPass      * __restrict pass) {
   GkProgInfo *pinfo;
 
@@ -38,5 +39,10 @@ gkRenderPass(GkScene     * __restrict scene,
     return;
 
   gkUniformTransform(pinfo, modelInst->trans);
-  gkRenderPrimPerLight(scene, prim, pinfo);
+
+  if (!material->transparent) {
+    gkRenderPrimPerLight(scene, prim, pinfo);
+  } else {
+    gkRenderTranspPrimPerLight(scene, prim, pinfo);
+  }
 }
