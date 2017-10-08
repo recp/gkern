@@ -133,7 +133,7 @@ gkShaderFlagsFor(GkTechnique * __restrict techn,
   /* TODO: transparent, reflectivity */
 
   if (shininess) {
-    pFragFlags = strcpy(pFragFlags, "\n#define SHININESS\n");
+    pFragFlags += sprintf(pFragFlags, "\n#define SHININESS\n");
   }
 
   if (texCount > 0) {
@@ -245,7 +245,7 @@ gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
                 GkTechnique  * __restrict techn) {
   switch (techn->type) {
     case GK_MATERIAL_PHONG:
-    case GK_MATERIAL_BLINN:{
+    case GK_MATERIAL_BLINN: {
       GkPhong *phong;
       phong = (GkPhong *)techn;
       matAttribs[0] = phong->diffuse;
