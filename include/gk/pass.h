@@ -13,11 +13,31 @@
 #include "material.h"
 
 #include <ds/forward-list.h>
-#include <ds/rb.h>
+
+struct GkScene;
+
+/* GL_COLOR_ATTACHMENT[n] */
+typedef struct GkPassOutColor {
+  GLuint                 buffId;
+  GLsizei                width;
+  GLsizei                height;
+  GLenum                 attachment;
+  struct GkPassColorOut *next;
+} GkPassOutColor;
+
+typedef struct GkPassOut {
+  GLuint          fbo;
+  GLuint          depth;   /* GL_DEPTH_ATTACHMENT   */
+  GLuint          stencil; /* GL_STENCIL_ATTACHMENT */
+  GkPassOutColor *color;   /* GL_COLOR_ATTACHMENT0  */
+  uint32_t        colorCount;
+} GkPassOut;
 
 typedef struct GkPass {
   GkProgInfo    *pinfo;
-  RBTree        *states;
+  FListItem     *states;
+  struct GkPass *inPasses;
+  struct GkPass *outPass;
   struct GkPass *next;
 } GkPass;
 
@@ -25,4 +45,42 @@ GK_EXPORT
 GkPass*
 gkGetOrCreatPass(GkMaterial *mat);
 
+GK_EXPORT
+GkPassOut*
+gkAllocPassOut(void);
+
+GK_EXPORT
+void
+gkBindPassOut(GkPassOut *pout);
+
+GK_EXPORT
+void
+gkBindDefaultPassOut(void);
+
+GK_EXPORT
+GLuint
+gkAddRenderTarget(struct GkScene *scene,
+                  GkPassOut      *pout,
+                  GLenum          format);
+
+GK_EXPORT
+GLuint
+gkAddRenderTargetRB(struct GkScene *scene,
+                    GkPassOut      *pout);
+
+GK_EXPORT
+GLuint
+gkAddRenderTargetEx(GkPassOut *pout,
+                    GLenum     internalFormat,
+                    GLenum     format,
+                    GLsizei    width,
+                    GLsizei    height,
+                    GLenum     type);
+
+GK_EXPORT
+GLuint
+gkAddRenderTargetRBEx(GkPassOut *pout,
+                      GLenum     internalFormat,
+                      GLsizei    width,
+                      GLsizei    height);
 #endif /* gk_pass_h */

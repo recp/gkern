@@ -46,6 +46,7 @@ typedef struct GkScene {
   GLenum       usage;
   GLuint       currentProgram;
   GkSceneFlags flags;
+  GLenum       internalFormat;
   float        fpsApprx;
 } GkScene;
 
