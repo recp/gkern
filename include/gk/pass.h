@@ -36,6 +36,7 @@ typedef struct GkPassOut {
 typedef struct GkPass {
   GkProgInfo    *pinfo;
   FListItem     *states;
+  GkPassOut     *output;
   struct GkPass *inPasses;
   struct GkPass *outPass;
   struct GkPass *next;
@@ -60,27 +61,27 @@ gkBindDefaultPassOut(void);
 GK_EXPORT
 GLuint
 gkAddRenderTarget(struct GkScene *scene,
-                  GkPassOut      *pout,
+                  GkPass         *pass,
                   GLenum          format);
 
 GK_EXPORT
 GLuint
 gkAddRenderTargetRB(struct GkScene *scene,
-                    GkPassOut      *pout);
+                    GkPass         *pass);
 
 GK_EXPORT
 GLuint
-gkAddRenderTargetEx(GkPassOut *pout,
-                    GLenum     internalFormat,
-                    GLenum     format,
-                    GLsizei    width,
-                    GLsizei    height,
-                    GLenum     type);
+gkAddRenderTargetEx(GkPass *pass,
+                    GLenum  internalFormat,
+                    GLenum  format,
+                    GLsizei width,
+                    GLsizei height,
+                    GLenum  type);
 
 GK_EXPORT
 GLuint
-gkAddRenderTargetRBEx(GkPassOut *pout,
-                      GLenum     internalFormat,
-                      GLsizei    width,
-                      GLsizei    height);
+gkAddRenderTargetRBEx(GkPass *pass,
+                      GLenum  internalFormat,
+                      GLsizei width,
+                      GLsizei height);
 #endif /* gk_pass_h */

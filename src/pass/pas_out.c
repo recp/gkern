@@ -34,10 +34,10 @@ gkBindDefaultPassOut() {
 
 GK_EXPORT
 GLuint
-gkAddRenderTarget(GkScene   *scene,
-                  GkPassOut *pout,
-                  GLenum     format) {
-  return gkAddRenderTargetEx(pout,
+gkAddRenderTarget(GkScene *scene,
+                  GkPass  *pass,
+                  GLenum   format) {
+  return gkAddRenderTargetEx(pass,
                              scene->internalFormat,
                              format,
                              scene->vrect.size.w,
@@ -48,21 +48,25 @@ gkAddRenderTarget(GkScene   *scene,
 GK_EXPORT
 GLuint
 gkAddRenderTargetRB(struct GkScene *scene,
-                    GkPassOut      *pout) {
-  return gkAddRenderTargetRBEx(pout,
+                    GkPass         *pass) {
+  return gkAddRenderTargetRBEx(pass,
                                scene->internalFormat,
                                scene->vrect.size.w,
                                scene->vrect.size.h);
 }
 
 GLuint
-gkAddRenderTargetRBEx(GkPassOut *pout,
-                      GLenum     internalFormat,
-                      GLsizei    width,
-                      GLsizei    height) {
+gkAddRenderTargetRBEx(GkPass *pass,
+                      GLenum  internalFormat,
+                      GLsizei width,
+                      GLsizei height) {
   GkPassOutColor *poc;
+  GkPassOut      *pout;
   GLenum         *drawBuffs;
   int32_t         i;
+
+  if (!(pout = pass->output))
+    pass->output = pout = gkAllocPassOut();
 
   /* TODO:
    GLint maxAttach = 0;
@@ -95,7 +99,7 @@ gkAddRenderTargetRBEx(GkPassOut *pout,
 
   pout->colorCount++;
 
-  drawBuffs = malloc(sizeof(GL_COLOR_ATTACHMENT0) * pout->colorCount);
+  drawBuffs = malloc(sizeof(GLenum) * pout->colorCount);
   for (i = 0; i < pout->colorCount; i++)
     drawBuffs[i] = GL_COLOR_ATTACHMENT0 + i;
 
@@ -113,15 +117,19 @@ gkAddRenderTargetRBEx(GkPassOut *pout,
 
 GK_EXPORT
 GLuint
-gkAddRenderTargetEx(GkPassOut *pout,
-                    GLenum     internalFormat,
-                    GLenum     format,
-                    GLsizei    width,
-                    GLsizei    height,
-                    GLenum     type) {
+gkAddRenderTargetEx(GkPass *pass,
+                    GLenum  internalFormat,
+                    GLenum  format,
+                    GLsizei width,
+                    GLsizei height,
+                    GLenum  type) {
   GkPassOutColor *poc;
+  GkPassOut      *pout;
   GLenum         *drawBuffs;
   int32_t         i;
+
+  if (!(pout = pass->output))
+    pass->output = pout = gkAllocPassOut();
 
   /* TODO:
        GLint maxAttach = 0;
@@ -163,7 +171,7 @@ gkAddRenderTargetEx(GkPassOut *pout,
 
   pout->colorCount++;
 
-  drawBuffs = malloc(sizeof(GL_COLOR_ATTACHMENT0) * pout->colorCount);
+  drawBuffs = malloc(sizeof(GLenum) * pout->colorCount);
   for (i = 0; i < pout->colorCount; i++)
     drawBuffs[i] = GL_COLOR_ATTACHMENT0 + i;
 
