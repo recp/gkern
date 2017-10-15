@@ -40,8 +40,8 @@ gkAddRenderTarget(GkScene *scene,
   return gkAddRenderTargetEx(pass,
                              scene->internalFormat,
                              format,
-                             scene->vrect.size.w,
-                             scene->vrect.size.h,
+                             scene->vrect.size.w * scene->backingScale,
+                             scene->vrect.size.h * scene->backingScale,
                              GL_UNSIGNED_BYTE);
 }
 
@@ -51,8 +51,8 @@ gkAddRenderTargetRB(struct GkScene *scene,
                     GkPass         *pass) {
   return gkAddRenderTargetRBEx(pass,
                                scene->internalFormat,
-                               scene->vrect.size.w,
-                               scene->vrect.size.h);
+                               scene->vrect.size.w * scene->backingScale,
+                               scene->vrect.size.h * scene->backingScale);
 }
 
 GLuint

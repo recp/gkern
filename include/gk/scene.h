@@ -41,6 +41,7 @@ typedef struct GkScene {
   GkLightRef  *lights;
   GkBBox      *bbox;
   GkRect       vrect;
+  float        backingScale;
   uint32_t     lightCount;
   uint32_t     lastLightIndex;
   GLenum       usage;
