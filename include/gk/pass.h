@@ -22,7 +22,7 @@ typedef struct GkPassOutColor {
   GLsizei                width;
   GLsizei                height;
   GLenum                 attachment;
-  struct GkPassColorOut *next;
+  struct GkPassOutColor *next;
 } GkPassOutColor;
 
 typedef struct GkPassOut {
