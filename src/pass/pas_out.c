@@ -60,7 +60,7 @@ gkAddRenderTargetRBEx(GkPass *pass,
                       GLenum  internalFormat,
                       GLsizei width,
                       GLsizei height) {
-  GkPassOutColor *poc;
+  GkPassOutColor *poc, *last_poc;
   GkPassOut      *pout;
   GLenum         *drawBuffs;
   int32_t         i;
@@ -80,6 +80,7 @@ gkAddRenderTargetRBEx(GkPass *pass,
     return 0;
   }
 
+  last_poc = pout->color;
   poc = calloc(sizeof(*poc), 1);
 
   gkBindPassOut(pout);
@@ -110,6 +111,16 @@ gkAddRenderTargetRBEx(GkPass *pass,
     /* TODO: log and raise warning/errors */
   }
 
+  if (last_poc) {
+    while (last_poc->next) {
+      last_poc = last_poc->next;
+    }
+
+    last_poc->next = poc;
+  } else {
+    pout->color = poc;
+  }
+  
   gkBindDefaultPassOut();
 
   return pout->colorCount - 1;
@@ -123,7 +134,7 @@ gkAddRenderTargetEx(GkPass *pass,
                     GLsizei width,
                     GLsizei height,
                     GLenum  type) {
-  GkPassOutColor *poc;
+  GkPassOutColor *poc, *last_poc;
   GkPassOut      *pout;
   GLenum         *drawBuffs;
   int32_t         i;
@@ -143,6 +154,7 @@ gkAddRenderTargetEx(GkPass *pass,
     return 0;
   }
 
+  last_poc = pout->color;
   poc = calloc(sizeof(*poc), 1);
 
   gkBindPassOut(pout);
@@ -180,6 +192,16 @@ gkAddRenderTargetEx(GkPass *pass,
 
   if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
     /* TODO: log and raise warning/errors */
+  }
+
+  if (last_poc) {
+    while (last_poc->next) {
+      last_poc = last_poc->next;
+    }
+
+    last_poc->next = poc;
+  } else {
+    pout->color = poc;
   }
 
   gkBindDefaultPassOut();
