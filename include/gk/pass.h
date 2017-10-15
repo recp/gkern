@@ -59,6 +59,11 @@ void
 gkBindDefaultPassOut(void);
 
 GK_EXPORT
+void
+gkPassEnableDepth(struct GkScene *scene,
+                  GkPass         *pass);
+
+GK_EXPORT
 GLuint
 gkAddRenderTarget(struct GkScene *scene,
                   GkPass         *pass,

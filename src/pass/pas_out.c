@@ -33,6 +33,32 @@ gkBindDefaultPassOut() {
 }
 
 GK_EXPORT
+void
+gkPassEnableDepth(GkScene *scene,
+                  GkPass  *pass) {
+  GkPassOut *pout;
+
+  if (!(pout = pass->output))
+    pass->output = pout = gkAllocPassOut();
+
+  if (pout->depth != 0)
+    return;
+
+  glGenRenderbuffers(1, &pout->depth);
+  glBindRenderbuffer(GL_RENDERBUFFER, pout->depth);
+
+  glRenderbufferStorage(GL_RENDERBUFFER,
+                        GL_DEPTH_COMPONENT,
+                        scene->vrect.size.w * scene->backingScale,
+                        scene->vrect.size.h * scene->backingScale);
+
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                            GL_DEPTH_ATTACHMENT,
+                            GL_RENDERBUFFER,
+                            pout->depth);
+}
+
+GK_EXPORT
 GLuint
 gkAddRenderTarget(GkScene *scene,
                   GkPass  *pass,
