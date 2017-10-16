@@ -43,6 +43,10 @@ typedef struct GkPass {
 } GkPass;
 
 GK_EXPORT
+GkPassOut*
+gkDefaultRenderOut(void);
+
+GK_EXPORT
 GkPass*
 gkGetOrCreatPass(GkMaterial *mat);
 

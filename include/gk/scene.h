@@ -35,11 +35,12 @@ GK_MAKE_C_ENUM(GkSceneFlags)
 
 typedef struct GkScene {
   GkCamera    *camera;
-  GkTransform *trans; /* free camera */
+  GkTransform *trans;  /* free camera */
   GkNode      *rootNode;
   GkProgInfo  *pinfo;
   GkLightRef  *lights;
   GkBBox      *bbox;
+  GkPassOut   *output; /* set NULL for default FBO (screen) */
   GkRect       vrect;
   float        backingScale;
   uint32_t     lightCount;
