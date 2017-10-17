@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk/program.h"
-#include "../include/gk/vertex.h"
+#include "../../include/gk/program.h"
+#include "../../include/gk/vertex.h"
 
 #include <ds/rb.h>
 

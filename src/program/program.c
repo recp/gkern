@@ -5,11 +5,11 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../include/gk/program.h"
-#include "../include/gk/shader.h"
-#include "default/shader/gk_def_shader.h"
+#include "../../include/gk/program.h"
+#include "../../include/gk/shader.h"
+#include "../default/shader/gk_def_shader.h"
 
-#include "gk_program.h"
+#include "program.h"
 
 #include <stdlib.h>
 #include <string.h>

@@ -10,7 +10,7 @@
 #include "time/gk_time.h"
 
 #include "shader/shader.h"
-#include "gk_program.h"
+#include "program/program.h"
 
 void
 gk_verta_init(void);
