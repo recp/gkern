@@ -39,7 +39,6 @@ typedef struct GkModelInstList {
 typedef struct GkBuffer {
   GLuint  vbo;
   GLsizei size;
-  GLuint  semantic;
   GLenum  usage;
   GLenum  type;
   GLenum  target;
