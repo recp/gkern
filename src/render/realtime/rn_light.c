@@ -14,6 +14,7 @@
 
 #include "rn_light.h"
 #include "rn_pass.h"
+#include "rn_prim.h"
 
 void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
