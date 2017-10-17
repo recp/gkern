@@ -59,6 +59,30 @@ gkPassEnableDepth(GkScene *scene,
 }
 
 GK_EXPORT
+GkPassOutColor*
+gkGetRenderTarget(GkPass *pass, int32_t index) {
+  GkPassOut      *pout;
+  GkPassOutColor *poc;
+
+  if (!(pout = pass->output) || !(poc = pout->color))
+    return NULL;
+
+  while (index > 0) {
+    poc = poc->next;
+    index--;
+  }
+
+  return poc;
+}
+
+GK_EXPORT
+void
+gkBindRenderTargetToTex(GkPassOutColor *rt, int32_t texUnit) {
+  glActiveTexture(GL_TEXTURE0 + texUnit);
+  glBindTexture(GL_TEXTURE_2D, rt->buffId);
+}
+
+GK_EXPORT
 GLuint
 gkAddRenderTarget(GkScene *scene,
                   GkPass  *pass,

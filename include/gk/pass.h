@@ -68,6 +68,14 @@ gkPassEnableDepth(struct GkScene *scene,
                   GkPass         *pass);
 
 GK_EXPORT
+GkPassOutColor*
+gkGetRenderTarget(GkPass *rt, int32_t index);
+
+GK_EXPORT
+void
+gkBindRenderTargetToTex(GkPassOutColor *rt, int32_t texUnit);
+
+GK_EXPORT
 GLuint
 gkAddRenderTarget(struct GkScene *scene,
                   GkPass         *pass,
