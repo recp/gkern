@@ -8,9 +8,8 @@
 #ifndef pass_h
 #define pass_h
 
-void
-gkRenderPrim(GkScene     * __restrict scene,
-             GkPrimitive * __restrict prim);
+#include "../../../include/gk/gk.h"
+#include "../../../include/gk/material.h"
 
 void
 gkRenderPass(GkScene     * __restrict scene,
