@@ -77,9 +77,24 @@ gkGetRenderTarget(GkPass *pass, int32_t index) {
 
 GK_EXPORT
 void
-gkBindRenderTargetToTex(GkPassOutColor *rt, int32_t texUnit) {
+gkBindRenderTargetToTexUnit(GkPassOutColor *rt, int32_t texUnit) {
   glActiveTexture(GL_TEXTURE0 + texUnit);
   glBindTexture(GL_TEXTURE_2D, rt->buffId);
+}
+
+GK_EXPORT
+void
+gkBindRenderTargetToTex(GkPass     *pass,
+                        int32_t     targetIndex,
+                        GkProgInfo *pinfo,
+                        int32_t     texUnit,
+                        const char *uniformName) {
+  /* get render target from pass output, then bind it to texture unit */
+  gkBindRenderTargetToTexUnit(gkGetRenderTarget(pass, targetIndex),
+                              texUnit);
+
+  /* uniform texture unit to program */
+  gkUniform1i(pinfo, uniformName, texUnit);
 }
 
 GK_EXPORT

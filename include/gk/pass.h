@@ -73,7 +73,15 @@ gkGetRenderTarget(GkPass *rt, int32_t index);
 
 GK_EXPORT
 void
-gkBindRenderTargetToTex(GkPassOutColor *rt, int32_t texUnit);
+gkBindRenderTargetToTexUnit(GkPassOutColor *rt, int32_t texUnit);
+
+GK_EXPORT
+void
+gkBindRenderTargetToTex(GkPass     *pass,
+                        int32_t     targetIndex,
+                        GkProgInfo *pinfo,
+                        int32_t     texUnit,
+                        const char *uniformName);
 
 GK_EXPORT
 GLuint
