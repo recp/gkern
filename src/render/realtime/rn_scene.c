@@ -9,6 +9,7 @@
 #include "../../default/gk_transform.h"
 #include "../../../include/gk/prims/cube.h"
 #include "../../../include/gk/time.h"
+#include "../../../include/gk/pass.h"
 
 void
 gkRenderScene(GkScene * scene) {

@@ -10,6 +10,7 @@
 
 #include "../../../include/gk/gk.h"
 #include "../../../include/gk/material.h"
+#include "../../../include/gk/pass.h"
 
 void
 gkRenderPass(GkScene     * __restrict scene,

@@ -13,6 +13,8 @@ extern "C" {
 
 #include "common.h"
 
+struct GkPassOut;
+
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE          = 0,
   GK_SCENEF_DRAW_BBOX     = 1 << 0,
@@ -34,22 +36,22 @@ typedef enum GkSceneFlags {
 GK_MAKE_C_ENUM(GkSceneFlags)
 
 typedef struct GkScene {
-  GkCamera    *camera;
-  GkTransform *trans;  /* free camera */
-  GkNode      *rootNode;
-  GkProgInfo  *pinfo;
-  GkLightRef  *lights;
-  GkBBox      *bbox;
-  GkPassOut   *output; /* set NULL for default FBO (screen) */
-  GkRect       vrect;
-  float        backingScale;
-  uint32_t     lightCount;
-  uint32_t     lastLightIndex;
-  GLenum       usage;
-  GLuint       currentProgram;
-  GkSceneFlags flags;
-  GLenum       internalFormat;
-  float        fpsApprx;
+  GkCamera         *camera;
+  GkTransform      *trans;  /* free camera */
+  GkNode           *rootNode;
+  GkProgInfo       *pinfo;
+  GkLightRef       *lights;
+  GkBBox           *bbox;
+  struct GkPassOut *output; /* set NULL for default FBO (screen) */
+  GkRect            vrect;
+  float             backingScale;
+  uint32_t          lightCount;
+  uint32_t          lastLightIndex;
+  GLenum            usage;
+  GLuint            currentProgram;
+  GkSceneFlags      flags;
+  GLenum            internalFormat;
+  float             fpsApprx;
 } GkScene;
 
 #ifdef __cplusplus
