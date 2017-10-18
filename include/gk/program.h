@@ -15,6 +15,7 @@ extern "C" {
 #include "shader.h"
 
 #include <ds/rb.h>
+#include <ds/hash.h>
 
 #include <OpenGL/gl3.h>
 #include <stdio.h>
@@ -34,6 +35,7 @@ typedef struct GkProgInfo {
   uint32_t attribc; /* attrib count                                          */
   uint32_t attribl; /* last used attrib index, don't edit manually!          */
   RBTree  *attribs; /* attribs                                               */
+  HTable  *uniforms;
 
   struct GkMaterial *lastMaterial;
   struct GkLight    *lastLight;
