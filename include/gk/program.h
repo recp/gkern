@@ -13,6 +13,7 @@ extern "C" {
 
 #include "common.h"
 #include "shader.h"
+#include "uniform.h"
 
 #include <ds/rb.h>
 #include <ds/hash.h>
