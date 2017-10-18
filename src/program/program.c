@@ -155,6 +155,14 @@ gkGetOrCreatProg(char       *name,
   return NULL;
 }
 
+GK_EXPORT
+void
+gkUseProgram(GkScene    *scene,
+             GkProgInfo *pinfo) {
+  glUseProgram(pinfo->prog);
+  scene->currentProgram = pinfo->prog;
+}
+
 void
 gk_prog_init() {
   gk_progs = rb_newtree_str();
