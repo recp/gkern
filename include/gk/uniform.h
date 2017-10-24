@@ -5,7 +5,6 @@
  * Full license can be found in the LICENSE file
  */
 
-
 #ifndef uniform_h
 #define uniform_h
 

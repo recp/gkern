@@ -12,8 +12,22 @@
 #include <string.h>
 
 typedef struct GkGPUState {
-  bool depthTest;
+  bool   depthTest:1;
+  bool   blend:1;
+  GLenum depthFunc;
+  GLenum blendEq;
+  GLenum blendFuncSrc;
+  GLenum blendFuncDest;
 } GkGPUState;
+
+static GkGPUState gk__defgpustate = {
+  true,
+  false,
+  GL_LESS,
+  GL_FUNC_ADD,
+  GL_ONE,
+  GL_ZERO
+};
 
 static
 GkGPUState*
@@ -24,8 +38,10 @@ GkGPUState*
 gk__gpustate(GkContext * __restrict ctx) {
   GkGPUState *state;
   
-  if (!(state = flist_last(ctx->states)))
+  if (!(state = flist_last(ctx->states))) {
     ctx->currState = state = calloc(sizeof(*state), 1);
+    memcpy(state, &gk__defgpustate, sizeof(gk__defgpustate));
+  }
 
   return state;
 }
@@ -45,7 +61,7 @@ GK_EXPORT
 void
 gkPopState(GkContext * __restrict ctx) {
   GkGPUState *state, *curr;
-  
+
   if (ctx->states->count < 1)
     return;
 
@@ -63,6 +79,25 @@ gkPopState(GkContext * __restrict ctx) {
     }
   }
   
+  if (state->depthFunc != curr->depthTest)
+    glDepthFunc(state->depthFunc);
+  
+  if (state->blend != curr->blend) {
+    if (curr->blend) {
+      glDisable(GL_BLEND);
+    } else {
+      glEnable(GL_BLEND);
+    }
+  }
+  
+  if (state->blendFuncSrc != curr->blendFuncSrc
+      || state->blendFuncDest != curr->blendFuncDest) {
+    glBlendFunc(state->blendFuncSrc, state->blendFuncDest);
+  }
+  
+  if (state->blendEq != curr->blendEq)
+    glBlendEquation(state->blendEq);
+
   /* we are no longer need to current state */
   free(curr);
 }
