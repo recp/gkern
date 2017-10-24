@@ -6,6 +6,7 @@
  */
 
 #include "../include/gk/gk.h"
+#include <ds/forward-list.h>
 
 GkContext*
 gkContextNew(GkProgInfo * __restrict pinfo) {
@@ -18,6 +19,8 @@ gkContextNew(GkProgInfo * __restrict pinfo) {
     ctx->pinfo = gkDefaultProgram();
   else
     ctx->pinfo = pinfo;
+  
+  ctx->states = flist_new(NULL);
 
   return ctx;
 }
