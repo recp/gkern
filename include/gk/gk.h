@@ -12,6 +12,7 @@ extern "C" {
 #endif
 
 #include "common.h"
+#include "context.h"
 #include "shader.h"
 #include "program.h"
 #include "light.h"
@@ -34,11 +35,6 @@ extern "C" {
 #define GK_DRAW_ELEMENTS (1 << 0)
 #define GK_DRAW_ARRAYS   (1 << 1)
 #define GK_COMPLEX       (1 << 2)
-
-typedef struct GkContext {
-  RBTree     *mdltree;
-  GkProgInfo *pinfo; /* top-level program */
-} GkContext;
 
 GkContext*
 gkContextNew(GkProgInfo * __restrict pinfo);
