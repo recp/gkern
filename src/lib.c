@@ -5,9 +5,9 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_model.h"
-#include "gk_common.h"
-#include "time/gk_time.h"
+#include "model.h"
+#include "common.h"
+#include "time/time.h"
 
 #include "shader/shader.h"
 #include "program/program.h"

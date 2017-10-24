@@ -9,9 +9,9 @@
 #include "../../include/gk/material.h"
 #include <string.h>
 
-#include "../gk_uniform.h"
-#include "../default/gk_def_effect.h"
-#include "gk_colortex_uniform.h"
+#include "../uniform.h"
+#include "../default/def_effect.h"
+#include "colortex_uniform.h"
 
 void
 gkUniformMaterial(struct GkProgInfo * __restrict pinfo,

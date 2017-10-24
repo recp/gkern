@@ -5,10 +5,10 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_tball.h"
-#include "gk_tball_mouse.h"
+#include "tball.h"
+#include "tball_mouse.h"
 #include "../../include/gk/transform.h"
-#include "../default/gk_transform.h"
+#include "../default/transform.h"
 #include <string.h>
 
 GkTrackball*

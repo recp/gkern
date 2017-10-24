@@ -6,7 +6,7 @@
  */
 
 #include "../../include/gk/prims/cube.h"
-#include "../default/gk_def_prog.h"
+#include "../default/def_prog.h"
 #include <limits.h>
 
 GLfloat gk__verts_cube[] = {

@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_time.h"
-#include "../gk_common.h"
+#include "time.h"
+#include "../common.h"
 #include "../../include/gk/gk.h"
 #include "../../include/gk/time.h"
 #include <time.h>

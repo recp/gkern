@@ -6,7 +6,7 @@
  */
 
 #include "../../../include/gk/gk.h"
-#include "../../default/gk_transform.h"
+#include "../../default/transform.h"
 #include "../../../include/gk/prims/cube.h"
 #include "../../../include/gk/time.h"
 #include "../../../include/gk/pass.h"

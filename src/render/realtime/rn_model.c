@@ -8,9 +8,9 @@
 #include "../../../include/gk/gk.h"
 #include "../../../include/gk/material.h"
 #include "../../../include/gk/prims/cube.h"
-#include "../../default/gk_def_effect.h"
-#include "../../default/ak_def_light.h"
-#include "../../gk_matrix.h"
+#include "../../default/def_effect.h"
+#include "../../default/def_light.h"
+#include "../../matrix.h"
 
 #include "rn_light.h"
 #include "rn_material.h"

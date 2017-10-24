@@ -19,11 +19,11 @@ gkApplyMaterial(GkScene     * __restrict scene,
   GkPass *pass;
 
   if (!material || !material->technique)
-  return;
+    return;
 
   if (!(pass = material->technique->pass)
       && !(material->technique->pass = pass = gkGetOrCreatPass(material)))
-  return;
+    return;
 
   while (pass) {
     GkProgInfo *pinfo;

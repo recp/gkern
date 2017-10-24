@@ -9,8 +9,8 @@
 #include "../../include/gk/material.h"
 #include <string.h>
 
-#include "../gk_uniform.h"
-#include "../default/gk_def_effect.h"
+#include "../uniform.h"
+#include "../default/def_effect.h"
 
 GkPhong*
 gkMaterialNewPhong() {

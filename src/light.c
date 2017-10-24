@@ -6,9 +6,9 @@
  */
 
 #include "../include/gk/gk.h"
-#include "gk_uniform.h"
-#include "default/ak_def_light.h"
-#include "gk_matrix.h"
+#include "uniform.h"
+#include "default/def_light.h"
+#include "matrix.h"
 #include <string.h>
 
 void

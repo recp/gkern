@@ -7,7 +7,7 @@
 
 #include "../../include/gk/program.h"
 #include "../../include/gk/shader.h"
-#include "../default/shader/gk_def_shader.h"
+#include "../default/shader/def_shader.h"
 
 #include "program.h"
 

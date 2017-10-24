@@ -7,8 +7,8 @@
 
 #include "../../include/gk/gk.h"
 #include "../../include/gk/trackball.h"
-#include "gk_tball.h"
-#include "gk_tball_mouse.h"
+#include "tball.h"
+#include "tball_mouse.h"
 
 void
 gk_tball_mouse(void         *sender,

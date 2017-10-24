@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_matrix.h"
+#include "matrix.h"
 
 void
 gkCalcViewMat(GkScene     * __restrict scene,

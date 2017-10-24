@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_model.h"
+#include "model.h"
 #include <ds/rb.h>
 
 void

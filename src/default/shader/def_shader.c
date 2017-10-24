@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_def_shader.h"
+#include "def_shader.h"
 
 const char*
 gk_def_shader_vert(GK_DEF_SHADER shader) {

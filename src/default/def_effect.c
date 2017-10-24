@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_def_effect.h"
+#include "def_effect.h"
 
 GkColor gkdef_clr__blk = { 0.0, 0.0, 0.0, 1.0 };
 GkColor gkdef_clr__wht = { 0.0, 0.0, 0.0, 1.0 };

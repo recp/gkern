@@ -6,7 +6,7 @@
  */
 
 #include "../../../include/gk/gk.h"
-#include "../../gk_matrix.h"
+#include "../../matrix.h"
 
 void
 gkRenderNode(GkScene     *scene,

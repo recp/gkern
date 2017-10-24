@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_uniform.h"
+#include "uniform.h"
 #include <string.h>
 
 GLint

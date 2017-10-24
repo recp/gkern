@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "gk_def_prog.h"
-#include "shader/gk_def_shader.h"
+#include "def_prog.h"
+#include "shader/def_shader.h"
 
 GkProgInfo * gk_def_prog_cube = NULL;
 
