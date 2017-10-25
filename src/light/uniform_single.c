@@ -7,7 +7,7 @@
 
 #include "../../include/gk/gk.h"
 #include "../default/def_light.h"
-#include "uniform.h"
+#include "../program/uniform_cache.h"
 #include "matrix.h"
 #include <string.h>
 
@@ -19,12 +19,9 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   vec4  dir;
   char  buf[32];
   GLint loc;
-  GLint prog;
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "light.");
-
-  prog = pinfo->prog;
 
   switch (light->type) {
     case GK_LIGHT_TYPE_SPOT: {
@@ -32,19 +29,19 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
 
       spot = (GkSpotLight *)light;
 
-      loc = gkGetUniformLoc(prog, buf, "cutoffCos");
+      loc = gkUniformLocBuff(pinfo, "cutoffCos", buf);
       glUniform1f(loc, spot->cutoffCosine);
 
-      loc = gkGetUniformLoc(prog, buf, "cutoffExp");
+      loc = gkUniformLocBuff(pinfo, "cutoffExp", buf);
       glUniform1f(loc, spot->cutoffExp);
 
-      loc = gkGetUniformLoc(prog, buf, "constAttn");
+      loc = gkUniformLocBuff(pinfo, "constAttn", buf);
       glUniform1f(loc, spot->constAttn);
 
-      loc = gkGetUniformLoc(prog, buf, "linAttn");
+      loc = gkUniformLocBuff(pinfo, "linAttn", buf);
       glUniform1f(loc, spot->linearAttn);
 
-      loc = gkGetUniformLoc(prog, buf, "quadAttn");
+      loc = gkUniformLocBuff(pinfo, "quadAttn", buf);
       glUniform1f(loc, spot->quadAttn);
       break;
     }
@@ -54,13 +51,13 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
 
       point = (GkPointLight *)light;
 
-      loc = gkGetUniformLoc(prog, buf, "constAttn");
+      loc = gkUniformLocBuff(pinfo, "constAttn", buf);
       glUniform1f(loc, point->constAttn);
 
-      loc = gkGetUniformLoc(prog, buf, "linAttn");
+      loc = gkUniformLocBuff(pinfo, "linAttn", buf);
       glUniform1f(loc, point->linearAttn);
 
-      loc = gkGetUniformLoc(prog, buf, "quadAttn");
+      loc = gkUniformLocBuff(pinfo, "quadAttn", buf);
       glUniform1f(loc, point->quadAttn);
       break;
     }
@@ -73,14 +70,14 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   }
 
   if (light->ambient) {
-    loc = gkGetUniformLoc(prog, buf, "ambient");
+    loc = gkUniformLocBuff(pinfo, "ambient", buf);
     glUniform4fv(loc, 1, *light->ambient);
   }
 
-  loc = gkGetUniformLoc(prog, buf, "color");
+  loc = gkUniformLocBuff(pinfo, "color", buf);
   glUniform4fv(loc, 1, light->color.vec);
 
-  loc = gkGetUniformLoc(prog, buf, "position");
+  loc = gkUniformLocBuff(pinfo, "position", buf);
 
   /* position must be in view space */
   glUniform3fv(loc, 1, transView[3]);
@@ -90,6 +87,6 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
                     light->direction,
                     dir);
 
-  loc = gkGetUniformLoc(prog, buf, "direction");
+  loc = gkUniformLocBuff(pinfo, "direction", buf);
   glUniform3fv(loc, 1, dir);
 }

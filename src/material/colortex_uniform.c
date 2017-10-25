@@ -6,7 +6,7 @@
  */
 
 #include "colortex_uniform.h"
-#include "../uniform.h"
+#include "../program/uniform_cache.h"
 
 #include <string.h>
 
@@ -14,7 +14,7 @@ void
 gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
                     char         * __restrict buf,
                     char         * __restrict name,
-                    GLuint                    prog) {
+                    GkProgInfo   * __restrict pinfo) {
   GLint         loc;
   GkColorMethod method;
 
@@ -32,7 +32,7 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
     GkColor *color;
 
     color = crtx->val;
-    loc = gkGetUniformLoc(prog, buf, name);
+    loc = gkUniformLocBuff(pinfo, name, buf);
     glUniform4fv(loc, 1, color->vec);
   } else if (method == GK_COLOR_TEX) {
     GkTexture *tex;
@@ -46,7 +46,7 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
       glBindTexture(tex->target, tex->index);
     }
 
-    loc = gkGetUniformLoc(prog, buf, name);
+    loc = gkUniformLocBuff(pinfo, name, buf);
     glUniform1i(loc, unit);
   }
 }

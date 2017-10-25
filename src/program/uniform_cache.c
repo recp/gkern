@@ -6,6 +6,7 @@
  */
 
 #include "uniform_cache.h"
+#include <string.h>
 
 GK_EXPORT
 GLint
@@ -24,5 +25,25 @@ gkUniformLoc(GkProgInfo *pinfo, const char *name) {
            (void *)name,
            (void *)(uintptr_t)(loc + 1));
 
+  return loc;
+}
+
+GLint
+gkUniformLocBuff(GkProgInfo * __restrict pinfo,
+                 char       * __restrict name,
+                 char       * __restrict buf) {
+  char  *pBuf;
+  size_t attrlen;
+  GLint  loc;
+  
+  if (!buf)
+    return gkUniformLoc(pinfo, name);
+  
+  pBuf = strrchr(buf, '.') + 1;
+  strcpy(pBuf, name);
+  
+  attrlen = strlen(pBuf);
+  loc     = gkUniformLoc(pinfo, buf);
+  memset((buf + strlen(buf)) - attrlen, '\0', attrlen);
   return loc;
 }

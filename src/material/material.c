@@ -9,7 +9,6 @@
 #include "../../include/gk/material.h"
 #include <string.h>
 
-#include "../uniform.h"
 #include "../default/def_effect.h"
 
 GkPhong*
