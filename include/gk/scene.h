@@ -42,15 +42,15 @@ typedef struct GkScene {
   GkProgInfo       *pinfo;
   GkLightRef       *lights;
   GkBBox           *bbox;
-  struct GkPassOut *output; /* set NULL for default FBO (screen) */
+  struct GkPassOut *finalOutput; /* set NULL for default FBO (screen) */
   GkRect            vrect;
-  float             backingScale;
   uint32_t          lightCount;
   uint32_t          lastLightIndex;
   GLenum            usage;
   GLuint            currentProgram;
   GkSceneFlags      flags;
   GLenum            internalFormat;
+  float             backingScale;
   float             fpsApprx;
 } GkScene;
 

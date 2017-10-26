@@ -35,10 +35,10 @@ gkRenderScene(GkScene * scene) {
   scene->flags &= ~GK_SCENEF_RENDERED;
   scene->flags |= GK_SCENEF_RENDERING;
 
-  if (!scene->output)
-    scene->output = gkDefaultRenderOut();
+  if (!scene->finalOutput)
+    scene->finalOutput = gkDefaultRenderOut();
 
-  gkBindPassOut(scene->output);
+  gkBindPassOut(scene->finalOutput);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
