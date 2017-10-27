@@ -139,6 +139,20 @@ gkBindRenderTargetToTex(GkPass     *pass,
 }
 
 GK_EXPORT
+void
+gkBindDepthTexTo(GkPass     *pass,
+                 GkProgInfo *pinfo,
+                 int32_t     texUnit,
+                 const char *uniformName) {
+  /* then bind it to texture unit */
+  glActiveTexture(GL_TEXTURE0 + texUnit);
+  glBindTexture(GL_TEXTURE_2D, pass->output->depth);
+  
+  /* uniform texture unit to program */
+  gkUniform1i(pinfo, uniformName, texUnit);
+}
+
+GK_EXPORT
 GLuint
 gkAddRenderTarget(GkScene *scene,
                   GkPass  *pass,

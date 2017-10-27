@@ -89,6 +89,13 @@ gkBindRenderTargetToTex(GkPass     *pass,
                         const char *uniformName);
 
 GK_EXPORT
+void
+gkBindDepthTexTo(GkPass     *pass,
+                 GkProgInfo *pinfo,
+                 int32_t     texUnit,
+                 const char *uniformName);
+
+GK_EXPORT
 GLuint
 gkAddRenderTarget(struct GkScene *scene,
                   GkPass         *pass,
