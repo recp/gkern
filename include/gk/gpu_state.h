@@ -27,4 +27,22 @@ GK_EXPORT
 void
 gkDisableDepthTest(GkContext * __restrict ctx);
 
+GK_EXPORT
+void
+gkActiveTexture(GkContext * __restrict ctx,
+                uint32_t               unit);
+
+GK_EXPORT
+void
+gkBindTextureTo(GkContext * __restrict ctx,
+                uint32_t               unit,
+                uint32_t               target,
+                uint32_t               texid);
+
+GK_EXPORT
+void
+gkBindTexture(GkContext * __restrict ctx,
+              uint32_t               target,
+              uint32_t               texid);
+
 #endif /* gpu_state_h */

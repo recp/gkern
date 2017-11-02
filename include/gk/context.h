@@ -13,13 +13,13 @@
 struct RBTree;
 struct GkProgInfo;
 struct FList;
-struct GkGPUState;
+struct GkGPUStates;
 
 typedef struct GkContext {
-  struct FList      *states; /* GPU state caches */
-  struct RBTree     *mdltree;
-  struct GkProgInfo *pinfo;  /* default program  */
-  struct GkGPUState *currState;
+  struct FList       *states; /* GPU state caches */
+  struct RBTree      *mdltree;
+  struct GkProgInfo  *pinfo;  /* default program  */
+  struct GkGPUStates *currState;
 } GkContext;
 
 #endif /* context_h */
