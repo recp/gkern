@@ -15,3 +15,11 @@ gkUniform1i(GkProgInfo * __restrict pinfo,
             GLint                   val) {
   glUniform1i(gkUniformLoc(pinfo, name), val);
 }
+
+GK_EXPORT
+void
+gkUniform1ui(GkProgInfo * __restrict pinfo,
+             const char * __restrict name,
+             GLuint                  val) {
+  glUniform1ui(gkUniformLoc(pinfo, name), val);
+}

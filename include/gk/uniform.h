@@ -18,4 +18,10 @@ gkUniform1i(struct GkProgInfo * __restrict pinfo,
             const char        * __restrict name,
             GLint                          val);
 
+GK_EXPORT
+void
+gkUniform1ui(struct GkProgInfo * __restrict pinfo,
+             const char        * __restrict name,
+             GLuint                         val);
+
 #endif /* uniform_h */
