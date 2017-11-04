@@ -22,7 +22,7 @@ gkUniformLoc(GkProgInfo *pinfo, const char *name) {
 
   loc = glGetUniformLocation(pinfo->prog, name);
   hash_set(pinfo->uniforms,
-           (void *)name,
+           (void *)strdup(name),
            (void *)(uintptr_t)(loc + 1));
 
   return loc;
