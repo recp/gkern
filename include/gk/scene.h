@@ -14,6 +14,9 @@ extern "C" {
 #include "common.h"
 
 struct GkPassOut;
+struct FListItem;
+struct GkScene;
+struct GkContext;
 
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE          = 0,
@@ -27,15 +30,20 @@ typedef enum GkSceneFlags {
   GK_SCENEF_RENDER        = 1 << 7,
   GK_SCENEF_UPDT_VIEWPROJ = GK_SCENEF_UPDT_VIEW | GK_SCENEF_UPDT_PROJ,
   GK_SCENEF_NEEDS_RENDER  = GK_SCENEF_RENDER
-  | GK_SCENEF_UPDT_VIEW
-  | GK_SCENEF_UPDT_PROJ
-  | GK_SCENEF_UPDT_LIGHTS,
-  GK_SCENEF_INIT          = GK_SCENEF_NEEDS_RENDER
+                          | GK_SCENEF_UPDT_VIEW
+                          | GK_SCENEF_UPDT_PROJ
+                          | GK_SCENEF_UPDT_LIGHTS,
+  GK_SCENEF_INIT          = GK_SCENEF_NEEDS_RENDER,
 } GkSceneFlags;
 
 GK_MAKE_C_ENUM(GkSceneFlags)
 
+typedef struct GkScenePrivateFields {
+  struct GkContext *ctx;
+} GkScenePrivateFields;
+
 typedef struct GkScene {
+  GkScenePrivateFields _priv;
   GkCamera         *camera;
   GkTransform      *trans;  /* free camera */
   GkNode           *rootNode;
@@ -47,7 +55,6 @@ typedef struct GkScene {
   uint32_t          lightCount;
   uint32_t          lastLightIndex;
   GLenum            usage;
-  GLuint            currentProgram;
   GkSceneFlags      flags;
   GLenum            internalFormat;
   float             backingScale;

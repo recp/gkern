@@ -21,7 +21,10 @@ GkGPUStates gk__defstate = {
     .dfactor = GL_ZERO
   },
   
-  .texStates = NULL
+  .activeTex    = 0,
+  .texStates    = NULL,
+  .renderOutput = NULL,
+  .pinfo        = NULL
 };
 
 _gk_hide
@@ -30,7 +33,7 @@ gkSetDefaultState(GkContext * __restrict ctx) {
   if (ctx->currState)
     return;
   
-  ctx->currState = malloc(sizeof(gk__defstate));
+  ctx->currState = calloc(sizeof(gk__defstate), 1);
   memcpy(ctx->currState,
          &gk__defstate,
          sizeof(gk__defstate));

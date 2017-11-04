@@ -10,6 +10,7 @@
 
 #include "../../include/gk/gk.h"
 #include "../../include/gk/gpu_state.h"
+#include "../../include/gk/pass.h"
 
 #include <ds/hash.h>
 
@@ -50,6 +51,8 @@ typedef struct GkGPUStates {
   GkBlendState    blendState;
   GLuint          activeTex;
   GkTextureState *texStates;
+  GkPassOut      *renderOutput;
+  GkProgInfo     *pinfo;
 } GkGPUStates;
 
 typedef void (*GkGPUApplyStateFn)(GkContext * __restrict ctx,

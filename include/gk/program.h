@@ -25,6 +25,7 @@ extern "C" {
 struct GkMaterial;
 struct GkLight;
 struct GkScene;
+struct GkContext;
 
 /* cache program infos, some nodes may use different program and shaders */
 typedef struct GkProgInfo {
@@ -81,8 +82,8 @@ gkCurrentProgram(void);
 
 GK_EXPORT
 void
-gkUseProgram(struct GkScene *scene,
-             GkProgInfo     *pinfo);
+gkUseProgram(struct GkContext *ctx,
+             GkProgInfo       *pinfo);
 
 GkProgInfo*
 gkGetOrCreatProg(char       *name,

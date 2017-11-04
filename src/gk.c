@@ -13,7 +13,7 @@ GkContext*
 gkContextNew(GkProgInfo * __restrict pinfo) {
   GkContext *ctx;
 
-  ctx = malloc(sizeof(*ctx));
+  ctx = calloc(sizeof(*ctx), 1);
   ctx->mdltree = rb_newtree_ptr();
 
   if (!pinfo)

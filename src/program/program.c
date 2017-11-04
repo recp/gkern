@@ -10,7 +10,7 @@
 #include "../default/shader/def_shader.h"
 
 #include "program.h"
-
+#include "../gpu_state/common.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -157,10 +157,13 @@ gkGetOrCreatProg(char       *name,
 
 GK_EXPORT
 void
-gkUseProgram(GkScene    *scene,
+gkUseProgram(GkContext  *ctx,
              GkProgInfo *pinfo) {
+  if (ctx->currState->pinfo == pinfo)
+    return;
+
   glUseProgram(pinfo->prog);
-  scene->currentProgram = pinfo->prog;
+  ctx->currState->pinfo = pinfo;
 }
 
 void

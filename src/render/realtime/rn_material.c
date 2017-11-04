@@ -8,6 +8,8 @@
 #include "../../../include/gk/gk.h"
 #include "../../../include/gk/material.h"
 
+#include "../../gpu_state/common.h"
+
 #include "rn_material.h"
 #include "rn_pass.h"
 
@@ -16,22 +18,23 @@ gkApplyMaterial(GkScene     * __restrict scene,
                 GkModelInst * __restrict modelInst,
                 GkPrimitive * __restrict prim,
                 GkMaterial  * __restrict material) {
-  GkPass *pass;
+  GkContext *ctx;
+  GkPass    *pass;
 
   if (!material || !material->technique)
     return;
 
   if (!(pass = material->technique->pass)
-      && !(material->technique->pass = pass = gkGetOrCreatPass(material)))
+      && !(material->technique->pass =
+           pass = gkGetOrCreatPass(scene, material)))
     return;
 
+  ctx = scene->_priv.ctx;
   while (pass) {
     GkProgInfo *pinfo;
     if ((pinfo = pass->pinfo)) {
-      if (scene->currentProgram != pinfo->prog) {
-        glUseProgram(pinfo->prog);
-        scene->currentProgram = pinfo->prog;
-      }
+      if (ctx->currState->pinfo != pinfo)
+        gkUseProgram(ctx, pinfo);
 
       if (pinfo->lastMaterial != material)
         gkUniformMaterial(pinfo, material);
