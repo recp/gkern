@@ -77,6 +77,8 @@ gkNewProgram(GkShader *shaders) {
 #endif
 
   glUseProgram(program);
+  
+  pinfo->shaders = shaders;
 
   pinfo->mvpi = glGetUniformLocation(program, "MVP");
   pinfo->mvi  = glGetUniformLocation(program, "MV");

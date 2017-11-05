@@ -24,6 +24,7 @@ extern "C" {
 
 struct GkMaterial;
 struct GkLight;
+struct GkShader;
 struct GkScene;
 struct GkContext;
 
@@ -40,6 +41,7 @@ typedef struct GkProgInfo {
   RBTree  *attribs; /* attribs                                               */
   HTable  *uniforms;
 
+  struct GkShader   *shaders;
   struct GkMaterial *lastMaterial;
   struct GkLight    *lastLight;
   bool               updtLights;
