@@ -89,3 +89,20 @@ gkApplyTexState(GkContext   * __restrict ctx,
   
   glBindTexture(texState->target, texState->texid);
 }
+
+_gk_hide
+void
+gkApplyOutputState(GkContext   * __restrict ctx,
+                   GkStateBase * __restrict st) {
+  GkRenderOutState *outputState;
+  GkGPUStates      *ast;
+  
+  ast         = ctx->currState;
+  outputState = (GkRenderOutState *)st;
+
+  if (ast->outputState.renderOutput == outputState->renderOutput)
+    return;
+  
+  ast->outputState.renderOutput = outputState->renderOutput;
+  glBindFramebuffer(GL_FRAMEBUFFER, outputState->renderOutput->fbo);
+}

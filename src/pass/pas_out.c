@@ -8,6 +8,7 @@
 #include "../../include/gk/gk.h"
 #include "../../include/gk/pass.h"
 #include "../../include/gk/scene.h"
+#include "../gpu_state/common.h"
 
 GK_EXPORT
 GkPassOut*
@@ -22,13 +23,35 @@ gkAllocPassOut(void) {
 
 GK_EXPORT
 void
-gkBindPassOut(GkPassOut *pout) {
+gkBindPassOut(GkScene   *scene,
+              GkPassOut *pout) {
+  GkRenderOutState *state;
+  GkContext        *ctx;
+
+  ctx   = scene->_priv.ctx;
+  state = gkGetOrCreatState(ctx, GK_GPUSTATE_RENDER_OUT);
+  if (ctx->currState->outputState.renderOutput == pout)
+    return;
+
+  state->renderOutput = pout;
+
+  gkStateMakeCurrent(ctx, &state->base);
   glBindFramebuffer(GL_FRAMEBUFFER, pout->fbo);
 }
 
 GK_EXPORT
 void
-gkBindDefaultPassOut() {
+gkBindDefaultPassOut(GkScene *scene) {
+  GkRenderOutState *state;
+  GkContext        *ctx;
+  
+  ctx   = scene->_priv.ctx;
+  state = gkGetOrCreatState(ctx, GK_GPUSTATE_RENDER_OUT);
+  if (ctx->currState->outputState.renderOutput == NULL)
+    return;
+  
+  state->renderOutput = NULL;
+  gkStateMakeCurrent(ctx, &state->base);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -70,7 +93,7 @@ gkPassEnableDepthTex(GkScene *scene,
   if (pout->depth != 0)
     return;
   
-  gkBindPassOut(pout);
+  gkBindPassOut(scene, pout);
   
   glGenTextures(1, &pout->depth);
   glBindTexture(GL_TEXTURE_2D, pout->depth);
@@ -96,7 +119,7 @@ gkPassEnableDepthTex(GkScene *scene,
                          pout->depth,
                          0);
   
-   gkBindDefaultPassOut();
+   gkBindDefaultPassOut(scene);
 }
 
 GK_EXPORT
@@ -125,7 +148,8 @@ gkBindRenderTargetToTexUnit(GkPassOutColor *rt, int32_t texUnit) {
 
 GK_EXPORT
 void
-gkBindRenderTargetToTex(GkPass     *pass,
+gkBindRenderTargetToTex(GkScene    *scene,
+                        GkPass     *pass,
                         int32_t     targetIndex,
                         GkProgInfo *pinfo,
                         int32_t     texUnit,
@@ -140,10 +164,11 @@ gkBindRenderTargetToTex(GkPass     *pass,
 
 GK_EXPORT
 void
-gkBindDepthTexTo(GkPass     *pass,
+gkBindDepthTexTo(GkScene    *scene,
+                 GkPass     *pass,
                  GkProgInfo *pinfo,
                  int32_t     texUnit,
-                 const char *uniformName) {
+                 const char  *uniformName) {
   /* then bind it to texture unit */
   glActiveTexture(GL_TEXTURE0 + texUnit);
   glBindTexture(GL_TEXTURE_2D, pass->output->depth);
@@ -157,7 +182,8 @@ GLuint
 gkAddRenderTarget(GkScene *scene,
                   GkPass  *pass,
                   GLenum   format) {
-  return gkAddRenderTargetEx(pass,
+  return gkAddRenderTargetEx(scene,
+                             pass,
                              scene->internalFormat,
                              format,
                              scene->vrect.size.w * scene->backingScale,
@@ -169,17 +195,19 @@ GK_EXPORT
 GLuint
 gkAddRenderTargetRB(struct GkScene *scene,
                     GkPass         *pass) {
-  return gkAddRenderTargetRBEx(pass,
+  return gkAddRenderTargetRBEx(scene,
+                               pass,
                                scene->internalFormat,
                                scene->vrect.size.w * scene->backingScale,
                                scene->vrect.size.h * scene->backingScale);
 }
 
 GLuint
-gkAddRenderTargetRBEx(GkPass *pass,
-                      GLenum  internalFormat,
-                      GLsizei width,
-                      GLsizei height) {
+gkAddRenderTargetRBEx(GkScene *scene,
+                      GkPass  *pass,
+                      GLenum   internalFormat,
+                      GLsizei  width,
+                      GLsizei  height) {
   GkPassOutColor *poc, *last_poc;
   GkPassOut      *pout;
   GLenum         *drawBuffs;
@@ -203,7 +231,7 @@ gkAddRenderTargetRBEx(GkPass *pass,
   last_poc = pout->color;
   poc = calloc(sizeof(*poc), 1);
 
-  gkBindPassOut(pout);
+  gkBindPassOut(scene, pout);
 
   glGenRenderbuffers(1, &poc->buffId);
   glBindRenderbuffer(GL_RENDERBUFFER, poc->buffId);
@@ -241,19 +269,20 @@ gkAddRenderTargetRBEx(GkPass *pass,
     pout->color = poc;
   }
   
-  gkBindDefaultPassOut();
+  gkBindDefaultPassOut(scene);
 
   return pout->colorCount - 1;
 }
 
 GK_EXPORT
 GLuint
-gkAddRenderTargetEx(GkPass *pass,
-                    GLenum  internalFormat,
-                    GLenum  format,
-                    GLsizei width,
-                    GLsizei height,
-                    GLenum  type) {
+gkAddRenderTargetEx(GkScene *scene,
+                    GkPass  *pass,
+                    GLenum   internalFormat,
+                    GLenum   format,
+                    GLsizei  width,
+                    GLsizei  height,
+                    GLenum   type) {
   GkPassOutColor *poc, *last_poc;
   GkPassOut      *pout;
   GLenum         *drawBuffs;
@@ -277,7 +306,7 @@ gkAddRenderTargetEx(GkPass *pass,
   last_poc = pout->color;
   poc = calloc(sizeof(*poc), 1);
 
-  gkBindPassOut(pout);
+  gkBindPassOut(scene, pout);
 
   glGenTextures(1, &poc->buffId);
   glBindTexture(GL_TEXTURE_2D, poc->buffId);
@@ -324,7 +353,7 @@ gkAddRenderTargetEx(GkPass *pass,
     pout->color = poc;
   }
 
-  gkBindDefaultPassOut();
+  gkBindDefaultPassOut(scene);
 
   return pout->colorCount - 1;
 }

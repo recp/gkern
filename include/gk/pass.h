@@ -48,7 +48,8 @@ gkDefaultRenderOut(void);
 
 GK_EXPORT
 GkPass*
-gkGetOrCreatPass(GkMaterial *mat);
+gkGetOrCreatPass(struct GkScene *scene,
+                 GkMaterial     *mat);
 
 GK_EXPORT
 GkPassOut*
@@ -56,11 +57,12 @@ gkAllocPassOut(void);
 
 GK_EXPORT
 void
-gkBindPassOut(GkPassOut *pout);
+gkBindPassOut(struct GkScene *scene,
+              GkPassOut      *pout);
 
 GK_EXPORT
 void
-gkBindDefaultPassOut(void);
+gkBindDefaultPassOut(struct GkScene *scene);
 
 GK_EXPORT
 void
@@ -82,18 +84,20 @@ gkBindRenderTargetToTexUnit(GkPassOutColor *rt, int32_t texUnit);
 
 GK_EXPORT
 void
-gkBindRenderTargetToTex(GkPass     *pass,
-                        int32_t     targetIndex,
-                        GkProgInfo *pinfo,
-                        int32_t     texUnit,
-                        const char *uniformName);
+gkBindRenderTargetToTex(struct GkScene *scene,
+                        GkPass         *pass,
+                        int32_t         targetIndex,
+                        GkProgInfo     *pinfo,
+                        int32_t         texUnit,
+                        const char      *uniformName);
 
 GK_EXPORT
 void
-gkBindDepthTexTo(GkPass     *pass,
-                 GkProgInfo *pinfo,
-                 int32_t     texUnit,
-                 const char *uniformName);
+gkBindDepthTexTo(struct GkScene *scene,
+                 GkPass         *pass,
+                 GkProgInfo     *pinfo,
+                 int32_t         texUnit,
+                 const char     *uniformName);
 
 GK_EXPORT
 GLuint
@@ -108,7 +112,8 @@ gkAddRenderTargetRB(struct GkScene *scene,
 
 GK_EXPORT
 GLuint
-gkAddRenderTargetEx(GkPass *pass,
+gkAddRenderTargetEx(struct GkScene *scene,
+                    GkPass *pass,
                     GLenum  internalFormat,
                     GLenum  format,
                     GLsizei width,
@@ -117,8 +122,10 @@ gkAddRenderTargetEx(GkPass *pass,
 
 GK_EXPORT
 GLuint
-gkAddRenderTargetRBEx(GkPass *pass,
+gkAddRenderTargetRBEx(struct GkScene *scene,
+                      GkPass *pass,
                       GLenum  internalFormat,
                       GLsizei width,
                       GLsizei height);
+
 #endif /* gk_pass_h */

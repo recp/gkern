@@ -19,5 +19,6 @@
 GK_GPU_APPLY_ST_FN(gkApplyDepthState);
 GK_GPU_APPLY_ST_FN(gkApplyBlendState);
 GK_GPU_APPLY_ST_FN(gkApplyTexState);
+GK_GPU_APPLY_ST_FN(gkApplyOutputState);
 
 #endif /* src_gpu_state_impl_h */
