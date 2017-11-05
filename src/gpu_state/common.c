@@ -8,6 +8,7 @@
 #include "common.h"
 
 #include <ds/forward-list.h>
+#include <ds/forward-list-sep.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -15,9 +16,16 @@ _gk_hide
 void*
 gkGetOrCreatState(GkContext * __restrict ctx,
                   GkGPUStateType         type) {
-  FListItem *item;
+  GkStatesItem *sti;
+  FListItem    *item;
   
-  item = flist_last(ctx->states);
+  sti = flist_last(ctx->states);
+  if (!sti) {
+    sti = calloc(sizeof(*sti), 1);
+    flist_insert(ctx->states, sti);
+  }
+
+  item = sti->states;
   while (item) {
     GkStateBase *state;
     
@@ -28,7 +36,7 @@ gkGetOrCreatState(GkContext * __restrict ctx,
   }
   
   if (type != GK_GPUSTATE_TEXTURE)
-    return gkCreatStateFromCurrent(ctx, type);
+    return gkCreatState(ctx, sti, type);
   
   return NULL;
 }
@@ -38,9 +46,16 @@ void*
 gkGetOrCreatTexState(GkContext * __restrict ctx,
                      uint32_t               arrayIndex,
                      GLenum                 target) {
-  FListItem *item;
+  GkStatesItem *sti;
+  FListItem    *item;
   
-  item = flist_last(ctx->states);
+  sti = flist_last(ctx->states);
+  if (!sti) {
+    sti = calloc(sizeof(*sti), 1);
+    flist_insert(ctx->states, sti);
+  }
+  
+  item = sti->states;
   while (item) {
     GkStateBase *state;
     
@@ -54,22 +69,21 @@ gkGetOrCreatTexState(GkContext * __restrict ctx,
     }
     item = item->next;
   }
-  
-  return gkCreatTexStateFromCurrent(ctx, arrayIndex, target);
+
+  return gkCreatTexState(ctx, sti, arrayIndex, target);
 }
 
 _gk_hide
 GkStateBase*
-gkCreatStateFromCurrent(GkContext * __restrict ctx,
-                        GkGPUStateType         type) {
+gkCreatState(GkContext    * __restrict ctx,
+             GkStatesItem * __restrict sti,
+             GkGPUStateType            type) {
   GkStateBase *state;
   GkGPUStates *curr;
   void        *ptr;
   size_t       len;
   
-  curr  = ctx->currState;
-  state = calloc(sizeof(*state), 1);
-  
+  curr = ctx->currState;
   switch (type) {
     case GK_GPUSTATE_DEPTH:
       ptr = &curr->depthState;
@@ -79,22 +93,53 @@ gkCreatStateFromCurrent(GkContext * __restrict ctx,
       ptr = &curr->blendState;
       len = sizeof(GkBlendState);
       break;
+    case GK_GPUSTATE_RENDER_OUT:
+      ptr = &curr->outputState;
+      len = sizeof(GkRenderOutState);
+      break;
     default:
-      free(state);
       return NULL;
   }
-  
+
+  state = calloc(len, 1);
   memcpy(state, ptr, len);
-  flist_insert(ctx->states, state);
   
+  state->type = type;
+
+  sti->isempty = false;
+  flist_sp_insert(&sti->states, state);
+
   return state;
 }
 
 _gk_hide
+void
+gkStateMakeCurrent(GkContext   * __restrict ctx,
+                   GkStateBase * __restrict st) {
+  GkGPUStates *ast;
+
+  ast = ctx->currState;
+  switch (st->type) {
+    case GK_GPUSTATE_DEPTH:
+      memcpy(&ast->depthState, st, sizeof(GkDepthState));
+      break;
+    case GK_GPUSTATE_BLEND:
+      memcpy(&ast->blendState, st, sizeof(GkBlendState));
+      break;
+    case GK_GPUSTATE_RENDER_OUT:
+      memcpy(&ast->outputState, st, sizeof(GkRenderOutState));
+      break;
+    default:
+      return;
+  }
+}
+
+_gk_hide
 GkStateBase*
-gkCreatTexStateFromCurrent(GkContext * __restrict ctx,
-                           uint32_t               index,
-                           GLenum                 target) {
+gkCreatTexState(GkContext    * __restrict ctx,
+                GkStatesItem * __restrict sti,
+                uint32_t                  index,
+                GLenum                    target) {
   GkTextureState *state, *statei;
   GkGPUStates    *curr;
   
@@ -120,7 +165,8 @@ gkCreatTexStateFromCurrent(GkContext * __restrict ctx,
     statei->base.next = &curr->texStates->base;
   curr->texStates = statei;
   
-  flist_insert(ctx->states, state);
-  
+  sti->isempty = false;
+  flist_sp_insert(&sti->states, state);
+
   return &state->base;
 }

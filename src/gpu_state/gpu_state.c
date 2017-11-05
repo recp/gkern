@@ -18,49 +18,64 @@ GkGPUApplyStateFn gk__stateFuncs[] = {
   NULL,
   gkApplyDepthState,
   gkApplyBlendState,
-  gkApplyTexState
+  gkApplyTexState,
 };
 
 GK_EXPORT
 void
 gkPushState(GkContext * __restrict ctx) {
-  if (!ctx->currState)
+  GkStatesItem *newst;
+
+  if (!ctx->states || !ctx->states->last)
+    return;
+  
+  /* save space! */
+  if (((GkStatesItem *)flist_last(ctx->states))->isempty)
     return;
 
-  flist_insert(ctx->states, ctx->currState);
+  newst = calloc(sizeof(*newst), 1);
+  newst->isempty = true;
+  flist_append(ctx->states, newst);
 }
 
 GK_EXPORT
 void
 gkPopState(GkContext * __restrict ctx) {
-  FListItem   *old, *curr, *oldi, *curri;
-  GkStateBase *oldst, *newst;
+  GkStatesItem *old,    *curr;
+  FListItem    *oldi,   *curri;
+  GkStateBase  *prevst, *currst;
   
-  curri = curr = flist_last(ctx->states);
-  old  = flist_pop(ctx->states);
+  curr = flist_pop(ctx->states);
+  if (!curr)
+    return;
   
-  if (curri) {
-    do {
-      newst = curri->data;
-      
-      /* linear search, todo: */
-      if ((oldi = old)) {
-        do {
-          oldst = oldi->data;
-          
-          if (oldst->type == newst->type
-              && oldst->arrayIndex == newst->arrayIndex)
-            goto foundst;
-          oldi = oldi->next;
-        } while (oldi);
-      }
+  if (!(old = flist_last(ctx->states)))
+    goto fr;
+  
+  curri = curr->states;
 
-      continue;
-    foundst:
-      gk__stateFuncs[oldst->type](ctx, oldst);
-    } while ((curri = curri->next));
-  }
+  /* revert each state to previous */
+  do {
+    currst = curri->data;
+    
+    if ((oldi = old->states)) {
+      do {
+        prevst = oldi->data;
 
+        /* linear search, todo: */
+        if (prevst->type == currst->type
+            && prevst->arrayIndex == currst->arrayIndex)
+          goto foundst;
+        oldi = oldi->next;
+      } while (oldi);
+    }
+    
+    continue;
+  foundst:
+    gk__stateFuncs[prevst->type](ctx, prevst);
+  } while ((curri = curri->next));
+
+fr:
   /* we are no longer need to current state */
   free(curr);
 }

@@ -54,6 +54,7 @@ _gk_hide
 void
 gkApplyTexState(GkContext   * __restrict ctx,
                 GkStateBase * __restrict st) {
+  GkStatesItem   *sti;
   GkTextureState *texState;
   GkGPUStates    *ast;
   FListItem      *item;
@@ -64,7 +65,11 @@ gkApplyTexState(GkContext   * __restrict ctx,
   if (texState->base.arrayIndex != ast->activeTex)
     glActiveTexture(GL_TEXTURE0 + texState->base.arrayIndex);
   
-  item = flist_last(ctx->states);
+  if (!(sti = flist_last(ctx->states)))
+    return;
+
+  /* todo: optimize this. */
+  item = sti->states;
   while (item) {
     GkStateBase *state;
     

@@ -23,7 +23,7 @@ GkGPUStates gk__defstate = {
   
   .activeTex    = 0,
   .texStates    = NULL,
-  .renderOutput = NULL,
+  .outputState  = NULL,
   .pinfo        = NULL
 };
 

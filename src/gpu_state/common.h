@@ -15,9 +15,10 @@
 #include <ds/hash.h>
 
 typedef enum GkGPUStateType {
-  GK_GPUSTATE_DEPTH   = 1,
-  GK_GPUSTATE_BLEND   = 2,
-  GK_GPUSTATE_TEXTURE = 3
+  GK_GPUSTATE_DEPTH      = 1,
+  GK_GPUSTATE_BLEND      = 2,
+  GK_GPUSTATE_TEXTURE    = 3,
+  GK_GPUSTATE_RENDER_OUT = 4
 } GkGPUStateType;
 
 typedef struct GkStateBase {
@@ -46,13 +47,23 @@ typedef struct GkTextureState {
   GLuint      texid;
 } GkTextureState;
 
+typedef struct GkRenderOutState {
+  GkStateBase base;
+  GkPassOut  *renderOutput;
+} GkRenderOutState;
+
+typedef struct GkStatesItem {
+  FListItem *states;
+  bool       isempty;
+} GkStatesItem;
+
 typedef struct GkGPUStates {
-  GkDepthState    depthState;
-  GkBlendState    blendState;
-  GLuint          activeTex;
-  GkTextureState *texStates;
-  GkPassOut      *renderOutput;
-  GkProgInfo     *pinfo;
+  GkDepthState     depthState;
+  GkBlendState     blendState;
+  GkRenderOutState outputState;
+  GLuint           activeTex;
+  GkTextureState  *texStates;
+  GkProgInfo      *pinfo;
 } GkGPUStates;
 
 typedef void (*GkGPUApplyStateFn)(GkContext * __restrict ctx,
@@ -66,8 +77,9 @@ gkGetOrCreatState(GkContext * __restrict ctx,
 
 _gk_hide
 GkStateBase*
-gkCreatStateFromCurrent(GkContext * __restrict ctx,
-                        GkGPUStateType         type);
+gkCreatState(GkContext    * __restrict ctx,
+             GkStatesItem * __restrict sti,
+             GkGPUStateType            type);
 
 _gk_hide
 void*
@@ -77,7 +89,14 @@ gkGetOrCreatTexState(GkContext * __restrict ctx,
 
 _gk_hide
 GkStateBase*
-gkCreatTexStateFromCurrent(GkContext * __restrict ctx,
-                           uint32_t               index,
-                           GLenum                 target);
+gkCreatTexState(GkContext    * __restrict ctx,
+                GkStatesItem * __restrict sti,
+                uint32_t                  index,
+                GLenum                    target);
+
+_gk_hide
+void
+gkStateMakeCurrent(GkContext   * __restrict ctx,
+                   GkStateBase * __restrict st);
+
 #endif /* src_gpustate_common_h */
