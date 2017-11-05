@@ -162,7 +162,7 @@ gkCreatTexState(GkContext    * __restrict ctx,
   }
   
   if (curr->texStates)
-    statei->base.next = &curr->texStates->base;
+    state->base.next = &curr->texStates->base;
   curr->texStates = statei;
   
   sti->isempty = false;
