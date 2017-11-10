@@ -13,6 +13,7 @@
 #include "material.h"
 #include "bbox.h"
 #include "transform.h"
+#include "buffer.h"
 
 struct GkModel;
 struct GkModelInst;
@@ -35,17 +36,6 @@ typedef struct GkModelInstList {
   struct GkModelInst *instance;
   uint64_t            instanceCount;
 } GkModelInstList;
-
-typedef struct GkBuffer {
-  GLuint  vbo;
-  GLsizei size;
-  GLenum  usage;
-  GLenum  type;
-  GLenum  target;
-
-  struct GkBuffer *prev;
-  struct GkBuffer *next;
-} GkBuffer;
 
 typedef struct GkPrimitive {
   GLuint      flags;
