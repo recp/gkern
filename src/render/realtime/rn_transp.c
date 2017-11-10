@@ -13,37 +13,20 @@
 
 bool
 gkPrimIsTransparent(GkModelInst * __restrict modelInst,
-                    GkMaterial  * __restrict modelMaterial,
                     GkPrimitive * __restrict prim) {
   GkMaterial *material;
   
   material = NULL;
 
-  /* model's material */
-  if (!modelMaterial) {
-    if (!modelInst->prims
-        || modelInst->material
-        || modelInst->model->material) {
-      if (!(modelMaterial = modelInst->material))
-        modelMaterial = modelInst->model->material;
-    }
-  }
-  
   /* instance primitive specific effects */
   if (modelInst->prims) {
     GkPrimInst *primInst;
-    
     primInst = rb_find(modelInst->prims, prim);
     if (primInst)
       material = primInst->material;
-    else
-      material = prim->material;
   }
   
-  if (!material)
-    material = modelMaterial;
-  
-  if (!material)
+  if (!material && !(material = prim->activeMaterial))
     return false;
 
   return material->transparent != NULL;

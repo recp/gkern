@@ -52,6 +52,7 @@ typedef struct GkPrimitive {
   GLuint      vao;
   GkBuffer   *bufs;
   GkMaterial *material;
+  GkMaterial *activeMaterial;
   GLsizei     bufc;
   GLsizei     count;
   GLenum      mode;
@@ -86,6 +87,7 @@ typedef struct GkModelInst {
   GkTransform        *trans;
   RBTree             *prims;    /* to customize each primitive material  */
   GkMaterial         *material; /* instances may use different materials */
+  GkMaterial         *activeMaterial;
   struct GkModelInst *next;
   uint64_t            flags;
   char                data[];   /* private field */

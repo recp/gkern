@@ -52,9 +52,8 @@ gkApplyMaterial(GkScene     * __restrict scene,
 
 void
 gkApplyMaterials(GkScene     * __restrict scene,
-                 GkPrimitive * __restrict prim,
                  GkModelInst * __restrict modelInst,
-                 GkMaterial  * __restrict modelMaterial) {
+                 GkPrimitive * __restrict prim) {
   GkMaterial *material;
 
   material = NULL;
@@ -62,16 +61,12 @@ gkApplyMaterials(GkScene     * __restrict scene,
   /* instance primitive specific effects */
   if (modelInst->prims) {
     GkPrimInst *primInst;
-
-    primInst = rb_find(modelInst->prims, prim);
-    if (primInst)
+    if ((primInst = rb_find(modelInst->prims, prim)))
       material = primInst->material;
-    else
-      material = prim->material;
   }
 
   if (!material)
-    material = modelMaterial;
+    material = prim->activeMaterial;
 
   gkApplyMaterial(scene,
                   modelInst,

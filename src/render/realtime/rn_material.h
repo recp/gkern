@@ -16,8 +16,7 @@ gkApplyMaterial(GkScene     * __restrict scene,
 
 void
 gkApplyMaterials(GkScene     * __restrict scene,
-                 GkPrimitive * __restrict prim,
                  GkModelInst * __restrict modelInst,
-                 GkMaterial  * __restrict modelMaterial);
+                 GkPrimitive * __restrict prim);
 
 #endif /* material_h */

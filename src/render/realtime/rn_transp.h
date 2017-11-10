@@ -12,7 +12,6 @@
 
 bool
 gkPrimIsTransparent(GkModelInst * __restrict modelInst,
-                    GkMaterial  * __restrict modelMaterial,
                     GkPrimitive * __restrict prim);
 
 #endif /* rn_transp_h */
