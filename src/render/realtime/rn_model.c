@@ -16,27 +16,50 @@
 #include "rn_material.h"
 
 void
+gkPrepMaterial(GkScene     *scene,
+               GkModelInst *modelInst) {
+  GkModel     *model;
+  GkPrimitive *primi;
+  GkMaterial  *modelMaterial;
+
+  model = modelInst->model;
+  /*
+   make sure model instance has a material
+   (to avoid access model multiple times)
+   */
+  modelMaterial = NULL;
+  if (!modelInst->material) {
+    /* model doesn't has a material set default material */
+    if (!(modelInst->activeMaterial = modelMaterial = model->material))
+      modelInst->activeMaterial = modelMaterial = gk_def_material();
+  }
+  
+  /* make sure every primitive has a material */
+  primi = model->prim;
+  while (primi) {
+    if (!(primi->activeMaterial = primi->material))
+      primi->activeMaterial = modelMaterial;
+    primi = primi->next;
+  }
+}
+
+void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
             GkTransform *ptr) {
   GkTransform *tr;
   uint32_t     updt;
 
-  tr = modelInst->trans;
-
-  if (!tr)
+  if (!(tr = modelInst->trans))
     modelInst->trans = tr = ptr;
 
   updt = !((ptr->flags & tr->flags) & GK_TRANSF_WORLD_ISVALID);
-
   if (updt) {
     if (ptr != tr) {
       if (!GK_FLG(tr->flags, GK_TRANSF_LOCAL_ISVALID))
         gkTransformCombine(tr);
 
-      glm_mat4_mul(ptr->world,
-                   tr->local,
-                   tr->world);
+      glm_mat4_mul(ptr->world, tr->local, tr->world);
       tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
     }
 
@@ -47,6 +70,11 @@ gkPrepModel(GkScene     *scene,
 
   if(updt && tr != ptr)
     tr->flags |= GK_TRANSF_WORLD_ISVALID;
+  
+  if (!modelInst->activeMaterial)
+    return;
+
+  gkPrepMaterial(scene, modelInst);
 }
 
 void
@@ -56,20 +84,9 @@ gkRenderModel(GkScene     *scene,
   GkModel     *model;
   GkPrimitive *primi;
   GkTransform *tr;
-  GkMaterial  *modelMaterial;
 
   model = modelInst->model;
   tr    = modelInst->trans;
-
-  /* model's material */
-  modelMaterial = NULL;
-  if (!modelInst->prims
-      || modelInst->material
-      || modelInst->model->material) {
-    modelMaterial = modelInst->material;
-    if (!modelMaterial)
-      modelMaterial = modelInst->model->material;
-  }
 
   /* pre events */
   if (model->events && model->events->onDraw)
@@ -80,10 +97,7 @@ gkRenderModel(GkScene     *scene,
   while (primi) {
     glBindVertexArray(primi->vao);
 
-    gkApplyMaterials(scene,
-                     primi,
-                     modelInst,
-                     modelMaterial);
+    gkApplyMaterials(scene, modelInst, primi);
 
     primi = primi->next;
   }

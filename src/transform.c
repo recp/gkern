@@ -123,8 +123,7 @@ gkUniformTransform(struct GkProgInfo * __restrict pinfo,
   usenm = (trans->flags & GK_TRANSF_FMAT_NORMAT) != 0;
 
   if (usenm)
-  gkUniformMat4(pinfo->nmi,  ftr->nm);
+    gkUniformMat4(pinfo->nmi,  ftr->nm);
 
   glUniform1i(pinfo->nmui, usenm);
 }
-

@@ -17,6 +17,10 @@ void
 gkUniformMatrix(GkModelInst *modelInst);
 
 void
+gkPrepMaterial(GkScene     *scene,
+               GkModelInst *modelInst);
+
+void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
             GkTransform *ptr);
