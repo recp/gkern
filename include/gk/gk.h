@@ -36,12 +36,6 @@ extern "C" {
 #define GK_DRAW_ARRAYS   (1 << 1)
 #define GK_COMPLEX       (1 << 2)
 
-GkContext*
-gkContextNew(GkProgInfo * __restrict pinfo);
-
-void
-gkContextFree(GkContext *ctx);
-
 #ifdef __cplusplus
 }
 #endif

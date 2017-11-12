@@ -22,4 +22,10 @@ typedef struct GkContext {
   struct GkGPUStates *currState;
 } GkContext;
 
+GkContext*
+gkContextNew(struct GkProgInfo * __restrict pinfo);
+
+void
+gkContextFree(GkContext *ctx);
+
 #endif /* context_h */
