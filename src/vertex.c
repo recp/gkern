@@ -5,126 +5,57 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "vertex.h"
+
 #include "../include/gk/gk.h"
 #include "../include/gk/vertex.h"
 #include <ds/rb.h>
 
-static RBTree  *gk_attribIndTree;
-static uint32_t gk_attribIndLast;
+#include <string.h>
 
-static const size_t gk_attribNamesCount = 5;
-static const char *gk_attribNames[] = {
+static RBTree  *gk__vertAttrShortNames;
+
+static const size_t gk__vertAttribNamesCount = 13;
+static const char *gk__attribNames[] = {
   "POSITION",
   "NORMAL",
   "TEXCOORD",
-  "TEXCOORD1",
-  "TEXCOORD2"
+  "TEXCOORD0",  "TEXCOORD1", "TEXCOORD2", "TEXCOORD3", "TEXCOORD4",
+  "TEXCOORD5",  "TEXCOORD6", "TEXCOORD7", "TEXCOORD8", "TEXCOORD9"
 };
 
-void
-gk_vertFreeAttrib(RBTree *tree, RBNode *node);
+static const char *gk_attribShortNames[] = {
+  "P", "N",
+  "T0", "T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9"
+};
 
-void
-gk_vertFreeAttribConst(RBTree *tree, RBNode *node);
-
-void
-gk_verta_init(void);
-
-void
-gk_verta_deinit(void);
-
-void
-gk_vertFreeAttrib(RBTree *tree, RBNode *node) {
-  GkVertexAttrib *attrib;
-
-  if (node == tree->nullNode)
-    return;
-
-  attrib = node->val;
-
-  tree->alc->free((char *)attrib->name);
-  tree->alc->free(attrib);
+GK_EXPORT
+const char*
+gkShortNameOfVertexInput(const char *name) {
+  return rb_find(gk__vertAttrShortNames, (void *)name);
 }
 
-void
-gk_vertFreeAttribConst(RBTree *tree, RBNode *node) {
-  GkVertexAttrib *attrib;
-
-  if (node == tree->nullNode)
-    return;
-
-  attrib = node->val;
-  tree->alc->free(attrib);
-}
-
-GLint
-gk_vertAttribIndex(const char *name) {
-  GkVertexAttrib *attrib;
-  attrib = rb_find(gk_attribIndTree, (void *)name);
-  if (attrib != NULL)
-    return attrib->index;
-
-  return -1;
-}
-
-GLint
-gk_vertAddAttrib(const char *name) {
-  GkVertexAttrib *attrib;
-
-  attrib = rb_find(gk_attribIndTree, (void *)name);
-  if (attrib != NULL)
-    return attrib->index;
-
-  attrib        = calloc(sizeof(*attrib), 1);
-  attrib->name  = name;
-  attrib->index = gk_attribIndLast++;
-
-  rb_insert(gk_attribIndTree,
-            (void *)attrib->name,
-            attrib);
-
-  return attrib->index;
-}
-
-GLint
-gk_vertRemoveAttrib(const char *name) {
-  GkVertexAttrib *attrib;
-  GLint index;
-
-  attrib = rb_find(gk_attribIndTree, (void *)name);
-  if (attrib == NULL)
-    return -1;
-
-  index = attrib->index;
-  rb_remove(gk_attribIndTree, (void *)name);
-
-  return index;
-}
-
-void
-gk_vertSetAttribs(size_t      count,
-                  const char *names[]) {
-  size_t i;
-
-  /* remove prev attribs (not free) */
-  if (gk_attribIndTree->count != 0)
-    rb_empty(gk_attribIndTree);
-
-  for (i = 0; i < count; i++)
-    (void)gk_vertAddAttrib(names[i]);
+GK_EXPORT
+const char*
+gkSetShortNameOfVertexInput(const char *name, const char *shortName) {
+  return rb_find(gk__vertAttrShortNames,
+                 strdup(shortName));
 }
 
 void
 gk_verta_init() {
-  gk_attribIndLast = 0;
-  gk_attribIndTree = rb_newtree_str();
-  gk_attribIndTree->onFreeNode = gk_vertFreeAttribConst;
+  int32_t i;
 
-  gk_vertSetAttribs(gk_attribNamesCount,
-                    gk_attribNames);
+  gk__vertAttrShortNames = rb_newtree_str();
+
+  for (i = 0; i < gk__vertAttribNamesCount; i++) {
+    rb_insert(gk__vertAttrShortNames,
+              (void *)gk__attribNames[i],
+              (void *)gk_attribShortNames[i]);
+  }
 }
 
 void
 gk_verta_deinit() {
-  rb_destroy(gk_attribIndTree);
+  rb_destroy(gk__vertAttrShortNames);
 }
