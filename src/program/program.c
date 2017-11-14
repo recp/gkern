@@ -59,14 +59,20 @@ gkProgramIsValid(GLuint progId) {
 }
 
 GkProgInfo*
-gkNewProgram(GkShader *shaders) {
+gkMakeProgram(GkShader *shaders,
+              void (*beforeLinking)(GkProgInfo *pinfo, void *data),
+              void *userData) {
   static GkProgInfo *pinfo;
   GLuint program;
-
-  pinfo   = calloc(sizeof(*pinfo), 1);
-  program = glCreateProgram();
+  
+  pinfo = calloc(sizeof(*pinfo), 1);
+  pinfo->prog = program = glCreateProgram();
 
   gkAttachShaders(program, shaders);
+  
+  if (beforeLinking)
+    beforeLinking(pinfo, userData);
+  
   glLinkProgram(program);
 
 #ifdef DEBUG
@@ -84,7 +90,6 @@ gkNewProgram(GkShader *shaders) {
   pinfo->mvi  = glGetUniformLocation(program, "MV");
   pinfo->nmi  = glGetUniformLocation(program, "NM");
   pinfo->nmui = glGetUniformLocation(program, "NMU");
-  pinfo->prog = program;
   pinfo->refc = 1;
   pinfo->updtLights    = 1;
   pinfo->updtMaterials = 1;

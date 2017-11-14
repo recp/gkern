@@ -49,35 +49,18 @@ typedef struct GkProgInfo {
 } GkProgInfo;
 
 void
-gkProgramLogInfo(GLuint progId,
-                 FILE * __restrict file);
+gkProgramLogInfo(GLuint progId, FILE * __restrict file);
 
 bool
 gkProgramIsValid(GLuint progId);
 
 GkProgInfo*
-gkNewProgram(GkShader *shaders);
+gkMakeProgram(GkShader *shaders,
+              void (*beforeLinking)(GkProgInfo *pinfo, void *data),
+              void *userData);
 
 GkProgInfo*
 gkDefaultProgram(void);
-
-GLint
-gk_progAttribIndex(GkProgInfo * __restrict prog,
-                   const char * __restrict name);
-
-void
-gk_progSetAttribs(GkProgInfo * __restrict prog,
-                  size_t      count,
-                  const char *names[]);
-
-GLint
-gk_progAddAttrib(GkProgInfo * __restrict prog,
-                 const char * __restrict name);
-
-void
-gk_progRemoveAttrib(GkProgInfo * __restrict prog,
-                    const char * __restrict name,
-                    bool                    shrink);
 
 GLint
 gkCurrentProgram(void);
