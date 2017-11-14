@@ -11,12 +11,12 @@ uniform mat4 MV;  // View * Model Matrix
 uniform mat4 NM;  // Normal matrix
 uniform int  NMU; // Use normal matrix
 
-layout(location = 0) in vec3 POSITION;
-layout(location = 1) in vec3 NORMAL;
-
 \n#ifndef TEX_COUNT\n
 \n#define TEX_COUNT 0\n
 \n#endif\n
+
+in vec3 POSITION;
+in vec3 NORMAL;
 
 \n#if TEX_COUNT > 0\n
 in vec2 TEXCOORD;

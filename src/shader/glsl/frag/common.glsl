@@ -7,6 +7,12 @@
 
 GK_STRINGIFY(
 struct Material {
+\n#ifdef DIFFUSE_TEX\n
+  uint diffuse;
+\n#else\n
+  vec4 diffuse;
+\n#endif\n
+
 \n#ifdef EMISSION_TEX\n
   uint emission;
 \n#elif defined(EMISSION_COLOR)\n
@@ -35,12 +41,6 @@ struct Material {
   uint transparent;
 \n#elif defined(TRANSP_COLOR)\n
   vec4 transparent;
-\n#endif\n
-
-\n#ifdef DIFFUSE_TEX\n
-  uint diffuse;
-\n#elif defined(DIFFUSE_COLOR)\n
-  vec4 diffuse;
 \n#endif\n
 
 \n#if defined(TRANSP_TEX) || defined(TRANSP_COLOR)\n
