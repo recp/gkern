@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../../include/gk/model.h"
 #include "../../include/gk/pass.h"
 #include "../../include/gk/shader.h"
 #include "../../include/gk/material.h"
@@ -16,11 +17,13 @@
 
 GK_EXPORT
 GkPass*
-gkGetOrCreatPass(GkMaterial *mat) {
+gkGetOrCreatPass(GkScene     *scene,
+                 GkPrimitive *prim,
+                 GkMaterial  *mat) {
   GkPass     *pass;
   GkProgInfo *pinfo;
 
-  if ((pinfo = gkGetOrCreatProgForCmnMat(mat))) {
+  if ((pinfo = gkGetOrCreatProgForCmnMat(scene, prim, mat))) {
     pass = calloc(sizeof(*pass), 1);
     pass->pinfo = pinfo;
     return pass;

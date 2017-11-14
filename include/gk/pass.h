@@ -15,6 +15,8 @@
 #include <ds/forward-list.h>
 
 struct GkScene;
+struct GkContext;
+struct GkPrimitive;
 
 /* GL_COLOR_ATTACHMENT[n] */
 typedef struct GkPassOutColor {
@@ -48,8 +50,9 @@ gkDefaultRenderOut(void);
 
 GK_EXPORT
 GkPass*
-gkGetOrCreatPass(struct GkScene *scene,
-                 GkMaterial     *mat);
+gkGetOrCreatPass(struct GkScene     *scene,
+                 struct GkPrimitive *prim,
+                 GkMaterial         *mat);
 
 GK_EXPORT
 GkPassOut*

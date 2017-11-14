@@ -18,6 +18,7 @@
 struct GkModel;
 struct GkModelInst;
 struct GkContext;
+struct FListItem;
 
 typedef void (*gkOnDraw)(struct GkModel     * model,
                          struct GkModelInst * instance,
@@ -38,17 +39,17 @@ typedef struct GkModelInstList {
 } GkModelInstList;
 
 typedef struct GkPrimitive {
-  GLuint      flags;
-  GLuint      vao;
-  GkBuffer   *bufs;
-  GkMaterial *material;
-  GkMaterial *activeMaterial;
-  GLsizei     bufc;
-  GLsizei     count;
-  GLenum      mode;
-
   struct GkPrimitive *prev;
   struct GkPrimitive *next;
+  GkMaterial         *material;
+  GkMaterial         *activeMaterial;
+  GkBuffer           *bufs;
+  struct FListItem   *inputs;
+  GLuint              flags;
+  GLuint              vao;
+  GLsizei             bufc;
+  GLsizei             count;
+  GLenum              mode;
 } GkPrimitive;
 
 typedef struct GkPrimInst {

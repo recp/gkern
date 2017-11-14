@@ -12,19 +12,26 @@
 #include "../../include/gk/material.h"
 
 size_t
-gkShaderNameFor(GkTechnique * __restrict techn,
-                char        * __restrict nameBuff,
-                char        * __restrict prefix);
+gkShaderNameFor(GkScene     * __restrict scene,
+                GkPrimitive * __restrict prim,
+                GkTechnique * __restrict techn,
+                char        * __restrict nameBuff);
 
 void
-gkShaderFlagsFor(GkTechnique * __restrict techn,
+gkShaderFlagsFor(GkScene     * __restrict scene,
+                 GkPrimitive * __restrict prim,
+                 GkTechnique * __restrict techn,
                  char       ** __restrict vertFlags,
                  char       ** __restrict fragFlags);
 
 GkShader*
-gkShadersFor(GkTechnique * __restrict techn);
+gkShadersFor(GkScene     * __restrict scene,
+             GkPrimitive * __restrict prim,
+             GkTechnique * __restrict techn);
 
 GkProgInfo*
-gkGetOrCreatProgForCmnMat(GkMaterial *mat);
+gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
+                          GkPrimitive * __restrict prim,
+                          GkMaterial  * __restrict mat);
 
 #endif /* cmn_material_h */

@@ -26,7 +26,7 @@ gkApplyMaterial(GkScene     * __restrict scene,
 
   if (!(pass = material->technique->pass)
       && !(material->technique->pass =
-           pass = gkGetOrCreatPass(scene, material)))
+           pass = gkGetOrCreatPass(scene, prim, material)))
     return;
 
   ctx = scene->_priv.ctx;
