@@ -28,22 +28,18 @@ struct GkShader;
 struct GkScene;
 struct GkContext;
 
-/* cache program infos, some nodes may use different program and shaders */
 typedef struct GkProgInfo {
-  uint32_t refc;    /* reference count                                       */
-  GLint    prog;    /* program                                               */
-  GLint    mvpi;    /* matrix loc                                            */
-  GLint    mvi;     /* matrix loc                                            */
-  GLint    nmi;     /* normal matrix loc                                     */
-  GLint    nmui;    /* use normal matrix loc                                 */
-  uint32_t attribc; /* attrib count                                          */
-  uint32_t attribl; /* last used attrib index, don't edit manually!          */
-  RBTree  *attribs; /* attribs                                               */
-  HTable  *uniforms;
-
+  FListItem         *vertex;
+  HTable            *uniforms;
   struct GkShader   *shaders;
   struct GkMaterial *lastMaterial;
   struct GkLight    *lastLight;
+  uint32_t           refc;
+  GLint              prog;
+  GLint              mvpi;
+  GLint              mvi;
+  GLint              nmi;
+  GLint              nmui;
   bool               updtLights;
   bool               updtMaterials;
 } GkProgInfo;
