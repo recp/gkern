@@ -10,18 +10,18 @@
 
 #include "common.h"
 
-struct GkProgInfo;
+struct GkProgram;
 
 GK_EXPORT
 void
-gkUniform1i(struct GkProgInfo * __restrict pinfo,
-            const char        * __restrict name,
-            GLint                          val);
+gkUniform1i(struct GkProgram * __restrict prog,
+            const char       * __restrict name,
+            GLint                         val);
 
 GK_EXPORT
 void
-gkUniform1ui(struct GkProgInfo * __restrict pinfo,
-             const char        * __restrict name,
-             GLuint                         val);
+gkUniform1ui(struct GkProgram * __restrict prog,
+             const char       * __restrict name,
+             GLuint                        val);
 
 #endif /* uniform_h */

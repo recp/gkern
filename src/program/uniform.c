@@ -10,16 +10,16 @@
 
 GK_EXPORT
 void
-gkUniform1i(GkProgInfo * __restrict pinfo,
+gkUniform1i(GkProgram  * __restrict prog,
             const char * __restrict name,
             GLint                   val) {
-  glUniform1i(gkUniformLoc(pinfo, name), val);
+  glUniform1i(gkUniformLoc(prog, name), val);
 }
 
 GK_EXPORT
 void
-gkUniform1ui(GkProgInfo * __restrict pinfo,
+gkUniform1ui(GkProgram  * __restrict prog,
              const char * __restrict name,
              GLuint                  val) {
-  glUniform1ui(gkUniformLoc(pinfo, name), val);
+  glUniform1ui(gkUniformLoc(prog, name), val);
 }

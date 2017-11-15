@@ -29,7 +29,7 @@ gkShadersFor(GkScene     * __restrict scene,
              GkPrimitive * __restrict prim,
              GkTechnique * __restrict techn);
 
-GkProgInfo*
+GkProgram*
 gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
                           GkPrimitive * __restrict prim,
                           GkMaterial  * __restrict mat);

@@ -8,18 +8,18 @@
 #include "def_prog.h"
 #include "shader/def_shader.h"
 
-GkProgInfo * gk_def_prog_cube = NULL;
+GkProgram * gk_def_prog_cube = NULL;
 
-GkProgInfo*
+GkProgram*
 gk_prog_cube() {
-  GkProgInfo *pinfo;
+  GkProgram  *prog;
   GLuint      program;
   GLuint      vert, frag;
 
   if (gk_def_prog_cube)
     return gk_def_prog_cube;
 
-  pinfo   = calloc(sizeof(*pinfo), 1);
+  prog    = calloc(sizeof(*prog), 1);
   program = glCreateProgram();
 
   vert = gkShaderLoad(GL_VERTEX_SHADER,
@@ -41,11 +41,11 @@ gk_prog_cube() {
   glDeleteShader(vert);
   glDeleteShader(frag);
 
-  pinfo->mvpi = glGetUniformLocation(program, "MVP");
-  pinfo->prog = program;
-  pinfo->refc = 1;
+  prog->mvpi = glGetUniformLocation(program, "MVP");
+  prog->prog = program;
+  prog->refc = 1;
 
-  gk_def_prog_cube = pinfo;
+  gk_def_prog_cube = prog;
 
-  return pinfo;
+  return prog;
 }

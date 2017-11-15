@@ -58,20 +58,20 @@ gkProgramIsValid(GLuint progId) {
   return linkStatus == GL_TRUE;
 }
 
-GkProgInfo*
+GkProgram*
 gkMakeProgram(GkShader *shaders,
-              void (*beforeLinking)(GkProgInfo *pinfo, void *data),
+              void (*beforeLinking)(GkProgram *prog, void *data),
               void *userData) {
-  static GkProgInfo *pinfo;
+  static GkProgram *prog;
   GLuint program;
   
-  pinfo = calloc(sizeof(*pinfo), 1);
-  pinfo->prog = program = glCreateProgram();
+  prog = calloc(sizeof(*prog), 1);
+  prog->prog = program = glCreateProgram();
 
   gkAttachShaders(program, shaders);
   
   if (beforeLinking)
-    beforeLinking(pinfo, userData);
+    beforeLinking(prog, userData);
   
   glLinkProgram(program);
 
@@ -84,26 +84,26 @@ gkMakeProgram(GkShader *shaders,
 
   glUseProgram(program);
   
-  pinfo->shaders = shaders;
+  prog->shaders = shaders;
 
-  pinfo->mvpi = glGetUniformLocation(program, "MVP");
-  pinfo->mvi  = glGetUniformLocation(program, "MV");
-  pinfo->nmi  = glGetUniformLocation(program, "NM");
-  pinfo->nmui = glGetUniformLocation(program, "NMU");
-  pinfo->refc = 1;
-  pinfo->updtLights    = 1;
-  pinfo->updtMaterials = 1;
+  prog->mvpi = glGetUniformLocation(program, "MVP");
+  prog->mvi  = glGetUniformLocation(program, "MV");
+  prog->nmi  = glGetUniformLocation(program, "NM");
+  prog->nmui = glGetUniformLocation(program, "NMU");
+  prog->refc = 1;
+  prog->updtLights    = 1;
+  prog->updtMaterials = 1;
 
-  return pinfo;
+  return prog;
 }
 
-GkProgInfo*
+GkProgram*
 gkDefaultProgram() {
-  GkProgInfo *pinfo;
-  GLuint      program;
-  GLuint      vert, frag;
+  GkProgram *prog;
+  GLuint     program;
+  GLuint     vert, frag;
 
-  pinfo   = calloc(sizeof(*pinfo), 1);
+  prog    = calloc(sizeof(*prog), 1);
   program = glCreateProgram();
 
   vert = gkShaderLoad(GL_VERTEX_SHADER,
@@ -127,16 +127,16 @@ gkDefaultProgram() {
   glDeleteShader(vert);
   glDeleteShader(frag);
 
-  pinfo->mvpi = glGetUniformLocation(program, "MVP");
-  pinfo->mvi  = glGetUniformLocation(program, "MV");
-  pinfo->nmi  = glGetUniformLocation(program, "NM");
-  pinfo->nmui = glGetUniformLocation(program, "NMU");
-  pinfo->prog = program;
-  pinfo->refc = 1;
-  pinfo->updtLights    = 1;
-  pinfo->updtMaterials = 1;
+  prog->mvpi = glGetUniformLocation(program, "MVP");
+  prog->mvi  = glGetUniformLocation(program, "MV");
+  prog->nmi  = glGetUniformLocation(program, "NM");
+  prog->nmui = glGetUniformLocation(program, "NMU");
+  prog->prog = program;
+  prog->refc = 1;
+  prog->updtLights    = 1;
+  prog->updtMaterials = 1;
   
-  return pinfo;
+  return prog;
 }
 
 GLint
@@ -146,17 +146,17 @@ gkCurrentProgram() {
   return prog;
 }
 
-GkProgInfo*
-gkGetOrCreatProg(char       *name,
-                 GkProgInfo *(creatCb)(char *name, void *userData),
-                 void       *userData) {
-  GkProgInfo *pinfo;
-  if ((pinfo = rb_find(gk_progs, (void *)name)))
-    return pinfo;
+GkProgram*
+gkGetOrCreatProg(char      *name,
+                 GkProgram *(creatCb)(char *name, void *userData),
+                 void      *userData) {
+  GkProgram *prog;
+  if ((prog = rb_find(gk_progs, (void *)name)))
+    return prog;
 
-  if ((pinfo = creatCb(name, userData))) {
-    rb_insert(gk_progs, (void *)strdup(name), pinfo);
-    return pinfo;
+  if ((prog = creatCb(name, userData))) {
+    rb_insert(gk_progs, (void *)strdup(name), prog);
+    return prog;
   }
 
   return NULL;
@@ -164,13 +164,13 @@ gkGetOrCreatProg(char       *name,
 
 GK_EXPORT
 void
-gkUseProgram(GkContext  *ctx,
-             GkProgInfo *pinfo) {
-  if (ctx->currState->pinfo == pinfo)
+gkUseProgram(GkContext *ctx,
+             GkProgram *prog) {
+  if (ctx->currState->prog == prog)
     return;
 
-  glUseProgram(pinfo->prog);
-  ctx->currState->pinfo = pinfo;
+  glUseProgram(prog->prog);
+  ctx->currState->prog = prog;
 }
 
 void
@@ -182,4 +182,3 @@ void
 gk_prog_deinit() {
   rb_destroy(gk_progs);
 }
-

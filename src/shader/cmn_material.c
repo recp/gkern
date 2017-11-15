@@ -24,7 +24,7 @@ gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
                 GkTechnique  * __restrict techn);
 
 static
-GkProgInfo*
+GkProgram*
 gk_creatProgForCmnMat(char *name, void *userData);
 
 size_t
@@ -244,7 +244,7 @@ gkShadersFor(GkScene     * __restrict scene,
   return vert;
 }
 
-GkProgInfo*
+GkProgram*
 gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
                           GkPrimitive * __restrict prim,
                           GkMaterial  * __restrict mat) {
@@ -267,7 +267,7 @@ gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
 
 static
 void
-gk__beforeLinking(GkProgInfo *pinfo, void *data) {
+gk__beforeLinking(GkProgram *prog, void *data) {
   GkPrimitive   *prim;
   FListItem     *inpi;
   GkVertexInput *inp;
@@ -279,7 +279,7 @@ gk__beforeLinking(GkProgInfo *pinfo, void *data) {
   while (inpi) {
     inp = inpi->data;
     
-    glBindAttribLocation(pinfo->prog, index, inp->name);
+    glBindAttribLocation(prog->prog, index, inp->name);
     
     index++;
     inpi = inpi->next;
@@ -287,7 +287,7 @@ gk__beforeLinking(GkProgInfo *pinfo, void *data) {
 }
 
 static
-GkProgInfo*
+GkProgram*
 gk_creatProgForCmnMat(char *name, void *userData) {
   GkShader    *shaders;
   GkScene     *scene;

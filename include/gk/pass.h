@@ -36,7 +36,7 @@ typedef struct GkPassOut {
 } GkPassOut;
 
 typedef struct GkPass {
-  GkProgInfo    *pinfo;
+  GkProgram     *prog;
   FListItem     *states;
   GkPassOut     *output;
   struct GkPass *inPasses;
@@ -90,7 +90,7 @@ void
 gkBindRenderTargetToTex(struct GkScene *scene,
                         GkPass         *pass,
                         int32_t         targetIndex,
-                        GkProgInfo     *pinfo,
+                        GkProgram      *prog,
                         int32_t         texUnit,
                         const char      *uniformName);
 
@@ -98,7 +98,7 @@ GK_EXPORT
 void
 gkBindDepthTexTo(struct GkScene *scene,
                  GkPass         *pass,
-                 GkProgInfo     *pinfo,
+                 GkProgram      *prog,
                  int32_t         texUnit,
                  const char     *uniformName);
 

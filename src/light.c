@@ -14,7 +14,7 @@
 void
 gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light,
-               GkProgInfo     * __restrict pinfo,
+               GkProgram      * __restrict prog,
                mat4                        transView) {
   vec4  amb, dir;
   char  buf[256];
@@ -42,19 +42,19 @@ gkUniformLight(struct GkScene * __restrict scene,
 
       spot = (GkSpotLight *)light;
 
-      loc = gkUniformLocBuff(pinfo, "cutoffCos", buf);
+      loc = gkUniformLocBuff(prog, "cutoffCos", buf);
       glUniform1f(loc, spot->cutoffCosine);
 
-      loc = gkUniformLocBuff(pinfo, "cutoffExp", buf);
+      loc = gkUniformLocBuff(prog, "cutoffExp", buf);
       glUniform1f(loc, spot->cutoffExp);
 
-      loc = gkUniformLocBuff(pinfo, "constAttn", buf);
+      loc = gkUniformLocBuff(prog, "constAttn", buf);
       glUniform1f(loc, spot->constAttn);
 
-      loc = gkUniformLocBuff(pinfo, "linAttn", buf);
+      loc = gkUniformLocBuff(prog, "linAttn", buf);
       glUniform1f(loc, spot->linearAttn);
 
-      loc = gkUniformLocBuff(pinfo, "quadAttn", buf);
+      loc = gkUniformLocBuff(prog, "quadAttn", buf);
       glUniform1f(loc, spot->quadAttn);
       break;
     }
@@ -64,13 +64,13 @@ gkUniformLight(struct GkScene * __restrict scene,
 
       point = (GkPointLight *)light;
 
-      loc = gkUniformLocBuff(pinfo, "constAttn", buf);
+      loc = gkUniformLocBuff(prog, "constAttn", buf);
       glUniform1f(loc, point->constAttn);
 
-      loc = gkUniformLocBuff(pinfo, "linAttn", buf);
+      loc = gkUniformLocBuff(prog, "linAttn", buf);
       glUniform1f(loc, point->linearAttn);
 
-      loc = gkUniformLocBuff(pinfo, "quadAttn", buf);
+      loc = gkUniformLocBuff(prog, "quadAttn", buf);
       glUniform1f(loc, point->quadAttn);
       break;
     }
@@ -82,19 +82,19 @@ gkUniformLight(struct GkScene * __restrict scene,
       return;
   }
 
-  loc = gkUniformLocBuff(pinfo, "enabled", buf);
+  loc = gkUniformLocBuff(prog, "enabled", buf);
   glUniform1i(loc, enabled);
 
-  loc = gkUniformLocBuff(pinfo, "type", buf);
+  loc = gkUniformLocBuff(prog, "type", buf);
   glUniform1ui(loc, light->type);
 
-  loc = gkUniformLocBuff(pinfo, "ambient", buf);
+  loc = gkUniformLocBuff(prog, "ambient", buf);
   glUniform4fv(loc, 1, amb);
 
-  loc = gkUniformLocBuff(pinfo, "color", buf);
+  loc = gkUniformLocBuff(prog, "color", buf);
   glUniform4fv(loc, 1, light->color.vec);
 
-  loc = gkUniformLocBuff(pinfo, "position", buf);
+  loc = gkUniformLocBuff(prog, "position", buf);
 
   /* position must be in view space */
   glUniform3fv(loc, 1, transView[3]);
@@ -104,10 +104,10 @@ gkUniformLight(struct GkScene * __restrict scene,
                     light->direction,
                     dir);
 
-  loc = gkUniformLocBuff(pinfo, "direction", buf);
+  loc = gkUniformLocBuff(prog, "direction", buf);
   glUniform3fv(loc, 1, dir);
 
-  loc = gkUniformLocBuff(pinfo, "lightCount", buf);
+  loc = gkUniformLocBuff(prog, "lightCount", buf);
   glUniform1i(loc, scene->lightCount);
 
   light->isvalid = 1;
@@ -115,7 +115,7 @@ gkUniformLight(struct GkScene * __restrict scene,
 
 void
 gkUniformLights(struct GkScene * __restrict scene,
-                GkProgInfo     * __restrict pinfo) {
+                GkProgram      * __restrict prog) {
   GkLight *light;
 
   light = (GkLight *)scene->lights;
@@ -136,12 +136,12 @@ gkUniformLights(struct GkScene * __restrict scene,
 
         gkUniformLight(scene,
                        light,
-                       pinfo,
+                       prog,
                        ftr->mv);
       } else {
         gkUniformLight(scene,
                        light,
-                       pinfo,
+                       prog,
                        GLM_MAT4_IDENTITY);
       }
     }
@@ -149,5 +149,5 @@ gkUniformLights(struct GkScene * __restrict scene,
     light = (GkLight *)light->ref.next;
   }
 
-  pinfo->updtLights = 0;
+  prog->updtLights = 0;
 }

@@ -13,12 +13,12 @@
 
 GK_EXPORT
 GLint
-gkUniformLoc(GkProgInfo *pinfo, const char *name);
+gkUniformLoc(GkProgram *prog, const char *name);
 
 GLint
-gkUniformLocBuff(GkProgInfo * __restrict pinfo,
-                 char       * __restrict name,
-                 char       * __restrict buf);
+gkUniformLocBuff(GkProgram * __restrict prog,
+                 char      * __restrict name,
+                 char      * __restrict buf);
 
 #endif /* src_uniform_cache_h */
 

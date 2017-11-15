@@ -10,18 +10,18 @@
 
 GK_EXPORT
 GLint
-gkUniformLoc(GkProgInfo *pinfo, const char *name) {
+gkUniformLoc(GkProgram *prog, const char *name) {
   void *found;
   GLint loc;
 
-  if (!pinfo->uniforms)
-    pinfo->uniforms = hash_new_str(8);
+  if (!prog->uniforms)
+    prog->uniforms = hash_new_str(8);
 
-  if ((found = hash_get(pinfo->uniforms, (void *)name)))
+  if ((found = hash_get(prog->uniforms, (void *)name)))
     return ((GLint)found) - 1;
 
-  loc = glGetUniformLocation(pinfo->prog, name);
-  hash_set(pinfo->uniforms,
+  loc = glGetUniformLocation(prog->prog, name);
+  hash_set(prog->uniforms,
            (void *)strdup(name),
            (void *)(uintptr_t)(loc + 1));
 
@@ -29,21 +29,21 @@ gkUniformLoc(GkProgInfo *pinfo, const char *name) {
 }
 
 GLint
-gkUniformLocBuff(GkProgInfo * __restrict pinfo,
-                 char       * __restrict name,
-                 char       * __restrict buf) {
+gkUniformLocBuff(GkProgram * __restrict prog,
+                 char      * __restrict name,
+                 char      * __restrict buf) {
   char  *pBuf;
   size_t attrlen;
   GLint  loc;
   
   if (!buf)
-    return gkUniformLoc(pinfo, name);
+    return gkUniformLoc(prog, name);
   
   pBuf = strrchr(buf, '.') + 1;
   strcpy(pBuf, name);
   
   attrlen = strlen(pBuf);
-  loc     = gkUniformLoc(pinfo, buf);
+  loc     = gkUniformLoc(prog, buf);
   memset((buf + strlen(buf)) - attrlen, '\0', attrlen);
   return loc;
 }

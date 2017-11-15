@@ -15,7 +15,7 @@
 struct GkPass;
 struct GkScene;
 struct GkModelInst;
-struct GkProgInfo;
+struct GkProgram;
 
 typedef enum GkMaterialType {
   GK_MATERIAL_PHONG    = 1,
@@ -106,7 +106,7 @@ GkConstant*
 gkMaterialNewConstant(void);
 
 void
-gkUniformMaterial(struct GkProgInfo * __restrict pinfo,
+gkUniformMaterial(struct GkProgram  * __restrict prog,
                   struct GkMaterial * __restrict material);
 
 #endif /* gk_material_h */

@@ -65,27 +65,27 @@ gkMakeVertexInput(const char *name, GkType type, int32_t len) {
 
 GK_EXPORT
 int32_t
-gkAddVertexInput(GkProgInfo *pinfo, GkVertexInput *input) {
-  flist_sp_append(&pinfo->vertex, input);
+gkAddVertexInput(GkProgram *prog, GkVertexInput *input) {
+  flist_sp_append(&prog->vertex, input);
   input->refc++;
 
-  return flist_sp_indexof(&pinfo->vertex, input);
+  return flist_sp_indexof(&prog->vertex, input);
 }
 
 GK_EXPORT
 void
-gkRemoveVertexInput(GkProgInfo *pinfo, GkVertexInput *input) {
-  if (!flist_sp_contains(&pinfo->vertex, input))
+gkRemoveVertexInput(GkProgram *prog, GkVertexInput *input) {
+  if (!flist_sp_contains(&prog->vertex, input))
     return;
   
   input->refc--;
-  flist_sp_remove_by(&pinfo->vertex, input);
+  flist_sp_remove_by(&prog->vertex, input);
 }
 
 GK_EXPORT
 int32_t
-gkIndexOfVertexInput(GkProgInfo *pinfo, GkVertexInput *input) {
-  return flist_sp_indexof(&pinfo->vertex, input);
+gkIndexOfVertexInput(GkProgram *prog, GkVertexInput *input) {
+  return flist_sp_indexof(&prog->vertex, input);
 }
 
 void

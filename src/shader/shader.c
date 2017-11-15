@@ -14,7 +14,7 @@
 static RBTree *gk_shaders;
 
 static
-GkProgInfo*
+GkProgram*
 gk_creatProgByName(char *name, void *userData);
 
 GkShader*
@@ -31,7 +31,7 @@ gkShaderSetName(GkShader *shader, const char *name) {
   rb_insert(gk_shaders, (void *)name, shader);
 }
 
-GkProgInfo*
+GkProgram*
 gkGetOrCreatProgByName(const char   *commonName,
                        const char   *shaderSources[],
                        GLenum        shaderTypes[],
@@ -50,12 +50,12 @@ gkGetOrCreatProgByName(const char   *commonName,
 }
 
 static
-GkProgInfo*
+GkProgram*
 gk_creatProgByName(char *name, void *userData) {
-  void      **paramStructure;
+  void        **paramStructure;
   const char  **shaderSources;
   GLenum       *shaderTypes;
-  GkProgInfo   *pinfo;
+  GkProgram    *prog;
   GkShader     *last_shader;
   GLuint        program;
   GkShaderFlags flags;
@@ -68,7 +68,7 @@ gk_creatProgByName(char *name, void *userData) {
   shaderCount    = *(uint32_t *)paramStructure[2];
   flags          = *(GkShaderFlags *)paramStructure[3];
 
-  pinfo         = calloc(sizeof(*pinfo), 1);
+  prog          = calloc(sizeof(*prog), 1);
   program       = glCreateProgram();
   last_shader   = NULL;
 
@@ -93,7 +93,7 @@ gk_creatProgByName(char *name, void *userData) {
     if (last_shader)
       last_shader->next = shader;
     else
-      pinfo->shaders = shader;
+      prog->shaders = shader;
     last_shader = shader;
   }
 
@@ -107,20 +107,20 @@ gk_creatProgByName(char *name, void *userData) {
 #endif
 
   if (GK_FLG(flags, GK_SHADER_FLAG_MVP))
-    pinfo->mvpi = glGetUniformLocation(program, "MVP");
+    prog->mvpi = glGetUniformLocation(program, "MVP");
   if (GK_FLG(flags, GK_SHADER_FLAG_MV))
-    pinfo->mvi  = glGetUniformLocation(program, "MV");
+    prog->mvi  = glGetUniformLocation(program, "MV");
   if (GK_FLG(flags, GK_SHADER_FLAG_NM))
-    pinfo->nmi  = glGetUniformLocation(program, "NM");
+    prog->nmi  = glGetUniformLocation(program, "NM");
   if (GK_FLG(flags, GK_SHADER_FLAG_NMU))
-    pinfo->nmui = glGetUniformLocation(program, "NMU");
+    prog->nmui = glGetUniformLocation(program, "NMU");
 
-  pinfo->prog          = program;
-  pinfo->refc          = 1;
-  pinfo->updtLights    = 1;
-  pinfo->updtMaterials = 1;
+  prog->prog          = program;
+  prog->refc          = 1;
+  prog->updtLights    = 1;
+  prog->updtMaterials = 1;
 
-  return pinfo;
+  return prog;
 }
 
 void

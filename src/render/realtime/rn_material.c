@@ -31,13 +31,13 @@ gkApplyMaterial(GkScene     * __restrict scene,
 
   ctx = scene->_priv.ctx;
   while (pass) {
-    GkProgInfo *pinfo;
-    if ((pinfo = pass->pinfo)) {
-      if (ctx->currState->pinfo != pinfo)
-        gkUseProgram(ctx, pinfo);
+    GkProgram *prog;
+    if ((prog = pass->prog)) {
+      if (ctx->currState->prog != prog)
+        gkUseProgram(ctx, prog);
 
-      if (pinfo->lastMaterial != material)
-        gkUniformMaterial(pinfo, material);
+      if (prog->lastMaterial != material)
+        gkUniformMaterial(prog, material);
 
       gkRenderPass(scene,
                    modelInst,

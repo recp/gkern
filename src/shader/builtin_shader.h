@@ -15,7 +15,7 @@ typedef enum GkBuiltinProg {
   GK_BUILTIN_PROG_RTT = 1
 } GkBuiltinProg;
 
-GkProgInfo*
+GkProgram*
 gkBuiltinProg(GkBuiltinProg progtype);
 
 #endif /* builtin_shader_h */

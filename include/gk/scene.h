@@ -47,7 +47,7 @@ typedef struct GkScene {
   GkCamera         *camera;
   GkTransform      *trans;  /* free camera */
   GkNode           *rootNode;
-  GkProgInfo       *pinfo;
+  GkProgram        *prog;
   GkLightRef       *lights;
   GkBBox           *bbox;
   struct GkPassOut *finalOutput; /* set NULL for default FBO (screen) */

@@ -10,16 +10,16 @@
 #include "gpu_state/default.h"
 
 GkContext*
-gkContextNew(GkProgInfo * __restrict pinfo) {
+gkContextNew(GkProgram * __restrict prog) {
   GkContext *ctx;
 
   ctx = calloc(sizeof(*ctx), 1);
   ctx->mdltree = rb_newtree_ptr();
 
-  if (!pinfo)
-    ctx->pinfo = gkDefaultProgram();
+  if (!prog)
+    ctx->prog = gkDefaultProgram();
   else
-    ctx->pinfo = pinfo;
+    ctx->prog = prog;
   
   ctx->states = flist_new(NULL);
   gkSetDefaultState(ctx);
@@ -80,25 +80,25 @@ void
 gkUniformMatrix(GkModelInst *modelInst) {
   GkModel          *model;
   GkFinalTransform *ftr;
-  GkProgInfo       *pinfo;
+  GkProgram        *prog;
   int               usenm;
 
   model = modelInst->model;
 
   ftr   = modelInst->trans->ftr;
-  pinfo = model->pinfo;
+  prog  = model->prog;
 
   /* Model View Projection Matrix */
-  gkUniformMat4(pinfo->mvpi, ftr->mvp);
+  gkUniformMat4(prog->mvpi, ftr->mvp);
 
   /* Model View Matrix */
-  gkUniformMat4(pinfo->mvi, ftr->mv);
+  gkUniformMat4(prog->mvi, ftr->mv);
 
   /* Normal Matrix */
   usenm = (modelInst->trans->flags & GK_TRANSF_FMAT_NORMAT) != 0;
 
   if (usenm)
-    gkUniformMat4(pinfo->nmi,  ftr->nm);
+    gkUniformMat4(prog->nmi,  ftr->nm);
 
-  glUniform1i(pinfo->nmui, usenm);
+  glUniform1i(prog->nmui, usenm);
 }

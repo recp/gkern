@@ -14,7 +14,7 @@ void
 gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
                     char         * __restrict buf,
                     char         * __restrict name,
-                    GkProgInfo   * __restrict pinfo) {
+                    GkProgram    * __restrict prog) {
   GLint         loc;
   GkColorMethod method;
 
@@ -32,7 +32,7 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
     GkColor *color;
 
     color = crtx->val;
-    loc = gkUniformLocBuff(pinfo, name, buf);
+    loc = gkUniformLocBuff(prog, name, buf);
     glUniform4fv(loc, 1, color->vec);
   } else if (method == GK_COLOR_TEX) {
     GkTexture *tex;
@@ -46,7 +46,7 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
       glBindTexture(tex->target, tex->index);
     }
 
-    loc = gkUniformLocBuff(pinfo, name, buf);
+    loc = gkUniformLocBuff(prog, name, buf);
     glUniform1i(loc, unit);
   }
 }

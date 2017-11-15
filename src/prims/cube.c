@@ -73,15 +73,15 @@ gkDrawBBox(GkScene * __restrict scene,
            mat4 world,
            vec3 min,
            vec3 max) {
-  GkProgInfo *cubePinfo;
+  GkProgram  *prog;
   vec3        size, center;
   mat4        tran = GLM_MAT4_IDENTITY_INIT;
   GLuint      currentProg;
 
-  cubePinfo   = gk_prog_cube();
+  prog        = gk_prog_cube();
   currentProg = gkCurrentProgram();
 
-  glUseProgram(cubePinfo->prog);
+  glUseProgram(prog->prog);
 
   if (gk__cube_vao == UINT_MAX)
     gkInitCube();
@@ -97,7 +97,7 @@ gkDrawBBox(GkScene * __restrict scene,
   glm_mat4_mul(world, tran, tran);
   glm_mat4_mul(scene->camera->projView, tran, tran);
 
-  gkUniformMat4(cubePinfo->mvpi, tran);
+  gkUniformMat4(prog->mvpi, tran);
 
   glDrawElements(GL_LINE_LOOP,
                  4,

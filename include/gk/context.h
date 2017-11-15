@@ -11,19 +11,19 @@
 #include "common.h"
 
 struct RBTree;
-struct GkProgInfo;
+struct GkProgram;
 struct FList;
 struct GkGPUStates;
 
 typedef struct GkContext {
   struct FList       *states; /* GPU state caches */
   struct RBTree      *mdltree;
-  struct GkProgInfo  *pinfo;  /* default program  */
+  struct GkProgram   *prog;  /* default program  */
   struct GkGPUStates *currState;
 } GkContext;
 
 GkContext*
-gkContextNew(struct GkProgInfo * __restrict pinfo);
+gkContextNew(struct GkProgram * __restrict prog);
 
 void
 gkContextFree(GkContext *ctx);

@@ -63,7 +63,7 @@ typedef struct GkGPUStates {
   GkRenderOutState outputState;
   GLuint           activeTex;
   GkTextureState  *texStates;
-  GkProgInfo      *pinfo;
+  GkProgram       *prog;
 } GkGPUStates;
 
 typedef void (*GkGPUApplyStateFn)(GkContext * __restrict ctx,

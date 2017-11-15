@@ -20,18 +20,18 @@ GkPass*
 gkGetOrCreatPass(GkScene     *scene,
                  GkPrimitive *prim,
                  GkMaterial  *mat) {
-  GkPass     *pass;
-  GkProgInfo *pinfo;
+  GkPass    *pass;
+  GkProgram *prog;
 
-  if ((pinfo = gkGetOrCreatProgForCmnMat(scene, prim, mat))) {
+  if ((prog = gkGetOrCreatProgForCmnMat(scene, prim, mat))) {
     pass = calloc(sizeof(*pass), 1);
-    pass->pinfo = pinfo;
+    pass->prog = prog;
     return pass;
   }
 
   /* TODO: custom shaders */
   /*
-   if (!pinfo) {
+   if (!prog) {
    }
    */
 

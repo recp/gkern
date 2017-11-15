@@ -14,7 +14,7 @@
 
 struct GkScene;
 struct GkNode;
-struct GkProgInfo;
+struct GkProgram;
 struct GkColorOrTex;
 
 typedef enum GkLightType {
@@ -70,19 +70,19 @@ typedef struct GkSpotLight {
 } GkSpotLight;
 
 void
-gkUniformLights(struct GkScene    * __restrict scene,
-                struct GkProgInfo * __restrict pinfo);
+gkUniformLights(struct GkScene   * __restrict scene,
+                struct GkProgram * __restrict prog);
 
 void
-gkUniformLight(struct GkScene    * __restrict scene,
-               GkLight           * __restrict light,
-               struct GkProgInfo * __restrict pinfo,
-               mat4                           transView);
+gkUniformLight(struct GkScene   * __restrict scene,
+               GkLight          * __restrict light,
+               struct GkProgram * __restrict prog,
+               mat4                          transView);
 
 void
-gkUniformSingleLight(struct GkScene    * __restrict scene,
-                     GkLight           * __restrict light,
-                     struct GkProgInfo * __restrict pinfo,
-                     mat4                           transView);
+gkUniformSingleLight(struct GkScene   * __restrict scene,
+                     GkLight          * __restrict light,
+                     struct GkProgram * __restrict prog,
+                     mat4                          transView);
 
 #endif /* gk_light_h */

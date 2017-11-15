@@ -16,12 +16,12 @@ gkRenderPass(GkScene     * __restrict scene,
              GkPrimitive * __restrict prim,
              GkMaterial  * __restrict material,
              GkPass      * __restrict pass) {
-  GkProgInfo *pinfo;
+  GkProgram *prog;
 
   if (!pass || !prim || !scene)
     return;
 
-  if (!(pinfo = pass->pinfo))
+  if (!(prog = pass->prog))
     return;
 
   gkUniformTransform(pinfo, modelInst->trans);
