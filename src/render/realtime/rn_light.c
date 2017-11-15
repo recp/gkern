@@ -19,9 +19,8 @@
 void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
                      GkPrimitive * __restrict prim,
-                     GkProgInfo  * __restrict pinfo) {
+                     GkProgram   * __restrict prog) {
   GkLight *firstLight, *light;
-  GLint    loc;
   
   light = (GkLight *)scene->lights;
   if (!light) {
@@ -40,7 +39,7 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
       glBlendFunc(GL_ONE, GL_ONE);
     }
 
-    if (light != pinfo->lastLight) {
+    if (light != prog->lastLight) {
       if (light->node) {
         GkNode           *node;
         GkFinalTransform *ftr;
@@ -50,19 +49,17 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
 
         gkUniformSingleLight(scene,
                              light,
-                             pinfo,
+                             prog,
                              ftr->mv);
       } else {
         gkUniformSingleLight(scene,
                              light,
-                             pinfo,
+                             prog,
                              GLM_MAT4_IDENTITY);
       }
 
-      loc = glGetUniformLocation(pinfo->prog, "lightType");
-      glUniform1ui(loc, light->type);
-
-      pinfo->lastLight = light;
+      gkUniform1ui(prog, "lightType", light->type);
+      prog->lastLight = light;
     }
 
     gkRenderPrim(scene, prim);
@@ -77,9 +74,8 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
 void
 gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
                            GkPrimitive * __restrict prim,
-                           GkProgInfo  * __restrict pinfo) {
+                           GkProgram   * __restrict prog) {
   GkLight *firstLight, *light;
-  GLint    loc;
 
   light = (GkLight *)scene->lights;
   if (!light) {
@@ -100,7 +96,7 @@ gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
-    if (light != pinfo->lastLight) {
+    if (light != prog->lastLight) {
       if (light->node) {
         GkNode           *node;
         GkFinalTransform *ftr;
@@ -110,19 +106,17 @@ gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
 
         gkUniformSingleLight(scene,
                              light,
-                             pinfo,
+                             prog,
                              ftr->mv);
       } else {
         gkUniformSingleLight(scene,
                              light,
-                             pinfo,
+                             prog,
                              GLM_MAT4_IDENTITY);
       }
 
-      loc = glGetUniformLocation(pinfo->prog, "lightType");
-      glUniform1ui(loc, light->type);
-
-      pinfo->lastLight = light;
+      gkUniform1ui(prog, "lightType", light->type);
+      prog->lastLight = light;
     }
 
     gkRenderPrim(scene, prim);

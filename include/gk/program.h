@@ -35,7 +35,7 @@ typedef struct GkProgram {
   struct GkMaterial *lastMaterial;
   struct GkLight    *lastLight;
   uint32_t           refc;
-  GLint              prog;
+  GLint              progId;
   GLint              mvpi;
   GLint              mvi;
   GLint              nmi;

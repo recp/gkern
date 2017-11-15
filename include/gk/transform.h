@@ -98,7 +98,7 @@ GkPoint
 gk_project2d(GkRect rect, mat4 mvp, vec3 v);
 
 void
-gkUniformTransform(struct GkProgInfo * __restrict pinfo,
-                   GkTransform       * __restrict trans);
+gkUniformTransform(struct GkProgram * __restrict prog,
+                   GkTransform      * __restrict trans);
 
 #endif /* gk_transform_h */

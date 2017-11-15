@@ -81,7 +81,7 @@ gkDrawBBox(GkScene * __restrict scene,
   prog        = gk_prog_cube();
   currentProg = gkCurrentProgram();
 
-  glUseProgram(prog->prog);
+  glUseProgram(prog->progId);
 
   if (gk__cube_vao == UINT_MAX)
     gkInitCube();

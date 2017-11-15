@@ -63,33 +63,33 @@ gkMakeProgram(GkShader *shaders,
               void (*beforeLinking)(GkProgram *prog, void *data),
               void *userData) {
   static GkProgram *prog;
-  GLuint program;
+  GLuint progId;
   
   prog = calloc(sizeof(*prog), 1);
-  prog->prog = program = glCreateProgram();
+  prog->progId = progId = glCreateProgram();
 
-  gkAttachShaders(program, shaders);
+  gkAttachShaders(progId, shaders);
   
   if (beforeLinking)
     beforeLinking(prog, userData);
   
-  glLinkProgram(program);
+  glLinkProgram(progId);
 
 #ifdef DEBUG
-  if (!gkProgramIsValid(program)) {
-    gkProgramLogInfo(program, stderr);
+  if (!gkProgramIsValid(progId)) {
+    gkProgramLogInfo(progId, stderr);
     exit(-1);
   }
 #endif
 
-  glUseProgram(program);
+  glUseProgram(progId);
   
   prog->shaders = shaders;
 
-  prog->mvpi = glGetUniformLocation(program, "MVP");
-  prog->mvi  = glGetUniformLocation(program, "MV");
-  prog->nmi  = glGetUniformLocation(program, "NM");
-  prog->nmui = glGetUniformLocation(program, "NMU");
+  prog->mvpi = glGetUniformLocation(progId, "MVP");
+  prog->mvi  = glGetUniformLocation(progId, "MV");
+  prog->nmi  = glGetUniformLocation(progId, "NM");
+  prog->nmui = glGetUniformLocation(progId, "NMU");
   prog->refc = 1;
   prog->updtLights    = 1;
   prog->updtMaterials = 1;
@@ -100,39 +100,39 @@ gkMakeProgram(GkShader *shaders,
 GkProgram*
 gkDefaultProgram() {
   GkProgram *prog;
-  GLuint     program;
+  GLuint     progId;
   GLuint     vert, frag;
 
-  prog    = calloc(sizeof(*prog), 1);
-  program = glCreateProgram();
+  prog   = calloc(sizeof(*prog), 1);
+  progId = glCreateProgram();
 
   vert = gkShaderLoad(GL_VERTEX_SHADER,
                       gk_def_shader_vert(GK_DEF_SHADER_DEFAULT));
   frag = gkShaderLoad(GL_FRAGMENT_SHADER,
                       gk_def_shader_frag(GK_DEF_SHADER_DEFAULT));
 
-  glAttachShader(program, vert);
-  glAttachShader(program, frag);
-  glLinkProgram(program);
+  glAttachShader(progId, vert);
+  glAttachShader(progId, frag);
+  glLinkProgram(progId);
 
 #ifdef DEBUG
-  if (!gkProgramIsValid(program)) {
-    gkProgramLogInfo(program, stderr);
+  if (!gkProgramIsValid(progId)) {
+    gkProgramLogInfo(progId, stderr);
     exit(-1);
   }
 #endif
 
-  glUseProgram(program);
+  glUseProgram(progId);
 
   glDeleteShader(vert);
   glDeleteShader(frag);
 
-  prog->mvpi = glGetUniformLocation(program, "MVP");
-  prog->mvi  = glGetUniformLocation(program, "MV");
-  prog->nmi  = glGetUniformLocation(program, "NM");
-  prog->nmui = glGetUniformLocation(program, "NMU");
-  prog->prog = program;
-  prog->refc = 1;
+  prog->mvpi   = glGetUniformLocation(progId, "MVP");
+  prog->mvi    = glGetUniformLocation(progId, "MV");
+  prog->nmi    = glGetUniformLocation(progId, "NM");
+  prog->nmui   = glGetUniformLocation(progId, "NMU");
+  prog->progId = progId;
+  prog->refc   = 1;
   prog->updtLights    = 1;
   prog->updtMaterials = 1;
   
@@ -169,7 +169,7 @@ gkUseProgram(GkContext *ctx,
   if (ctx->currState->prog == prog)
     return;
 
-  glUseProgram(prog->prog);
+  glUseProgram(prog->progId);
   ctx->currState->prog = prog;
 }
 

@@ -13,27 +13,27 @@ GkProgram * gk_def_prog_cube = NULL;
 GkProgram*
 gk_prog_cube() {
   GkProgram  *prog;
-  GLuint      program;
+  GLuint      progId;
   GLuint      vert, frag;
 
   if (gk_def_prog_cube)
     return gk_def_prog_cube;
 
-  prog    = calloc(sizeof(*prog), 1);
-  program = glCreateProgram();
+  prog   = calloc(sizeof(*prog), 1);
+  progId = glCreateProgram();
 
   vert = gkShaderLoad(GL_VERTEX_SHADER,
                       gk_def_shader_vert(GK_DEF_SHADER_CUBE));
   frag = gkShaderLoad(GL_FRAGMENT_SHADER,
                       gk_def_shader_frag(GK_DEF_SHADER_CUBE));
 
-  glAttachShader(program, vert);
-  glAttachShader(program, frag);
-  glLinkProgram(program);
+  glAttachShader(progId, vert);
+  glAttachShader(progId, frag);
+  glLinkProgram(progId);
 
 #ifdef DEBUG
-  if (!gkProgramIsValid(program)) {
-    gkProgramLogInfo(program, stderr);
+  if (!gkProgramIsValid(progId)) {
+    gkProgramLogInfo(progId, stderr);
     exit(-1);
   }
 #endif
@@ -41,9 +41,9 @@ gk_prog_cube() {
   glDeleteShader(vert);
   glDeleteShader(frag);
 
-  prog->mvpi = glGetUniformLocation(program, "MVP");
-  prog->prog = program;
-  prog->refc = 1;
+  prog->mvpi   = glGetUniformLocation(progId, "MVP");
+  prog->progId = progId;
+  prog->refc   = 1;
 
   gk_def_prog_cube = prog;
 

@@ -279,7 +279,7 @@ gk__beforeLinking(GkProgram *prog, void *data) {
   while (inpi) {
     inp = inpi->data;
     
-    glBindAttribLocation(prog->prog, index, inp->name);
+    glBindAttribLocation(prog->progId, index, inp->name);
     
     index++;
     inpi = inpi->next;

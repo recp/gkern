@@ -57,7 +57,7 @@ gk_creatProgByName(char *name, void *userData) {
   GLenum       *shaderTypes;
   GkProgram    *prog;
   GkShader     *last_shader;
-  GLuint        program;
+  GLuint        progId;
   GkShaderFlags flags;
   uint32_t      shaderCount;
   int32_t       i;
@@ -69,7 +69,7 @@ gk_creatProgByName(char *name, void *userData) {
   flags          = *(GkShaderFlags *)paramStructure[3];
 
   prog          = calloc(sizeof(*prog), 1);
-  program       = glCreateProgram();
+  progId        = glCreateProgram();
   last_shader   = NULL;
 
   for (i = 0; i < shaderCount; i++) {
@@ -88,7 +88,7 @@ gk_creatProgByName(char *name, void *userData) {
                                        source,
                                        2);
 
-    glAttachShader(program, shader->shaderId);
+    glAttachShader(progId, shader->shaderId);
 
     if (last_shader)
       last_shader->next = shader;
@@ -97,25 +97,25 @@ gk_creatProgByName(char *name, void *userData) {
     last_shader = shader;
   }
 
-  glLinkProgram(program);
+  glLinkProgram(progId);
 
 #ifdef DEBUG
-  if (!gkProgramIsValid(program)) {
-    gkProgramLogInfo(program, stderr);
+  if (!gkProgramIsValid(progId)) {
+    gkProgramLogInfo(progId, stderr);
     exit(-1);
   }
 #endif
 
   if (GK_FLG(flags, GK_SHADER_FLAG_MVP))
-    prog->mvpi = glGetUniformLocation(program, "MVP");
+    prog->mvpi = glGetUniformLocation(progId, "MVP");
   if (GK_FLG(flags, GK_SHADER_FLAG_MV))
-    prog->mvi  = glGetUniformLocation(program, "MV");
+    prog->mvi  = glGetUniformLocation(progId, "MV");
   if (GK_FLG(flags, GK_SHADER_FLAG_NM))
-    prog->nmi  = glGetUniformLocation(program, "NM");
+    prog->nmi  = glGetUniformLocation(progId, "NM");
   if (GK_FLG(flags, GK_SHADER_FLAG_NMU))
-    prog->nmui = glGetUniformLocation(program, "NMU");
+    prog->nmui = glGetUniformLocation(progId, "NMU");
 
-  prog->prog          = program;
+  prog->progId        = progId;
   prog->refc          = 1;
   prog->updtLights    = 1;
   prog->updtMaterials = 1;

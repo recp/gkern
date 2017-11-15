@@ -20,7 +20,7 @@ gkUniformLoc(GkProgram *prog, const char *name) {
   if ((found = hash_get(prog->uniforms, (void *)name)))
     return ((GLint)found) - 1;
 
-  loc = glGetUniformLocation(prog->prog, name);
+  loc = glGetUniformLocation(prog->progId, name);
   hash_set(prog->uniforms,
            (void *)strdup(name),
            (void *)(uintptr_t)(loc + 1));
