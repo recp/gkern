@@ -40,12 +40,17 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
 
     tex = crtx->val;
     if (tex->sampler) {
+      const char *uniformName;
+
       glActiveTexture(GL_TEXTURE0 + *texUnit);
       glBindTexture(tex->target, tex->index);
-    }
+      
+      if (!(uniformName = tex->sampler->uniformName))
+        uniformName = name;
 
-    loc = gkUniformLocBuff(prog, name, buf);
-    glUniform1i(loc, *texUnit);
-    (*texUnit)++;
+      loc = gkUniformLocBuff(prog, (char *)uniformName, buf);
+      glUniform1i(loc, *texUnit);
+      (*texUnit)++;
+    }
   }
 }
