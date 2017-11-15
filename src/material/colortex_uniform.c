@@ -14,7 +14,8 @@ void
 gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
                     char         * __restrict buf,
                     char         * __restrict name,
-                    GkProgram    * __restrict prog) {
+                    GkProgram    * __restrict prog,
+                    uint32_t     * __restrict texUnit) {
   GLint         loc;
   GkColorMethod method;
 
@@ -36,17 +37,15 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
     glUniform4fv(loc, 1, color->vec);
   } else if (method == GK_COLOR_TEX) {
     GkTexture *tex;
-    GLuint     unit;
 
-    tex  = crtx->val;
-    unit = 0;
+    tex = crtx->val;
     if (tex->sampler) {
-      unit = tex->sampler->unit;
-      glActiveTexture(GL_TEXTURE0 + unit);
+      glActiveTexture(GL_TEXTURE0 + *texUnit);
       glBindTexture(tex->target, tex->index);
     }
 
     loc = gkUniformLocBuff(prog, name, buf);
-    glUniform1i(loc, unit);
+    glUniform1i(loc, *texUnit);
+    (*texUnit)++;
   }
 }

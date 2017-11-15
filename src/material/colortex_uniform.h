@@ -14,6 +14,7 @@ void
 gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
                     char         * __restrict buf,
                     char         * __restrict name,
-                    GkProgram    * __restrict prog);
+                    GkProgram    * __restrict prog,
+                    uint32_t     * __restrict texUnit);
 
 #endif /* gk_colortex_uniform_h */

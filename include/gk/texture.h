@@ -52,8 +52,6 @@ typedef struct GkSampler {
   unsigned long   mipMaxLevel;
   unsigned long   mipMinLevel;
   float           mipBias;
-
-  GLuint          unit; /* TEXTURE UNIT */
 } GkSampler;
 
 typedef struct GkTexture {

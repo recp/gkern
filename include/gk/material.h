@@ -106,7 +106,8 @@ GkConstant*
 gkMaterialNewConstant(void);
 
 void
-gkUniformMaterial(struct GkProgram  * __restrict prog,
+gkUniformMaterial(struct GkContext  * __restrict ctx,
+                  struct GkProgram  * __restrict prog,
                   struct GkMaterial * __restrict material);
 
 #endif /* gk_material_h */

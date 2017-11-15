@@ -14,12 +14,14 @@ struct RBTree;
 struct GkProgram;
 struct FList;
 struct GkGPUStates;
+struct HTable;
 
 typedef struct GkContext {
   struct FList       *states; /* GPU state caches */
   struct RBTree      *mdltree;
   struct GkProgram   *prog;  /* default program  */
   struct GkGPUStates *currState;
+  struct HTable      *samplers; /* reserved */
 } GkContext;
 
 GkContext*

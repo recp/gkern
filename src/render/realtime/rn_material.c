@@ -37,7 +37,7 @@ gkApplyMaterial(GkScene     * __restrict scene,
         gkUseProgram(ctx, prog);
 
       if (prog->lastMaterial != material)
-        gkUniformMaterial(prog, material);
+        gkUniformMaterial(ctx, prog, material);
 
       gkRenderPass(scene,
                    modelInst,
