@@ -17,7 +17,8 @@ extern "C" {
 
 #include <ds/rb.h>
 #include <ds/hash.h>
-
+#include <ds/forward-list-sep.h>
+  
 #include <OpenGL/gl3.h>
 #include <stdio.h>
 #include <stdbool.h>
