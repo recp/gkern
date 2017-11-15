@@ -13,6 +13,8 @@
 #include "program/program.h"
 #include "program/vertex_input.h"
 
+#include "vertex.h"
+
 void
 GK_CONSTRUCTOR
 gk__init(void);
@@ -24,6 +26,7 @@ gk__cleanup(void);
 void
 GK_CONSTRUCTOR
 gk__init() {
+  gk_verta_init();
   gk_vertinp_init();
   gk_time_init();
   gk_shaders_init();
@@ -37,4 +40,5 @@ gk__cleanup() {
   gk_shaders_deinit();
   gk_time_deinit();
   gk_vertinp_deinit();
+  gk_verta_deinit();
 }
