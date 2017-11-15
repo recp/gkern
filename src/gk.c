@@ -6,9 +6,9 @@
  */
 
 #include "../include/gk/gk.h"
-#include <ds/forward-list.h>
-#include <ds/hash.h>
 #include "gpu_state/default.h"
+
+#include <ds/forward-list.h>
 
 GkContext*
 gkContextNew(GkProgram * __restrict prog) {
@@ -22,10 +22,10 @@ gkContextNew(GkProgram * __restrict prog) {
   else
     ctx->prog = prog;
   
-  ctx->states = flist_new(NULL);
-  gkSetDefaultState(ctx);
+  ctx->states   = flist_new(NULL);
+  ctx->samplers = flist_new(NULL);
   
-  ctx->samplers = hash_new_ptr(2);
+  gkSetDefaultState(ctx);
 
   return ctx;
 }
