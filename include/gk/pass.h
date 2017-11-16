@@ -42,6 +42,8 @@ typedef struct GkPass {
   struct GkPass *inPasses;
   struct GkPass *outPass;
   struct GkPass *next;
+  bool           noLights;
+  bool           noMaterials;
 } GkPass;
 
 GK_EXPORT

@@ -40,6 +40,8 @@ GK_MAKE_C_ENUM(GkSceneFlags)
 
 typedef struct GkScenePrivateFields {
   struct GkContext *ctx;
+  struct GkPass     *overridePass;     /* override all passes    */
+  struct GkMaterial *overrideMaterial; /* override all materials */
 } GkScenePrivateFields;
 
 typedef struct GkScene {

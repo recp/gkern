@@ -53,28 +53,20 @@ gkApplyMaterial(GkScene     * __restrict scene,
   if (!material || !material->technique)
     return;
 
+  if (scene->_priv.overridePass) {
+    pass = scene->_priv.overridePass;
+    goto apply;
+  }
+  
   if (!(pass = material->technique->pass)
       && !(material->technique->pass =
            pass = gkGetOrCreatPass(scene, prim, material)))
     return;
 
+apply:
   ctx = scene->_priv.ctx;
   while (pass) {
-    GkProgram *prog;
-    if ((prog = pass->prog)) {
-      if (ctx->currState->prog != prog)
-        gkUseProgram(ctx, prog);
-
-      if (prog->lastMaterial != material)
-        gkUniformMaterial(ctx, prog, material);
-
-      gkRenderPass(scene,
-                   modelInst,
-                   prim,
-                   material,
-                   pass);
-    }
-
+    gkRenderPass(scene, modelInst, prim, material, pass);
     pass = pass->next;
   }
 }
@@ -84,6 +76,11 @@ gkApplyMaterials(GkScene     * __restrict scene,
                  GkModelInst * __restrict modelInst,
                  GkPrimitive * __restrict prim) {
   GkMaterial *material;
+
+  if (scene->_priv.overrideMaterial) {
+    material = scene->_priv.overrideMaterial;
+    goto apply;
+  }
 
   material = NULL;
 
@@ -100,8 +97,6 @@ gkApplyMaterials(GkScene     * __restrict scene,
   if (!material)
     material = gk_def_material();
 
-  gkApplyMaterial(scene,
-                  modelInst,
-                  prim,
-                  material);
+apply:
+  gkApplyMaterial(scene, modelInst, prim, material);
 }
