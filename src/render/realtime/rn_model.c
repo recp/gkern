@@ -56,10 +56,8 @@ gkRenderModel(GkScene     *scene,
               GkTransform *ptr) {
   GkModel     *model;
   GkPrimitive *primi;
-  GkTransform *tr;
 
   model = modelInst->model;
-  tr    = modelInst->trans;
 
   /* pre events */
   if (model->events && model->events->onDraw)
@@ -80,7 +78,7 @@ gkRenderModel(GkScene     *scene,
 
   if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX) && model->bbox)
     gkDrawBBox(scene,
-               tr->world,
+               modelInst->trans->world,
                model->bbox->min,
                model->bbox->max);
 
@@ -95,16 +93,18 @@ gkRnModelNoMatOPass(GkScene     *scene,
                     GkTransform *ptr) {
   GkModel     *model;
   GkPrimitive *primi;
-  GkTransform *tr;
   
   model = modelInst->model;
-  tr    = modelInst->trans;
 
   /* render */
   primi = model->prim;
   while (primi) {
     glBindVertexArray(primi->vao);
-    gkRenderPass(scene, modelInst, primi, NULL, scene->_priv.overridePass);
+    gkRenderPass(scene,
+                 modelInst,
+                 primi,
+                 NULL,
+                 scene->_priv.overridePass);
     primi = primi->next;
   }
 

@@ -47,8 +47,7 @@ gkApplyMaterial(GkScene     * __restrict scene,
                 GkModelInst * __restrict modelInst,
                 GkPrimitive * __restrict prim,
                 GkMaterial  * __restrict material) {
-  GkContext *ctx;
-  GkPass    *pass;
+  GkPass *pass;
 
   if (!material || !material->technique)
     return;
@@ -64,7 +63,6 @@ gkApplyMaterial(GkScene     * __restrict scene,
     return;
 
 apply:
-  ctx = scene->_priv.ctx;
   while (pass) {
     gkRenderPass(scene, modelInst, prim, material, pass);
     pass = pass->next;
