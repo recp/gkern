@@ -16,34 +16,6 @@
 #include "rn_material.h"
 
 void
-gkPrepMaterial(GkScene     *scene,
-               GkModelInst *modelInst) {
-  GkModel     *model;
-  GkPrimitive *primi;
-  GkMaterial  *modelMaterial;
-
-  model = modelInst->model;
-  /*
-   make sure model instance has a material
-   (to avoid access model multiple times)
-   */
-  modelMaterial = NULL;
-  if (!modelInst->material) {
-    /* model doesn't has a material set default material */
-    if (!(modelInst->activeMaterial = modelMaterial = model->material))
-      modelInst->activeMaterial = modelMaterial = gk_def_material();
-  }
-  
-  /* make sure every primitive has a material */
-  primi = model->prim;
-  while (primi) {
-    if (!(primi->activeMaterial = primi->material))
-      primi->activeMaterial = modelMaterial;
-    primi = primi->next;
-  }
-}
-
-void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
             GkTransform *ptr) {
