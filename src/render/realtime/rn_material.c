@@ -9,6 +9,7 @@
 #include "../../../include/gk/material.h"
 
 #include "../../gpu_state/common.h"
+#include "../../default/def_effect.h"
 
 #include "rn_material.h"
 #include "rn_pass.h"
@@ -67,6 +68,9 @@ gkApplyMaterials(GkScene     * __restrict scene,
 
   if (!material)
     material = prim->activeMaterial;
+
+  if (!material)
+    material = gk_def_material();
 
   gkApplyMaterial(scene,
                   modelInst,

@@ -8,7 +8,7 @@
 #include "def_effect.h"
 
 GkColor gkdef_clr__blk = { 0.0, 0.0, 0.0, 1.0 };
-GkColor gkdef_clr__wht = { 0.0, 0.0, 0.0, 1.0 };
+GkColor gkdef_clr__wht = { 1.0, 1.0, 1.0, 1.0 };
 
 GkColorOrTex gkdef_clr_blk = { .val    = &gkdef_clr__blk,
                                .method = GK_COLOR_COLOR };
@@ -78,7 +78,7 @@ gk_def_material_constant() {
 }
 
 GkMaterial gkdef_material = {
-  .technique         = &gkdef_phong.base,
+  .technique         = &gkdef_lambert.base,
   .isvalid           = 1,
   .enabled           = 1,
   .reflective        = NULL,
