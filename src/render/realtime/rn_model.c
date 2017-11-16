@@ -14,6 +14,7 @@
 
 #include "rn_light.h"
 #include "rn_material.h"
+#include "rn_pass.h"
 
 void
 gkPrepModel(GkScene     *scene,
@@ -76,16 +77,37 @@ gkRenderModel(GkScene     *scene,
 
   /* reset the state */
   glBindVertexArray(0);
-  /* TODO: unbind all textures */
 
-  /* post events */
-  if (model->events && model->events->onDraw)
-    model->events->onDraw(model, NULL, true);
-
-  if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX)
-      && model->bbox)
+  if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX) && model->bbox)
     gkDrawBBox(scene,
                tr->world,
                model->bbox->min,
                model->bbox->max);
+
+  /* post events */
+  if (model->events && model->events->onDraw)
+    model->events->onDraw(model, NULL, true);
+}
+
+void
+gkRnModelNoMatOPass(GkScene     *scene,
+                    GkModelInst *modelInst,
+                    GkTransform *ptr) {
+  GkModel     *model;
+  GkPrimitive *primi;
+  GkTransform *tr;
+  
+  model = modelInst->model;
+  tr    = modelInst->trans;
+
+  /* render */
+  primi = model->prim;
+  while (primi) {
+    glBindVertexArray(primi->vao);
+    gkRenderPass(scene, modelInst, primi, NULL, scene->_priv.overridePass);
+    primi = primi->next;
+  }
+
+  /* reset the state */
+  glBindVertexArray(0);
 }

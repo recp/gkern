@@ -20,9 +20,9 @@ struct GkLight;
 struct GkContext;
 struct GkMaterial;
 
-typedef void (*GkRenderModelFn)(GkScene    *scene,
-                                GkModelInst *modelInst,
-                                GkTransform *ptr);
+typedef void (*GkRenderModelFn)(struct GkScene *scene,
+                                GkModelInst    *modelInst,
+                                GkTransform    *ptr);
 
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE          = 0,
