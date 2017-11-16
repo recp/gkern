@@ -35,33 +35,33 @@ void main() {
   if (Ld == 0.0)
     Ls = 0.0;
   else
-    Ls = pow(Ls, mat.shininess);
+    Ls = pow(Ls, uShininess);
 
   fragColor =
 \n#ifdef DIFFUSE_TEX\n
-  lightc * texture(tex2D[mat.diffuse], vTexCoord[mat.diffuse]) * Ld
+  lightc * texture(uDiffuseTex, DIFFUSE_TEX_COORD) * Ld
 \n#elif defined(DIFFUSE_COLOR)\n
-  lightc * mat.diffuse * Ld
+  lightc * uDiffuse * Ld
 \n#else\n
   lightc * vec4(0, 0, 0, 1)
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
-  + texture(tex2D[mat.ambient], vTexCoord[mat.ambient])
+  + texture(uAmbientTex, AMBIENT_TEX_COORD)
 \n#elif defined(AMBIENT_COLOR)\n
-  + mat.ambient
+  + uAmbient
 \n#endif\n
 
 \n#ifdef EMISSION_TEX\n
-  + texture(tex2D[mat.emission], vTexCoord[mat.emission])
+  + texture(uEmissionTex, EMISSION_TEX_COORD)
 \n#elif defined(EMISSION_COLOR)\n
-  + mat.emission
+  + uEmission
 \n#endif\n
 
 \n#ifdef SPECULAR_TEX\n
-  +  lightc * texture(tex2D[mat.specular], vTexCoord[mat.specular]) * Ls
+  +  lightc * texture(uSpecularTex, SPECULAR_TEX_COORD) * Ls
 \n#elif defined(SPECULAR_COLOR)\n
-  +  lightc * mat.specular * Ls
+  +  lightc * uSpecular * Ls
 \n#endif\n
 ;
 

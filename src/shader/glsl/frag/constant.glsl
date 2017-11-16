@@ -10,17 +10,17 @@ GK_STRINGIFY(
 void main() {
   fragColor =
 \n#ifdef EMISSION_TEX\n
-  texture(tex2D[mat.emission], vTexCoord[mat.emission])
+  texture(uEmissionTex, EMISSION_TEX_COORD)
 \n#elif defined(EMISSION_COLOR)\n
-  mat.emission
+  uEmission
 \n#else\n
   vec4(0, 0, 0, 1)
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
-  + texture(tex2D[mat.ambient], vTexCoord[mat.ambient])
+  + texture(uAmbientTex, AMBIENT_TEX_COORD)
 \n#elif defined(AMBIENT_COLOR)\n
-  + mat.ambient
+  + uAmbient
 \n#endif\n
 ;
 

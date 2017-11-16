@@ -44,16 +44,16 @@ gkShaderNameFor(GkScene     * __restrict scene,
    */
 
   pname = nameBuff;
-  
+
   gk__fillAttribs(attr, NULL, techn);
   sprintf(pname, "%d_", techn->type);
-  
+
   /* primitive inputs */
   inpi = prim->inputs;
   while (inpi) {
     inp = inpi->data;
     const char *shortName;
-    
+
     shortName = gkShortNameOfVertexInput(inp->name);
     if (!shortName)
       shortName = inp->name;
@@ -70,7 +70,7 @@ gkShaderNameFor(GkScene     * __restrict scene,
 
     pname += sprintf(pname, "%c%d", prefix[i], attr[i]->method);
   }
-  
+
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS))
     pname += sprintf(pname, "_shdw");
 
@@ -138,12 +138,27 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
                               "\n#define %s_COLOR\n",
                               attrname[i]);
         break;
-      case GK_COLOR_TEX:
-        texCount++;
+      case GK_COLOR_TEX: {
+        GkTexture  *tex;
+        GkSampler  *sampler;
+        const char *coordInpName;
+
+        tex     = attr[i]->val;
+        coordInpName = NULL;
+        if ((sampler = tex->sampler))
+          coordInpName = sampler->coordInputName;
+        if (!coordInpName)
+          coordInpName = "TEXCOORD";
+
         pFragFlags += sprintf(pFragFlags,
-                              "\n#define %s_TEX\n",
-                              attrname[i]);
+                              "\n#define %s_TEX\n"
+                              "\n#define %s_TEX_COORD v%s\n",
+                              attrname[i],
+                              attrname[i],
+                              coordInpName);
+        texCount++;
         break;
+      }
       default:
         continue;
     }
@@ -155,16 +170,15 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
     pFragFlags += sprintf(pFragFlags, "\n#define SHININESS\n");
   }
 
-  if (texCount > 0) {
-    pVertFlags += sprintf(pVertFlags,
-                          "\n#define TEX_COUNT %d\n",
-                          texCount);
+  pVertFlags += sprintf(pVertFlags,
+                        "\n#define TEX_COUNT %d\n",
+                        texCount);
 
-    pFragFlags += sprintf(pFragFlags,
-                          "\n#define TEX_COUNT %d\n",
-                          texCount);
-  }
-  
+  pFragFlags += sprintf(pFragFlags,
+                        "\n#define TEX_COUNT %d\n",
+                        texCount);
+
+
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
     sprintf(pVertFlags, "\n#define SHADOW_MAP\n");
     sprintf(pFragFlags, "\n#define SHADOW_MAP\n");
@@ -259,7 +273,7 @@ gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
   userData[0] = scene;
   userData[1] = prim;
   userData[2] = mat;
-  
+
   return gkGetOrCreatProg(name,
                           gk_creatProgForCmnMat,
                           userData);
@@ -278,9 +292,9 @@ gk__beforeLinking(GkProgram *prog, void *data) {
   inpi  = prim->inputs;
   while (inpi) {
     inp = inpi->data;
-    
+
     glBindAttribLocation(prog->progId, index, inp->name);
-    
+
     index++;
     inpi = inpi->next;
   }
@@ -297,7 +311,7 @@ gk_creatProgForCmnMat(char *name, void *userData) {
   scene = ((void **)userData)[0];
   prim  = ((void **)userData)[1];
   mat   = ((void **)userData)[2];
-  
+
   if ((shaders = gkShadersFor(scene, prim, mat->technique)))
     return gkMakeProgram(shaders, gk__beforeLinking, prim);
 

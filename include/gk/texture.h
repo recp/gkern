@@ -40,6 +40,7 @@ typedef enum GkMipFilter {
 
 typedef struct GkSampler {
   const char     *uniformName;
+  const char     *coordInputName;
   GkColor        *borderColor;
   GkWrapMode      wrapS;
   GkWrapMode      wrapT;

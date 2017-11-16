@@ -19,31 +19,33 @@ in vec3 POSITION;
 in vec3 NORMAL;
 
 \n#if TEX_COUNT > 0\n
-in vec2 TEXCOORD;
+in  vec2   TEXCOORD;
+out vec2  vTEXCOORD;
 \n#endif\n
 \n#if TEX_COUNT > 1\n
-in vec2 TEXCOORD1;
+in  vec2   TEXCOORD1;
+out vec2  vTEXCOORD1;
 \n#endif\n
 \n#if TEX_COUNT > 2\n
-in vec2 TEXCOORD2;
+in  vec2   TEXCOORD2;
+out vec2  vTEXCOORD2;
 \n#endif\n
 \n#if TEX_COUNT > 3\n
-in vec2 TEXCOORD3;
+in  vec2   TEXCOORD3;
+out vec2  vTEXCOORD3;
 \n#endif\n
 \n#if TEX_COUNT > 4\n
-in vec2 TEXCOORD4;
+in  vec2   TEXCOORD4;
+out vec2  vTEXCOORD4;
 \n#endif\n
 \n#if TEX_COUNT > 5\n
-in vec2 TEXCOORD5;
+in  vec2   TEXCOORD5;
+out vec2  vTEXCOORD5;
 \n#endif\n
 
 out vec3 vPosition;
 out vec3 vNormal;
 out vec3 vEye;
-
-\n#if TEX_COUNT > 0\n
-out vec2 vTexCoord[TEX_COUNT];
-\n#endif\n
 
 void main() {
   vec4 pos4 = vec4(POSITION, 1.0);
@@ -59,22 +61,22 @@ void main() {
   gl_Position = MVP * pos4;
 
 \n#if TEX_COUNT > 0\n
-  vTexCoord[0] = TEXCOORD;
+  vTEXCOORD  = TEXCOORD;
 \n#endif\n
 \n#if TEX_COUNT > 1\n
-  vTexCoord[1] = TEXCOORD1;
+  vTEXCOORD1 = TEXCOORD1;
 \n#endif\n
 \n#if TEX_COUNT > 2\n
-  vTexCoord[2] = TEXCOORD2;
+  vTEXCOORD2 = TEXCOORD2;
 \n#endif\n
 \n#if TEX_COUNT > 3\n
-  vTexCoord[3] = TEXCOORD3;
+  vTEXCOORD3 = TEXCOORD3;
 \n#endif\n
 \n#if TEX_COUNT > 4\n
-  vTexCoord[4] = TEXCOORD4;
+  vTEXCOORD4 = TEXCOORD4;
 \n#endif\n
 \n#if TEX_COUNT > 5\n
-  vTexCoord[5] = TEXCOORD5;
+  vTEXCOORD5 = TEXCOORD5;
 \n#endif\n
 }
 )
