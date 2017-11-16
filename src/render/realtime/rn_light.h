@@ -11,6 +11,11 @@
 #include "../../../include/gk/gk.h"
 
 void
+gkRenderPrimForLight(GkScene     * __restrict scene,
+                     GkPrimitive * __restrict prim,
+                     GkProgram   * __restrict prog);
+
+void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
                      GkPrimitive * __restrict prim,
                      GkProgram   * __restrict prog);

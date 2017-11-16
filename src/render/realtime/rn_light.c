@@ -16,12 +16,47 @@
 #include "rn_pass.h"
 #include "rn_prim.h"
 
+
+void
+gkRenderPrimForLight(GkScene     * __restrict scene,
+                     GkPrimitive * __restrict prim,
+                     GkProgram   * __restrict prog) {
+  GkLight *light;
+
+  light = scene->_priv.forLight;
+  if (light != prog->lastLight) {
+    if (light->node) {
+      GkNode           *node;
+      GkFinalTransform *ftr;
+
+      node = light->node;
+      ftr  = node->trans->ftr;
+
+      gkUniformSingleLight(scene,
+                           light,
+                           prog,
+                           ftr->mv);
+    } else {
+      gkUniformSingleLight(scene,
+                           light,
+                           prog,
+                           GLM_MAT4_IDENTITY);
+    }
+
+    gkUniform1ui(prog, "lightType", light->type);
+    prog->lastLight = light;
+  }
+
+
+  gkRenderPrim(scene, prim);
+}
+
 void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
                      GkPrimitive * __restrict prim,
                      GkProgram   * __restrict prog) {
   GkLight *firstLight, *light;
-  
+
   light = (GkLight *)scene->lights;
   if (!light) {
     light             = gk_def_lights();

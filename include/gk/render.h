@@ -48,6 +48,14 @@ gkRenderNode(GkScene     *scene,
 void
 gkRenderScene(GkScene * scene);
 
+GK_EXPORT
+void
+gkScenePerLightRenderPath(GkScene * __restrict scene);
+
+GK_EXPORT
+void
+gkModelPerLightRenderPath(GkScene * __restrict scene);
+
 #ifdef __cplusplus
 }
 #endif

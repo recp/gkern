@@ -12,6 +12,7 @@ extern "C" {
 #endif
 
 #include "common.h"
+#include "renderpath.h"
 
 struct GkPassOut;
 struct FListItem;
@@ -40,14 +41,22 @@ typedef enum GkSceneFlags {
                           | GK_SCENEF_UPDT_PROJ
                           | GK_SCENEF_UPDT_LIGHTS,
   GK_SCENEF_INIT          = GK_SCENEF_NEEDS_RENDER,
+  GK_SCENEF_TRANSP        = 1 << 8,
+  GK_SCENEF_SHADOWS       = 1 << 9,
+  GK_SCENEF_PREPARED      = 1 << 10
 } GkSceneFlags;
 
 GK_MAKE_C_ENUM(GkSceneFlags)
 
 typedef struct GkScenePrivateFields {
-  struct GkContext *ctx;
+  struct GkContext  *ctx;
+  struct FListItem  *transpPrims;
+  struct GkLight    *forLight;
+  void              *shadows;
   struct GkPass     *overridePass;     /* override all passes    */
   struct GkMaterial *overrideMaterial; /* override all materials */
+  GkRenderPathFn     rp;
+  GkRenderPathType   rpath;
 } GkScenePrivateFields;
 
 typedef struct GkScene {
@@ -69,7 +78,7 @@ typedef struct GkScene {
   float             backingScale;
   float             fpsApprx;
 } GkScene;
-
+  
 #ifdef __cplusplus
 }
 #endif

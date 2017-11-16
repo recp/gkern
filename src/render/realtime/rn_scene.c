@@ -10,11 +10,12 @@
 #include "../../../include/gk/prims/cube.h"
 #include "../../../include/gk/time.h"
 #include "../../../include/gk/pass.h"
+#include "../../default/def_light.h"
+#include "../../../include/gk/gpu_state.h"
 
 void
 gkRenderScene(GkScene * scene) {
-  GkTransform *trans;
-  double       start, end;
+  double start, end;
 
   start = gkGetTime();
 
@@ -24,43 +25,35 @@ gkRenderScene(GkScene * scene) {
       || scene->flags & GK_SCENEF_RENDERING)
   return;
 
-#ifdef DEBUG
-  assert(scene->pinfo && "set default program / shader params");
-#else
-  /* there is no program! */
-  if (!scene->pinfo)
-    return;
-#endif
-
   scene->flags &= ~GK_SCENEF_RENDERED;
   scene->flags |= GK_SCENEF_RENDERING;
 
-  if (!scene->finalOutput)
-    scene->finalOutput = gkDefaultRenderOut();
+  if (!GK_FLG(scene->flags, GK_SCENEF_PREPARED)) {
+    if (!scene->finalOutput)
+      scene->finalOutput = gkDefaultRenderOut();
+    
+    if (!scene->trans)
+      scene->trans = gk_def_idmat();
+    
+    if (!scene->_priv.rp) {
+      scene->_priv.rp    = gkModelPerLightRenderPath;
+      scene->_priv.rpath = GK_RNPATH_MODEL_PERLIGHT;
+    }
+    
+    scene->flags |= GK_SCENEF_PREPARED;
+  }
 
-  gkBindPassOut(scene->finalOutput);
-
+  gkBindPassOut(scene, scene->finalOutput);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if (scene->trans)
-    trans = scene->trans;
-  else
-    trans = gk_def_idmat();
+  /* for collect all lights once */
+  gkPrepNode(scene, scene->rootNode, scene->trans);
 
-  /* for collect all lights once 
-     TODO: optimize it
-   */
-  gkPrepNode(scene,
-             scene->rootNode,
-             trans);
+  scene->trans->flags |= GK_TRANSF_WORLD_ISVALID;
+  scene->flags        &= ~GK_SCENEF_UPDT_VIEWPROJ;
 
-  trans->flags |= GK_TRANSF_WORLD_ISVALID;
-  scene->flags &= ~(GK_SCENEF_UPDT_VIEWPROJ);
-
-  gkRenderNode(scene,
-               scene->rootNode,
-               trans);
-
+  scene->_priv.rp(scene);
+  
   if ((scene->flags & GK_SCENEF_DRAW_BBOX)
       && scene->bbox)
     gkDrawBBox(scene,
@@ -76,4 +69,44 @@ gkRenderScene(GkScene * scene) {
   end = gkGetTime();
 
   scene->fpsApprx = 1.0 / (end - start);
+}
+
+GK_EXPORT
+void
+gkScenePerLightRenderPath(GkScene * __restrict scene) {
+  GkLight     *light, *firstLight;
+  GkTransform *trans;
+  GkNode      *rootNode;
+  
+  /* default sun light */
+  if (!(light = (GkLight *)scene->lights)) {
+    light             = gk_def_lights();
+    light->isvalid    = false;
+    scene->lightCount = 1;
+    scene->lights     = (GkLightRef *)light;
+  }
+
+  trans      = scene->trans;
+  rootNode   = scene->rootNode;
+  firstLight = light;
+  
+  do {
+    scene->_priv.forLight = light;
+
+    if (light != firstLight) {
+      glDepthFunc(GL_EQUAL);
+      glEnable(GL_BLEND);
+      glBlendEquation(GL_FUNC_ADD);
+      glBlendFunc(GL_ONE, GL_ONE);
+    }
+
+
+    gkRenderNode(scene, rootNode, trans);
+  } while ((light = (GkLight *)light->ref.next));
+}
+
+GK_EXPORT
+void
+gkModelPerLightRenderPath(GkScene * __restrict scene) {
+  gkRenderNode(scene, scene->rootNode, scene->trans);
 }
