@@ -16,7 +16,13 @@ extern "C" {
 struct GkPassOut;
 struct FListItem;
 struct GkScene;
+struct GkLight;
 struct GkContext;
+struct GkMaterial;
+
+typedef void (*GkRenderModelFn)(GkScene    *scene,
+                                GkModelInst *modelInst,
+                                GkTransform *ptr);
 
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE          = 0,
@@ -53,6 +59,7 @@ typedef struct GkScene {
   GkLightRef       *lights;
   GkBBox           *bbox;
   struct GkPassOut *finalOutput; /* set NULL for default FBO (screen) */
+  GkRenderModelFn   renderModelFn;
   GkRect            vrect;
   uint32_t          lightCount;
   uint32_t          lastLightIndex;

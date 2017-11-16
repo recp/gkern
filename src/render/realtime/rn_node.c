@@ -20,22 +20,19 @@ gkRenderNode(GkScene     *scene,
       GkModelInst *modelInst;
       modelInst = node->model;
       do {
-        gkRenderModel(scene,
-                      modelInst,
-                      tr);
+        if (!scene->renderModelFn)
+          gkRenderModel(scene, modelInst, tr);
+        else
+          scene->renderModelFn(scene, modelInst, tr);
         modelInst = modelInst->next;
       } while (modelInst);
     }
 
     if (node->chld)
-      gkRenderNode(scene,
-                   node->chld,
-                   tr);
+      gkRenderNode(scene, node->chld, tr);
 
     if (node->nodeInst)
-      gkRenderNode(scene,
-                   node->nodeInst,
-                   tr);
+      gkRenderNode(scene, node->nodeInst, tr);
 
     node = node->next;
   }
@@ -61,9 +58,7 @@ gkPrepNode(GkScene     *scene,
       if (!GK_FLG(tr->flags, GK_TRANSF_LOCAL_ISVALID))
         gkTransformCombine(tr);
 
-      glm_mat4_mul(ptr->world,
-                   tr->local,
-                   tr->world);
+      glm_mat4_mul(ptr->world, tr->local, tr->world);
       tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
     }
 
@@ -78,9 +73,7 @@ gkPrepNode(GkScene     *scene,
       GkModelInst *modelInst;
       modelInst = node->model;
       do {
-        gkPrepModel(scene,
-                    modelInst,
-                    tr);
+        gkPrepModel(scene, modelInst, tr);
         modelInst = modelInst->next;
       } while (modelInst);
     }
