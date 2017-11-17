@@ -79,6 +79,11 @@ typedef struct GkScene {
   float             fpsApprx;
 } GkScene;
   
+GK_INLINE
+GkContext*
+gkContextOf(GkScene * __restrict scene) {
+  return scene->_priv.ctx;
+}
 #ifdef __cplusplus
 }
 #endif
