@@ -51,6 +51,10 @@ GkPassOut*
 gkDefaultRenderOut(void);
 
 GK_EXPORT
+GkPassOut*
+gkCurrentOutput(struct GkContext * __restrict ctx);
+
+GK_EXPORT
 GkPass*
 gkGetOrCreatPass(struct GkScene     *scene,
                  struct GkPrimitive *prim,

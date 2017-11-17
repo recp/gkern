@@ -22,13 +22,24 @@ gkAllocPassOut(void) {
 }
 
 GK_EXPORT
+GkPassOut*
+gkCurrentOutput(GkContext * __restrict ctx) {
+  GkPassOut *output;
+  
+  if ((output = ctx->currState->outputState.renderOutput))
+    return output;
+  
+  return gkDefaultRenderOut();
+}
+
+GK_EXPORT
 void
 gkBindPassOut(GkScene   *scene,
               GkPassOut *pout) {
   GkRenderOutState *state;
   GkContext        *ctx;
 
-  ctx   = scene->_priv.ctx;
+  ctx   = gkContextOf(scene);
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_RENDER_OUT);
   if (ctx->currState->outputState.renderOutput == pout)
     return;
@@ -44,12 +55,12 @@ void
 gkBindDefaultPassOut(GkScene *scene) {
   GkRenderOutState *state;
   GkContext        *ctx;
-  
-  ctx   = scene->_priv.ctx;
+
+  ctx   = gkContextOf(scene);
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_RENDER_OUT);
   if (ctx->currState->outputState.renderOutput == NULL)
     return;
-  
+
   state->renderOutput = NULL;
   gkStateMakeCurrent(ctx, &state->base);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -85,19 +96,21 @@ GK_EXPORT
 void
 gkPassEnableDepthTex(GkScene *scene,
                      GkPass  *pass) {
-  GkPassOut *pout;
-  
+  GkPassOut *pout, *currentOutput;
+
   if (!(pout = pass->output))
     pass->output = pout = gkAllocPassOut();
-  
+
   if (pout->depth != 0)
     return;
-  
-  gkBindPassOut(scene, pout);
-  
+
+  currentOutput = gkCurrentOutput(gkContextOf(scene));
+  if (currentOutput != pout)
+    gkBindPassOut(scene, pout);
+
   glGenTextures(1, &pout->depth);
   glBindTexture(GL_TEXTURE_2D, pout->depth);
-  
+
   glTexImage2D(GL_TEXTURE_2D,
                0,
                GL_DEPTH_COMPONENT,
@@ -107,19 +120,20 @@ gkPassEnableDepthTex(GkScene *scene,
                GL_DEPTH_COMPONENT,
                GL_FLOAT,
                0);
-  
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-  
+
   glFramebufferTexture2D(GL_FRAMEBUFFER,
                          GL_DEPTH_ATTACHMENT,
                          GL_TEXTURE_2D,
                          pout->depth,
                          0);
-  
-   gkBindDefaultPassOut(scene);
+
+  if (currentOutput != pout)
+    gkBindPassOut(scene, currentOutput);
 }
 
 GK_EXPORT
@@ -172,7 +186,7 @@ gkBindDepthTexTo(GkScene    *scene,
   /* then bind it to texture unit */
   glActiveTexture(GL_TEXTURE0 + texUnit);
   glBindTexture(GL_TEXTURE_2D, pass->output->depth);
-  
+
   /* uniform texture unit to program */
   gkUniform1i(prog, uniformName, texUnit);
 }
@@ -209,7 +223,7 @@ gkAddRenderTargetRBEx(GkScene *scene,
                       GLsizei  width,
                       GLsizei  height) {
   GkPassOutColor *poc, *last_poc;
-  GkPassOut      *pout;
+  GkPassOut      *pout, *currentOutput;
   GLenum         *drawBuffs;
   int32_t         i;
 
@@ -231,7 +245,9 @@ gkAddRenderTargetRBEx(GkScene *scene,
   last_poc = pout->color;
   poc = calloc(sizeof(*poc), 1);
 
-  gkBindPassOut(scene, pout);
+  currentOutput = gkCurrentOutput(gkContextOf(scene));
+  if (currentOutput != pout)
+    gkBindPassOut(scene, pout);
 
   glGenRenderbuffers(1, &poc->buffId);
   glBindRenderbuffer(GL_RENDERBUFFER, poc->buffId);
@@ -268,8 +284,9 @@ gkAddRenderTargetRBEx(GkScene *scene,
   } else {
     pout->color = poc;
   }
-  
-  gkBindDefaultPassOut(scene);
+
+  if (currentOutput != pout)
+    gkBindPassOut(scene, currentOutput);
 
   return pout->colorCount - 1;
 }
@@ -284,7 +301,7 @@ gkAddRenderTargetEx(GkScene *scene,
                     GLsizei  height,
                     GLenum   type) {
   GkPassOutColor *poc, *last_poc;
-  GkPassOut      *pout;
+  GkPassOut      *pout, *currentOutput;
   GLenum         *drawBuffs;
   int32_t         i;
 
@@ -306,7 +323,9 @@ gkAddRenderTargetEx(GkScene *scene,
   last_poc = pout->color;
   poc = calloc(sizeof(*poc), 1);
 
-  gkBindPassOut(scene, pout);
+  currentOutput = gkCurrentOutput(gkContextOf(scene));
+  if (currentOutput != pout)
+    gkBindPassOut(scene, pout);
 
   glGenTextures(1, &poc->buffId);
   glBindTexture(GL_TEXTURE_2D, poc->buffId);
@@ -353,7 +372,8 @@ gkAddRenderTargetEx(GkScene *scene,
     pout->color = poc;
   }
 
-  gkBindDefaultPassOut(scene);
+  if (currentOutput != pout)
+    gkBindPassOut(scene, currentOutput);
 
   return pout->colorCount - 1;
 }
