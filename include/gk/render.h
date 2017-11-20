@@ -13,8 +13,6 @@ extern "C" {
 
 #include "common.h"
 
-void
-gkUniformMatrix(GkModelInst *modelInst);
 
 void
 gkPrepMaterial(GkScene     *scene,
