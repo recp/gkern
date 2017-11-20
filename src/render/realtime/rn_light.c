@@ -25,28 +25,9 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
   GkLight *light;
 
   light = scene->_priv.forLight;
-  if (light != prog->lastLight) {
-    if (light->node) {
-      GkNode           *node;
-      GkFinalTransform *ftr;
+  if (light != prog->lastLight)
+    gkUniformSingleLight(scene, light, prog);
 
-      node = light->node;
-      ftr  = node->trans->ftr;
-
-      gkUniformSingleLight(scene,
-                           light,
-                           prog,
-                           ftr->mv);
-    } else {
-      gkUniformSingleLight(scene,
-                           light,
-                           prog,
-                           GLM_MAT4_IDENTITY);
-    }
-
-    gkUniform1ui(prog, "lightType", light->type);
-    prog->lastLight = light;
-  }
 
 
   gkRenderPrim(scene, prim);
@@ -75,28 +56,8 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
       glBlendFunc(GL_ONE, GL_ONE);
     }
 
-    if (light != prog->lastLight) {
-      if (light->node) {
-        GkNode           *node;
-        GkFinalTransform *ftr;
-
-        node = light->node;
-        ftr  = node->trans->ftr;
-
-        gkUniformSingleLight(scene,
-                             light,
-                             prog,
-                             ftr->mv);
-      } else {
-        gkUniformSingleLight(scene,
-                             light,
-                             prog,
-                             GLM_MAT4_IDENTITY);
-      }
-
-      gkUniform1ui(prog, "lightType", light->type);
-      prog->lastLight = light;
-    }
+    if (light != prog->lastLight)
+      gkUniformSingleLight(scene, light, prog);
 
     gkRenderPrim(scene, prim);
 
@@ -132,28 +93,8 @@ gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
-    if (light != prog->lastLight) {
-      if (light->node) {
-        GkNode           *node;
-        GkFinalTransform *ftr;
-
-        node = light->node;
-        ftr  = node->trans->ftr;
-
-        gkUniformSingleLight(scene,
-                             light,
-                             prog,
-                             ftr->mv);
-      } else {
-        gkUniformSingleLight(scene,
-                             light,
-                             prog,
-                             GLM_MAT4_IDENTITY);
-      }
-
-      gkUniform1ui(prog, "lightType", light->type);
-      prog->lastLight = light;
-    }
+    if (light != prog->lastLight)
+      gkUniformSingleLight(scene, light, prog);
 
     gkRenderPrim(scene, prim);
 

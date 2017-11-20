@@ -15,11 +15,22 @@
 void
 gkUniformSingleLight(struct GkScene * __restrict scene,
                      GkLight        * __restrict light,
-                     GkProgram      * __restrict prog,
-                     mat4                        transView) {
+                     GkProgram      * __restrict prog) {
+  vec4 *transView;
   vec4  dir;
   char  buf[32];
   GLint loc;
+  
+  transView = NULL;
+  if (light->node) {
+    GkNode           *node;
+    GkFinalTransform *ftr;
+    
+    node = light->node;
+    ftr  = gkFinalTransform(node->trans, scene->camera);
+    
+    transView = ftr->mv;
+  }
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "light.");
@@ -80,14 +91,19 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
 
   loc = gkUniformLocBuff(prog, "position", buf);
 
-  /* position must be in view space */
-  glUniform3fv(loc, 1, transView[3]);
-
   /* light/cone direction */
-  glm_vec_rotate_m4(transView,
-                    light->direction,
-                    dir);
+  if (transView) {
+    /* position must be in view space */
+    glUniform3fv(loc, 1, transView[3]);
+    glm_vec_rotate_m4(transView, light->direction, dir);
+  } else {
+    /* position must be in view space */
+    glUniform3fv(loc, 1, (vec3){0.0f, 0.0f, 0.0f});
+  }
 
   loc = gkUniformLocBuff(prog, "direction", buf);
   glUniform3fv(loc, 1, dir);
+  
+  gkUniform1ui(prog, "lightType", light->type);
+  prog->lastLight = light;
 }

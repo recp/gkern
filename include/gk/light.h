@@ -83,8 +83,7 @@ gkUniformLight(struct GkScene   * __restrict scene,
 void
 gkUniformSingleLight(struct GkScene   * __restrict scene,
                      GkLight          * __restrict light,
-                     struct GkProgram * __restrict prog,
-                     mat4                          transView);
+                     struct GkProgram * __restrict prog);
 
 
 struct GkTransform*
