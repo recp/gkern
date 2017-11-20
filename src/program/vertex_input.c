@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../common.h"
 #include "vertex_input.h"
 #include "../../include/gk/program.h"
 #include "../../include/gk/vertex.h"

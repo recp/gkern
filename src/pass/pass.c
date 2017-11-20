@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../common.h"
 #include "../../include/gk/model.h"
 #include "../../include/gk/pass.h"
 #include "../../include/gk/shader.h"

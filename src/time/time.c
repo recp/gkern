@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../common.h"
 #include "time.h"
 #include "../common.h"
 #include "../../include/gk/gk.h"

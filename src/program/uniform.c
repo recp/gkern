@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../common.h"
 #include "uniform.h"
 #include "uniform_cache.h"
 

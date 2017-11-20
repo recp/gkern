@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../common.h"
 #include "../../include/gk/prims/cube.h"
 #include "../default/def_prog.h"
 #include <limits.h>

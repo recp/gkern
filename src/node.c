@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "common.h"
 #include "../include/gk/node.h"
 
 void

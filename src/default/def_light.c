@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../common.h"
 #include "def_light.h"
 #include "../../include/gk/material.h"
 #include <stdbool.h>

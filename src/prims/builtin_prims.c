@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../common.h"
 #include "../../include/gk/prims/builtin-prim.h"
 #include "../../include/gk/gk.h"
 #include <limits.h>

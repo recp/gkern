@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../common.h"
 #include "tball.h"
 #include "tball_mouse.h"
 #include "../../include/gk/transform.h"

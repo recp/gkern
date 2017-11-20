@@ -5,6 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "common.h"
 #include "../include/gk/gk.h"
 #include "gpu_state/default.h"
 
@@ -21,10 +22,10 @@ gkContextNew(GkProgram * __restrict prog) {
     ctx->prog = gkDefaultProgram();
   else
     ctx->prog = prog;
-  
+
   ctx->states   = flist_new(NULL);
   ctx->samplers = flist_new(NULL);
-  
+
   gkSetDefaultState(ctx);
 
   return ctx;
