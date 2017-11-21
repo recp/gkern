@@ -7,6 +7,9 @@
 
 #ifndef gk_camera_h
 #define gk_camera_h
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "common.h"
 #include <cglm/cglm.h>
@@ -19,6 +22,8 @@ typedef enum GkCameraFlags {
   GK_UPDT_PROJ     = 1 << 2,
   GK_UPDT_VIEWPROJ = GK_UPDT_VIEW | GK_UPDT_PROJ
 } GkCameraFlags;
+
+GK_MAKE_C_ENUM(GkCameraFlags)
 
 typedef struct GkCamera {
   mat4           proj;
@@ -66,4 +71,7 @@ gkZoomInOneUnit(struct GkScene * __restrict scene);
 void
 gkZoomOutOneUnit(struct GkScene * __restrict scene);
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* gk_camera_h */

@@ -22,7 +22,8 @@ gkRenderScene(GkScene * scene) {
 
   if (!scene
       || ((scene->flags & GK_SCENEF_ONCE)
-          && !(scene->flags & GK_SCENEF_NEEDS_RENDER))
+          && !(scene->flags & GK_SCENEF_NEEDS_RENDER)
+          && !(scene->camera->flags & GK_UPDT_VIEWPROJ))
       || scene->flags & GK_SCENEF_RENDERING)
   return;
 
@@ -50,8 +51,8 @@ gkRenderScene(GkScene * scene) {
   /* for collect all lights once */
   gkPrepNode(scene, scene->rootNode, scene->trans);
 
-  scene->trans->flags |= GK_TRANSF_WORLD_ISVALID;
-  scene->flags        &= ~GK_SCENEF_UPDT_VIEWPROJ;
+  scene->trans->flags  |= GK_TRANSF_WORLD_ISVALID;
+  scene->camera->flags &= ~GK_UPDT_VIEWPROJ;
 
   scene->_priv.rp(scene);
 
