@@ -6,10 +6,20 @@
  */
 
 #include "common.h"
+#include "types/impl_camera.h"
 #include "../include/gk/gk.h"
 #include "../include/gk/camera.h"
 #include <stdlib.h>
 #include <string.h>
+
+GK_EXPORT
+GkCamera*
+gkAllocCamera() {
+  GkCameraImpl *camImpl;
+  camImpl             = calloc(sizeof(*camImpl), 1);
+  camImpl->transfSlot = (1 << 31);
+  return &camImpl->pub;
+}
 
 void
 gkSetCamera(struct GkScene * __restrict scene,
@@ -45,7 +55,7 @@ GkCamera*
 gkMakeCamera(mat4 proj, mat4 view) {
   GkCamera *cam;
 
-  cam = calloc(sizeof(*cam), 1);
+  cam = gkAllocCamera();
 
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->view);
@@ -62,7 +72,7 @@ GkCamera*
 gkMakeCameraByWorld(mat4 proj, mat4 view) {
   GkCamera *cam;
 
-  cam = calloc(sizeof(*cam), 1);
+  cam = gkAllocCamera();
 
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->world);
@@ -113,7 +123,7 @@ gkZoom(GkScene * __restrict scene,
   glm_vec_normalize_to(cam->world[2], dir);
   glm_vec_scale(dir, -distance, dir);
   glm_vec_add(cam->world[3], dir, cam->world[3]);
-  
+
   gkUpdateCameraView(cam);
 
   scene->flags |= GK_SCENEF_UPDT_VIEW | GK_SCENEF_RENDER;

@@ -90,9 +90,9 @@ struct GkTransform*
 gkLightTransform(GkLight *light);
 
 void
-gkLightPos(GkLight *light, vec3 position);
+gkLightPos(struct GkScene *scene, GkLight *light, vec3 position);
 
 void
-gkLightDir(GkLight *light, vec3 dir);
+gkLightDir(struct GkScene *scene, GkLight *light, vec3 dir);
 
 #endif /* gk_light_h */

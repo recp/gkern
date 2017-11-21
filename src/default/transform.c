@@ -7,18 +7,21 @@
 
 #include "../common.h"
 #include "transform.h"
+#include "../types/impl_transform.h"
 
-GkTransform gkdef_idmat = {
-  1,
-  GK_TRANSF_LOCAL_ISVALID,
-  NULL,
-  NULL,
-  GLM_MAT4_IDENTITY_INIT,
-  GLM_MAT4_IDENTITY_INIT
+GkTransformImpl gkdef_idmat = {
+  .pub = {
+    GLM_MAT4_IDENTITY_INIT,
+    GLM_MAT4_IDENTITY_INIT,
+    GK_TRANSF_LOCAL_ISVALID,
+    NULL
+  },
+  0,
+  0,
+  NULL
 };
-
 
 GkTransform *
 gk_def_idmat() {
-  return &gkdef_idmat;
+  return &gkdef_idmat.pub;
 }

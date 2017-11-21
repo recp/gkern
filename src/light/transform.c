@@ -8,7 +8,6 @@
 #include "../common.h"
 #include "../../include/gk/gk.h"
 #include "../../include/gk/light.h"
-#include "matrix.h"
 #include <string.h>
 
 GkTransform*
@@ -20,7 +19,7 @@ gkLightTransform(GkLight * __restrict light) {
 }
 
 void
-gkLightPos(GkLight *light, vec3 position) {
+gkLightPos(GkScene *scene, GkLight *light, vec3 position) {
   GkTransform *trans;
   if ((trans = gkLightTransform(light))) {
     glm_vec_copy(trans->world[3], position);
@@ -31,12 +30,23 @@ gkLightPos(GkLight *light, vec3 position) {
 }
 
 void
-gkLightDir(GkLight *light, vec3 dir) {
+gkLightDir(GkScene *scene, GkLight *light, vec3 dir) {
   GkTransform *trans;
   if ((trans = gkLightTransform(light))) {
-    glm_vec_rotate_m4(trans->ftr->mv, light->direction, dir);
+    GkFinalTransform *ftr;
+    GkCamera         *cam;
+
+    cam = scene->camera;
+    if ((ftr = gkFinalTransform(trans, cam))) {
+      glm_vec_rotate_m4(ftr->mv, light->direction, dir);
+    } else {
+      mat4 mv;
+      glm_mul(cam->view, trans->world, mv);
+      glm_vec_rotate_m4(mv, light->direction, dir);
+    }
+
     return;
   }
-  
+
   glm_vec_copy(light->direction, dir);
 }

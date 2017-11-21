@@ -20,6 +20,8 @@ extern "C" {
 #include <stdlib.h>
 #include <cglm/cglm.h>
 
+struct GkScene;
+
 typedef struct GkNode {
   GkNodeFlags    flags;
   GkTransform   *trans;    /* transform */
@@ -32,7 +34,8 @@ typedef struct GkNode {
 } GkNode;
 
 void
-gkMakeNodeTransform(GkNode * __restrict node);
+gkMakeNodeTransform(struct GkScene * __restrict scene,
+                    GkNode         * __restrict node);
 
 #ifdef __cplusplus
 }

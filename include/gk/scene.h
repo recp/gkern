@@ -20,10 +20,15 @@ struct GkScene;
 struct GkLight;
 struct GkContext;
 struct GkMaterial;
+struct GkModelInst;
+struct GkNode;
+struct GkProgram;
+struct GkLightRef;
+struct GkBBox;
 
-typedef void (*GkRenderModelFn)(struct GkScene *scene,
-                                GkModelInst    *modelInst,
-                                GkTransform    *ptr);
+typedef void (*GkRenderModelFn)(struct GkScene     *scene,
+                                struct GkModelInst *modelInst,
+                                struct GkTransform *ptr);
 
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE          = 0,
@@ -55,35 +60,47 @@ typedef struct GkScenePrivateFields {
   void              *shadows;
   struct GkPass     *overridePass;     /* override all passes    */
   struct GkMaterial *overrideMaterial; /* override all materials */
+  struct FList      *transfCacheSlots;
   GkRenderPathFn     rp;
   GkRenderPathType   rpath;
 } GkScenePrivateFields;
 
 typedef struct GkScene {
   GkScenePrivateFields _priv;
-  GkCamera         *camera;
-  GkTransform      *trans;  /* free camera */
-  GkNode           *rootNode;
-  GkProgram        *prog;
-  GkLightRef       *lights;
-  GkBBox           *bbox;
-  struct GkPassOut *finalOutput; /* set NULL for default FBO (screen) */
-  GkRenderModelFn   renderModelFn;
-  GkRect            vrect;
-  uint32_t          lightCount;
-  uint32_t          lastLightIndex;
-  GLenum            usage;
-  GkSceneFlags      flags;
-  GLenum            internalFormat;
-  float             backingScale;
-  float             fpsApprx;
+  GkCamera          *camera;
+  GkTransform       *trans;  /* free camera */
+  struct GkNode     *rootNode;
+  struct GkProgram  *prog;
+  struct GkLightRef *lights;
+  struct GkBBox     *bbox;
+  struct GkPassOut  *finalOutput; /* set NULL for default FBO (screen) */
+  GkRenderModelFn    renderModelFn;
+  GkRect             vrect;
+  uint32_t           lightCount;
+  uint32_t           lastLightIndex;
+  int32_t            usage;
+  GkSceneFlags       flags;
+  int32_t            internalFormat;
+  float              backingScale;
+  float              fpsApprx;
 } GkScene;
   
 GK_INLINE
-GkContext*
+struct GkContext*
 gkContextOf(GkScene * __restrict scene) {
   return scene->_priv.ctx;
 }
+
+GK_EXPORT
+void
+gkCacheTransformsFor(GkScene  * __restrict scene,
+                     GkCamera * __restrict cam);
+
+GK_EXPORT
+void
+gkRemoveTransformCacheFor(GkScene  * __restrict scene,
+                          GkCamera * __restrict cam);
+
 #ifdef __cplusplus
 }
 #endif

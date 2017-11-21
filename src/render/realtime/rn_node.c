@@ -7,7 +7,7 @@
 
 #include "../../common.h"
 #include "../../../include/gk/gk.h"
-#include "../../matrix.h"
+#include "../../types/impl_transform.h"
 
 void
 gkRenderNode(GkScene     *scene,
@@ -47,9 +47,7 @@ gkPrepNode(GkScene     *scene,
     GkTransform *tr;
     uint32_t     updt;
 
-    tr = node->trans;
-
-    if (!tr)
+    if (!(tr = node->trans))
       node->trans = tr = ptr;
 
     updt = !((ptr->flags & tr->flags) & GK_TRANSF_WORLD_ISVALID);
@@ -67,7 +65,7 @@ gkPrepNode(GkScene     *scene,
         && (!(GK_FLG(tr->flags, GK_TRANSF_WORLD_ISVALID))
             || !(GK_FLG(tr->flags, GK_TRANSF_FMAT_MV))
             || GK_FLG(scene->flags, GK_SCENEF_UPDT_VIEW))) {
-      gkCalcViewMat(scene, tr);
+      gkCalcViewTransf(scene, scene->camera, tr);
     }
 
     if (node->model) {
@@ -87,7 +85,7 @@ gkPrepNode(GkScene     *scene,
 
     if (updt && tr != ptr)
       tr->flags |= GK_TRANSF_WORLD_ISVALID;
-    
+
     node = node->next;
   }
 }

@@ -38,9 +38,7 @@ gk_tball_attach(GkTrackball * __restrict tball,
 
   trans = scene->trans;
   if (!trans) {
-    trans = malloc(sizeof(*trans));
-    trans->refc   = 1;
-    trans->flags  = GK_TRANSF_NONE;
+    trans = gkAllocTransform(scene);
 
     glm_mat4_copy(GLM_MAT4_IDENTITY, trans->local);
     glm_mat4_copy(GLM_MAT4_IDENTITY, trans->world);

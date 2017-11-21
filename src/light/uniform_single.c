@@ -9,16 +9,16 @@
 #include "../../include/gk/gk.h"
 #include "../default/def_light.h"
 #include "../program/uniform_cache.h"
-#include "matrix.h"
 #include <string.h>
 
 void
 gkUniformSingleLight(struct GkScene * __restrict scene,
                      GkLight        * __restrict light,
                      GkProgram      * __restrict prog) {
-  vec4 *transView;
+  mat4  mv;
   vec4  dir;
   char  buf[32];
+  vec4 *transView;
   GLint loc;
   
   transView = NULL;
@@ -27,9 +27,15 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
     GkFinalTransform *ftr;
     
     node = light->node;
-    ftr  = gkFinalTransform(node->trans, scene->camera);
-    
-    transView = ftr->mv;
+    if ((ftr = gkFinalTransform(node->trans, scene->camera))) {
+      transView = ftr->mv;
+    } else {
+      glm_mul(node->trans->world, scene->camera->view, mv);
+      transView = mv;
+    }
+  } else { /* todo: make sure light always has a node */
+    glm_mat4_copy(GLM_MAT4_IDENTITY, mv);
+    transView = mv;
   }
 
   /* TODO: read uniform structure/names from options */
@@ -91,15 +97,11 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
 
   loc = gkUniformLocBuff(prog, "position", buf);
 
+  /* position must be in view space */
+  glUniform3fv(loc, 1, transView[3]);
+
   /* light/cone direction */
-  if (transView) {
-    /* position must be in view space */
-    glUniform3fv(loc, 1, transView[3]);
-    glm_vec_rotate_m4(transView, light->direction, dir);
-  } else {
-    /* position must be in view space */
-    glUniform3fv(loc, 1, (vec3){0.0f, 0.0f, 0.0f});
-  }
+  glm_vec_rotate_m4(transView, light->direction, dir);
 
   loc = gkUniformLocBuff(prog, "direction", buf);
   glUniform3fv(loc, 1, dir);

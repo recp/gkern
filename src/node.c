@@ -6,20 +6,19 @@
  */
 
 #include "common.h"
+#include "../include/gk/scene.h"
 #include "../include/gk/node.h"
+#include <ds/hash.h>
 
 void
-gkMakeNodeTransform(GkNode * __restrict node) {
+gkMakeNodeTransform(GkScene * __restrict scene,
+                    GkNode  * __restrict node) {
   GkTransform *tr;
 
   if (node->trans)
     return;
 
-  tr           = malloc(sizeof(*tr));
-  tr->flags    = 0;
-  tr->refc     = 1;
-  tr->item     = NULL;
-  tr->ftr      = NULL;
+  tr           = gkAllocTransform(scene);
   node->trans  = tr;
   node->flags |= GK_HAVE_MATRIX;
 }

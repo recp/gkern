@@ -11,7 +11,6 @@
 #include "../../../include/gk/prims/cube.h"
 #include "../../default/def_effect.h"
 #include "../../default/def_light.h"
-#include "../../matrix.h"
 
 #include "rn_light.h"
 #include "rn_pass.h"

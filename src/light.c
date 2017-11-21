@@ -6,10 +6,10 @@
  */
 
 #include "common.h"
+#include "types/impl_transform.h"
 #include "../include/gk/gk.h"
 #include "program/uniform_cache.h"
 #include "default/def_light.h"
-#include "matrix.h"
 #include <string.h>
 
 void
@@ -133,17 +133,11 @@ gkUniformLights(struct GkScene * __restrict scene,
         GkFinalTransform *ftr;
 
         node = light->node;
-        ftr  = node->trans->ftr;
+        ftr  = gkFinalTransform(node->trans, scene->camera);
 
-        gkUniformLight(scene,
-                       light,
-                       prog,
-                       ftr->mv);
+        gkUniformLight(scene, light, prog, ftr->mv);
       } else {
-        gkUniformLight(scene,
-                       light,
-                       prog,
-                       GLM_MAT4_IDENTITY);
+        gkUniformLight(scene, light, prog, GLM_MAT4_IDENTITY);
       }
     }
 

@@ -28,4 +28,6 @@
 
 #define GK__UNUSED(X) (void)X
 
+#include "types/impl_transform.h"
+
 #endif /* gk_src_common_h */

@@ -12,6 +12,10 @@
 #include "geom-types.h"
 #include <cglm/cglm.h>
 
+struct GkScene;
+struct GkProgram;
+struct GkCamera;
+
 typedef enum GkTransformFlags {
   GK_TRANSF_NONE          =  0,
   GK_TRANSF_LOCAL         = (1 << 0),
@@ -39,22 +43,13 @@ typedef struct GkTransformItem {
   GkTransformType         type;
 } GkTransformItem;
 
-typedef struct GkFinalTransform {
-  uint32_t refc;
-  mat4     mvp;  /* model view projection matrix */
-  mat4     mv;   /* model view matrix            */
-  mat4     nm;   /* normal matrix                */
-} GkFinalTransform;
-
 /* some geometries or nodes may not have matrix,
    so they will use parent's one. */
 typedef struct GkTransform {
-  uint32_t          refc;
+  mat4              local;  /* cached local transform as matrix         */
+  mat4              world;  /* cached world transform as matrix         */
   GkTransformFlags  flags;
-  GkTransformItem  *item;   /* individual transforms               */
-  GkFinalTransform *ftr;    /* shader ready transform[s] and infos */
-  mat4              local;  /* cached local transform as matrix    */
-  mat4              world;  /* cached world transform as matrix    */
+  GkTransformItem  *item;   /* individual transforms                    */
 } GkTransform;
 
 /* individual transforms */
@@ -91,14 +86,14 @@ typedef struct GkSkew {
   vec3            aroundAxis;
 } GkSkew;
 
+GK_EXPORT
+GkTransform*
+gkAllocTransform(struct GkScene * __restrict scene);
+
 void
 gkTransformCombine(GkTransform * __restrict trans);
 
 GkPoint
 gk_project2d(GkRect rect, mat4 mvp, vec3 v);
-
-void
-gkUniformTransform(struct GkProgram * __restrict prog,
-                   GkTransform      * __restrict trans);
 
 #endif /* gk_transform_h */

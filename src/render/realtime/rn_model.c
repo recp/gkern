@@ -11,7 +11,6 @@
 #include "../../../include/gk/prims/cube.h"
 #include "../../default/def_effect.h"
 #include "../../default/def_light.h"
-#include "../../matrix.h"
 
 #include "rn_light.h"
 #include "rn_material.h"
@@ -21,30 +20,38 @@ void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
             GkTransform *ptr) {
-  GkTransform *tr;
-  uint32_t     updt;
+  GkTransform  *tr;
+  FListItem    *camItem;
+  GkCameraImpl *camImpl;
+  uint32_t      updt;
 
   if (!(tr = modelInst->trans))
     modelInst->trans = tr = ptr;
 
+  camItem = scene->_priv.transfCacheSlots->first;
+
   updt = !((ptr->flags & tr->flags) & GK_TRANSF_WORLD_ISVALID);
-  if (updt) {
-    if (ptr != tr) {
-      if (!GK_FLG(tr->flags, GK_TRANSF_LOCAL_ISVALID))
-        gkTransformCombine(tr);
+  if (updt && ptr != tr) {
+    if (!GK_FLG(tr->flags, GK_TRANSF_LOCAL_ISVALID))
+      gkTransformCombine(tr);
 
-      glm_mat4_mul(ptr->world, tr->local, tr->world);
-      tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
-    }
+    glm_mat4_mul(ptr->world, tr->local, tr->world);
+    tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
+  }
 
-    gkCalcFinalMat(scene, tr);
-  } else if(scene->flags & GK_SCENEF_UPDT_VIEWPROJ) {
-    gkCalcFinalMat(scene, tr);
+  while (camItem) {
+    camImpl = camItem->data;
+
+    if ((camImpl->transfSlot != (1 << 31)
+        && (updt || camImpl->pub.flags & GK_UPDT_VIEWPROJ)))
+      gkCalcFinalTransf(scene, &camImpl->pub, tr);
+
+    camItem = camItem->next;
   }
 
   if(updt && tr != ptr)
     tr->flags |= GK_TRANSF_WORLD_ISVALID;
-  
+
   if (!modelInst->activeMaterial)
     return;
 
@@ -94,7 +101,7 @@ gkRnModelNoMatOPass(GkScene     *scene,
                     GkTransform *ptr) {
   GkModel     *model;
   GkPrimitive *primi;
-  
+
   model = modelInst->model;
 
   /* render */

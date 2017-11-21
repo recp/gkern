@@ -32,15 +32,15 @@ gkRenderScene(GkScene * scene) {
   if (!GK_FLG(scene->flags, GK_SCENEF_PREPARED)) {
     if (!scene->finalOutput)
       scene->finalOutput = gkDefaultRenderOut();
-    
+
     if (!scene->trans)
       scene->trans = gk_def_idmat();
-    
+
     if (!scene->_priv.rp) {
       scene->_priv.rp    = gkModelPerLightRenderPath;
       scene->_priv.rpath = GK_RNPATH_MODEL_PERLIGHT;
     }
-    
+
     scene->flags |= GK_SCENEF_PREPARED;
   }
 
@@ -54,7 +54,7 @@ gkRenderScene(GkScene * scene) {
   scene->flags        &= ~GK_SCENEF_UPDT_VIEWPROJ;
 
   scene->_priv.rp(scene);
-  
+
   if ((scene->flags & GK_SCENEF_DRAW_BBOX)
       && scene->bbox)
     gkDrawBBox(scene,
@@ -78,7 +78,7 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
   GkLight     *light, *firstLight;
   GkTransform *trans;
   GkNode      *rootNode;
-  
+
   /* default sun light */
   if (!(light = (GkLight *)scene->lights)) {
     light             = gk_def_lights();
@@ -90,7 +90,7 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
   trans      = scene->trans;
   rootNode   = scene->rootNode;
   firstLight = light;
-  
+
   do {
     scene->_priv.forLight = light;
 

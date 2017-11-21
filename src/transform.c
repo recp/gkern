@@ -7,8 +7,80 @@
 
 #include "common.h"
 #include "../include/gk/gk.h"
+#include "../include/gk/scene.h"
 #include "../include/gk/geom-types.h"
-#include "../include/gk/transform.h"
+#include "types/impl_transform.h"
+
+#include <ds/forward-list.h>
+#include <string.h>
+
+GK_EXPORT
+void
+gkCacheTransformsFor(GkScene  * __restrict scene,
+                     GkCamera * __restrict cam) {
+  GkCameraImpl *camImpl;
+  FList        *transfCacheSlots;
+  
+  camImpl             = (GkCameraImpl *)cam;
+  transfCacheSlots    = scene->_priv.transfCacheSlots;
+
+  flist_append(transfCacheSlots, cam);
+  
+  camImpl->transfSlot = flist_indexof(transfCacheSlots, cam);
+}
+
+GK_EXPORT
+void
+gkRemoveTransformCacheFor(GkScene  * __restrict scene,
+                          GkCamera * __restrict cam) {
+  GkCameraImpl *camImpl;
+  FList        *transfCacheSlots;
+
+  camImpl             = (GkCameraImpl *)cam;
+  transfCacheSlots    = scene->_priv.transfCacheSlots;
+  camImpl->transfSlot = (1 << 31);
+
+  flist_remove_by(transfCacheSlots, cam);
+}
+
+GK_EXPORT
+GkTransform*
+gkAllocTransform(GkScene * __restrict scene) {
+  GkTransformImpl *trans;
+  uint32_t         slotCount;
+
+  slotCount = (uint32_t)scene->_priv.transfCacheSlots->count;
+  trans     = calloc(sizeof(*trans), 1);
+  if (slotCount > 0) {
+    trans->ftr  = calloc(sizeof(GkFinalTransform *) * slotCount, 1);
+    trans->ftrc = slotCount;
+  }
+
+  return &trans->pub;
+}
+
+GK_EXPORT
+void
+gkResizeTransform(GkScene         * __restrict scene,
+                  GkTransformImpl * __restrict trans) {
+  uint32_t slotCount;
+
+  slotCount = (uint32_t)scene->_priv.transfCacheSlots->count;
+  if (trans->ftrc == slotCount)
+    return;
+
+  if (slotCount == 0 && trans->ftrc != 0) {
+    free(trans->ftr);
+    return;
+  }
+
+  if (!trans->ftr)
+    trans->ftr = calloc(sizeof(void *) * slotCount, 1);
+  else
+    trans->ftr = realloc(trans->ftr, sizeof(void *) * slotCount);
+
+  trans->ftrc = slotCount;
+}
 
 void
 gkTransformCombine(GkTransform * __restrict trans) {
@@ -79,7 +151,7 @@ gkTransformCombine(GkTransform * __restrict trans) {
           goto ret;
           break;
       }
-      
+
       ti = ti->next;
     } while (ti);
   }
@@ -108,23 +180,109 @@ gk_project2d(GkRect rect, mat4 mvp, vec3 v) {
 
 void
 gkUniformTransform(struct GkProgram * __restrict prog,
-                   GkTransform      * __restrict trans) {
+                   GkTransform      * __restrict trans,
+                   GkCamera         * __restrict cam) {
   GkFinalTransform *ftr;
+  vec4             *pmvp, *pmv, *pnm;
+  mat4              mvp, mv, nm;
   int               usenm;
+  int32_t           hasMVP, hasMV, hasNM;
 
-  ftr = trans->ftr;
+  hasMVP = prog->mvpi > -1;
+  hasMV  = prog->mvi  > -1;
+  hasNM  = prog->nmi  > -1;
+
+  /* no need to uniform transform or invalid program configurations */
+  if (!(hasMVP & hasMV & hasNM))
+    return;
+
+  pmvp = pmv = pnm = NULL;
+  if ((ftr = gkFinalTransform(trans, cam))) {
+    pmvp = ftr->mvp;
+    pmv  = ftr->mv;
+    pnm  = ftr->nm;
+  } else {
+    pmvp = mvp;
+    pmv  = mv;
+    pnm  = nm;
+  }
 
   /* Model View Projection Matrix */
-  gkUniformMat4(prog->mvpi, ftr->mvp);
+  if (hasMVP) {
+    if (!ftr)
+      glm_mul(cam->projView, trans->world, mvp);
+
+    gkUniformMat4(prog->mvpi, pmvp);
+  }
 
   /* Model View Matrix */
-  gkUniformMat4(prog->mvi, ftr->mv);
+  if (hasMV) {
+    if (!ftr)
+      glm_mul(cam->view, trans->world, mv);
+
+    gkUniformMat4(prog->mvi, pmv);
+  }
 
   /* Normal Matrix */
-  usenm = (trans->flags & GK_TRANSF_FMAT_NORMAT) != 0;
+  if (hasNM) {
+    usenm = !(trans->flags & GK_TRANSF_FMAT_NORMAT);
+    if (usenm) {
+      if (!ftr) {
+        glm_mat4_inv(pmv, nm);
+        glm_mat4_transpose(nm);
+      }
 
-  if (usenm)
-    gkUniformMat4(prog->nmi,  ftr->nm);
+      gkUniformMat4(prog->nmi, pnm);
+    }
 
-  glUniform1i(prog->nmui, usenm);
+    glUniform1i(prog->nmui, usenm);
+  }
+}
+
+void
+gkCalcFinalTransf(GkScene     * __restrict scene,
+                  GkCamera    * __restrict cam,
+                  GkTransform * __restrict tr) {
+  GkFinalTransform *ftr;
+  GkCameraImpl     *camImpl;
+
+  camImpl = (GkCameraImpl *)cam;
+  if (camImpl->transfSlot == (1 << 31))
+    return;
+
+  if (!(ftr = gkFinalTransform(tr, cam)))
+    ftr = gkSetFinalTransform(scene, tr, cam);
+
+  glm_mat4_mul(cam->view, tr->world, ftr->mv);
+  glm_mat4_mul(cam->proj, ftr->mv,   ftr->mvp);
+
+  if (glm_uniscaled(tr->world)) {
+    tr->flags &= ~GK_TRANSF_FMAT_NORMAT;
+  } else {
+    tr->flags |= GK_TRANSF_FMAT_NORMAT;
+
+    glm_mat4_inv(ftr->mv, ftr->nm);
+    glm_mat4_transpose(ftr->nm);
+  }
+
+  tr->flags |= (GK_TRANSF_FMAT | GK_TRANSF_FMAT_MV | GK_TRANSF_FMAT_MVP);
+}
+
+void
+gkCalcViewTransf(GkScene     * __restrict scene,
+                 GkCamera    * __restrict cam,
+                 GkTransform * __restrict tr) {
+  GkFinalTransform *ftr;
+  GkCameraImpl     *camImpl;
+
+  camImpl = (GkCameraImpl *)cam;
+  if (camImpl->transfSlot == (1 << 31))
+    return;
+
+  if (!(ftr = gkFinalTransform(tr, cam)))
+    ftr = gkSetFinalTransform(scene, tr, cam);
+
+  glm_mat4_mul(cam->view, tr->world, ftr->mv);
+
+  tr->flags |= (GK_TRANSF_FMAT | GK_TRANSF_FMAT_MV);
 }

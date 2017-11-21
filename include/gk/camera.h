@@ -14,19 +14,24 @@
 struct GkScene;
 
 typedef enum GkCameraFlags {
-  GK_CAMERA_FLAGS_NONE = 0,
-  GK_PROJVIEW_IS_VALID = 1 << 0,
-  GK_VIEW_IS_VALID     = 2 << 0
+  GK_CAMF_NONE     = 0,
+  GK_UPDT_VIEW     = 1 << 0,
+  GK_UPDT_PROJ     = 1 << 2,
+  GK_UPDT_VIEWPROJ = GK_UPDT_VIEW | GK_UPDT_PROJ
 } GkCameraFlags;
 
 typedef struct GkCamera {
-  mat4          proj;
-  mat4          view;
-  mat4          world;
-  mat4          projView;
-  GkCameraFlags flags;
+  mat4           proj;
+  mat4           view;
+  mat4           world;
+  mat4           projView;
+  GkCameraFlags  flags;
   GkTransform   *trans;
 } GkCamera;
+
+GK_EXPORT
+GkCamera*
+gkAllocCamera(void);
 
 GkCamera*
 gkMakeCameraForScene(struct GkScene *scene);
