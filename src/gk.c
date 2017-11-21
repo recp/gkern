@@ -6,23 +6,17 @@
  */
 
 #include "common.h"
-#include "../include/gk/gk.h"
+#include "../include/gk/context.h"
 #include "gpu_state/default.h"
 
 #include <ds/forward-list.h>
 
 GkContext*
-gkContextNew(GkProgram * __restrict prog) {
+gkAllocContext() {
   GkContext *ctx;
 
   ctx = calloc(sizeof(*ctx), 1);
-  ctx->mdltree = rb_newtree_ptr();
-
-  if (!prog)
-    ctx->prog = gkDefaultProgram();
-  else
-    ctx->prog = prog;
-
+  ctx->mdltree  = rb_newtree_ptr();
   ctx->states   = flist_new(NULL);
   ctx->samplers = flist_new(NULL);
 

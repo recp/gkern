@@ -19,13 +19,13 @@ struct FList;
 typedef struct GkContext {
   struct FList       *states;   /* GPU state caches */
   struct RBTree      *mdltree;
-  struct GkProgram   *prog;     /* default program  */
   struct GkGPUStates *currState;
   struct FList       *samplers; /* private          */
 } GkContext;
 
+GK_EXPORT
 GkContext*
-gkContextNew(struct GkProgram * __restrict prog);
+gkAllocContext(void);
 
 void
 gkContextFree(GkContext *ctx);
