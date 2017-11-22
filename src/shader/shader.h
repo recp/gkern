@@ -12,10 +12,14 @@
 #include "../../include/gk/shader.h"
 
 typedef enum GkShaderFlags {
-  GK_SHADER_FLAG_MVP = 1,
-  GK_SHADER_FLAG_MV  = 2,
-  GK_SHADER_FLAG_NM  = 3,
-  GK_SHADER_FLAG_NMU = 4
+  GK_SHADER_FLAG_MVP     = 1,
+  GK_SHADER_FLAG_MV      = 2,
+  GK_SHADER_FLAG_NM      = 3,
+  GK_SHADER_FLAG_NMU     = 4,
+  GK_SHADER_FLAG_BUILTIN = GK_SHADER_FLAG_MVP
+                         | GK_SHADER_FLAG_MV
+                         | GK_SHADER_FLAG_NM
+                         | GK_SHADER_FLAG_NMU
 } GkShaderFlags;
 
 GkProgram*

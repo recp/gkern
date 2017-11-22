@@ -193,7 +193,7 @@ gkUniformTransform(struct GkProgram * __restrict prog,
   hasNM  = prog->nmi  > -1;
 
   /* no need to uniform transform or invalid program configurations */
-  if (!(hasMVP & hasMV & hasNM))
+  if (!(hasMVP | hasMV | hasNM))
     return;
 
   pmvp = pmv = pnm = NULL;

@@ -32,7 +32,8 @@ gkBuiltinProg(GkBuiltinProg progtype) {
                                       GL_VERTEX_SHADER,
                                       GL_FRAGMENT_SHADER
                                     },
-                                    2, 0);
+                                    2,
+                                    GK_SHADER_FLAG_BUILTIN);
     }
     default:
       break;

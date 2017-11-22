@@ -35,9 +35,9 @@ gkRenderPass(GkScene     * __restrict scene,
   
   if (!pass->noMaterials && prog->lastMaterial != material)
     gkUniformMaterial(ctx, prog, material);
- 
-  gkUniformTransform(prog, modelInst->trans);
 
+  gkUniformTransform(prog, modelInst->trans, scene->camera);
+  
   if (!pass->noLights) {
     switch (scene->_priv.rpath) {
       case GK_RNPATH_MODEL_PERLIGHT:

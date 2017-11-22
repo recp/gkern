@@ -107,6 +107,8 @@ gk_creatProgByName(char *name, void *userData) {
   }
 #endif
 
+  prog->mvpi = prog->mvi = prog->nmi = prog->nmui = -1;
+
   if (GK_FLG(flags, GK_SHADER_FLAG_MVP))
     prog->mvpi = glGetUniformLocation(progId, "MVP");
   if (GK_FLG(flags, GK_SHADER_FLAG_MV))
