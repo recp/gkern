@@ -11,10 +11,12 @@
 #include "../../../include/gk/prims/cube.h"
 #include "../../default/def_effect.h"
 #include "../../default/def_light.h"
+#include "../../gpu_state/common.h"
 
 #include "rn_light.h"
 #include "rn_material.h"
 #include "rn_pass.h"
+#include "rn_prim.h"
 
 void
 gkPrepModel(GkScene     *scene,
@@ -99,20 +101,31 @@ void
 gkRnModelNoMatOPass(GkScene     *scene,
                     GkModelInst *modelInst,
                     GkTransform *ptr) {
+  GkContext   *ctx;
   GkModel     *model;
   GkPrimitive *primi;
+  GkProgram   *prog;
+  GkCamera    *cam;
 
+  if (!scene->_priv.overridePass
+      || !(prog = scene->_priv.overridePass->prog))
+    return;
+
+  ctx = gkContextOf(scene);
+  if (ctx->currState->prog != prog)
+    gkUseProgram(ctx, prog);
+
+  cam   = scene->camera;
   model = modelInst->model;
 
   /* render */
   primi = model->prim;
   while (primi) {
     glBindVertexArray(primi->vao);
-    gkRenderPass(scene,
-                 modelInst,
-                 primi,
-                 NULL,
-                 scene->_priv.overridePass);
+
+    gkUniformTransform(prog, modelInst->trans, cam);
+    gkRenderPrim(scene, primi);
+
     primi = primi->next;
   }
 
