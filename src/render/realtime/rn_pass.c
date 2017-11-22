@@ -23,17 +23,17 @@ gkRenderPass(GkScene     * __restrict scene,
              GkPrimitive * __restrict prim,
              GkMaterial  * __restrict material,
              GkPass      * __restrict pass) {
-  GkProgram *prog;
   GkContext *ctx;
+  GkProgram *prog;
 
   if (!pass || !prim || !scene || !(prog = pass->prog))
     return;
 
-  ctx = scene->_priv.ctx;
+  ctx = gkContextOf(scene);
   if (ctx->currState->prog != prog)
     gkUseProgram(ctx, prog);
   
-  if (!pass->noMaterials && prog->lastMaterial != material)
+  if (prog->lastMaterial != material && !pass->noMaterials)
     gkUniformMaterial(ctx, prog, material);
 
   gkUniformTransform(prog, modelInst->trans, scene->camera);
@@ -47,7 +47,7 @@ gkRenderPass(GkScene     * __restrict scene,
           gkRenderTranspPrimPerLight(scene, prim, prog);
         break;
       case GK_RNPATH_SCENE_PERLIGHT:
-        gkRenderPrimForLight(scene, prim, prog);
+        gkRenderPrimForLight(scene, modelInst, prim, prog);
         break;
       default: break;
     }
