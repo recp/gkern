@@ -33,7 +33,31 @@ gkBuiltinProg(GkBuiltinProg progtype) {
                                       GL_FRAGMENT_SHADER
                                     },
                                     2,
-                                    GK_SHADER_FLAG_BUILTIN);
+                                    0);
+    }
+
+    case GK_BUILTIN_PROG_DEPTH: {
+      char *vert, *frag;
+
+      vert =
+#include "glsl/vert/rtt.glsl"
+      ;
+
+      frag =
+#include "glsl/frag/depth.glsl"
+      ;
+
+      return gkGetOrCreatProgByName("builtin_depth",
+                                    (const char *[]) {
+                                      vert,
+                                      frag
+                                    },
+                                    (GLenum[]) {
+                                      GL_VERTEX_SHADER,
+                                      GL_FRAGMENT_SHADER
+                                    },
+                                    2,
+                                    0);
     }
     default:
       break;
