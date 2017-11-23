@@ -24,3 +24,11 @@ gkUniform1ui(GkProgram  * __restrict prog,
              GLuint                  val) {
   glUniform1ui(gkUniformLoc(prog, name), val);
 }
+
+GK_EXPORT
+void
+gkUniform1f(GkProgram  * __restrict prog,
+            const char * __restrict name,
+            float                   val) {
+  glUniform1f(gkUniformLoc(prog, name), val);
+}

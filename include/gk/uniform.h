@@ -24,4 +24,10 @@ gkUniform1ui(struct GkProgram * __restrict prog,
              const char       * __restrict name,
              GLuint                        val);
 
+GK_EXPORT
+void
+gkUniform1f(struct GkProgram  * __restrict prog,
+            const char        * __restrict name,
+            float                          val);
+
 #endif /* uniform_h */
