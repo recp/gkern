@@ -12,8 +12,9 @@
 #include "../../include/gk/shader.h"
 
 typedef enum GkBuiltinProg {
-  GK_BUILTIN_PROG_RTT   = 1,
-  GK_BUILTIN_PROG_DEPTH = 2
+  GK_BUILTIN_PROG_RTT       = 1,
+  GK_BUILTIN_PROG_DEPTH     = 2,
+  GK_BUILTIN_PROG_SHADOWMAP = 3
 } GkBuiltinProg;
 
 GkProgram*

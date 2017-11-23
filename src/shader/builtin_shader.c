@@ -13,51 +13,60 @@ GkProgram*
 gkBuiltinProg(GkBuiltinProg progtype) {
   switch (progtype) {
     case GK_BUILTIN_PROG_RTT: {
-      char *vert, *frag;
+      const char *src[2];
+      GLenum      typ[2] = {
+        GL_VERTEX_SHADER,
+        GL_FRAGMENT_SHADER
+      };
 
-      vert =
+      src[0] =
 #include "glsl/vert/rtt.glsl"
       ;
 
-      frag =
+      src[1] =
 #include "glsl/frag/rtt.glsl"
       ;
 
-      return gkGetOrCreatProgByName("builtin_rtt",
-                                    (const char *[]) {
-                                      vert,
-                                      frag
-                                    },
-                                    (GLenum[]) {
-                                      GL_VERTEX_SHADER,
-                                      GL_FRAGMENT_SHADER
-                                    },
-                                    2,
-                                    0);
+      return gkGetOrCreatProgByName("builtin_rtt", src, typ, 2, 0);
     }
 
     case GK_BUILTIN_PROG_DEPTH: {
-      char *vert, *frag;
+      const char *src[2];
+      GLenum      typ[2] = {
+        GL_VERTEX_SHADER,
+        GL_FRAGMENT_SHADER
+      };
 
-      vert =
+      src[0] =
 #include "glsl/vert/rtt.glsl"
       ;
 
-      frag =
+      src[1] =
 #include "glsl/frag/depth.glsl"
       ;
 
-      return gkGetOrCreatProgByName("builtin_depth",
-                                    (const char *[]) {
-                                      vert,
-                                      frag
-                                    },
-                                    (GLenum[]) {
-                                      GL_VERTEX_SHADER,
-                                      GL_FRAGMENT_SHADER
-                                    },
+      return gkGetOrCreatProgByName("builtin_depth", src, typ, 2, 0);
+    }
+    case GK_BUILTIN_PROG_SHADOWMAP: {
+      const char *src[2];
+      GLenum      typ[2] = {
+        GL_VERTEX_SHADER,
+        GL_FRAGMENT_SHADER
+      };
+
+      src[0] =
+#include "glsl/vert/shadowmap.glsl"
+      ;
+
+      src[1] =
+#include "glsl/frag/shadowmap.glsl"
+      ;
+
+      return gkGetOrCreatProgByName("builtin_shdwmap",
+                                    src,
+                                    typ,
                                     2,
-                                    0);
+                                    GK_SHADER_FLAG_MVP);
     }
     default:
       break;
