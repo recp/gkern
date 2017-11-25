@@ -9,13 +9,13 @@
 #define gk_bbox_h
 
 #include "common.h"
+#include <cglm/cglm.h>
 
 typedef struct GkBBox {
-  float min[3];
-  float max[3];
-  float center[3];
+  vec3  min;
+  vec3  max;
+  vec3  center;
   float radius;
-  bool  isvalid;
 } GkBBox;
 
 #endif /* gk_bbox_h */

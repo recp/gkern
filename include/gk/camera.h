@@ -12,6 +12,9 @@ extern "C" {
 #endif
 
 #include "common.h"
+#include "transform.h"
+#include "plane.h"
+#include "bbox.h"
 #include <cglm/cglm.h>
 
 struct GkScene;
@@ -30,7 +33,9 @@ typedef struct GkCamera {
   mat4           view;
   mat4           world;
   mat4           projView;
-  mat4           projViewInv;
+  GkPlane        planes[6];
+  vec4           vertices[8];
+  GkBBox         bbox;
   GkCameraFlags  flags;
   GkTransform   *trans;
 } GkCamera;

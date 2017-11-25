@@ -12,6 +12,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+static
+void
+gkPrepareCameraProp(GkCamera * __restrict cam);
+
 GK_EXPORT
 GkCamera*
 gkAllocCamera() {
@@ -95,17 +99,67 @@ gkResizeCamera(GkCamera * __restrict camera,
                camera->projView);
 }
 
+static
+void
+gkPrepareCameraProp(GkCamera * __restrict cam) {
+  mat4    projViewInv;
+  vec4   *vert;
+  vec3    min, max;
+  int32_t i;
+
+  vert = cam->vertices;
+
+  glm_mat4_inv(cam->projView, projViewInv);
+
+  glm_mat4_mulv(projViewInv, (vec4){-1.0f, -1.0f, -1.0f, 1.0f}, vert[0]);
+  glm_mat4_mulv(projViewInv, (vec4){-1.0f,  1.0f, -1.0f, 1.0f}, vert[1]);
+  glm_mat4_mulv(projViewInv, (vec4){ 1.0f, -1.0f, -1.0f, 1.0f}, vert[2]);
+  glm_mat4_mulv(projViewInv, (vec4){ 1.0f,  1.0f, -1.0f, 1.0f}, vert[3]);
+
+  glm_mat4_mulv(projViewInv, (vec4){-1.0f, -1.0f,  1.0f, 1.0f}, vert[4]);
+  glm_mat4_mulv(projViewInv, (vec4){-1.0f,  1.0f,  1.0f, 1.0f}, vert[5]);
+  glm_mat4_mulv(projViewInv, (vec4){ 1.0f, -1.0f,  1.0f, 1.0f}, vert[6]);
+  glm_mat4_mulv(projViewInv, (vec4){ 1.0f,  1.0f,  1.0f, 1.0f}, vert[7]);
+
+  memset(min, 0, sizeof(vec3));
+  memset(max, 0, sizeof(vec3));
+
+  for (i = 0; i < 8; i++) {
+    glm_vec4_scale(vert[i], 1.0f / vert[i][3], vert[i]);
+
+    if (vert[i][0] < min[0])
+      min[0] = vert[i][0];
+    else if (vert[i][0] > max[0])
+      max[0] = vert[i][0];
+
+    if (vert[i][1] < min[1])
+      min[1] = vert[i][1];
+    else if (vert[i][1] > max[1])
+      max[1] = vert[i][1];
+
+    if (vert[i][2] < min[2])
+      min[2] = vert[i][2];
+    else if (vert[i][2] > max[2])
+      max[2] = vert[i][2];
+  }
+
+  glm_vec_copy(min, cam->bbox.min);
+  glm_vec_copy(max, cam->bbox.max);
+  glm_vec_center(min, max, cam->bbox.center);
+  cam->bbox.radius = glm_vec_distance(min, max) * 0.5f;
+}
+
 void
 gkCameraProjUpdated(GkCamera * __restrict cam) {
-  glm_mat4_mul(cam->proj,     cam->view, cam->projView);
-  glm_mat4_inv(cam->projView, cam->projViewInv);
+  glm_mat4_mul(cam->proj, cam->view, cam->projView);
+  gkPrepareCameraProp(cam);
 }
 
 void
 gkCameraViewUpdated(GkCamera * __restrict cam) {
   glm_mat4_inv(cam->world, cam->view);
   glm_mat4_mul(cam->proj,  cam->view, cam->projView);
-  glm_mat4_inv(cam->projView, cam->projViewInv);
+  gkPrepareCameraProp(cam);
 }
 
 void
