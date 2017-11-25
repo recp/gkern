@@ -36,6 +36,9 @@ extern "C" {
 #define GK_DRAW_ARRAYS   (1 << 1)
 #define GK_COMPLEX       (1 << 2)
 
+void
+gkReshape(GkScene *scene, GkRect rect);
+
 #ifdef __cplusplus
 }
 #endif

@@ -73,3 +73,15 @@ gkMakePrimInst(GkModelInst *modelInst,
 
   return primInst;
 }
+
+void
+gkReshape(GkScene *scene, GkRect rect) {
+  gkResizeCamera(scene->camera,  rect.size.w / rect.size.h);
+
+  scene->flags         |= GK_SCENEF_RENDER;
+  scene->camera->flags |= GK_UPDT_PROJ;
+
+  gkCameraProjUpdated(scene->camera);
+
+  scene->vrect = rect;
+}
