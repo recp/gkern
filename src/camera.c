@@ -96,19 +96,16 @@ gkResizeCamera(GkCamera * __restrict camera,
 }
 
 void
-gkUpdateCameraView(GkCamera * __restrict cam) {
-  glm_mat4_inv(cam->world, cam->view);
-  glm_mat4_mul(cam->proj,
-               cam->view,
-               cam->projView);
+gkCameraProjUpdated(GkCamera * __restrict cam) {
+  glm_mat4_mul(cam->proj,     cam->view, cam->projView);
+  glm_mat4_inv(cam->projView, cam->projViewInv);
 }
 
 void
-gkUpdateCameraWorld(GkCamera * __restrict cam) {
+gkCameraViewUpdated(GkCamera * __restrict cam) {
   glm_mat4_inv(cam->world, cam->view);
-  glm_mat4_mul(cam->proj,
-               cam->view,
-               cam->projView);
+  glm_mat4_mul(cam->proj,  cam->view, cam->projView);
+  glm_mat4_inv(cam->projView, cam->projViewInv);
 }
 
 void
@@ -124,7 +121,7 @@ gkZoom(GkScene * __restrict scene,
   glm_vec_scale(dir, -distance, dir);
   glm_vec_add(cam->world[3], dir, cam->world[3]);
 
-  gkUpdateCameraView(cam);
+  gkCameraViewUpdated(cam);
 
   scene->camera->flags |= GK_UPDT_VIEW;
   scene->flags         |= GK_SCENEF_RENDER;
