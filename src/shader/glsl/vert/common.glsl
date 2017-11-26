@@ -11,6 +11,11 @@ uniform mat4 MV;  // View * Model Matrix
 uniform mat4 NM;  // Normal matrix
 uniform int  NMU; // Use normal matrix
 
+\n#ifdef SHADOWMAP\n
+uniform mat4 uLightMVP;
+out vec4     vShadowCoord;
+\n#endif\n
+
 \n#ifndef TEX_COUNT\n
 \n#define TEX_COUNT 0\n
 \n#endif\n
@@ -77,6 +82,10 @@ void main() {
 \n#endif\n
 \n#if TEX_COUNT > 5\n
   vTEXCOORD5 = TEXCOORD5;
+\n#endif\n
+  
+\n#ifdef SHADOWMAP\n
+  vShadowCoord = uLightMVP * pos4;
 \n#endif\n
 }
 )

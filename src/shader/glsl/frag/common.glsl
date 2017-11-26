@@ -29,7 +29,7 @@ in vec2  vTEXCOORD4;
 in vec2  vTEXCOORD5;
 \n#endif\n
 
-\n#ifdef SHADOW_MAP\n
+\n#ifdef SHADOWMAP\n
 in vec2  vSHADOWMAP;
 \n#endif\n
 
@@ -86,8 +86,8 @@ uniform float     uShininess;
 \n#endif\n
 
 \n#ifdef SHADOWMAP\n
-in vec3           vShadowCoord;
-uniform sampler2D uShadowMapTex;
+in vec4           vShadowCoord;
+uniform sampler2D uShadowMap;
 \n#endif\n
 
 out vec4 fragColor;

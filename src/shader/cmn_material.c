@@ -98,7 +98,7 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
     "EMISSION",
     "REFLECTIVE",
     "TRANSPARENT",
-    "SHADOW_MAP"
+    "SHADOWMAP"
   };
 
   fragFlagsLen = vertFlagsLen = PAGE_SIZE;
@@ -181,8 +181,8 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
 
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
-    sprintf(pVertFlags, "\n#define SHADOW_MAP\n");
-    sprintf(pFragFlags, "\n#define SHADOW_MAP\n");
+    sprintf(pVertFlags, "\n#define SHADOWMAP\n");
+    sprintf(pFragFlags, "\n#define SHADOWMAP\n");
   }
 }
 

@@ -12,6 +12,13 @@ void main() {
   vec3  L;
   float a, Ld;
 
+\n#ifdef SHADOWMAP\n
+  float visibility = 1.0;
+  float shadow = texture(uShadowMap, vShadowCoord.xy).r;
+  if (shadow < vShadowCoord.z)
+    visibility = 0.5;
+\n#endif\n
+
   switch (lightType) {
     case SpotLight:
       a = spot(L);
@@ -31,6 +38,10 @@ void main() {
   Ld     = max(0.0, dot(vNormal, L));
 
   fragColor =
+\n#ifdef SHADOWMAP\n
+  visibility * (
+\n#endif\n
+
 \n#ifdef DIFFUSE_TEX\n
   lightc * texture(uDiffuseTex, DIFFUSE_TEX_COORD) * Ld
 \n#elif defined(DIFFUSE_COLOR)\n
@@ -50,6 +61,11 @@ void main() {
 \n#elif defined(EMISSION_COLOR)\n
   + uEmission
 \n#endif\n
+
+\n#ifdef SHADOWMAP\n
+  )
+\n#endif\n
+
 ;
 
 }
