@@ -102,6 +102,11 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
       glBlendFunc(GL_ONE, GL_ONE);
     }
 
+    if (scene->flags & GK_SCENEF_SHADOWS) {
+      gkRenderShadows(scene, light);
+    }
+
+    //    gkRenderShadowMapTo(scene, scene->finalOutput);
 
     gkRenderNode(scene, rootNode, trans);
   } while ((light = (GkLight *)light->ref.next));

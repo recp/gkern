@@ -16,6 +16,7 @@ struct GkScene;
 struct GkNode;
 struct GkProgram;
 struct GkColorOrTex;
+struct GkCamera;
 struct GkTransform;
 
 typedef enum GkLightType {
@@ -32,20 +33,20 @@ typedef struct GkLightRef {
   struct GkLightRef *next;
 } GkLightRef;
 
-struct GkNode;
 typedef struct GkLight {
-  GkLightRef      ref;
-  struct GkLight *next;
-  struct GkNode  *node;
-  const char     *name;
-  vec4           *ambient;
-  vec3            direction;
-  GkLightType     type;
-  GkColor         color;
-  int32_t         index;
-  uint8_t         isvalid;
-  uint8_t         enabled;
-  uint8_t         readonly;
+  GkLightRef       ref;
+  struct GkLight  *next;
+  struct GkNode   *node;
+  struct GkCamera *camera;
+  const char      *name;
+  vec4            *ambient;
+  vec3             direction;
+  GkLightType      type;
+  GkColor          color;
+  int32_t          index;
+  uint8_t          isvalid;
+  uint8_t          enabled;
+  uint8_t          readonly;
 } GkLight;
 
 typedef GkLight GkAmbientLight;
@@ -85,6 +86,8 @@ gkUniformSingleLight(struct GkScene   * __restrict scene,
                      GkLight          * __restrict light,
                      struct GkProgram * __restrict prog);
 
+struct GkCamera*
+gkCameraOfLight(struct GkScene *scene, GkLight *light);
 
 struct GkTransform*
 gkLightTransform(GkLight *light);
@@ -94,5 +97,8 @@ gkLightPos(struct GkScene *scene, GkLight *light, vec3 position);
 
 void
 gkLightDir(struct GkScene *scene, GkLight *light, vec3 dir);
+
+void
+gkLightDirWorld(struct GkScene *scene, GkLight *light, vec3 dir);
 
 #endif /* gk_light_h */

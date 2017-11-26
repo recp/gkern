@@ -86,6 +86,14 @@ gkContextOf(GkScene * __restrict scene) {
 
 GK_EXPORT
 void
+gkEnableShadows(GkScene * __restrict scene);
+
+GK_EXPORT
+void
+gkDisableShadows(GkScene * __restrict scene);
+
+GK_EXPORT
+void
 gkCacheTransformsFor(GkScene  * __restrict scene,
                      GkCamera * __restrict cam);
 

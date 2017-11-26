@@ -10,6 +10,47 @@
 #include "../../include/gk/light.h"
 #include <string.h>
 
+GkCamera*
+gkCameraOfLight(GkScene *scene, GkLight *light) {
+  mat4      view, proj;
+  GkCamera *cam;
+
+  cam = scene->camera;
+
+  switch (light->type) {
+    case GK_LIGHT_TYPE_DIRECTIONAL: {
+      vec3  dir, pos, target;
+      float r;
+
+      r = cam->bbox.radius;
+      gkLightDirWorld(scene, light, dir);
+      glm_vec_normalize(dir);
+
+      glm_vec_scale(dir, r, pos);
+      glm_vec_sub(cam->bbox.center, pos, pos);
+
+
+      glm_lookat(pos, target, GLM_YUP, view);
+
+      gkLightPos(scene, light, pos);
+       glm_vec_add(pos, dir, target);
+
+      glm_lookat(pos, target, GLM_YUP, view);
+      glm_ortho(-10, 10, -10, 10, -10, 20, proj);
+
+
+      break;
+    }
+    case GK_LIGHT_TYPE_POINT:
+    case GK_LIGHT_TYPE_SPOT:
+
+    default:
+      break;
+  }
+
+  return (light->camera = gkMakeCamera(proj, view));
+}
+
 GkTransform*
 gkLightTransform(GkLight * __restrict light) {
   if (light->node)
@@ -50,3 +91,15 @@ gkLightDir(GkScene *scene, GkLight *light, vec3 dir) {
 
   glm_vec_copy(light->direction, dir);
 }
+
+void
+gkLightDirWorld(GkScene *scene, GkLight *light, vec3 dir) {
+  GkTransform *trans;
+  if ((trans = gkLightTransform(light))) {
+    glm_vec_rotate_m4(trans->world, light->direction, dir);
+    return;
+  }
+
+  glm_vec_copy(light->direction, dir);
+}
+

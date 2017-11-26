@@ -11,11 +11,20 @@
 #include "../../../include/gk/prims/cube.h"
 #include "../../default/def_effect.h"
 #include "../../default/def_light.h"
+#include "../../shadows/shadows.h"
+#include "../../program/uniform_cache.h"
 
 #include "rn_light.h"
 #include "rn_pass.h"
 #include "rn_prim.h"
 
+extern void *GK_SHADOWS_HANDLE;
+static mat4 gk__biasMatrix = {
+  0.5f, 0.0f, 0.0f, 0.0f,
+  0.0f, 0.5f, 0.0f, 0.0f,
+  0.0f, 0.0f, 0.5f, 0.0f,
+  0.5f, 0.5f, 0.5f, 1.0f
+};
 
 void
 gkRenderPrimForLight(GkScene     * __restrict scene,
@@ -28,7 +37,26 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
   if (light != prog->lastLight)
     gkUniformSingleLight(scene, light, prog);
 
+  if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
+    mat4         lightMVP;
+    GkShadowMap *shadowMap;
+    int32_t      shadowMapUnit;
 
+    shadowMap     = scene->_priv.shadows;
+    shadowMapUnit = flist_indexof(gkContextOf(scene)->samplers,
+                                  GK_SHADOWS_HANDLE);
+
+    gkBindDepthTexTo(scene,
+                     shadowMap->shadowPass,
+                     prog,
+                     shadowMapUnit,
+                     "uShadowMap");
+
+    glm_mat4_mul(gk__biasMatrix, light->camera->projView, lightMVP);
+    glm_mat4_mul(lightMVP,       modelInst->trans->world, lightMVP);
+
+    gkUniformMat4(gkUniformLoc(prog, "uLightMVP"), lightMVP);
+  }
 
   gkRenderPrim(scene, prim);
 }

@@ -13,6 +13,7 @@ extern "C" {
 
 #include "common.h"
 
+struct GkLight;
 
 void
 gkPrepMaterial(GkScene     *scene,
@@ -45,6 +46,11 @@ gkRenderNode(GkScene     *scene,
 
 void
 gkRenderScene(GkScene * scene);
+
+GK_EXPORT
+void
+gkRenderShadows(GkScene * __restrict scene,
+                struct GkLight * __restrict light);
 
 GK_EXPORT
 void
