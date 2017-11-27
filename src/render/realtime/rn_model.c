@@ -22,15 +22,17 @@ void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
             GkTransform *ptr) {
+  GkSceneImpl  *sceneImpl;
   GkTransform  *tr;
   FListItem    *camItem;
   GkCameraImpl *camImpl;
   uint32_t      updt;
 
+  sceneImpl = (GkSceneImpl *)scene;
   if (!(tr = modelInst->trans))
     modelInst->trans = tr = ptr;
 
-  camItem = scene->_priv.transfCacheSlots->first;
+  camItem = sceneImpl->transfCacheSlots->first;
 
   updt = !((ptr->flags & tr->flags) & GK_TRANSF_WORLD_ISVALID);
   if (updt && ptr != tr) {
@@ -101,14 +103,16 @@ void
 gkRnModelNoMatOPass(GkScene     *scene,
                     GkModelInst *modelInst,
                     GkTransform *ptr) {
+  GkSceneImpl *sceneImpl;
   GkContext   *ctx;
   GkModel     *model;
   GkPrimitive *primi;
   GkProgram   *prog;
   GkCamera    *cam;
 
-  if (!scene->_priv.overridePass
-      || !(prog = scene->_priv.overridePass->prog))
+  sceneImpl = (GkSceneImpl *)scene;
+  if (!sceneImpl->overridePass
+      || !(prog = sceneImpl->overridePass->prog))
     return;
 
   ctx = gkContextOf(scene);

@@ -47,20 +47,8 @@ typedef enum GkSceneFlags {
 
 GK_MAKE_C_ENUM(GkSceneFlags)
 
-typedef struct GkScenePrivateFields {
-  struct GkContext  *ctx;
-  struct FListItem  *transpPrims;
-  struct GkLight    *forLight;
-  void              *shadows;
-  struct GkPass     *overridePass;     /* override all passes    */
-  struct GkMaterial *overrideMaterial; /* override all materials */
-  struct FList      *transfCacheSlots;
-  GkRenderPathFn     rp;
-  GkRenderPathType   rpath;
-} GkScenePrivateFields;
-
 typedef struct GkScene {
-  GkScenePrivateFields _priv;
+  struct GkContext  *ctx;
   GkCamera          *camera;
   GkTransform       *trans;  /* free camera */
   struct GkNode     *rootNode;
@@ -71,17 +59,20 @@ typedef struct GkScene {
   GkRect             vrect;
   uint32_t           lightCount;
   uint32_t           lastLightIndex;
-  int32_t            usage;
   GkSceneFlags       flags;
   int32_t            internalFormat;
   float              backingScale;
   float              fpsApprx;
 } GkScene;
-  
+
+GK_EXPORT
+GkScene*
+gkAllocScene(struct GkContext * __restrict context);
+
 GK_INLINE
 struct GkContext*
 gkContextOf(GkScene * __restrict scene) {
-  return scene->_priv.ctx;
+  return scene->ctx;
 }
 
 GK_EXPORT

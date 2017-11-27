@@ -17,13 +17,15 @@ void
 gkRenderShadowMapTo(GkScene   * __restrict scene,
                     GkPassOut * __restrict output) {
   GkContext   *ctx;
+  GkSceneImpl *sceneImpl;
   GkShadowMap *sm;
   GkCamera    *cam;
   GkProgram   *depthProg;
   int32_t      texUnit;
   float        near, far;
 
-  sm = scene->_priv.shadows;
+  sceneImpl = (GkSceneImpl *)scene;
+  sm = sceneImpl->shadows;
   if (!sm->currLight || !(cam = sm->currLight->camera))
     return;
 
@@ -32,7 +34,7 @@ gkRenderShadowMapTo(GkScene   * __restrict scene,
   gkPushState(ctx);
   gkBindPassOut(scene, output);
 
-  texUnit   = (int32_t)scene->_priv.ctx->samplers->count;
+  texUnit   = (int32_t)ctx->samplers->count;
   depthProg = gkBuiltinProg(GK_BUILTIN_PROG_DEPTH);
 
   glm_persp_decomp_z(cam->proj, &near, &far);

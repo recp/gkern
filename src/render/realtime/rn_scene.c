@@ -16,7 +16,8 @@
 
 void
 gkRenderScene(GkScene * scene) {
-  double start, end;
+  GkSceneImpl *sceneImpl;
+  double       start, end;
 
   start = gkGetTime();
 
@@ -27,6 +28,7 @@ gkRenderScene(GkScene * scene) {
       || scene->flags & GK_SCENEF_RENDERING)
   return;
 
+  sceneImpl     = (GkSceneImpl *)scene;
   scene->flags &= ~GK_SCENEF_RENDERED;
   scene->flags |= GK_SCENEF_RENDERING;
 
@@ -37,9 +39,9 @@ gkRenderScene(GkScene * scene) {
     if (!scene->trans)
       scene->trans = gk_def_idmat();
 
-    if (!scene->_priv.rp) {
-      scene->_priv.rp    = gkModelPerLightRenderPath;
-      scene->_priv.rpath = GK_RNPATH_MODEL_PERLIGHT;
+    if (!sceneImpl->rp) {
+      sceneImpl->rp    = gkModelPerLightRenderPath;
+      sceneImpl->rpath = GK_RNPATH_MODEL_PERLIGHT;
     }
 
     scene->flags |= GK_SCENEF_PREPARED;
@@ -54,7 +56,7 @@ gkRenderScene(GkScene * scene) {
   scene->trans->flags  |= GK_TRANSF_WORLD_ISVALID;
   scene->camera->flags &= ~GK_UPDT_VIEWPROJ;
 
-  scene->_priv.rp(scene);
+  sceneImpl->rp(scene);
 
   if ((scene->flags & GK_SCENEF_DRAW_BBOX)
       && scene->bbox)
@@ -76,16 +78,19 @@ gkRenderScene(GkScene * scene) {
 GK_EXPORT
 void
 gkScenePerLightRenderPath(GkScene * __restrict scene) {
+  GkSceneImpl *sceneImpl;
   GkLight     *light, *firstLight;
   GkTransform *trans;
   GkNode      *rootNode;
 
+  sceneImpl  = (GkSceneImpl *)scene;
+
   /* default sun light */
-  if (!(light = (GkLight *)scene->lights)) {
-    light             = gk_def_lights();
-    light->isvalid    = false;
-    scene->lightCount = 1;
-    scene->lights     = (GkLightRef *)light;
+  if (!(light = (GkLight *)sceneImpl->pub.lights)) {
+    light                 = gk_def_lights();
+    light->isvalid        = false;
+    sceneImpl->pub.lightCount = 1;
+    sceneImpl->pub.lights     = (GkLightRef *)light;
   }
 
   trans      = scene->trans;
@@ -93,7 +98,7 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
   firstLight = light;
 
   do {
-    scene->_priv.forLight = light;
+    sceneImpl->forLight = light;
 
     if (light != firstLight) {
       glDepthFunc(GL_EQUAL);
@@ -106,7 +111,7 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
       gkRenderShadows(scene, light);
     }
 
-    //    gkRenderShadowMapTo(scene, scene->finalOutput);
+    /* gkRenderShadowMapTo(scene, scene->finalOutput); */
 
     gkRenderNode(scene, rootNode, trans);
   } while ((light = (GkLight *)light->ref.next));

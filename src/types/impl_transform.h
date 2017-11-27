@@ -9,6 +9,7 @@
 #define impl_transform_h
 
 #include "impl_camera.h"
+#include "impl_scene.h"
 #include "../../include/gk/transform.h"
 #include "../../include/gk/scene.h"
 
@@ -71,12 +72,14 @@ gkSetFinalTransform(struct GkScene * __restrict scene,
   GkTransformImpl  *transfImpl;
   GkCameraImpl     *camImpl;
   GkFinalTransform *ftr;
+  GkSceneImpl      *sceneImpl;
 
+  sceneImpl  = (GkSceneImpl *)scene;
   transfImpl = (GkTransformImpl *)transf;
   camImpl    = (GkCameraImpl *)cam;
 
   gkResizeTransform(scene, transfImpl);
-  if (scene->_priv.transfCacheSlots->count == 0)
+  if (sceneImpl->transfCacheSlots->count == 0)
     return NULL;
 
   if (!(ftr = transfImpl->ftr[camImpl->transfSlot]))
@@ -84,6 +87,5 @@ gkSetFinalTransform(struct GkScene * __restrict scene,
 
   return ftr;
 }
-
 
 #endif /* impl_transform_h */

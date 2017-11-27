@@ -31,9 +31,11 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
                      GkModelInst * __restrict modelInst,
                      GkPrimitive * __restrict prim,
                      GkProgram   * __restrict prog) {
-  GkLight *light;
+  GkLight     *light;
+  GkSceneImpl *sceneImpl;
 
-  light = scene->_priv.forLight;
+  sceneImpl = (GkSceneImpl *)scene;
+  light = sceneImpl->forLight;
   if (light != prog->lastLight)
     gkUniformSingleLight(scene, light, prog);
 
@@ -42,7 +44,7 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
     GkShadowMap *shadowMap;
     int32_t      shadowMapUnit;
 
-    shadowMap     = scene->_priv.shadows;
+    shadowMap     = sceneImpl->shadows;
     shadowMapUnit = flist_indexof(gkContextOf(scene)->samplers,
                                   GK_SHADOWS_HANDLE);
 
@@ -65,13 +67,15 @@ void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
                      GkPrimitive * __restrict prim,
                      GkProgram   * __restrict prog) {
-  GkLight *firstLight, *light;
+  GkSceneImpl *sceneImpl;
+  GkLight     *firstLight, *light;
 
-  light = (GkLight *)scene->lights;
+  sceneImpl = (GkSceneImpl *)scene;
+  light     = (GkLight *)sceneImpl->pub.lights;
   if (!light) {
-    light             = gk_def_lights();
-    light->isvalid    = false;
-    scene->lightCount = 1;
+    light                 = gk_def_lights();
+    light->isvalid        = false;
+    sceneImpl->pub.lightCount = 1;
   }
 
   firstLight = light;
@@ -100,13 +104,15 @@ void
 gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
                            GkPrimitive * __restrict prim,
                            GkProgram   * __restrict prog) {
-  GkLight *firstLight, *light;
+  GkSceneImpl *sceneImpl;
+  GkLight     *firstLight, *light;
 
-  light = (GkLight *)scene->lights;
+  sceneImpl = (GkSceneImpl *)scene;
+  light     = (GkLight *)sceneImpl->pub.lights;
   if (!light) {
-    light             = gk_def_lights();
-    light->isvalid    = false;
-    scene->lightCount = 1;
+    light                 = gk_def_lights();
+    light->isvalid        = false;
+    sceneImpl->pub.lightCount = 1;
   }
 
   firstLight = light;

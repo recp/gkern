@@ -18,11 +18,13 @@ GK_EXPORT
 void
 gkCacheTransformsFor(GkScene  * __restrict scene,
                      GkCamera * __restrict cam) {
+  GkSceneImpl  *sceneImpl;
   GkCameraImpl *camImpl;
   FList        *transfCacheSlots;
-  
-  camImpl             = (GkCameraImpl *)cam;
-  transfCacheSlots    = scene->_priv.transfCacheSlots;
+
+  sceneImpl        = (GkSceneImpl *)scene;
+  camImpl          = (GkCameraImpl *)cam;
+  transfCacheSlots = sceneImpl->transfCacheSlots;
 
   flist_append(transfCacheSlots, cam);
   
@@ -33,11 +35,13 @@ GK_EXPORT
 void
 gkRemoveTransformCacheFor(GkScene  * __restrict scene,
                           GkCamera * __restrict cam) {
+  GkSceneImpl  *sceneImpl;
   GkCameraImpl *camImpl;
   FList        *transfCacheSlots;
 
+  sceneImpl           = (GkSceneImpl *)scene;
   camImpl             = (GkCameraImpl *)cam;
-  transfCacheSlots    = scene->_priv.transfCacheSlots;
+  transfCacheSlots    = sceneImpl->transfCacheSlots;
   camImpl->transfSlot = (1 << 31);
 
   flist_remove_by(transfCacheSlots, cam);
@@ -46,10 +50,12 @@ gkRemoveTransformCacheFor(GkScene  * __restrict scene,
 GK_EXPORT
 GkTransform*
 gkAllocTransform(GkScene * __restrict scene) {
+  GkSceneImpl     *sceneImpl;
   GkTransformImpl *trans;
   uint32_t         slotCount;
 
-  slotCount = (uint32_t)scene->_priv.transfCacheSlots->count;
+  sceneImpl = (GkSceneImpl *)scene;
+  slotCount = (uint32_t)sceneImpl->transfCacheSlots->count;
   trans     = calloc(sizeof(*trans), 1);
   if (slotCount > 0) {
     trans->ftr  = calloc(sizeof(GkFinalTransform *) * slotCount, 1);
@@ -63,9 +69,11 @@ GK_EXPORT
 void
 gkResizeTransform(GkScene         * __restrict scene,
                   GkTransformImpl * __restrict trans) {
-  uint32_t slotCount;
+  GkSceneImpl *sceneImpl;
+  uint32_t     slotCount;
 
-  slotCount = (uint32_t)scene->_priv.transfCacheSlots->count;
+  sceneImpl = (GkSceneImpl *)scene;
+  slotCount = (uint32_t)sceneImpl->transfCacheSlots->count;
   if (trans->ftrc == slotCount)
     return;
 

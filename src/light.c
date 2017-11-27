@@ -17,14 +17,16 @@ gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light,
                GkProgram      * __restrict prog,
                mat4                        transView) {
-  vec4  amb, dir;
-  char  buf[256];
-  GLint loc;
-  GLint enabled;
-  GLint index;
+  GkSceneImpl *sceneImpl;
+  vec4         amb, dir;
+  char         buf[256];
+  GLint        loc;
+  GLint        enabled;
+  GLint        index;
 
+  sceneImpl = (GkSceneImpl *)scene;
   if (light->index == -1)
-    light->index = index = scene->lastLightIndex++;
+    light->index = index = sceneImpl->pub.lastLightIndex++;
   else
     index = light->index;
 
@@ -109,7 +111,7 @@ gkUniformLight(struct GkScene * __restrict scene,
   glUniform3fv(loc, 1, dir);
 
   loc = gkUniformLocBuff(prog, "lightCount", buf);
-  glUniform1i(loc, scene->lightCount);
+  glUniform1i(loc, sceneImpl->pub.lightCount);
 
   light->isvalid = 1;
 }
@@ -117,13 +119,15 @@ gkUniformLight(struct GkScene * __restrict scene,
 void
 gkUniformLights(struct GkScene * __restrict scene,
                 GkProgram      * __restrict prog) {
-  GkLight *light;
+  GkSceneImpl *sceneImpl;
+  GkLight     *light;
 
-  light = (GkLight *)scene->lights;
+  sceneImpl = (GkSceneImpl *)scene;
+  light     = (GkLight *)sceneImpl->pub.lights;
   if (!light) {
-    light             = gk_def_lights();
-    light->isvalid    = false;
-    scene->lightCount = 1;
+    light                 = gk_def_lights();
+    light->isvalid        = false;
+    sceneImpl->pub.lightCount = 1;
   }
 
   while (light) {

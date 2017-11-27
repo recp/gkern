@@ -46,24 +46,25 @@ gkSetupBasicShadowMap(GkScene * __restrict scene) {
 void
 gkRenderBasicShadowMap(GkScene * __restrict scene,
                        GkLight * __restrict light) {
-  GkContext            *ctx;
-  GkScenePrivateFields *scenePriv;
-  GkShadowMap          *shadowMap;
-  GkPass               *overridePass;
-  GkCamera             *lightCam, *prevCam;
-  GkRenderModelFn       renderModelFn;
+  GkContext       *ctx;
+  GkSceneImpl     *sceneImpl;
+  GkShadowMap     *shadowMap;
+  GkPass          *overridePass;
+  GkCamera        *lightCam, *prevCam;
+  GkRenderModelFn  renderModelFn;
 
-  ctx = gkContextOf(scene);
-  scenePriv = &scene->_priv;
-  if (!(shadowMap = scenePriv->shadows))
-    scene->_priv.shadows = shadowMap = gkSetupShadows(scene);
+  ctx       = gkContextOf(scene);
+  sceneImpl = (GkSceneImpl *)scene;
+
+  if (!(shadowMap = sceneImpl->shadows))
+    sceneImpl->shadows = shadowMap = gkSetupShadows(scene);
 
   shadowMap->currLight = light;
   renderModelFn = scene->renderModelFn;
-  overridePass  = scenePriv->overridePass;
+  overridePass  = sceneImpl->overridePass;
   prevCam       = scene->camera;
 
-  gkPushState(scenePriv->ctx);
+  gkPushState(ctx);
   gkBindPassOut(scene, shadowMap->shadowPass->output);
 
   gkEnableDepthTest(ctx);
@@ -72,10 +73,10 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   glClear(GL_DEPTH_BUFFER_BIT);
 
   /* todo: add these to gpu state */
-  scene->renderModelFn      = gkRnModelNoMatOPass;
-  scene->_priv.overridePass = shadowMap->shadowPass;
-  lightCam                  = gkCameraOfLight(scene, light);
-  scene->flags             &= ~GK_SCENEF_SHADOWS;
+  scene->renderModelFn    = gkRnModelNoMatOPass;
+  sceneImpl->overridePass = shadowMap->shadowPass;
+  lightCam                = gkCameraOfLight(scene, light);
+  scene->flags           &= ~GK_SCENEF_SHADOWS;
 
   /* render point of view of light  */
   glCullFace(GL_FRONT); /* todo: add to gpu state */
@@ -84,11 +85,11 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   glCullFace(GL_BACK);
 
   /* restore states: todo add these to state manager */
-  scene->renderModelFn      = renderModelFn;
-  scene->_priv.overridePass = overridePass;
-  scene->flags             |= GK_SCENEF_SHADOWS;
+  scene->renderModelFn    = renderModelFn;
+  sceneImpl->overridePass = overridePass;
+  scene->flags           |= GK_SCENEF_SHADOWS;
 
   gkSetCamera(scene, prevCam);
   gkBindPassOut(scene, scene->finalOutput);
-  gkPopState(scenePriv->ctx);
+  gkPopState(ctx);
 }

@@ -48,13 +48,15 @@ gkApplyMaterial(GkScene     * __restrict scene,
                 GkModelInst * __restrict modelInst,
                 GkPrimitive * __restrict prim,
                 GkMaterial  * __restrict material) {
-  GkPass *pass;
+  GkSceneImpl *sceneImpl;
+  GkPass      *pass;
 
   if (!material || !material->technique)
     return;
 
-  if (scene->_priv.overridePass) {
-    pass = scene->_priv.overridePass;
+  sceneImpl = (GkSceneImpl *)scene;
+  if (sceneImpl->overridePass) {
+    pass = sceneImpl->overridePass;
     goto apply;
   }
   
@@ -74,10 +76,12 @@ void
 gkApplyMaterials(GkScene     * __restrict scene,
                  GkModelInst * __restrict modelInst,
                  GkPrimitive * __restrict prim) {
-  GkMaterial *material;
+  GkSceneImpl *sceneImpl;
+  GkMaterial  *material;
 
-  if (scene->_priv.overrideMaterial) {
-    material = scene->_priv.overrideMaterial;
+  sceneImpl = (GkSceneImpl *)scene;
+  if (sceneImpl->overrideMaterial) {
+    material = sceneImpl->overrideMaterial;
     goto apply;
   }
 
