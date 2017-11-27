@@ -78,6 +78,7 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
                      scene->trans->world);
         scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
         scene->flags |= GK_SCENEF_RENDER;
+        gkCameraViewUpdated(scene->camera);
       }
       break;
     case GK_MOUSE_UP: {
@@ -86,6 +87,7 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
                    scene->trans->local);
       scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
       scene->flags |= GK_SCENEF_RENDER;
+      gkCameraViewUpdated(scene->camera);
 
       if (tball->cb)
         tball->cb(tball, GK_TRACKBALL_EVENT_END);
