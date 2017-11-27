@@ -19,7 +19,7 @@ gkCameraOfLight(GkScene *scene, GkLight *light) {
 
   switch (light->type) {
     case GK_LIGHT_TYPE_DIRECTIONAL: {
-      vec3  dir, pos, target;
+      vec3  dir, pos;
       float r;
 
       r = cam->bbox.radius;
@@ -29,16 +29,9 @@ gkCameraOfLight(GkScene *scene, GkLight *light) {
       glm_vec_scale(dir, r, pos);
       glm_vec_sub(cam->bbox.center, pos, pos);
 
+      glm_lookat(pos, cam->bbox.center, GLM_YUP, view);
 
-      glm_lookat(pos, target, GLM_YUP, view);
-
-      gkLightPos(scene, light, pos);
-       glm_vec_add(pos, dir, target);
-
-      glm_lookat(pos, target, GLM_YUP, view);
-      glm_ortho(-10, 10, -10, 10, -10, 20, proj);
-
-
+      glm_ortho(-r, r, -r, r, -r, r, proj);
       break;
     }
     case GK_LIGHT_TYPE_POINT:
