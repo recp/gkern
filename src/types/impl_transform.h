@@ -10,10 +10,10 @@
 
 #include "impl_camera.h"
 #include "../../include/gk/transform.h"
+#include "../../include/gk/scene.h"
 
 #include <stdint.h>
-
-struct GkScene;
+#include <ds/forward-list.h>
 
 typedef struct GkFinalTransform {
   mat4     mvp;  /* model view projection matrix */
@@ -76,6 +76,8 @@ gkSetFinalTransform(struct GkScene * __restrict scene,
   camImpl    = (GkCameraImpl *)cam;
 
   gkResizeTransform(scene, transfImpl);
+  if (scene->_priv.transfCacheSlots->count == 0)
+    return NULL;
 
   if (!(ftr = transfImpl->ftr[camImpl->transfSlot]))
     transfImpl->ftr[camImpl->transfSlot] = ftr = malloc(sizeof(*ftr));

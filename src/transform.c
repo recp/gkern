@@ -69,8 +69,11 @@ gkResizeTransform(GkScene         * __restrict scene,
   if (trans->ftrc == slotCount)
     return;
 
-  if (slotCount == 0 && trans->ftrc != 0) {
-    free(trans->ftr);
+  if (slotCount == 0) {
+    if (trans->ftrc != 0) {
+      free(trans->ftr);
+      trans->ftrc = 0;
+    }
     return;
   }
 
