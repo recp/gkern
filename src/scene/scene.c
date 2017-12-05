@@ -17,7 +17,7 @@ GK_EXPORT
 GkScene*
 gkAllocScene(GkContext * __restrict context) {
   GkSceneImpl *sceneImpl;
-  sceneImpl = calloc(sizeof(*sceneImpl), 1);
+  sceneImpl = calloc(1, sizeof(*sceneImpl));
 
   sceneImpl->transfCacheSlots = flist_new(NULL);
 

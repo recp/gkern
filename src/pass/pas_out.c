@@ -16,7 +16,7 @@ GkPassOut*
 gkAllocPassOut(void) {
   GkPassOut *pout;
 
-  pout = calloc(sizeof(*pout), 1);
+  pout = calloc(1, sizeof(*pout));
   glGenFramebuffers(1, &pout->fbo);
 
   return pout;
@@ -26,10 +26,10 @@ GK_EXPORT
 GkPassOut*
 gkCurrentOutput(GkContext * __restrict ctx) {
   GkPassOut *output;
-  
+
   if ((output = ctx->currState->outputState.renderOutput))
     return output;
-  
+
   return gkDefaultRenderOut();
 }
 
@@ -250,7 +250,7 @@ gkAddRenderTargetRBEx(GkScene *scene,
   }
 
   last_poc = pout->color;
-  poc = calloc(sizeof(*poc), 1);
+  poc = calloc(1, sizeof(*poc));
 
   currentOutput = gkCurrentOutput(gkContextOf(scene));
   if (currentOutput != pout)
@@ -328,7 +328,7 @@ gkAddRenderTargetEx(GkScene *scene,
   }
 
   last_poc = pout->color;
-  poc = calloc(sizeof(*poc), 1);
+  poc = calloc(1, sizeof(*poc));
 
   currentOutput = gkCurrentOutput(gkContextOf(scene));
   if (currentOutput != pout)

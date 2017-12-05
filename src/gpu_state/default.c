@@ -15,13 +15,13 @@ GkGPUStates gk__defstate = {
     .depthTest = true,
     .depthFunc = GL_LESS
   },
-  
+
   .blendState = {
     .blend   = GL_FUNC_ADD,
     .sfactor = GL_ONE,
     .dfactor = GL_ZERO
   },
-  
+
   .activeTex    = 0,
   .texStates    = NULL,
   .outputState  = NULL,
@@ -33,8 +33,8 @@ void
 gkSetDefaultState(GkContext * __restrict ctx) {
   if (ctx->currState)
     return;
-  
-  ctx->currState = calloc(sizeof(gk__defstate), 1);
+
+  ctx->currState = calloc(1, sizeof(gk__defstate));
   memcpy(ctx->currState,
          &gk__defstate,
          sizeof(gk__defstate));

@@ -19,26 +19,26 @@ gkGetOrCreatState(GkContext * __restrict ctx,
                   GkGPUStateType         type) {
   GkStatesItem *sti;
   FListItem    *item;
-  
+
   sti = flist_last(ctx->states);
   if (!sti) {
-    sti = calloc(sizeof(*sti), 1);
+    sti = calloc(1, sizeof(*sti));
     flist_insert(ctx->states, sti);
   }
 
   item = sti->states;
   while (item) {
     GkStateBase *state;
-    
+
     state = item->data;
     if (state->type == type)
       return state;
     item = item->next;
   }
-  
+
   if (type != GK_GPUSTATE_TEXTURE)
     return gkCreatState(ctx, sti, type);
-  
+
   return NULL;
 }
 
@@ -49,17 +49,17 @@ gkGetOrCreatTexState(GkContext * __restrict ctx,
                      GLenum                 target) {
   GkStatesItem *sti;
   FListItem    *item;
-  
+
   sti = flist_last(ctx->states);
   if (!sti) {
-    sti = calloc(sizeof(*sti), 1);
+    sti = calloc(1, sizeof(*sti));
     flist_insert(ctx->states, sti);
   }
-  
+
   item = sti->states;
   while (item) {
     GkStateBase *state;
-    
+
     state = item->data;
     if (state->type == GK_GPUSTATE_TEXTURE
         && state->arrayIndex == arrayIndex) {
@@ -83,7 +83,7 @@ gkCreatState(GkContext    * __restrict ctx,
   GkGPUStates *curr;
   void        *ptr;
   size_t       len;
-  
+
   curr = ctx->currState;
   switch (type) {
     case GK_GPUSTATE_DEPTH:
@@ -102,9 +102,9 @@ gkCreatState(GkContext    * __restrict ctx,
       return NULL;
   }
 
-  state = calloc(len, 1);
+  state = calloc(1, len);
   memcpy(state, ptr, len);
-  
+
   state->type = type;
 
   sti->isempty = false;
@@ -143,15 +143,15 @@ gkCreatTexState(GkContext    * __restrict ctx,
                 GLenum                    target) {
   GkTextureState *state, *statei;
   GkGPUStates    *curr;
-  
+
   curr   = ctx->currState;
-  state  = calloc(sizeof(*state), 1);
-  
+  state  = calloc(1, sizeof(*state));
+
   state->base.arrayIndex = index;
   state->base.type       = GK_GPUSTATE_TEXTURE;
   state->target          = target;
   state->texunit         = index;
-  
+
   statei = curr->texStates;
   while (statei) {
     if (statei->base.arrayIndex == index
@@ -161,11 +161,11 @@ gkCreatTexState(GkContext    * __restrict ctx,
     }
     statei = (GkTextureState *)statei->base.next;
   }
-  
+
   if (curr->texStates)
     state->base.next = &curr->texStates->base;
   curr->texStates = statei;
-  
+
   sti->isempty = false;
   flist_sp_insert(&sti->states, state);
 

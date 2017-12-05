@@ -20,7 +20,7 @@ gk_prog_cube() {
   if (gk_def_prog_cube)
     return gk_def_prog_cube;
 
-  prog   = calloc(sizeof(*prog), 1);
+  prog   = calloc(1, sizeof(*prog));
   progId = glCreateProgram();
 
   vert = gkShaderLoad(GL_VERTEX_SHADER,

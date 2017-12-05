@@ -20,7 +20,7 @@ GK_EXPORT
 GkCamera*
 gkAllocCamera() {
   GkCameraImpl *camImpl;
-  camImpl             = calloc(sizeof(*camImpl), 1);
+  camImpl             = calloc(1, sizeof(*camImpl));
   camImpl->transfSlot = (1 << 31);
   return &camImpl->pub;
 }

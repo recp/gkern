@@ -17,8 +17,8 @@ gkSetupBasicShadowMap(GkScene * __restrict scene) {
   GkPass      *shadowPass;
   GLenum       status;
 
-  shadowMap  = calloc(sizeof(*shadowMap), 1);
-  shadowPass = calloc(sizeof(*shadowMap->shadowPass), 1);
+  shadowMap  = calloc(1, sizeof(*shadowMap));
+  shadowPass = calloc(1, sizeof(*shadowMap->shadowPass));
 
   shadowPass->prog        = gkBuiltinProg(GK_BUILTIN_PROG_SHADOWMAP);
   shadowPass->output      = gkAllocPassOut();

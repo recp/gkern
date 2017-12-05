@@ -27,7 +27,7 @@ gkCacheTransformsFor(GkScene  * __restrict scene,
   transfCacheSlots = sceneImpl->transfCacheSlots;
 
   flist_append(transfCacheSlots, cam);
-  
+
   camImpl->transfSlot = flist_indexof(transfCacheSlots, cam);
 }
 
@@ -56,9 +56,9 @@ gkAllocTransform(GkScene * __restrict scene) {
 
   sceneImpl = (GkSceneImpl *)scene;
   slotCount = (uint32_t)sceneImpl->transfCacheSlots->count;
-  trans     = calloc(sizeof(*trans), 1);
+  trans     = calloc(1, sizeof(*trans));
   if (slotCount > 0) {
-    trans->ftr  = calloc(sizeof(GkFinalTransform *) * slotCount, 1);
+    trans->ftr  = calloc(1, sizeof(GkFinalTransform *) * slotCount);
     trans->ftrc = slotCount;
   }
 
@@ -86,7 +86,7 @@ gkResizeTransform(GkScene         * __restrict scene,
   }
 
   if (!trans->ftr)
-    trans->ftr = calloc(sizeof(void *) * slotCount, 1);
+    trans->ftr = calloc(1, sizeof(void *) * slotCount);
   else
     trans->ftr = realloc(trans->ftr, sizeof(void *) * slotCount);
 

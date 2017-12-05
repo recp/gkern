@@ -65,15 +65,15 @@ gkMakeProgram(GkShader *shaders,
               void *userData) {
   static GkProgram *prog;
   GLuint progId;
-  
-  prog = calloc(sizeof(*prog), 1);
+
+  prog = calloc(1, sizeof(*prog));
   prog->progId = progId = glCreateProgram();
 
   gkAttachShaders(progId, shaders);
-  
+
   if (beforeLinking)
     beforeLinking(prog, userData);
-  
+
   glLinkProgram(progId);
 
 #ifdef DEBUG
@@ -84,7 +84,7 @@ gkMakeProgram(GkShader *shaders,
 #endif
 
   glUseProgram(progId);
-  
+
   prog->shaders = shaders;
 
   prog->mvpi = glGetUniformLocation(progId, "MVP");
@@ -104,7 +104,7 @@ gkDefaultProgram() {
   GLuint     progId;
   GLuint     vert, frag;
 
-  prog   = calloc(sizeof(*prog), 1);
+  prog   = calloc(1, sizeof(*prog));
   progId = glCreateProgram();
 
   vert = gkShaderLoad(GL_VERTEX_SHADER,
@@ -136,7 +136,7 @@ gkDefaultProgram() {
   prog->refc   = 1;
   prog->updtLights    = 1;
   prog->updtMaterials = 1;
-  
+
   return prog;
 }
 

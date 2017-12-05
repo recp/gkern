@@ -46,8 +46,8 @@ GK_EXPORT
 GkVertexInput*
 gkMakeVertexInput(const char *name, GkType type, int32_t len) {
   GkVertexInput *vi, *found;
-  
-  vi = calloc(sizeof(*vi), 1);
+
+  vi = calloc(1, sizeof(*vi));
 
   vi->type = type;
   vi->len  = len;
@@ -78,7 +78,7 @@ void
 gkRemoveVertexInput(GkProgram *prog, GkVertexInput *input) {
   if (!flist_sp_contains(&prog->vertex, input))
     return;
-  
+
   input->refc--;
   flist_sp_remove_by(&prog->vertex, input);
 }

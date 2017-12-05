@@ -47,9 +47,9 @@ gkPrimInitTexQuad() {
   if (gk__texquad)
     return;
 
-  gk__texquad = prim = calloc(sizeof(*prim), 1);
+  gk__texquad = prim = calloc(1, sizeof(*prim));
 
-  buff         = calloc(sizeof(*buff), 1);
+  buff         = calloc(1, sizeof(*buff));
   buff->size   = sizeof(gk__verts_quad);
   buff->target = GL_ARRAY_BUFFER;
   buff->type   = GL_FLOAT;

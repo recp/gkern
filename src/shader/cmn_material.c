@@ -235,7 +235,7 @@ gkShadersFor(GkScene     * __restrict scene,
                    &vertSource[1],
                    &fragSource[1]);
 
-  vert = (GkShader *)calloc(sizeof(*vert), 1);
+  vert = calloc(1, sizeof(*vert));
   vert->isValid    = 1;
   vert->shaderType = GL_VERTEX_SHADER;
 
@@ -247,7 +247,7 @@ gkShadersFor(GkScene     * __restrict scene,
                                  vertSource,
                                  3);
 
-  frag = (GkShader *)calloc(sizeof(*frag), 1);
+  frag = calloc(1, sizeof(*frag));
   frag->isValid    = 1;
   frag->shaderType = GL_FRAGMENT_SHADER;
   frag->shaderId   = gkShaderLoadN(frag->shaderType,

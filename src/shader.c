@@ -180,7 +180,7 @@ gkShaderLoadFromFolder(const char * __restrict path,
         continue;
       }
 
-      currShader = calloc(sizeof(*shader), 1);
+      currShader = calloc(1, sizeof(*shader));
       currShader->shaderType = shaderType;
       currShader->shaderId   = gkShaderLoadFromFile(shaderType, fname);
       currShader->isValid    = currShader->shaderId > 0;

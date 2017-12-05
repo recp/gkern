@@ -15,7 +15,7 @@ GkContext*
 gkAllocContext() {
   GkContext *ctx;
 
-  ctx = calloc(sizeof(*ctx), 1);
+  ctx = calloc(1, sizeof(*ctx));
   ctx->mdltree  = rb_newtree_ptr();
   ctx->states   = flist_new(NULL);
   ctx->samplers = flist_new(NULL);
@@ -35,11 +35,11 @@ GkModelInst *
 gkMakeInstance(GkModel *model) {
   GkModelInst *instance, *prevInstance;
 
-  instance     = calloc(sizeof(*instance), 1);
+  instance     = calloc(1, sizeof(*instance));
   prevInstance = NULL;
 
   if (!model->instances)
-    model->instances = calloc(sizeof(*model->instances), 1);
+    model->instances = calloc(1, sizeof(*model->instances));
   else
     prevInstance = model->instances->instance;
 
@@ -65,7 +65,7 @@ gkMakePrimInst(GkModelInst *modelInst,
   if (primInst)
     return primInst;
 
-  primInst = calloc(sizeof(*primInst), 1);
+  primInst = calloc(1, sizeof(*primInst));
   primInst->prim     = prim;
   primInst->material = NULL;
 

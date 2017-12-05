@@ -25,7 +25,7 @@ gkGetOrCreatPass(GkScene     *scene,
   GkProgram *prog;
 
   if ((prog = gkGetOrCreatProgForCmnMat(scene, prim, mat))) {
-    pass = calloc(sizeof(*pass), 1);
+    pass = calloc(1, sizeof(*pass));
     pass->prog = prog;
     return pass;
   }

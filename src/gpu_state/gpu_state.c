@@ -30,12 +30,12 @@ gkPushState(GkContext * __restrict ctx) {
 
   if (!ctx->states || !ctx->states->last)
     return;
-  
+
   /* save space! */
   if (((GkStatesItem *)flist_last(ctx->states))->isempty)
     return;
 
-  newst = calloc(sizeof(*newst), 1);
+  newst = calloc(1, sizeof(*newst));
   newst->isempty = true;
   flist_append(ctx->states, newst);
 }
@@ -46,20 +46,20 @@ gkPopState(GkContext * __restrict ctx) {
   GkStatesItem *old,    *curr;
   FListItem    *oldi,   *curri;
   GkStateBase  *prevst, *currst;
-  
+
   curr = flist_pop(ctx->states);
   if (!curr)
     return;
-  
+
   if (!(old = flist_last(ctx->states)))
     goto fr;
-  
+
   curri = curr->states;
 
   /* revert each state to previous */
   do {
     currst = curri->data;
-    
+
     if ((oldi = old->states)) {
       do {
         prevst = oldi->data;
@@ -71,7 +71,7 @@ gkPopState(GkContext * __restrict ctx) {
         oldi = oldi->next;
       } while (oldi);
     }
-    
+
     continue;
   foundst:
     gk__stateFuncs[prevst->type](ctx, prevst);
@@ -86,11 +86,11 @@ GK_EXPORT
 void
 gkEnableDepthTest(GkContext * __restrict ctx) {
   GkDepthState *state;
-  
+
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_DEPTH);
   if (state->depthTest)
     return;
-  
+
   state->depthTest = true;
   glEnable(GL_DEPTH_TEST);
 }
@@ -99,11 +99,11 @@ GK_EXPORT
 void
 gkDisableDepthTest(GkContext * __restrict ctx) {
   GkDepthState *state;
-  
+
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_DEPTH);
   if (!state->depthTest)
     return;
-  
+
   state->depthTest = false;
   glDisable(GL_DEPTH_TEST);
 }

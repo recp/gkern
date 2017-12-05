@@ -16,7 +16,7 @@ GkTrackball*
 gk_tball_new() {
   GkTrackball *tball;
 
-  tball = calloc(sizeof(*tball), 1);
+  tball = calloc(1, sizeof(*tball));
   tball->enabled  = true;
   tball->mouse    = gk_tball_mouse;
   tball->mouse2   = gk_tball_mouse_ws;

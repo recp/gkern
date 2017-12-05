@@ -52,7 +52,7 @@ gkSetGLContext(void *glcontext) {
 
   if (glcontext) {
     gk_glcontext    = glcontext;
-    gk_glcontextPLI = calloc(sizeof(GLint), GK_ARRAY_LEN(GK_PLI));
+    gk_glcontextPLI = calloc(GK_ARRAY_LEN(GK_PLI), sizeof(GLint));
     gk_pl_fetchPLI();
   }
 }

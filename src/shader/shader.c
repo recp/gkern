@@ -69,7 +69,7 @@ gk_creatProgByName(char *name, void *userData) {
   shaderCount    = *(uint32_t *)paramStructure[2];
   flags          = *(GkShaderFlags *)paramStructure[3];
 
-  prog          = calloc(sizeof(*prog), 1);
+  prog          = calloc(1, sizeof(*prog));
   progId        = glCreateProgram();
   last_shader   = NULL;
 
@@ -81,7 +81,7 @@ gk_creatProgByName(char *name, void *userData) {
     source[0] = "#version 410 \n";
     source[1] = (char *)shaderSources[i];
 
-    shader = calloc(sizeof(*shader), 1);
+    shader = calloc(1, sizeof(*shader));
     shader->isValid    = 1;
     shader->shaderType = shaderTypes[i];
 
