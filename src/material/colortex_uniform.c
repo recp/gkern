@@ -40,13 +40,13 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
 
     tex = crtx->val;
     if (tex->sampler) {
+      char        uniformNameBuff[32];
       const char *uniformName;
 
       glActiveTexture(GL_TEXTURE0 + *texUnit);
       glBindTexture(tex->target, tex->index);
       
       if (!(uniformName = tex->sampler->uniformName)) {
-        char uniformNameBuff[32];
         sprintf(uniformNameBuff, "%sTex", name);
         uniformName = uniformNameBuff;
       }
