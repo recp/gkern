@@ -21,7 +21,7 @@ GkCamera*
 gkAllocCamera() {
   GkCameraImpl *camImpl;
   camImpl             = calloc(1, sizeof(*camImpl));
-  camImpl->transfSlot = (1 << 31);
+  camImpl->transfSlot = (1 << 30);
   return &camImpl->pub;
 }
 

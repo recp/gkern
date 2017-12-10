@@ -58,7 +58,7 @@ gkFinalTransform(GkTransform * __restrict transf,
   transfImpl = (GkTransformImpl *)transf;
   camImpl    = (GkCameraImpl *)cam;
 
-  if (camImpl->transfSlot & (1 << 31) || !transfImpl->ftr)
+  if (camImpl->transfSlot & (1 << 30) || !transfImpl->ftr)
     return NULL;
 
   return transfImpl->ftr[camImpl->transfSlot];

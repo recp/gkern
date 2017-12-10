@@ -46,7 +46,7 @@ gkPrepModel(GkScene     *scene,
   while (camItem) {
     camImpl = camItem->data;
 
-    if ((camImpl->transfSlot != (1 << 31)
+    if ((camImpl->transfSlot != (1 << 30)
         && (updt || camImpl->pub.flags & GK_UPDT_VIEWPROJ)))
       gkCalcFinalTransf(scene, &camImpl->pub, tr);
 

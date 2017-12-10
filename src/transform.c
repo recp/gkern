@@ -42,7 +42,7 @@ gkRemoveTransformCacheFor(GkScene  * __restrict scene,
   sceneImpl           = (GkSceneImpl *)scene;
   camImpl             = (GkCameraImpl *)cam;
   transfCacheSlots    = sceneImpl->transfCacheSlots;
-  camImpl->transfSlot = (1 << 31);
+  camImpl->transfSlot = (1 << 30);
 
   flist_remove_by(transfCacheSlots, cam);
 }
@@ -258,7 +258,7 @@ gkCalcFinalTransf(GkScene     * __restrict scene,
   GkCameraImpl     *camImpl;
 
   camImpl = (GkCameraImpl *)cam;
-  if (camImpl->transfSlot == (1 << 31))
+  if (camImpl->transfSlot == (1 << 30))
     return;
 
   if (!(ftr = gkFinalTransform(tr, cam)))
@@ -287,7 +287,7 @@ gkCalcViewTransf(GkScene     * __restrict scene,
   GkCameraImpl     *camImpl;
 
   camImpl = (GkCameraImpl *)cam;
-  if (camImpl->transfSlot == (1 << 31))
+  if (camImpl->transfSlot == (1 << 30))
     return;
 
   if (!(ftr = gkFinalTransform(tr, cam)))
