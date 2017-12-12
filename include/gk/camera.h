@@ -77,6 +77,10 @@ gkZoomInOneUnit(struct GkScene * __restrict scene);
 void
 gkZoomOutOneUnit(struct GkScene * __restrict scene);
 
+GK_EXPORT
+void
+gkExtractPlanes(mat4 projView, GkPlane planes[6]);
+
 #ifdef __cplusplus
 }
 #endif

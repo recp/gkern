@@ -99,20 +99,9 @@ gkResizeCamera(GkCamera * __restrict camera,
                camera->projView);
 }
 
-static
+GK_INLINE
 void
-gkPrepareCameraProp(GkCamera * __restrict cam) {
-  mat4     projViewInv;
-  vec4    *projView;
-  vec4    *vert;
-  GkPlane *planes;
-  vec3    min, max;
-  int32_t i;
-  float   norm;
-
-  /* extract planes */
-  projView = cam->projView;
-  planes   = cam->planes;
+gkExtractPlanesInline(mat4 projView, GkPlane planes[6]) {
   glm_vec4_add(projView[3], projView[0], planes[0]);
   glm_vec4_sub(projView[3], projView[0], planes[1]);
   glm_vec4_add(projView[3], projView[1], planes[2]);
@@ -126,9 +115,25 @@ gkPrepareCameraProp(GkCamera * __restrict cam) {
   glm_vec4_scale(planes[3], 1.0f / glm_vec_norm(planes[3]), planes[3]);
   glm_vec4_scale(planes[4], 1.0f / glm_vec_norm(planes[4]), planes[4]);
   glm_vec4_scale(planes[5], 1.0f / glm_vec_norm(planes[5]), planes[5]);
+}
+
+GK_EXPORT
+void
+gkExtractPlanes(mat4 projView, GkPlane planes[6]) {
+  gkExtractPlanesInline(projView, planes);
+}
+
+static
+void
+gkPrepareCameraProp(GkCamera * __restrict cam) {
+  mat4     projViewInv;
+  vec4    *vert;
+  vec3     min, max;
+  int32_t  i;
+
+  gkExtractPlanesInline(cam->projView, cam->planes);
 
   vert = cam->vertices;
-
   glm_mat4_inv(cam->projView, projViewInv);
 
   glm_mat4_mulv(projViewInv, (vec4){-1.0f, -1.0f, -1.0f, 1.0f}, vert[0]);
