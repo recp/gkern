@@ -33,7 +33,7 @@ typedef struct GkCamera {
   mat4           view;
   mat4           world;
   mat4           projView;
-  GkPlane        planes[6];
+  GkPlane        planes[6]; /* left, right, bottom, top, near, far */
   vec4           vertices[8];
   GkBBox         bbox;
   GkCameraFlags  flags;

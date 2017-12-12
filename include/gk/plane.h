@@ -8,9 +8,8 @@
 #ifndef plane_h
 #define plane_h
 
-typedef struct GkPlane {
-  vec4 plane;
-  bool normalized;
-} GkPlane;
+#include <cglm/cglm.h>
+
+typedef vec4 GkPlane;
 
 #endif /* plane_h */

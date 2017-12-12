@@ -103,9 +103,19 @@ static
 void
 gkPrepareCameraProp(GkCamera * __restrict cam) {
   mat4    projViewInv;
+  vec4   *projView;
   vec4   *vert;
   vec3    min, max;
   int32_t i;
+
+  /* extract planes */
+  projView = cam->projView;
+  glm_vec4_add(projView[3], projView[0], cam->planes[0]);
+  glm_vec4_sub(projView[3], projView[0], cam->planes[1]);
+  glm_vec4_add(projView[3], projView[1], cam->planes[2]);
+  glm_vec4_sub(projView[3], projView[1], cam->planes[3]);
+  glm_vec4_add(projView[3], projView[2], cam->planes[4]);
+  glm_vec4_sub(projView[3], projView[2], cam->planes[5]);
 
   vert = cam->vertices;
 
