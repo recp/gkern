@@ -102,20 +102,30 @@ gkResizeCamera(GkCamera * __restrict camera,
 static
 void
 gkPrepareCameraProp(GkCamera * __restrict cam) {
-  mat4    projViewInv;
-  vec4   *projView;
-  vec4   *vert;
+  mat4     projViewInv;
+  vec4    *projView;
+  vec4    *vert;
+  GkPlane *planes;
   vec3    min, max;
   int32_t i;
+  float   norm;
 
   /* extract planes */
   projView = cam->projView;
-  glm_vec4_add(projView[3], projView[0], cam->planes[0]);
-  glm_vec4_sub(projView[3], projView[0], cam->planes[1]);
-  glm_vec4_add(projView[3], projView[1], cam->planes[2]);
-  glm_vec4_sub(projView[3], projView[1], cam->planes[3]);
-  glm_vec4_add(projView[3], projView[2], cam->planes[4]);
-  glm_vec4_sub(projView[3], projView[2], cam->planes[5]);
+  planes   = cam->planes;
+  glm_vec4_add(projView[3], projView[0], planes[0]);
+  glm_vec4_sub(projView[3], projView[0], planes[1]);
+  glm_vec4_add(projView[3], projView[1], planes[2]);
+  glm_vec4_sub(projView[3], projView[1], planes[3]);
+  glm_vec4_add(projView[3], projView[2], planes[4]);
+  glm_vec4_sub(projView[3], projView[2], planes[5]);
+
+  glm_vec4_scale(planes[0], 1.0f / glm_vec_norm(planes[0]), planes[0]);
+  glm_vec4_scale(planes[1], 1.0f / glm_vec_norm(planes[1]), planes[1]);
+  glm_vec4_scale(planes[2], 1.0f / glm_vec_norm(planes[2]), planes[2]);
+  glm_vec4_scale(planes[3], 1.0f / glm_vec_norm(planes[3]), planes[3]);
+  glm_vec4_scale(planes[4], 1.0f / glm_vec_norm(planes[4]), planes[4]);
+  glm_vec4_scale(planes[5], 1.0f / glm_vec_norm(planes[5]), planes[5]);
 
   vert = cam->vertices;
 
