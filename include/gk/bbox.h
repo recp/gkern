@@ -11,11 +11,24 @@
 #include "common.h"
 #include <cglm/cglm.h>
 
-typedef struct GkBBox {
+struct GkBBoxVec {
   vec3  min;
   vec3  max;
-  vec3  center;
-  float radius;
+};
+
+union GkBBoxU {
+  vec3             arr[2];
+  struct GkBBoxVec vec;
+};
+
+typedef struct GkBBox {
+  union GkBBoxU box;
 } GkBBox;
+
+#define boxMin box.vec.min
+#define boxMax box.vec.max
+
+#define bboxMin bbox->box.vec.min
+#define bboxMax bbox->box.vec.max
 
 #endif /* gk_bbox_h */

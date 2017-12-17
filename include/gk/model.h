@@ -45,6 +45,7 @@ typedef struct GkPrimitive {
   GkMaterial         *activeMaterial;
   GkBuffer           *bufs;
   struct FListItem   *inputs;
+  GkBBox             *bbox;
   GLuint              flags;
   GLuint              vao;
   GLsizei             bufc;

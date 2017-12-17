@@ -63,6 +63,7 @@ gk_tall_vec(GkTrackball * __restrict tball,
             GkPoint p,
             vec3    vec) {
   mat4    m;
+  vec3    center;
   GkPoint c;
   GkRect  vrc;
   float   x, y, z, d;
@@ -71,8 +72,10 @@ gk_tall_vec(GkTrackball * __restrict tball,
                tball->nodeTrans->local,
                m);
 
+  glm_vec_center(tball->bboxMin, tball->bboxMax, center);
+
   vrc = tball->scene->vrect;
-  c   = gk_project2d(vrc, m, tball->bbox->center);
+  c   = gk_project2d(vrc, m, center);
 
   x = (p.x - c.x) / vrc.size.w;
   y = (p.y - c.y) / vrc.size.h;
