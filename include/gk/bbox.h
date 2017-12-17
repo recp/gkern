@@ -11,6 +11,8 @@
 #include "common.h"
 #include <cglm/cglm.h>
 
+struct GkTransform;
+
 struct GkBBoxVec {
   vec3  min;
   vec3  max;
@@ -22,13 +24,18 @@ union GkBBoxU {
 };
 
 typedef struct GkBBox {
-  union GkBBoxU box;
+  union GkBBoxU local;
+  union GkBBoxU world;
 } GkBBox;
 
-#define boxMin box.vec.min
-#define boxMax box.vec.max
+#define boxMin world.vec.min
+#define boxMax world.vec.max
 
-#define bboxMin bbox->box.vec.min
-#define bboxMax bbox->box.vec.max
+#define bboxMin bbox->world.vec.min
+#define bboxMax bbox->world.vec.max
+
+void
+gkTransformAABB(struct GkTransform * __restrict trans,
+                GkBBox             * __restrict bbox);
 
 #endif /* gk_bbox_h */

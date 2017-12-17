@@ -59,6 +59,9 @@ gkPrepNode(GkScene     *scene,
 
       glm_mat4_mul(ptr->world, tr->local, tr->world);
       tr->flags &= ~GK_TRANSF_WORLD_ISVALID;
+
+      if (node->bbox)
+        gkTransformAABB(tr, node->bbox);
     }
 
     if (node->light

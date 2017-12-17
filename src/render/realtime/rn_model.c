@@ -18,6 +18,8 @@
 #include "rn_pass.h"
 #include "rn_prim.h"
 
+#include <string.h>
+
 void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
@@ -56,6 +58,18 @@ gkPrepModel(GkScene     *scene,
   if(updt && tr != ptr)
     tr->flags |= GK_TRANSF_WORLD_ISVALID;
 
+  if (modelInst->model->bbox && (updt || !modelInst->bbox)) {
+    if (!modelInst->bbox) {
+      GkBBox *bbox;
+
+      bbox = malloc(sizeof(*bbox));
+      memcpy(bbox, modelInst->model->bbox, sizeof(*bbox));
+
+      modelInst->bbox = bbox;
+    }
+    gkTransformAABB(tr, modelInst->bbox);
+  }
+
   if (!modelInst->activeMaterial)
     return;
 
@@ -91,8 +105,8 @@ gkRenderModel(GkScene     *scene,
   if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX) && model->bbox)
     gkDrawBBox(scene,
                modelInst->trans->world,
-               model->bboxMin,
-               model->bboxMax);
+               modelInst->bboxMin,
+               modelInst->bboxMax);
 
   /* post events */
   if (model->events && model->events->onDraw)
