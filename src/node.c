@@ -20,5 +20,4 @@ gkMakeNodeTransform(GkScene * __restrict scene,
 
   tr           = gkAllocTransform(scene);
   node->trans  = tr;
-  node->flags |= GK_HAVE_MATRIX;
 }

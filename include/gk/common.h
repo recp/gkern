@@ -38,12 +38,6 @@
 
 #define GK_FLG(FLAGS, FLAG) ((FLAGS & FLAG) == FLAG)
 
-typedef enum GkNodeFlags {
-  GK_HAVE_MATRIX       = 1 << 3,
-  GK_USE_CACHED_MATRIX = 1 << 4,
-  GK_NON_UNIFORM_SCALE = 1 << 5
-} GkNodeFlags;
-
 #ifdef __cplusplus
 #define GK_MAKE_C_ENUM(ENM)                                                    \
 static inline ENM operator|=(ENM& a, ENM b) {                                         \
