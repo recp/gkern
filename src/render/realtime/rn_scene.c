@@ -14,6 +14,30 @@
 #include "../../default/def_light.h"
 #include "../../../include/gk/gpu_state.h"
 
+static
+void
+gkPrepareScene(GkScene * scene);
+
+static
+void
+gkPrepareScene(GkScene * scene) {
+  GkSceneImpl *sceneImpl;
+
+  sceneImpl = (GkSceneImpl *)scene;
+  if (!scene->finalOutput)
+    scene->finalOutput = gkDefaultRenderOut();
+
+  if (!scene->trans)
+    scene->trans = gk_def_idmat();
+
+  if (!sceneImpl->rp) {
+    sceneImpl->rp    = gkModelPerLightRenderPath;
+    sceneImpl->rpath = GK_RNPATH_MODEL_PERLIGHT;
+  }
+
+  scene->flags |= GK_SCENEF_PREPARED;
+}
+
 void
 gkRenderScene(GkScene * scene) {
   GkSceneImpl *sceneImpl;
@@ -32,20 +56,8 @@ gkRenderScene(GkScene * scene) {
   scene->flags &= ~GK_SCENEF_RENDERED;
   scene->flags |= GK_SCENEF_RENDERING;
 
-  if (!GK_FLG(scene->flags, GK_SCENEF_PREPARED)) {
-    if (!scene->finalOutput)
-      scene->finalOutput = gkDefaultRenderOut();
-
-    if (!scene->trans)
-      scene->trans = gk_def_idmat();
-
-    if (!sceneImpl->rp) {
-      sceneImpl->rp    = gkModelPerLightRenderPath;
-      sceneImpl->rpath = GK_RNPATH_MODEL_PERLIGHT;
-    }
-
-    scene->flags |= GK_SCENEF_PREPARED;
-  }
+  if (!GK_FLG(scene->flags, GK_SCENEF_PREPARED))
+    gkPrepareScene(scene);
 
   gkBindPassOut(scene, scene->finalOutput);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
