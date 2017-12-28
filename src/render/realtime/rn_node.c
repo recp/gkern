@@ -32,9 +32,6 @@ gkRenderNode(GkScene     *scene,
     if (node->chld)
       gkRenderNode(scene, node->chld, tr);
 
-    if (node->nodeInst)
-      gkRenderNode(scene, node->nodeInst, tr);
-
     node = node->next;
   }
 }
@@ -82,9 +79,6 @@ gkPrepNode(GkScene     *scene,
 
     if (node->chld)
       gkPrepNode(scene, node->chld, tr);
-
-    if (node->nodeInst)
-      gkPrepNode(scene, node->nodeInst, tr);
 
     if (updt && tr != ptr)
       tr->flags |= GK_TRANSF_WORLD_ISVALID;
