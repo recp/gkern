@@ -16,18 +16,26 @@ extern "C" {
 #include "bbox.h"
 #include "model.h"
 #include "transform.h"
-  
+
 #include <stdlib.h>
 #include <cglm/cglm.h>
 
 struct GkScene;
 
+typedef enum GkNodeFlags {
+  GK_NODEF_HAVE_TRANSFORM = 1,
+} GkNodeFlags;
+
 typedef struct GkNode {
   GkNodeFlags    flags;
-  GkTransform   *trans;    /* transform */
-  GkModelInst   *model;    /* model instance, only instances! */
-  GkLight       *light;    /* TODO: save space if there is no light */
+
   GkBBox        *bbox;
+  GkTransform   *trans;
+
+  GkModelInst   *model;
+  GkLight       *light;
+  GkCamera      *camera;
+
   struct GkNode *parent;
   struct GkNode *next;
   struct GkNode *chld;
@@ -36,6 +44,16 @@ typedef struct GkNode {
 void
 gkMakeNodeTransform(struct GkScene * __restrict scene,
                     GkNode         * __restrict node);
+
+GK_EXPORT
+void
+gkApplyTransform(struct GkScene * __restrict scene,
+                 GkNode         * __restrict node);
+
+GK_EXPORT
+void
+gkApplyView(struct GkScene * __restrict scene,
+            GkNode         * __restrict node);
 
 #ifdef __cplusplus
 }
