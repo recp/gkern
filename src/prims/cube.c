@@ -71,9 +71,8 @@ gkInitCube() {
 
 void
 gkDrawBBox(GkScene * __restrict scene,
-           mat4 world,
-           vec3 min,
-           vec3 max) {
+           GkBBox  * __restrict bbox,
+           mat4                 world) {
   GkProgram  *prog;
   vec3        size, center;
   mat4        tran = GLM_MAT4_IDENTITY_INIT;
@@ -89,13 +88,13 @@ gkDrawBBox(GkScene * __restrict scene,
   else
     glBindVertexArray(gk__cube_vao);
 
-  glm_vec_sub(max, min, size);
-  glm_vec_center(max, min, center);
+  glm_vec_sub(bboxMax, bboxMin, size);
+  glm_vec_center(bboxMax, bboxMin, center);
 
   glm_translate(tran, center);
   glm_scale(tran, size);
 
-  glm_mat4_mul(world, tran, tran);
+  /* glm_mat4_mul(world, tran, tran); */
   glm_mat4_mul(scene->camera->projView, tran, tran);
 
   gkUniformMat4(prog->mvpi, tran);

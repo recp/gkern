@@ -75,9 +75,8 @@ gkRenderScene(GkScene * scene) {
   if ((scene->flags & GK_SCENEF_DRAW_BBOX)
       && scene->bbox)
     gkDrawBBox(scene,
-               scene->rootNode->trans->world,
-               scene->bboxMin,
-               scene->bboxMax);
+               scene->bbox,
+               scene->rootNode->trans->world);
 
   scene->flags &= ~GK_SCENEF_UPDT_LIGHTS;
   scene->flags &= ~GK_SCENEF_NEEDS_RENDER;

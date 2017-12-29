@@ -103,9 +103,8 @@ gkRenderModel(GkScene     *scene,
 
   if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX) && model->bbox)
     gkDrawBBox(scene,
-               modelInst->trans->world,
-               modelInst->bboxMin,
-               modelInst->bboxMax);
+               modelInst->bbox,
+               modelInst->trans->world);
 
   /* post events */
   if (model->events && model->events->onDraw)
