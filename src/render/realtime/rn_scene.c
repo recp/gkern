@@ -62,11 +62,10 @@ gkRenderScene(GkScene * scene) {
   gkBindPassOut(scene, scene->finalOutput);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID))
+  if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID)) {
+    gkApplyTransform(scene, scene->rootNode);
     gkTransformAABB(scene->trans, scene->bbox);
-
-  /* for collect all lights once */
-  gkPrepNode(scene, scene->rootNode, scene->trans);
+  }
 
   scene->trans->flags  |= GK_TRANSF_WORLD_ISVALID;
   scene->camera->flags &= ~GK_UPDT_VIEWPROJ;
