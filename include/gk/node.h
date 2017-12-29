@@ -23,7 +23,8 @@ extern "C" {
 struct GkScene;
 
 typedef enum GkNodeFlags {
-  GK_NODEF_HAVE_TRANSFORM = 1,
+  GK_NODEF_NODE           = 1,
+  GK_NODEF_HAVE_TRANSFORM = 2,
 } GkNodeFlags;
 
 typedef struct GkNode {
@@ -40,6 +41,9 @@ typedef struct GkNode {
   struct GkNode *next;
   struct GkNode *chld;
 } GkNode;
+
+GkNode*
+gkAllocNode(struct GkScene * __restrict scene);
 
 void
 gkMakeNodeTransform(struct GkScene * __restrict scene,

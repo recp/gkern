@@ -22,6 +22,10 @@ typedef struct GkSceneImpl {
   struct GkPass     *overridePass;     /* override all passes    */
   struct GkMaterial *overrideMaterial; /* override all materials */
   FList             *transfCacheSlots;
+
+  GkNodePage        *nodePages;
+  GkNodePage        *lastPage;
+
   GkRenderPathFn     rp;
   GkRenderPathType   rpath;
   GkRect             vrect;

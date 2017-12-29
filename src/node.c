@@ -11,11 +11,59 @@
 #include <ds/hash.h>
 #include <string.h>
 
+static uint32_t gk_nodesPerPage = 64;
+
 static
 void
 gkPrepareNode(GkScene * __restrict scene,
               GkNode  * __restrict parentNode,
               GkNode  * __restrict node);
+
+GkNode*
+gkAllocNode(struct GkScene * __restrict scene) {
+  GkNodePage  *np;
+  GkSceneImpl *sceneImpl;
+  GkNode      *node;
+  size_t       i;
+
+  sceneImpl = (GkSceneImpl *)scene;
+  np        = sceneImpl->lastPage;
+
+  if (!np || np->isfull)
+    goto nw;
+
+  for (i = 0; i < gk_nodesPerPage; i++) {
+    node = &np->nodes[i];
+    if (node->flags & GK_NODEF_NODE)
+      continue;
+
+    node->flags |= GK_NODEF_NODE;
+    return node;
+  }
+
+nw:
+  np = calloc(1, sizeof(*np) + gk_nodesPerPage * sizeof(GkNode));
+  np->isfull = false;
+  np->next = sceneImpl->lastPage;
+
+  sceneImpl->lastPage = np;
+  if (!sceneImpl->nodePages)
+    sceneImpl->nodePages = np;
+
+  node = &np->nodes[0];
+  node->flags |= GK_NODEF_NODE;
+
+  return node;
+}
+
+GK_EXPORT
+void
+gkFreeNode(GkScene * __restrict scene,
+           GkNode  * __restrict node) {
+  node->flags &= ~GK_NODEF_NODE;
+
+  /* todo: free node and all child nodes */
+}
 
 void
 gkMakeNodeTransform(GkScene * __restrict scene,
