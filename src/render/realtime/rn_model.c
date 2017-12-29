@@ -78,8 +78,7 @@ gkPrepModel(GkScene     *scene,
 
 void
 gkRenderModel(GkScene     *scene,
-              GkModelInst *modelInst,
-              GkTransform *ptr) {
+              GkModelInst *modelInst) {
   GkModel     *model;
   GkPrimitive *primi;
 
@@ -115,8 +114,7 @@ gkRenderModel(GkScene     *scene,
 
 void
 gkRnModelNoMatOPass(GkScene     *scene,
-                    GkModelInst *modelInst,
-                    GkTransform *ptr) {
+                    GkModelInst *modelInst) {
   GkSceneImpl *sceneImpl;
   GkContext   *ctx;
   GkModel     *model;

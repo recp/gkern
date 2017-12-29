@@ -26,13 +26,11 @@ gkPrepModel(GkScene     *scene,
 
 void
 gkRenderModel(GkScene     *scene,
-              GkModelInst *modelInst,
-              GkTransform *ptr);
+              GkModelInst *modelInst);
 
 void
 gkRnModelNoMatOPass(GkScene     *scene,
-                    GkModelInst *modelInst,
-                    GkTransform *ptr);
+                    GkModelInst *modelInst);
 
 void
 gkPrepNode(GkScene     *scene,

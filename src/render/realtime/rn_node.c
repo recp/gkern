@@ -22,9 +22,9 @@ gkRenderNode(GkScene     *scene,
       modelInst = node->model;
       do {
         if (!scene->renderModelFn)
-          gkRenderModel(scene, modelInst, tr);
+          gkRenderModel(scene, modelInst);
         else
-          scene->renderModelFn(scene, modelInst, tr);
+          scene->renderModelFn(scene, modelInst);
         modelInst = modelInst->next;
       } while (modelInst);
     }

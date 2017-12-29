@@ -27,8 +27,7 @@ struct GkLightRef;
 struct GkBBox;
 
 typedef void (*GkRenderModelFn)(struct GkScene     *scene,
-                                struct GkModelInst *modelInst,
-                                struct GkTransform *ptr);
+                                struct GkModelInst *modelInst);
 
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE          = 0,
