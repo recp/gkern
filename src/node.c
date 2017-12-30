@@ -11,7 +11,7 @@
 #include <ds/hash.h>
 #include <string.h>
 
-static uint32_t gk_nodesPerPage = 64;
+uint32_t gk_nodesPerPage = 64;
 
 static
 void
