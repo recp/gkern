@@ -77,18 +77,16 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
         glm_mat4_mul(tball->trans,
                      scene->trans->local,
                      scene->trans->world);
-        scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
+        gkApplyTransform(scene, tball->node);
         scene->flags |= GK_SCENEF_RENDER;
-        gkCameraViewUpdated(scene->camera);
       }
       break;
     case GK_MOUSE_UP: {
       glm_mat4_mul(tball->trans,
                    scene->trans->local,
                    scene->trans->local);
-      scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
+      gkApplyTransform(scene, tball->node);
       scene->flags |= GK_SCENEF_RENDER;
-      gkCameraViewUpdated(scene->camera);
 
       if (tball->cb)
         tball->cb(tball, GK_TRACKBALL_EVENT_END);
