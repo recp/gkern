@@ -62,10 +62,14 @@ gkRenderScene(GkScene * scene) {
   gkBindPassOut(scene, scene->finalOutput);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  /* todo: use frustum culler here */
   if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID)) {
     gkApplyTransform(scene, scene->rootNode);
     gkTransformAABB(scene->trans, scene->bbox);
   }
+
+  /* frustum culling */
+  gkCullFrustum(scene, scene->camera);
 
   scene->trans->flags  |= GK_TRANSF_WORLD_ISVALID;
   scene->camera->flags &= ~GK_UPDT_VIEWPROJ;
@@ -133,5 +137,17 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
 GK_EXPORT
 void
 gkModelPerLightRenderPath(GkScene * __restrict scene) {
-  gkRenderNode(scene, scene->rootNode, scene->trans);
+  FListItem   *item;
+  GkModelInst *modelInst;
+  item = scene->camera->frustum.objs;
+  while (item) {
+    modelInst = item->data;
+
+    if (!scene->renderModelFn)
+      gkRenderModel(scene, modelInst);
+    else
+      scene->renderModelFn(scene, modelInst);
+
+    item = item->next;
+  }
 }

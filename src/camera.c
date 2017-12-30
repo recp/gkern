@@ -9,6 +9,8 @@
 #include "types/impl_camera.h"
 #include "../include/gk/gk.h"
 #include "../include/gk/camera.h"
+
+#include <ds/forward-list.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -82,7 +84,6 @@ gkMakeCameraByWorld(mat4 proj, mat4 view) {
   glm_mat4_copy(view, cam->world);
   glm_mat4_mul(proj, view, cam->projView);
   glm_mat4_inv_precise(view, cam->view);
-  cam->trans = NULL;
 
   cam->flags = 0;
 
@@ -99,30 +100,6 @@ gkResizeCamera(GkCamera * __restrict camera,
                camera->projView);
 }
 
-GK_INLINE
-void
-gkExtractPlanesInline(mat4 projView, GkPlane planes[6]) {
-  glm_vec4_add(projView[3], projView[0], planes[0]);
-  glm_vec4_sub(projView[3], projView[0], planes[1]);
-  glm_vec4_add(projView[3], projView[1], planes[2]);
-  glm_vec4_sub(projView[3], projView[1], planes[3]);
-  glm_vec4_add(projView[3], projView[2], planes[4]);
-  glm_vec4_sub(projView[3], projView[2], planes[5]);
-
-  glm_vec4_scale(planes[0], 1.0f / glm_vec_norm(planes[0]), planes[0]);
-  glm_vec4_scale(planes[1], 1.0f / glm_vec_norm(planes[1]), planes[1]);
-  glm_vec4_scale(planes[2], 1.0f / glm_vec_norm(planes[2]), planes[2]);
-  glm_vec4_scale(planes[3], 1.0f / glm_vec_norm(planes[3]), planes[3]);
-  glm_vec4_scale(planes[4], 1.0f / glm_vec_norm(planes[4]), planes[4]);
-  glm_vec4_scale(planes[5], 1.0f / glm_vec_norm(planes[5]), planes[5]);
-}
-
-GK_EXPORT
-void
-gkExtractPlanes(mat4 projView, GkPlane planes[6]) {
-  gkExtractPlanesInline(projView, planes);
-}
-
 static
 void
 gkPrepareCameraProp(GkCamera * __restrict cam) {
@@ -131,7 +108,7 @@ gkPrepareCameraProp(GkCamera * __restrict cam) {
   vec3     min, max;
   int32_t  i;
 
-  gkExtractPlanesInline(cam->projView, cam->planes);
+  glm_extract_planes(cam->projView, cam->frustum.planes);
 
   vert = cam->vertices;
   glm_mat4_inv(cam->projView, projViewInv);
@@ -157,6 +134,7 @@ gkPrepareCameraProp(GkCamera * __restrict cam) {
     else if (vert[i][0] > max[0])
       max[0] = vert[i][0];
 
+
     if (vert[i][1] < min[1])
       min[1] = vert[i][1];
     else if (vert[i][1] > max[1])
@@ -168,10 +146,8 @@ gkPrepareCameraProp(GkCamera * __restrict cam) {
       max[2] = vert[i][2];
   }
 
-  glm_vec_copy(min, cam->bbox.min);
-  glm_vec_copy(max, cam->bbox.max);
-  glm_vec_center(min, max, cam->bbox.center);
-  cam->bbox.radius = glm_vec_distance(min, max) * 0.5f;
+  glm_vec_copy(min, cam->bbox.world.vec.min);
+  glm_vec_copy(max, cam->bbox.world.vec.max);
 }
 
 void
