@@ -109,32 +109,20 @@ gkPrepareCameraProp(GkCamera * __restrict cam) {
   vec3     min, max;
   int32_t  i;
 
-  glm_extract_planes(cam->viewProj, cam->frustum.planes);
-
   vert = cam->vertices;
   glm_mat4_inv(cam->viewProj, invViewProj);
 
-  glm_mat4_mulv(invViewProj, (vec4){-1.0f, -1.0f, -1.0f, 1.0f}, vert[0]);
-  glm_mat4_mulv(invViewProj, (vec4){-1.0f,  1.0f, -1.0f, 1.0f}, vert[1]);
-  glm_mat4_mulv(invViewProj, (vec4){ 1.0f, -1.0f, -1.0f, 1.0f}, vert[2]);
-  glm_mat4_mulv(invViewProj, (vec4){ 1.0f,  1.0f, -1.0f, 1.0f}, vert[3]);
-
-  glm_mat4_mulv(invViewProj, (vec4){-1.0f, -1.0f,  1.0f, 1.0f}, vert[4]);
-  glm_mat4_mulv(invViewProj, (vec4){-1.0f,  1.0f,  1.0f, 1.0f}, vert[5]);
-  glm_mat4_mulv(invViewProj, (vec4){ 1.0f, -1.0f,  1.0f, 1.0f}, vert[6]);
-  glm_mat4_mulv(invViewProj, (vec4){ 1.0f,  1.0f,  1.0f, 1.0f}, vert[7]);
+  glm_frustum_planes(cam->viewProj, cam->frustum.planes);
+  glm_frustum_corners(invViewProj, vert);
 
   memset(min, 0, sizeof(vec3));
   memset(max, 0, sizeof(vec3));
 
   for (i = 0; i < 8; i++) {
-    glm_vec4_scale(vert[i], 1.0f / vert[i][3], vert[i]);
-
     if (vert[i][0] < min[0])
       min[0] = vert[i][0];
     else if (vert[i][0] > max[0])
       max[0] = vert[i][0];
-
 
     if (vert[i][1] < min[1])
       min[1] = vert[i][1];
