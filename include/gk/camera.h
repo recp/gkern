@@ -40,7 +40,7 @@ typedef struct GkCamera {
   mat4           proj;
   mat4           view;
   mat4           world;
-  mat4           projView;
+  mat4           viewProj;
   vec4           vertices[8];
   GkBBox         bbox;
   GkFrustum      frustum;

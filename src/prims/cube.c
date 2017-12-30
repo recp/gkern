@@ -95,7 +95,7 @@ gkDrawBBox(GkScene * __restrict scene,
   glm_scale(tran, size);
 
   /* glm_mat4_mul(world, tran, tran); */
-  glm_mat4_mul(scene->camera->projView, tran, tran);
+  glm_mat4_mul(scene->camera->viewProj, tran, tran);
 
   gkUniformMat4(prog->mvpi, tran);
 

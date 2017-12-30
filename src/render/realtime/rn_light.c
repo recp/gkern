@@ -54,7 +54,7 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
                      shadowMapUnit,
                      "uShadowMap");
 
-    glm_mat4_mul(gk__biasMatrix, light->camera->projView, lightMVP);
+    glm_mat4_mul(gk__biasMatrix, light->camera->viewProj, lightMVP);
     glm_mat4_mul(lightMVP,       modelInst->trans->world, lightMVP);
 
     gkUniformMat4(gkUniformLoc(prog, "uLightMVP"), lightMVP);

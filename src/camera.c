@@ -65,7 +65,7 @@ gkMakeCamera(mat4 proj, mat4 view) {
 
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->view);
-  glm_mat4_mul(proj, view, cam->projView);
+  glm_mat4_mul(proj, view, cam->viewProj);
   glm_mat4_inv_precise(view, cam->world);
   cam->trans = NULL;
 
@@ -82,9 +82,10 @@ gkMakeCameraByWorld(mat4 proj, mat4 view) {
 
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->world);
-  glm_mat4_mul(proj, view, cam->projView);
+  glm_mat4_mul(proj, view, cam->viewProj);
   glm_mat4_inv_precise(view, cam->view);
 
+  cam->trans = NULL;
   cam->flags = 0;
 
   return cam;
@@ -97,31 +98,31 @@ gkResizeCamera(GkCamera * __restrict camera,
 
   glm_mat4_mul(camera->proj,
                camera->view,
-               camera->projView);
+               camera->viewProj);
 }
 
 static
 void
 gkPrepareCameraProp(GkCamera * __restrict cam) {
-  mat4     projViewInv;
+  mat4     invViewProj;
   vec4    *vert;
   vec3     min, max;
   int32_t  i;
 
-  glm_extract_planes(cam->projView, cam->frustum.planes);
+  glm_extract_planes(cam->viewProj, cam->frustum.planes);
 
   vert = cam->vertices;
-  glm_mat4_inv(cam->projView, projViewInv);
+  glm_mat4_inv(cam->viewProj, invViewProj);
 
-  glm_mat4_mulv(projViewInv, (vec4){-1.0f, -1.0f, -1.0f, 1.0f}, vert[0]);
-  glm_mat4_mulv(projViewInv, (vec4){-1.0f,  1.0f, -1.0f, 1.0f}, vert[1]);
-  glm_mat4_mulv(projViewInv, (vec4){ 1.0f, -1.0f, -1.0f, 1.0f}, vert[2]);
-  glm_mat4_mulv(projViewInv, (vec4){ 1.0f,  1.0f, -1.0f, 1.0f}, vert[3]);
+  glm_mat4_mulv(invViewProj, (vec4){-1.0f, -1.0f, -1.0f, 1.0f}, vert[0]);
+  glm_mat4_mulv(invViewProj, (vec4){-1.0f,  1.0f, -1.0f, 1.0f}, vert[1]);
+  glm_mat4_mulv(invViewProj, (vec4){ 1.0f, -1.0f, -1.0f, 1.0f}, vert[2]);
+  glm_mat4_mulv(invViewProj, (vec4){ 1.0f,  1.0f, -1.0f, 1.0f}, vert[3]);
 
-  glm_mat4_mulv(projViewInv, (vec4){-1.0f, -1.0f,  1.0f, 1.0f}, vert[4]);
-  glm_mat4_mulv(projViewInv, (vec4){-1.0f,  1.0f,  1.0f, 1.0f}, vert[5]);
-  glm_mat4_mulv(projViewInv, (vec4){ 1.0f, -1.0f,  1.0f, 1.0f}, vert[6]);
-  glm_mat4_mulv(projViewInv, (vec4){ 1.0f,  1.0f,  1.0f, 1.0f}, vert[7]);
+  glm_mat4_mulv(invViewProj, (vec4){-1.0f, -1.0f,  1.0f, 1.0f}, vert[4]);
+  glm_mat4_mulv(invViewProj, (vec4){-1.0f,  1.0f,  1.0f, 1.0f}, vert[5]);
+  glm_mat4_mulv(invViewProj, (vec4){ 1.0f, -1.0f,  1.0f, 1.0f}, vert[6]);
+  glm_mat4_mulv(invViewProj, (vec4){ 1.0f,  1.0f,  1.0f, 1.0f}, vert[7]);
 
   memset(min, 0, sizeof(vec3));
   memset(max, 0, sizeof(vec3));
@@ -152,14 +153,14 @@ gkPrepareCameraProp(GkCamera * __restrict cam) {
 
 void
 gkCameraProjUpdated(GkCamera * __restrict cam) {
-  glm_mat4_mul(cam->proj, cam->view, cam->projView);
+  glm_mat4_mul(cam->proj, cam->view, cam->viewProj);
   gkPrepareCameraProp(cam);
 }
 
 void
 gkCameraViewUpdated(GkCamera * __restrict cam) {
   glm_mat4_inv(cam->world, cam->view);
-  glm_mat4_mul(cam->proj,  cam->view, cam->projView);
+  glm_mat4_mul(cam->proj,  cam->view, cam->viewProj);
   gkPrepareCameraProp(cam);
 }
 

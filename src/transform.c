@@ -221,7 +221,7 @@ gkUniformTransform(struct GkProgram * __restrict prog,
   /* Model View Projection Matrix */
   if (hasMVP) {
     if (!ftr)
-      glm_mul(cam->projView, trans->world, mvp);
+      glm_mul(cam->viewProj, trans->world, mvp);
 
     gkUniformMat4(prog->mvpi, pmvp);
   }
