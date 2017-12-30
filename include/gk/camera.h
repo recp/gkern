@@ -18,7 +18,7 @@ extern "C" {
 #include <cglm/cglm.h>
 
 struct GkScene;
-struct FListItem;
+struct GkModelInst;
 
 typedef enum GkCameraFlags {
   GK_CAMF_NONE     = 0,
@@ -30,9 +30,10 @@ typedef enum GkCameraFlags {
 GK_MAKE_C_ENUM(GkCameraFlags)
 
 typedef struct GkFrustum {
-  GkPlane           planes[6]; /* left, right, bottom, top, near, far */
-  struct FListItem *objs;
-  size_t            objsCount;
+  GkPlane              planes[6]; /* left, right, bottom, top, near, far */
+  struct GkModelInst **objs;
+  size_t               objsLen;
+  size_t               objsCount;
 } GkFrustum;
 
 typedef struct GkCamera {

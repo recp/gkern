@@ -60,8 +60,11 @@ gkCullFrustum(GkScene  * __restrict scene,
   sceneImpl = (GkSceneImpl *)scene;
   np        = sceneImpl->lastPage;
 
-  flist_sp_destroy(&cam->frustum.objs);
+  free(cam->frustum.objs);
+
   cam->frustum.objsCount = 0;
+  cam->frustum.objsLen   = 1024;
+  cam->frustum.objs      = malloc(sizeof(void *) * cam->frustum.objsLen);
 
   while (np) {
     for (i = 0; i < gk_nodesPerPage; i++) {
@@ -77,7 +80,13 @@ gkCullFrustum(GkScene  * __restrict scene,
           goto cont;
 
         if (gkAABBInFrustum(modelInst->bbox, cam->frustum.planes)) {
-          flist_sp_insert(&cam->frustum.objs, modelInst);
+          if (cam->frustum.objsCount == cam->frustum.objsLen) {
+            cam->frustum.objsLen += 512;
+            cam->frustum.objs = realloc(cam->frustum.objs,
+                                        sizeof(void *) * cam->frustum.objsLen);
+          }
+
+          cam->frustum.objs[cam->frustum.objsCount] = modelInst;
           cam->frustum.objsCount++;
         }
 

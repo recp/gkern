@@ -137,17 +137,18 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
 GK_EXPORT
 void
 gkModelPerLightRenderPath(GkScene * __restrict scene) {
-  FListItem   *item;
-  GkModelInst *modelInst;
-  item = scene->camera->frustum.objs;
-  while (item) {
-    modelInst = item->data;
+  GkModelInst *modelInst, **objs;
+  size_t       i, c;
+
+  objs = scene->camera->frustum.objs;
+  c    = scene->camera->frustum.objsCount;
+
+  for (i = 0; i < c; i++) {
+    modelInst = objs[i];
 
     if (!scene->renderModelFn)
       gkRenderModel(scene, modelInst);
     else
       scene->renderModelFn(scene, modelInst);
-
-    item = item->next;
   }
 }
