@@ -27,6 +27,12 @@ typedef enum GkLightType {
   GK_LIGHT_TYPE_CUSTOM      = 5
 } GkLightType;
 
+typedef enum GkLightFlags {
+  GK_LIGHTF_NONE          = 0,
+  GK_LIGHTF_TRANSFORMED   = 1 << 1,
+  GK_LIGHTF_DISABLED      = 1 << 2
+} GkLightFlags;
+
 /* for scene, because node can have multiple light instancs */
 typedef struct GkLightRef {
   struct GkLightRef *prev;
@@ -45,8 +51,7 @@ typedef struct GkLight {
   GkColor          color;
   int32_t          index;
   uint8_t          isvalid;
-  uint8_t          enabled;
-  uint8_t          readonly;
+  GkLightFlags     flags;
 } GkLight;
 
 typedef GkLight GkAmbientLight;
@@ -85,6 +90,11 @@ void
 gkUniformSingleLight(struct GkScene   * __restrict scene,
                      GkLight          * __restrict light,
                      struct GkProgram * __restrict prog);
+
+void
+gkApplyTransformToLight(struct GkScene   * __restrict scene,
+                        GkLight          * __restrict light,
+                        struct GkProgram * __restrict prog);
 
 struct GkCamera*
 gkCameraOfLight(struct GkScene *scene, GkLight *light);

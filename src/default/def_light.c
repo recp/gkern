@@ -21,8 +21,7 @@ GkDirectionalLight gkdef_light_directional = {
     .color     = { 1.0, 1.0, 1.0, 1.0 },
     .index     = -1,
     .isvalid   = false,
-    .enabled   = true,
-    .readonly  = true
+    .flags     = 0
   }
 };
 

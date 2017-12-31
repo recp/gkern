@@ -12,6 +12,48 @@
 #include <string.h>
 
 void
+gkApplyTransformToLight(struct GkScene * __restrict scene,
+                        GkLight        * __restrict light,
+                        GkProgram      * __restrict prog) {
+  mat4  mv;
+  vec4  dir;
+  char  buf[32];
+  vec4 *transView;
+  GLint loc;
+
+  transView = NULL;
+  if (light->node) {
+    GkNode           *node;
+    GkFinalTransform *ftr;
+
+    node = light->node;
+    if ((ftr = gkFinalTransform(node->trans, scene->camera))) {
+      transView = ftr->mv;
+    } else {
+      glm_mul(node->trans->world, scene->camera->view, mv);
+      transView = mv;
+    }
+  } else { /* todo: make sure light always has a node */
+    glm_mat4_copy(GLM_MAT4_IDENTITY, mv);
+    transView = mv;
+  }
+
+  /* TODO: read uniform structure/names from options */
+  strcpy(buf, "light.");
+
+  loc = gkUniformLocBuff(prog, "position", buf);
+
+  /* position must be in view space */
+  glUniform3fv(loc, 1, transView[3]);
+
+  /* light/cone direction */
+  glm_vec_rotate_m4(transView, light->direction, dir);
+
+  loc = gkUniformLocBuff(prog, "direction", buf);
+  glUniform3fv(loc, 1, dir);
+}
+
+void
 gkUniformSingleLight(struct GkScene * __restrict scene,
                      GkLight        * __restrict light,
                      GkProgram      * __restrict prog) {
@@ -29,6 +71,8 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
     node = light->node;
     if ((ftr = gkFinalTransform(node->trans, scene->camera))) {
       transView = ftr->mv;
+      printf("p3: %p\n", node->trans);
+      glm_mat4_print(transView, stderr);
     } else {
       glm_mul(node->trans->world, scene->camera->view, mv);
       transView = mv;
@@ -37,6 +81,7 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
     glm_mat4_copy(GLM_MAT4_IDENTITY, mv);
     transView = mv;
   }
+
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "light.");

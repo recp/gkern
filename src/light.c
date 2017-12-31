@@ -30,7 +30,7 @@ gkUniformLight(struct GkScene * __restrict scene,
   else
     index = light->index;
 
-  enabled = light->enabled;
+  enabled = !(light->flags & GK_LIGHTF_DISABLED);
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "lights");

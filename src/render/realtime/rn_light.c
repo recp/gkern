@@ -38,6 +38,8 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
   light = sceneImpl->forLight;
   if (light != prog->lastLight)
     gkUniformSingleLight(scene, light, prog);
+  else if (light->flags & GK_LIGHTF_TRANSFORMED)
+    gkApplyTransformToLight(scene, light, prog);
 
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
     mat4         lightMVP;
@@ -90,6 +92,8 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
 
     if (light != prog->lastLight)
       gkUniformSingleLight(scene, light, prog);
+    else if (light->flags & GK_LIGHTF_TRANSFORMED)
+      gkApplyTransformToLight(scene, light, prog);
 
     gkRenderPrim(scene, prim);
 
@@ -129,6 +133,8 @@ gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
 
     if (light != prog->lastLight)
       gkUniformSingleLight(scene, light, prog);
+    else if (light->flags & GK_LIGHTF_TRANSFORMED)
+      gkApplyTransformToLight(scene, light, prog);
 
     gkRenderPrim(scene, prim);
 
