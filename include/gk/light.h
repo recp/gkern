@@ -46,6 +46,7 @@ typedef struct GkLight {
   struct GkCamera *camera;
   const char      *name;
   vec4            *ambient;
+  vec3             up;
   vec3             direction;
   GkLightType      type;
   GkColor          color;
