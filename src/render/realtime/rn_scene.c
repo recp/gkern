@@ -35,6 +35,15 @@ gkPrepareScene(GkScene * scene) {
     sceneImpl->rpath = GK_RNPATH_MODEL_PERLIGHT;
   }
 
+  /* default sun light */
+  if (!sceneImpl->pub.lights) {
+    GkLight *light;
+    light                     = gk_def_lights();
+    light->isvalid            = false;
+    sceneImpl->pub.lightCount = 1;
+    sceneImpl->pub.lights     = (GkLightRef *)light;
+  }
+
   scene->flags |= GK_SCENEF_PREPARED;
 }
 
@@ -97,22 +106,14 @@ void
 gkScenePerLightRenderPath(GkScene * __restrict scene) {
   GkSceneImpl *sceneImpl;
   GkLight     *light, *firstLight;
-  GkTransform *trans;
-  GkNode      *rootNode;
+  GkModelInst *modelInst, **objs;
+  size_t       i, c;
 
   sceneImpl  = (GkSceneImpl *)scene;
-
-  /* default sun light */
-  if (!(light = (GkLight *)sceneImpl->pub.lights)) {
-    light                 = gk_def_lights();
-    light->isvalid        = false;
-    sceneImpl->pub.lightCount = 1;
-    sceneImpl->pub.lights     = (GkLightRef *)light;
-  }
-
-  trans      = scene->trans;
-  rootNode   = scene->rootNode;
+  light      = (GkLight *)sceneImpl->pub.lights;
   firstLight = light;
+  objs       = scene->camera->frustum.objs;
+  c          = scene->camera->frustum.objsCount;
 
   do {
     sceneImpl->forLight = light;
@@ -124,13 +125,17 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
       glBlendFunc(GL_ONE, GL_ONE);
     }
 
-    if (scene->flags & GK_SCENEF_SHADOWS) {
+    if (scene->flags & GK_SCENEF_SHADOWS)
       gkRenderShadows(scene, light);
+
+    for (i = 0; i < c; i++) {
+      modelInst = objs[i];
+
+      if (!scene->renderModelFn)
+        gkRenderModel(scene, modelInst);
+      else
+        scene->renderModelFn(scene, modelInst);
     }
-
-    /* gkRenderShadowMapTo(scene, scene->finalOutput); */
-
-    gkRenderNode(scene, rootNode, trans);
   } while ((light = (GkLight *)light->ref.next));
 }
 

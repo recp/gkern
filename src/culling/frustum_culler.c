@@ -76,10 +76,8 @@ gkCullFrustum(GkScene  * __restrict scene,
         continue;
 
       while (modelInst) {
-        if (!modelInst->bbox)
-          goto cont;
-
-        if (gkAABBInFrustum(modelInst->bbox, cam->frustum.planes)) {
+        if (modelInst->bbox
+            && gkAABBInFrustum(modelInst->bbox, cam->frustum.planes)) {
           if (cam->frustum.objsCount == cam->frustum.objsLen) {
             cam->frustum.objsLen += 512;
             cam->frustum.objs = realloc(cam->frustum.objs,
@@ -90,7 +88,6 @@ gkCullFrustum(GkScene  * __restrict scene,
           cam->frustum.objsCount++;
         }
 
-      cont:
         modelInst = modelInst->next;
       }
     }
