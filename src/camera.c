@@ -104,39 +104,13 @@ gkResizeCamera(GkCamera * __restrict camera,
 static
 void
 gkPrepareCameraProp(GkCamera * __restrict cam) {
-  mat4     invViewProj;
-  vec4    *vert;
-  vec3     min, max;
-  int32_t  i;
+  mat4 invViewProj;
 
-  vert = cam->vertices;
   glm_mat4_inv(cam->viewProj, invViewProj);
 
   glm_frustum_planes(cam->viewProj, cam->frustum.planes);
-  glm_frustum_corners(invViewProj, vert);
-
-  memset(min, 0, sizeof(vec3));
-  memset(max, 0, sizeof(vec3));
-
-  for (i = 0; i < 8; i++) {
-    if (vert[i][0] < min[0])
-      min[0] = vert[i][0];
-    else if (vert[i][0] > max[0])
-      max[0] = vert[i][0];
-
-    if (vert[i][1] < min[1])
-      min[1] = vert[i][1];
-    else if (vert[i][1] > max[1])
-      max[1] = vert[i][1];
-
-    if (vert[i][2] < min[2])
-      min[2] = vert[i][2];
-    else if (vert[i][2] > max[2])
-      max[2] = vert[i][2];
-  }
-
-  glm_vec_copy(min, cam->bbox.world.vec.min);
-  glm_vec_copy(max, cam->bbox.world.vec.max);
+  glm_frustum_corners(invViewProj, cam->frustum.corners);
+  glm_frustum_center(cam->frustum.corners, cam->frustum.center);
 }
 
 void

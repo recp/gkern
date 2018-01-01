@@ -30,6 +30,8 @@ typedef enum GkCameraFlags {
 GK_MAKE_C_ENUM(GkCameraFlags)
 
 typedef struct GkFrustum {
+  vec4                 corners[8];
+  vec4                 center;
   GkPlane              planes[6]; /* left, right, bottom, top, near, far */
   struct GkModelInst **objs;
   size_t               objsLen;
@@ -41,8 +43,6 @@ typedef struct GkCamera {
   mat4           view;
   mat4           world;
   mat4           viewProj;
-  vec4           vertices[8];
-  GkBBox         bbox;
   GkFrustum      frustum;
   GkCameraFlags  flags;
   GkTransform   *trans;
