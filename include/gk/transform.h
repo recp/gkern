@@ -25,7 +25,8 @@ typedef enum GkTransformFlags {
   GK_TRANSF_FMAT          =  1 << 4,
   GK_TRANSF_FMAT_MV       =  1 << 5,
   GK_TRANSF_FMAT_MVP      =  1 << 6,
-  GK_TRANSF_FMAT_NORMAT   =  1 << 7  /* use normal matrix or not */
+  GK_TRANSF_FMAT_NORMAT   =  1 << 7,  /* use normal matrix or not */
+  GK_TRANSF_CALC_VIEW     =  1 << 8
 } GkTransformFlags;
 
 typedef enum GkTransformType {

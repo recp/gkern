@@ -90,7 +90,9 @@ gkPrepareNode(GkScene * __restrict scene,
 
   sceneImpl = (GkSceneImpl *)scene;
   camItem   = sceneImpl->transfCacheSlots->first;
-  tr        = node->trans;
+
+  if (!(tr = node->trans))
+    tr = node->trans = parentNode->trans;
 
   if (!GK_FLG(tr->flags, GK_TRANSF_LOCAL_ISVALID))
     gkTransformCombine(tr);
@@ -129,6 +131,7 @@ gkPrepareNode(GkScene * __restrict scene,
     } while (modelInst);
   } else if (node->light) {
     gkCalcViewTransf(scene, scene->camera, tr);
+    node->light->flags |= GK_LIGHTF_TRANSFORMED;
   }
 }
 
@@ -139,10 +142,8 @@ gkApplyTransform(GkScene * __restrict scene,
   GkTransform  *tr;
   GkNode       *mostParent;
 
-  if (!node
-      || !(tr = node->trans)
-      || !(node->flags & GK_NODEF_HAVE_TRANSFORM))
-    return;
+  if (!(tr = node->trans))
+    node->trans = scene->trans;
 
   gkPrepareNode(scene, node->parent, node);
 
@@ -195,6 +196,9 @@ gkPrepareView(GkScene * __restrict scene,
   camItem   = sceneImpl->transfCacheSlots->first;
   tr        = node->trans;
 
+  if (!(node->flags & GK_NODEF_HAVE_TRANSFORM))
+    return;
+
   if (node->model) {
     while (camItem) {
       camImpl = camItem->data;
@@ -203,6 +207,7 @@ gkPrepareView(GkScene * __restrict scene,
     }
   } else if (node->light) {
     gkCalcViewTransf(scene, scene->camera, tr);
+    node->light->flags |= GK_LIGHTF_TRANSFORMED;
   }
 }
 
@@ -210,42 +215,53 @@ GK_EXPORT
 void
 gkApplyView(struct GkScene * __restrict scene,
             GkNode         * __restrict node) {
-  GkNode *mostParent;
+  GkNodePage  *np;
+  GkSceneImpl *sceneImpl;
+  GkModelInst *modelInst;
+  size_t       i;
 
-  if (!node)
-    return;
+  sceneImpl = (GkSceneImpl *)scene;
+  np        = sceneImpl->lastPage;
 
-  gkPrepareView(scene, node);
+  /* invalidate */
+  while (np) {
+    for (i = 0; i < gk_nodesPerPage; i++) {
+      node = &np->nodes[i];
 
-  /* do the same for child nodes */
-  if (!node->chld)
-    return;
+      /* unallocated node */
+      if (!(node->flags & GK_NODEF_NODE)
+          || !(modelInst = node->model))
+        continue;
 
-  mostParent = node->parent;
-  node       = node->chld;
-  while (node) {
-    gkPrepareView(scene, node);
-    while (node->chld) {
-      gkPrepareView(scene, node);
-      node = node->chld;
-    }
-
-    if (node->next) {
-      node = node->next;
-      continue;
-    }
-
-    node = node->parent;
-    while (node) {
-      if (node == mostParent)
-        goto dn;
-      if (node->next) {
-        node = node->next;
-        break;
+      while (modelInst) {
+        modelInst->trans->flags |= GK_TRANSF_CALC_VIEW;
+        modelInst = modelInst->next;
       }
-      node = node->parent;
     }
+
+    np = np->next;
   }
 
-dn:; /* done */
+  np = sceneImpl->lastPage;
+  while (np) {
+    for (i = 0; i < gk_nodesPerPage; i++) {
+      node = &np->nodes[i];
+
+      /* unallocated node */
+      if (!(node->flags & GK_NODEF_NODE)
+          || !(modelInst = node->model))
+        continue;
+
+      while (modelInst) {
+        if (modelInst->trans->flags & GK_TRANSF_CALC_VIEW) {
+          gkCalcFinalTransf(scene, scene->camera, modelInst->trans);
+          modelInst->trans->flags &= ~GK_TRANSF_CALC_VIEW;
+        }
+
+        modelInst = modelInst->next;
+      }
+    }
+
+    np = np->next;
+  }
 }

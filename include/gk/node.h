@@ -15,6 +15,7 @@ extern "C" {
 #include "light.h"
 #include "bbox.h"
 #include "model.h"
+#include "camera.h"
 #include "transform.h"
 
 #include <stdlib.h>
@@ -24,7 +25,7 @@ struct GkScene;
 
 typedef enum GkNodeFlags {
   GK_NODEF_NODE           = 1,
-  GK_NODEF_HAVE_TRANSFORM = 2,
+  GK_NODEF_HAVE_TRANSFORM = 2
 } GkNodeFlags;
 
 typedef struct GkNode {

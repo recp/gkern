@@ -140,9 +140,9 @@ gkZoom(GkScene * __restrict scene,
   glm_vec_add(cam->world[3], dir, cam->world[3]);
 
   gkCameraViewUpdated(cam);
+  gkApplyView(scene, scene->rootNode);
 
-  scene->camera->flags |= GK_UPDT_VIEW;
-  scene->flags         |= GK_SCENEF_RENDER;
+  scene->flags |= GK_SCENEF_RENDER;
 }
 
 void
