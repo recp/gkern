@@ -19,19 +19,40 @@ gkCameraOfLight(GkScene *scene, GkLight *light) {
 
   switch (light->type) {
     case GK_LIGHT_TYPE_DIRECTIONAL: {
-      vec3  dir, pos;
-      float r;
+      vec4   *c;
+      vec3    box[2], he, v;
+      int32_t i;
 
-      r = cam->bbox.radius;
-      gkLightDirWorld(scene, light, dir);
-      glm_vec_normalize(dir);
+      memset(box, 0, sizeof(box));
 
-      glm_vec_scale(dir, r, pos);
-      glm_vec_sub(cam->bbox.center, pos, pos);
+      gkLightRotation(scene, light, view[0], view[1], view[2]);
+      
+      glm_vec_broadcast(0.0f, view[3]);
+      view[0][3] = view[1][3] = view[2][3] = 0.0f;
+      view[3][3] = 1.0f;
 
-      glm_lookat(pos, cam->bbox.center, GLM_YUP, view);
+      c = cam->frustum.corners;
+      for (i = 0; i < 8; i++) {
+        glm_vec_rotate_m4(view, c[i], v);
 
-      glm_ortho(-r, r, -r, r, -r, r, proj);
+        box[0][0] = glm_min(box[0][0], v[0]);
+        box[0][1] = glm_min(box[0][1], v[1]);
+        box[0][2] = glm_min(box[0][2], v[2]);
+
+        box[1][0] = glm_max(box[1][0], v[0]);
+        box[1][1] = glm_max(box[1][1], v[1]);
+        box[1][2] = glm_max(box[1][2], v[2]);
+      }
+
+      glm_vec_sub(box[1], box[0], he);
+      glm_vec_scale(he, 0.5f, he);
+
+      glm_mat4_copy(GLM_MAT4_IDENTITY, proj);
+      proj[0][0] = 1.0f / he[0];
+      proj[1][1] = 1.0f / he[1];
+      proj[2][2] = 1.0f / he[2];
+
+      glm_mat4_transpose_to(view, view);
       break;
     }
     case GK_LIGHT_TYPE_POINT:
@@ -96,3 +117,26 @@ gkLightDirWorld(GkScene *scene, GkLight *light, vec3 dir) {
   glm_vec_copy(light->direction, dir);
 }
 
+/* todo: cache this */
+void
+gkLightRotation(GkScene *scene,
+                GkLight *light,
+                vec3     right,
+                vec3     up,
+                vec3     fwd) {
+  GkTransform *trans;
+
+  glm_vec_copy(light->direction, fwd);
+  glm_vec_copy(light->up,        up);
+
+  if ((trans = gkLightTransform(light))) {
+    glm_vec_rotate_m4(trans->world, fwd, fwd);
+    glm_vec_rotate_m4(trans->world, up,  up);
+  }
+
+  glm_vec_cross(fwd, up, right);
+
+  glm_vec_normalize(right);
+  glm_vec_normalize(up);
+  glm_vec_normalize(fwd);
+}

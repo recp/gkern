@@ -112,4 +112,11 @@ gkLightDir(struct GkScene *scene, GkLight *light, vec3 dir);
 void
 gkLightDirWorld(struct GkScene *scene, GkLight *light, vec3 dir);
 
+void
+gkLightRotation(struct GkScene *scene,
+                GkLight        *light,
+                vec3            right,
+                vec3            up,
+                vec3            fwd);
+
 #endif /* gk_light_h */
