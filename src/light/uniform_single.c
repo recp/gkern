@@ -7,6 +7,7 @@
 
 #include "../common.h"
 #include "../../include/gk/gk.h"
+#include "../../include/gk/opt.h"
 #include "../default/def_light.h"
 #include "../program/uniform_cache.h"
 #include <string.h>
@@ -47,7 +48,7 @@ gkApplyTransformToLight(struct GkScene * __restrict scene,
   glUniform3fv(loc, 1, transView[3]);
 
   /* light/cone direction */
-  glm_vec_rotate_m4(transView, light->dir, dir);
+  glm_vec_rotate_m4(scene->camera->view, light->dir, dir);
 
   loc = gkUniformLocBuff(prog, "direction", buf);
   glUniform3fv(loc, 1, dir);
@@ -144,7 +145,7 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   glUniform3fv(loc, 1, transView[3]);
 
   /* light/cone direction */
-  glm_vec_rotate_m4(transView, light->dir, dir);
+  glm_vec_rotate_m4(scene->camera->view, light->dir, dir);
 
   loc = gkUniformLocBuff(prog, "direction", buf);
   glUniform3fv(loc, 1, dir);
