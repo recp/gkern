@@ -71,8 +71,6 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
     node = light->node;
     if ((ftr = gkFinalTransform(node->trans, scene->camera))) {
       transView = ftr->mv;
-      printf("p3: %p\n", node->trans);
-      glm_mat4_print(transView, stderr);
     } else {
       glm_mul(node->trans->world, scene->camera->view, mv);
       transView = mv;
