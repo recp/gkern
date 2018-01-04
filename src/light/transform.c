@@ -26,7 +26,7 @@ gkCameraOfLight(GkScene *scene, GkLight *light) {
       memset(box, 0, sizeof(box));
 
       gkLightRotation(scene, light, view[0], view[1], view[2]);
-      
+
       glm_vec_broadcast(0.0f, view[3]);
       view[0][3] = view[1][3] = view[2][3] = 0.0f;
       view[3][3] = 1.0f;
@@ -93,28 +93,28 @@ gkLightDir(GkScene *scene, GkLight *light, vec3 dir) {
 
     cam = scene->camera;
     if ((ftr = gkFinalTransform(trans, cam))) {
-      glm_vec_rotate_m4(ftr->mv, light->direction, dir);
+      glm_vec_rotate_m4(ftr->mv, light->dir, dir);
     } else {
       mat4 mv;
       glm_mul(cam->view, trans->world, mv);
-      glm_vec_rotate_m4(mv, light->direction, dir);
+      glm_vec_rotate_m4(mv, light->dir, dir);
     }
 
     return;
   }
 
-  glm_vec_copy(light->direction, dir);
+  glm_vec_copy(light->dir, dir);
 }
 
 void
 gkLightDirWorld(GkScene *scene, GkLight *light, vec3 dir) {
   GkTransform *trans;
   if ((trans = gkLightTransform(light))) {
-    glm_vec_rotate_m4(trans->world, light->direction, dir);
+    glm_vec_rotate_m4(trans->world, light->dir, dir);
     return;
   }
 
-  glm_vec_copy(light->direction, dir);
+  glm_vec_copy(light->dir, dir);
 }
 
 /* todo: cache this */
@@ -126,13 +126,11 @@ gkLightRotation(GkScene *scene,
                 vec3     fwd) {
   GkTransform *trans;
 
-  glm_vec_copy(light->direction, fwd);
-  glm_vec_copy(light->up,        up);
+  glm_vec_copy(light->dir, fwd);
+  glm_vec_copy((vec3){0.0, 1.0, 0.0f},  up);
 
-  if ((trans = gkLightTransform(light))) {
-    glm_vec_rotate_m4(trans->world, fwd, fwd);
-    glm_vec_rotate_m4(trans->world, up,  up);
-  }
+  if ((trans = gkLightTransform(light)))
+    glm_vec_rotate_m4(trans->world, up, up);
 
   glm_vec_cross(fwd, up, right);
 

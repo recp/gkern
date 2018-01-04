@@ -104,7 +104,7 @@ gkUniformLight(struct GkScene * __restrict scene,
 
   /* light/cone direction */
   glm_vec_rotate_m4(transView,
-                    light->direction,
+                    light->dir,
                     dir);
 
   loc = gkUniformLocBuff(prog, "direction", buf);

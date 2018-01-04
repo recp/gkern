@@ -47,7 +47,7 @@ gkApplyTransformToLight(struct GkScene * __restrict scene,
   glUniform3fv(loc, 1, transView[3]);
 
   /* light/cone direction */
-  glm_vec_rotate_m4(transView, light->direction, dir);
+  glm_vec_rotate_m4(transView, light->dir, dir);
 
   loc = gkUniformLocBuff(prog, "direction", buf);
   glUniform3fv(loc, 1, dir);
@@ -146,7 +146,7 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   glUniform3fv(loc, 1, transView[3]);
 
   /* light/cone direction */
-  glm_vec_rotate_m4(transView, light->direction, dir);
+  glm_vec_rotate_m4(transView, light->dir, dir);
 
   loc = gkUniformLocBuff(prog, "direction", buf);
   glUniform3fv(loc, 1, dir);

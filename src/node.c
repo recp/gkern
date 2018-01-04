@@ -8,6 +8,8 @@
 #include "common.h"
 #include "../include/gk/scene.h"
 #include "../include/gk/node.h"
+#include "../include/gk/opt.h"
+
 #include <ds/hash.h>
 #include <string.h>
 
@@ -130,8 +132,18 @@ gkPrepareNode(GkScene * __restrict scene,
       modelInst = modelInst->next;
     } while (modelInst);
   } else if (node->light) {
+    GkLight *light;
+
+    light = node->light;
+
     gkCalcViewTransf(scene, scene->camera, tr);
-    node->light->flags |= GK_LIGHTF_TRANSFORMED;
+    light->flags |= GK_LIGHTF_TRANSFORMED;
+
+    glm_vec_rotate_m4(tr->world,
+                      (float *)gk_opt(GK_OPT_LIGHT_DIR),
+                      light->dir);
+
+    glm_vec_normalize(light->dir);
   }
 }
 
@@ -206,8 +218,21 @@ gkPrepareView(GkScene * __restrict scene,
       camItem = camItem->next;
     }
   } else if (node->light) {
+    GkLight *light;
+
+    light = node->light;
+
     gkCalcViewTransf(scene, scene->camera, tr);
-    node->light->flags |= GK_LIGHTF_TRANSFORMED;
+    light->flags |= GK_LIGHTF_TRANSFORMED;
+
+    glm_vec_rotate_m4(tr->world,
+                      (float *)gk_opt(GK_OPT_LIGHT_DIR),
+                      light->dir);
+
+    glm_vec_normalize(light->dir);
+
+    versor lightOri;
+    glm_quatv(lightOri, -M_PI, GLM_XUP);
   }
 }
 

@@ -60,7 +60,8 @@ gkCullFrustum(GkScene  * __restrict scene,
   sceneImpl = (GkSceneImpl *)scene;
   np        = sceneImpl->lastPage;
 
-  free(cam->frustum.objs);
+  if (cam->frustum.objs)
+    free(cam->frustum.objs);
 
   cam->frustum.objsCount = 0;
   cam->frustum.objsLen   = 1024;
