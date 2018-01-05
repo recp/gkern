@@ -147,3 +147,29 @@ gkRnModelNoMatOPass(GkScene     *scene,
   /* reset the state */
   glBindVertexArray(0);
 }
+
+void
+gkRnModelForShadowMap(GkScene     * __restrict scene,
+                      GkModelInst * __restrict modelInst,
+                      GkProgram   * __restrict prog) {
+  GkModel     *model;
+  GkPrimitive *primi;
+  GkCamera    *cam;
+
+  cam   = scene->subCamera;
+  model = modelInst->model;
+
+  /* render */
+  primi = model->prim;
+  while (primi) {
+    glBindVertexArray(primi->vao);
+
+    gkUniformTransform(prog, modelInst->trans, cam);
+    gkRenderPrim(scene, primi);
+
+    primi = primi->next;
+  }
+
+  /* reset the state */
+  glBindVertexArray(0);
+}

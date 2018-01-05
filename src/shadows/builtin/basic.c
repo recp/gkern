@@ -47,11 +47,14 @@ void
 gkRenderBasicShadowMap(GkScene * __restrict scene,
                        GkLight * __restrict light) {
   GkContext       *ctx;
+  GkProgram       *prog;
   GkSceneImpl     *sceneImpl;
   GkShadowMap     *shadowMap;
   GkPass          *overridePass;
   GkCamera        *lightCam, *prevCam;
+  GkModelInst     **objs;
   GkRenderModelFn  renderModelFn;
+  size_t           i, c;
 
   ctx       = gkContextOf(scene);
   sceneImpl = (GkSceneImpl *)scene;
@@ -59,10 +62,11 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   if (!(shadowMap = sceneImpl->shadows))
     sceneImpl->shadows = shadowMap = gkSetupShadows(scene);
 
+  prog                 = shadowMap->shadowPass->prog;
   shadowMap->currLight = light;
-  renderModelFn = scene->renderModelFn;
-  overridePass  = sceneImpl->overridePass;
-  prevCam       = scene->camera;
+  renderModelFn        = scene->renderModelFn;
+  overridePass         = sceneImpl->overridePass;
+  prevCam              = scene->camera;
 
   gkPushState(ctx);
   gkBindPassOut(scene, shadowMap->shadowPass->output);
@@ -72,16 +76,26 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   glClearDepth(1.0f);
   glClear(GL_DEPTH_BUFFER_BIT);
 
+  if (ctx->currState->prog != prog)
+    gkUseProgram(ctx, prog);
+
   /* todo: add these to gpu state */
   scene->renderModelFn    = gkRnModelNoMatOPass;
   sceneImpl->overridePass = shadowMap->shadowPass;
   lightCam                = gkCameraOfLight(scene, light);
   scene->flags           &= ~GK_SCENEF_SHADOWS;
 
+  /* todo: no extra cull required for directional but cull for others! */
+  objs                    = scene->camera->frustum.objs;
+  c                       = scene->camera->frustum.objsCount;
+
   /* render point of view of light  */
   glCullFace(GL_FRONT); /* todo: add to gpu state */
-  gkSetCamera(scene, lightCam);
-  gkRenderNode(scene, scene->rootNode, scene->trans);
+  scene->subCamera = lightCam;
+
+  for (i = 0; i < c; i++)
+    gkRnModelForShadowMap(scene, objs[i], prog);
+
   glCullFace(GL_BACK);
 
   /* restore states: todo add these to state manager */
@@ -92,4 +106,6 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   gkSetCamera(scene, prevCam);
   gkBindPassOut(scene, scene->finalOutput);
   gkPopState(ctx);
+
+  scene->subCamera = NULL;
 }

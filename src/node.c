@@ -243,10 +243,12 @@ gkApplyView(struct GkScene * __restrict scene,
   GkNodePage  *np;
   GkSceneImpl *sceneImpl;
   GkModelInst *modelInst;
+  GkCamera    *cam;
   size_t       i;
 
   sceneImpl = (GkSceneImpl *)scene;
   np        = sceneImpl->lastPage;
+  cam       = scene->camera;
 
   /* invalidate */
   while (np) {
@@ -279,7 +281,7 @@ gkApplyView(struct GkScene * __restrict scene,
 
       while (modelInst) {
         if (modelInst->trans->flags & GK_TRANSF_CALC_VIEW) {
-          gkCalcFinalTransf(scene, scene->camera, modelInst->trans);
+          gkCalcFinalTransf(scene, cam, modelInst->trans);
           modelInst->trans->flags &= ~GK_TRANSF_CALC_VIEW;
         }
 

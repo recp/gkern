@@ -33,6 +33,11 @@ gkRnModelNoMatOPass(GkScene     *scene,
                     GkModelInst *modelInst);
 
 void
+gkRnModelForShadowMap(GkScene     * __restrict scene,
+                      GkModelInst * __restrict modelInst,
+                      GkProgram   * __restrict prog);
+
+void
 gkPrepNode(GkScene     *scene,
            GkNode      *node,
            GkTransform *ptr);

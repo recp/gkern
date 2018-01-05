@@ -64,8 +64,8 @@ gkPrepNode(GkScene     *scene,
     if (node->light
         && (!(GK_FLG(tr->flags, GK_TRANSF_WORLD_ISVALID))
             || !(GK_FLG(tr->flags, GK_TRANSF_FMAT_MV))
-            || GK_FLG(scene->camera->flags, GK_UPDT_VIEW))) {
-      gkCalcViewTransf(scene, scene->camera, tr);
+            || GK_FLG(gkActiveCamera(scene)->flags, GK_UPDT_VIEW))) {
+      gkCalcViewTransf(scene, gkActiveCamera(scene), tr);
     }
 
     if (node->model) {

@@ -49,6 +49,7 @@ GK_MAKE_C_ENUM(GkSceneFlags)
 typedef struct GkScene {
   struct GkContext  *ctx;
   GkCamera          *camera;
+  GkCamera          *subCamera;
   GkTransform       *trans;  /* free camera */
   struct GkNode     *rootNode;
   struct GkLightRef *lights;
@@ -63,6 +64,14 @@ typedef struct GkScene {
   float              backingScale;
   float              fpsApprx;
 } GkScene;
+
+GK_INLINE
+GkCamera*
+gkActiveCamera(GkScene * __restrict scene) {
+  if (!scene->subCamera)
+    return scene->camera;
+  return scene->subCamera;
+}
 
 GK_EXPORT
 GkScene*

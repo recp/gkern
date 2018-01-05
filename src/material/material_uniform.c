@@ -120,7 +120,7 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
   GkTechnique *technique;
   GLint        loc;
   uint32_t     texUnit;
-  
+
   if (prog->lastMaterial == material
       && !prog->updtMaterials)
   return;
