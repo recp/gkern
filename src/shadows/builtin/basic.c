@@ -50,10 +50,8 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   GkProgram       *prog;
   GkSceneImpl     *sceneImpl;
   GkShadowMap     *shadowMap;
-  GkPass          *overridePass;
-  GkCamera        *lightCam, *prevCam;
+  GkCamera        *lightCam;
   GkModelInst     **objs;
-  GkRenderModelFn  renderModelFn;
   size_t           i, c;
 
   ctx       = gkContextOf(scene);
@@ -64,30 +62,24 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
 
   prog                 = shadowMap->shadowPass->prog;
   shadowMap->currLight = light;
-  renderModelFn        = scene->renderModelFn;
-  overridePass         = sceneImpl->overridePass;
-  prevCam              = scene->camera;
 
   gkPushState(ctx);
   gkBindPassOut(scene, shadowMap->shadowPass->output);
 
   gkEnableDepthTest(ctx);
 
-  glClearDepth(1.0f);
   glClear(GL_DEPTH_BUFFER_BIT);
 
   if (ctx->currState->prog != prog)
     gkUseProgram(ctx, prog);
 
   /* todo: add these to gpu state */
-  scene->renderModelFn    = gkRnModelNoMatOPass;
-  sceneImpl->overridePass = shadowMap->shadowPass;
-  lightCam                = gkCameraOfLight(scene, light);
-  scene->flags           &= ~GK_SCENEF_SHADOWS;
+  lightCam      = gkCameraOfLight(scene, light);
+  scene->flags &= ~GK_SCENEF_SHADOWS;
 
   /* todo: no extra cull required for directional but cull for others! */
-  objs                    = scene->camera->frustum.objs;
-  c                       = scene->camera->frustum.objsCount;
+  objs = scene->camera->frustum.objs;
+  c    = scene->camera->frustum.objsCount;
 
   /* render point of view of light  */
   glCullFace(GL_FRONT); /* todo: add to gpu state */
@@ -99,13 +91,9 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   glCullFace(GL_BACK);
 
   /* restore states: todo add these to state manager */
-  scene->renderModelFn    = renderModelFn;
-  sceneImpl->overridePass = overridePass;
-  scene->flags           |= GK_SCENEF_SHADOWS;
+  scene->flags |= GK_SCENEF_SHADOWS;
+  scene->subCamera = NULL;
 
-  gkSetCamera(scene, prevCam);
   gkBindPassOut(scene, scene->finalOutput);
   gkPopState(ctx);
-
-  scene->subCamera = NULL;
 }
