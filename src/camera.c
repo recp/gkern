@@ -92,6 +92,17 @@ gkMakeCameraByWorld(mat4 proj, mat4 view) {
 }
 
 void
+gkUpdateCamera(GkCamera *cam, mat4 proj, mat4 view) {
+  glm_mat4_copy(proj, cam->proj);
+  glm_mat4_copy(view, cam->view);
+  glm_mat4_mul(proj, view, cam->viewProj);
+  glm_mat4_inv_precise(view, cam->world);
+  cam->trans = NULL;
+
+  cam->flags = 0;
+}
+
+void
 gkResizeCamera(GkCamera * __restrict camera,
                float aspectRatio) {
   glm_perspective_resize(aspectRatio, camera->proj);

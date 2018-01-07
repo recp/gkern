@@ -11,7 +11,9 @@
 #include <string.h>
 
 GkCamera*
-gkCameraOfLight(GkScene *scene, GkLight *light) {
+gkCameraForLight(struct GkScene *scene,
+                 GkLight        *light,
+                 int             splitsCount) {
   mat4      view, proj;
   GkCamera *cam;
 
@@ -60,6 +62,11 @@ gkCameraOfLight(GkScene *scene, GkLight *light) {
 
     default:
       break;
+  }
+
+  if ((cam = light->camera)) {
+    gkUpdateCamera(cam, proj, view);
+    return cam;
   }
 
   return (light->camera = gkMakeCamera(proj, view));

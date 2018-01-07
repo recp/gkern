@@ -62,6 +62,9 @@ GkCamera*
 gkMakeCameraByWorld(mat4 proj, mat4 view);
 
 void
+gkUpdateCamera(GkCamera *cam, mat4 proj, mat4 view);
+
+void
 gkSetCamera(struct GkScene * __restrict scene,
             GkCamera       * __restrict camera);
 

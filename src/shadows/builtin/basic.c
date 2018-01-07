@@ -74,7 +74,7 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
     gkUseProgram(ctx, prog);
 
   /* todo: add these to gpu state */
-  lightCam      = gkCameraOfLight(scene, light);
+  lightCam      = gkCameraForLight(scene, light, 1);
   scene->flags &= ~GK_SCENEF_SHADOWS;
 
   /* todo: no extra cull required for directional but cull for others! */
