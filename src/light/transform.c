@@ -22,16 +22,13 @@ gkCameraForLight(struct GkScene *scene,
   switch (light->type) {
     case GK_LIGHT_TYPE_DIRECTIONAL: {
       vec4   *c;
-      vec3    box[2], he, v;
+      vec3    box[2], he, v, target;
       int32_t i;
 
       memset(box, 0, sizeof(box));
 
-      gkLightRotation(scene, light, view[0], view[1], view[2]);
-
-      glm_vec_broadcast(0.0f, view[3]);
-      view[0][3] = view[1][3] = view[2][3] = 0.0f;
-      view[3][3] = 1.0f;
+      glm_vec_add(cam->frustum.center, light->dir, target);
+      glm_lookat(cam->frustum.center, target, GLM_YUP, view);
 
       c = cam->frustum.corners;
       for (i = 0; i < 8; i++) {
@@ -49,12 +46,8 @@ gkCameraForLight(struct GkScene *scene,
       glm_vec_sub(box[1], box[0], he);
       glm_vec_scale(he, 0.5f, he);
 
-      glm_mat4_copy(GLM_MAT4_IDENTITY, proj);
-      proj[0][0] = 1.0f / he[0];
-      proj[1][1] = 1.0f / he[1];
-      proj[2][2] = 1.0f / he[2];
+      glm_ortho(-he[0], he[0], -he[1], he[1], -he[2], he[2], proj);
 
-      glm_mat4_transpose_to(view, view);
       break;
     }
     case GK_LIGHT_TYPE_POINT:
