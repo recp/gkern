@@ -10,10 +10,11 @@
 #include "../../include/gk/light.h"
 #include <string.h>
 
-GkCamera*
-gkCameraForLight(struct GkScene *scene,
-                 GkLight        *light,
-                 int             splitsCount) {
+void
+gkTransformsForLight(struct GkScene *scene,
+                     GkLight        *light,
+                     mat4           *viewProj,
+                     int             splitCount) {
   mat4      view, proj;
   GkCamera *cam;
 
@@ -21,8 +22,8 @@ gkCameraForLight(struct GkScene *scene,
 
   switch (light->type) {
     case GK_LIGHT_TYPE_DIRECTIONAL: {
-      vec4   *c;
-      vec3    box[2], he, v, target;
+      vec4   *corner, v;
+      vec3    box[2], target;
       int32_t i;
 
       memset(box, 0, sizeof(box));
@@ -30,9 +31,9 @@ gkCameraForLight(struct GkScene *scene,
       glm_vec_add(cam->frustum.center, light->dir, target);
       glm_lookat(cam->frustum.center, target, GLM_YUP, view);
 
-      c = cam->frustum.corners;
+      corner = cam->frustum.corners;
       for (i = 0; i < 8; i++) {
-        glm_vec_rotate_m4(view, c[i], v);
+        glm_mat4_mulv(view, corner[i], v);
 
         box[0][0] = glm_min(box[0][0], v[0]);
         box[0][1] = glm_min(box[0][1], v[1]);
@@ -43,11 +44,10 @@ gkCameraForLight(struct GkScene *scene,
         box[1][2] = glm_max(box[1][2], v[2]);
       }
 
-      glm_vec_sub(box[1], box[0], he);
-      glm_vec_scale(he, 0.5f, he);
-
-      glm_ortho(-he[0], he[0], -he[1], he[1], -he[2], he[2], proj);
-
+      glm_ortho(box[0][0], box[1][0],
+                box[0][1], box[1][1],
+                box[0][2], box[1][2],
+                proj);
       break;
     }
     case GK_LIGHT_TYPE_POINT:
@@ -57,12 +57,7 @@ gkCameraForLight(struct GkScene *scene,
       break;
   }
 
-  if ((cam = light->camera)) {
-    gkUpdateCamera(cam, proj, view);
-    return cam;
-  }
-
-  return (light->camera = gkMakeCamera(proj, view));
+  glm_mat4_mul(proj, view, viewProj[0]);
 }
 
 GkTransform*

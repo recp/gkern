@@ -26,6 +26,14 @@ void *GK_SHADOWS_HANDLE                = &GK_SHADOWS_HANDLE;
 GkShadowTechnType   gk__shadow_techn   = GK_SHADOW_DEFAULT;
 gkSetupShadowsFunc  gk__setupShadowsFn = gkSetupBasicShadowMap;
 gkRenderShadowsFunc gk__rnShadowsFn    = gkRenderBasicShadowMap;
+uint32_t            gk__shadSplitCount = 3;
+
+mat4 gk__biasMatrix = {
+  0.5f, 0.0f, 0.0f, 0.0f,
+  0.0f, 0.5f, 0.0f, 0.0f,
+  0.0f, 0.0f, 0.5f, 0.0f,
+  0.5f, 0.5f, 0.5f, 1.0f
+};
 
 GK_EXPORT
 void

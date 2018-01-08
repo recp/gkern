@@ -15,7 +15,9 @@
 typedef struct GkShadowMap {
   GkPass  *shadowPass;
   GkLight *currLight;
-  float    offset;
+  float   *distances;
+  mat4    *viewProj;
+  int      splitc;
 } GkShadowMap;
 
 typedef GkShadowMap* (*gkSetupShadowsFunc)(GkScene * __restrict scene);

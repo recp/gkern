@@ -43,21 +43,20 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
 
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
     mat4         lightMVP;
-    GkShadowMap *shadowMap;
-    int32_t      shadowMapUnit;
+    GkShadowMap *sm;
+    int32_t      smUnit;
 
-    shadowMap     = sceneImpl->shadows;
-    shadowMapUnit = flist_indexof(gkContextOf(scene)->samplers,
-                                  GK_SHADOWS_HANDLE);
+    sm     = sceneImpl->shadows;
+    smUnit = flist_indexof(gkContextOf(scene)->samplers,
+                           GK_SHADOWS_HANDLE);
 
     gkBindDepthTexTo(scene,
-                     shadowMap->shadowPass,
+                     sm->shadowPass,
                      prog,
-                     shadowMapUnit,
+                     smUnit,
                      "uShadowMap");
 
-    glm_mat4_mul(gk__biasMatrix, light->camera->viewProj, lightMVP);
-    glm_mat4_mul(lightMVP,       modelInst->trans->world, lightMVP);
+    glm_mat4_mul(sm->viewProj[0], modelInst->trans->world, lightMVP);
 
     gkUniformMat4(gkUniformLoc(prog, "uLightMVP"), lightMVP);
   }
