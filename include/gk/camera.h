@@ -45,7 +45,6 @@ typedef struct GkCamera {
   mat4           viewProj;
   GkFrustum      frustum;
   GkCameraFlags  flags;
-  GkTransform   *trans;
 } GkCamera;
 
 GK_EXPORT
