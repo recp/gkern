@@ -86,8 +86,8 @@ uniform float     uShininess;
 \n#endif\n
 
 \n#ifdef SHADOWMAP\n
-in vec4           vShadowCoord;
-uniform sampler2D uShadowMap;
+in vec4                 vShadowCoord;
+uniform sampler2DShadow uShadowMap;
 \n#endif\n
 
 out vec4 fragColor;

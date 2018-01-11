@@ -12,10 +12,7 @@ void main() {
   float a, Ld, Ls;
 
 \n#ifdef SHADOWMAP\n
-  float visibility = 1.0;
-  float shadow = texture(uShadowMap, vShadowCoord.xy).r;
-  if (shadow < vShadowCoord.z)
-    visibility = 0.5;
+  float shadow = 0.5 + 0.5 * textureProj(uShadowMap, vShadowCoord);
 \n#endif\n
 
   switch (lightType) {
@@ -43,7 +40,7 @@ void main() {
 
   fragColor =
 \n#ifdef SHADOWMAP\n
-  visibility * (
+  shadow * (
 \n#endif\n
 
 \n#ifdef DIFFUSE_TEX\n
