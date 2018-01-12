@@ -82,8 +82,6 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   /* todo: add these to gpu state */
   gkShadowMatrix(scene, light, sm->viewProj[0]);
 
-  scene->flags &= ~GK_SCENEF_SHADOWS;
-
   /* todo: no extra cull required for directional but cull for others! */
   objs = scene->camera->frustum.objs;
   c    = scene->camera->frustum.objsCount;
@@ -96,12 +94,6 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
 
   glCullFace(GL_BACK);
 
-  /* restore states: todo add these to state manager */
-  scene->flags |= GK_SCENEF_SHADOWS;
-  scene->subCamera = NULL;
-
   glm_mat4_mul(gk__biasMatrix, sm->viewProj[0], sm->viewProj[0]);
-
-  gkBindPassOut(scene, scene->finalOutput);
   gkPopState(ctx);
 }
