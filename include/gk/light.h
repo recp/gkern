@@ -96,8 +96,10 @@ gkApplyTransformToLight(struct GkScene   * __restrict scene,
                         GkLight          * __restrict light,
                         struct GkProgram * __restrict prog);
 
-struct GkCamera*
-gkCameraOfLight(struct GkScene *scene, GkLight *light);
+void
+gkShadowMatrix(struct GkScene *scene,
+               GkLight        *light,
+               mat4            viewProj);
 
 struct GkTransform*
 gkLightTransform(GkLight *light);

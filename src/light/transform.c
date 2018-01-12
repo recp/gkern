@@ -11,43 +11,30 @@
 #include <string.h>
 
 void
-gkTransformsForLight(struct GkScene *scene,
-                     GkLight        *light,
-                     mat4           *viewProj,
-                     int             splitCount) {
-  mat4      view, proj;
-  GkCamera *cam;
+gkShadowMatrix(struct GkScene *scene,
+               GkLight        *light,
+               mat4            viewProj) {
+  mat4       view, proj;
+  GkCamera  *cam;
+  GkFrustum *frustum;
+  vec3       box[2];
 
-  cam = scene->camera;
+  cam     = scene->camera;
+  frustum = &cam->frustum;
 
   switch (light->type) {
     case GK_LIGHT_TYPE_DIRECTIONAL: {
-      vec4   *corner, v;
-      vec3    box[2], target;
-      int32_t i;
 
-      memset(box, 0, sizeof(box));
-
-      glm_vec_add(cam->frustum.center, light->dir, target);
-      glm_lookat(cam->frustum.center, target, GLM_YUP, view);
-
-      corner = cam->frustum.corners;
-      for (i = 0; i < 8; i++) {
-        glm_mat4_mulv(view, corner[i], v);
-
-        box[0][0] = glm_min(box[0][0], v[0]);
-        box[0][1] = glm_min(box[0][1], v[1]);
-        box[0][2] = glm_min(box[0][2], v[2]);
-
-        box[1][0] = glm_max(box[1][0], v[0]);
-        box[1][1] = glm_max(box[1][1], v[1]);
-        box[1][2] = glm_max(box[1][2], v[2]);
-      }
+      glm_look_anyup(cam->frustum.center, light->dir, view);
+      glm_frustum_box(cam->frustum.corners, view, box);
 
       glm_ortho(box[0][0], box[1][0],
                 box[0][1], box[1][1],
                 box[0][2], box[1][2],
                 proj);
+
+      glm_mat4_mul(proj, view, viewProj);
+
       break;
     }
     case GK_LIGHT_TYPE_POINT:
@@ -56,8 +43,6 @@ gkTransformsForLight(struct GkScene *scene,
     default:
       break;
   }
-
-  glm_mat4_mul(proj, view, viewProj[0]);
 }
 
 GkTransform*

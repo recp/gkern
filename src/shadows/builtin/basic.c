@@ -7,6 +7,8 @@
 
 #include "../../common.h"
 #include "basic.h"
+
+#include "../render.h"
 #include "../../shader/shader.h"
 #include "../../shader/builtin_shader.h"
 #include "../../gpu_state/common.h"
@@ -78,7 +80,7 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
     gkUseProgram(ctx, prog);
 
   /* todo: add these to gpu state */
-  gkTransformsForLight(scene, light, sm->viewProj, 1);
+  gkShadowMatrix(scene, light, sm->viewProj[0]);
 
   scene->flags &= ~GK_SCENEF_SHADOWS;
 
