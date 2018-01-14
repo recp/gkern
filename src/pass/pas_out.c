@@ -144,6 +144,54 @@ gkPassEnableDepthTex(GkScene *scene,
 }
 
 GK_EXPORT
+void
+gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len) {
+  GkPassOut *pout, *currentOutput;
+
+  if (!(pout = pass->output))
+    pass->output = pout = gkAllocPassOut();
+
+  if (pout->depth != 0)
+    return;
+
+  currentOutput = gkCurrentOutput(gkContextOf(scene));
+  if (currentOutput != pout)
+    gkBindPassOut(scene, pout);
+
+  glGenTextures(1, &pout->depth);
+  glBindTexture(GL_TEXTURE_2D_ARRAY, pout->depth);
+
+  glTexImage3D(GL_TEXTURE_2D_ARRAY,
+               0,
+               GL_DEPTH_COMPONENT24, /* todo: add option for this */
+               scene->vrect.size.w * scene->backingScale,
+               scene->vrect.size.h * scene->backingScale,
+               len,
+               0,
+               GL_DEPTH_COMPONENT,
+               GL_FLOAT,
+               NULL);
+
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY,
+                  GL_TEXTURE_COMPARE_MODE,
+                  GL_COMPARE_REF_TO_TEXTURE);
+
+  glFramebufferTextureLayer(GL_FRAMEBUFFER,
+                            GL_DEPTH_ATTACHMENT,
+                            pout->depth,
+                            0,
+                            0);
+
+  if (currentOutput != pout)
+    gkBindPassOut(scene, currentOutput);
+}
+
+GK_EXPORT
 GkPassOutColor*
 gkGetRenderTarget(GkPass *pass, int32_t index) {
   GkPassOut      *pout;
@@ -193,6 +241,21 @@ gkBindDepthTexTo(GkScene    *scene,
   /* then bind it to texture unit */
   glActiveTexture(GL_TEXTURE0 + texUnit);
   glBindTexture(GL_TEXTURE_2D, pass->output->depth);
+
+  /* uniform texture unit to program */
+  gkUniform1i(prog, uniformName, texUnit);
+}
+
+GK_EXPORT
+void
+gkBindDepthTexArrayTo(GkScene    *scene,
+                      GkPass     *pass,
+                      GkProgram  *prog,
+                      int32_t     texUnit,
+                      const char  *uniformName) {
+  /* then bind it to texture unit */
+  glActiveTexture(GL_TEXTURE0 + texUnit);
+  glBindTexture(GL_TEXTURE_2D_ARRAY, pass->output->depth);
 
   /* uniform texture unit to program */
   gkUniform1i(prog, uniformName, texUnit);

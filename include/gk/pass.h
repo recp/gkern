@@ -84,6 +84,10 @@ gkPassEnableDepthTex(struct GkScene *scene,
                      GkPass         *pass);
 
 GK_EXPORT
+void
+gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len);
+
+GK_EXPORT
 GkPassOutColor*
 gkGetRenderTarget(GkPass *rt, int32_t index);
 
@@ -107,6 +111,14 @@ gkBindDepthTexTo(struct GkScene *scene,
                  GkProgram      *prog,
                  int32_t         texUnit,
                  const char     *uniformName);
+
+GK_EXPORT
+void
+gkBindDepthTexArrayTo(GkScene    *scene,
+                      GkPass     *pass,
+                      GkProgram  *prog,
+                      int32_t     texUnit,
+                      const char  *uniformName);
 
 GK_EXPORT
 GLuint
