@@ -22,13 +22,13 @@ gkSetupBasicShadowMap(GkScene * __restrict scene) {
   GLenum       status;
 
   shadowMap  = calloc(1, sizeof(*shadowMap));
-  shadowPass = calloc(1, sizeof(*shadowMap->shadowPass));
+  shadowPass = calloc(1, sizeof(*shadowMap->pass));
 
   shadowPass->prog        = gkBuiltinProg(GK_BUILTIN_PROG_SHADOWMAP);
   shadowPass->output      = gkAllocPassOut();
   shadowPass->noMaterials = true;
   shadowPass->noLights    = true;
-  shadowMap->shadowPass   = shadowPass;
+  shadowMap->pass   = shadowPass;
 
   shadowMap->viewProj     = malloc(sizeof(mat4));
   shadowMap->splitc       = 1;
@@ -66,11 +66,11 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   if (!(sm = sceneImpl->shadows))
     sceneImpl->shadows = sm = gkSetupShadows(scene);
 
-  prog          = sm->shadowPass->prog;
+  prog          = sm->pass->prog;
   sm->currLight = light;
 
   gkPushState(ctx);
-  gkBindPassOut(scene, sm->shadowPass->output);
+  gkBindPassOut(scene, sm->pass->output);
 
   gkEnableDepthTest(ctx);
 

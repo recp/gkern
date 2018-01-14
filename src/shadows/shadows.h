@@ -13,7 +13,7 @@
 #include "../../include/gk/pass.h"
 
 typedef struct GkShadowMap {
-  GkPass  *shadowPass;
+  GkPass  *pass;
   GkLight *currLight;
   float   *distances;
   mat4    *viewProj;
