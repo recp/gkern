@@ -96,3 +96,34 @@ gkCullFrustum(GkScene  * __restrict scene,
     np = np->next;
   }
 }
+
+GK_EXPORT
+void
+gkCullSubFrustum(GkFrustum * __restrict frustum,
+                 GkFrustum * __restrict subfrustum) {
+  GkModelInst **it, *modelInst;
+  size_t        i;
+
+  if (subfrustum->objs)
+    free(subfrustum->objs);
+
+  subfrustum->objsCount = 0;
+  subfrustum->objsLen   = glm_min(1024, subfrustum->objsCount);
+  subfrustum->objs      = malloc(sizeof(void *) * subfrustum->objsLen);
+
+  it = frustum->objs;
+  for (i = 0; i < frustum->objsCount; i++) {
+    modelInst = it[i];
+
+    if (gkAABBInFrustum(modelInst->bbox, subfrustum->planes)) {
+      if (subfrustum->objsCount == subfrustum->objsLen) {
+        subfrustum->objsLen += 512;
+        subfrustum->objs = realloc(subfrustum->objs,
+                                   sizeof(void *) * subfrustum->objsLen);
+      }
+
+      subfrustum->objs[subfrustum->objsCount] = modelInst;
+      subfrustum->objsCount++;
+    }
+  }
+}

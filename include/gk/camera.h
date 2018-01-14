@@ -92,6 +92,11 @@ void
 gkCullFrustum(struct GkScene * __restrict scene,
               GkCamera       * __restrict cam);
 
+GK_EXPORT
+void
+gkCullSubFrustum(GkFrustum * __restrict frustum,
+                 GkFrustum * __restrict subfrustum);
+
 #ifdef __cplusplus
 }
 #endif
