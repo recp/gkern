@@ -7,6 +7,7 @@
 
 GK_STRINGIFY(
 in vec3 vPosition;
+in vec4 vPos;
 in vec3 vNormal;
 in vec3 vEye;
 
@@ -86,8 +87,41 @@ uniform float     uShininess;
 \n#endif\n
 
 \n#ifdef SHADOWMAP\n
-in vec4                 vShadowCoord;
-uniform sampler2DShadow uShadowMap;
+\n#ifndef SHAD_SPLIT\n
+
+uniform sampler2DShadow      uShadMap;
+in vec4                      vShadCoord;
+
+float shadowCoef() {
+  return textureProj(uShadMap, vShadCoord);;
+}
+
+\n#else\n
+
+uniform sampler2DArrayShadow uShadMap;
+uniform mat4                 uShadMVP[SHAD_SPLIT];
+uniform float                uShadDist[SHAD_SPLIT];
+
+float shadowCoef() {
+  vec4 shadCoord;
+  int  i;
+
+  for (i = 0; i < SHAD_SPLIT; i++) {
+    if (gl_FragCoord.z < uShadDist[i])
+      break;
+  }
+
+  if (i >= SHAD_SPLIT)
+    return 1.0;
+
+  shadCoord   = uShadMVP[i] * vPos;
+  shadCoord.w = shadCoord.z;
+  shadCoord.z = float(i);
+
+  return texture(uShadMap, shadCoord);
+}
+
+\n#endif\n
 \n#endif\n
 
 out vec4 fragColor;

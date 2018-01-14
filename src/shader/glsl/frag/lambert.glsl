@@ -13,7 +13,7 @@ void main() {
   float a, Ld;
 
 \n#ifdef SHADOWMAP\n
-  float shadow = 0.5 + 0.5 * textureProj(uShadowMap, vShadowCoord);
+  float shadow = shadowCoef();
 \n#endif\n
 
   switch (lightType) {

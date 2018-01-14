@@ -9,7 +9,7 @@ GK_STRINGIFY(
 
 void main() {
 \n#ifdef SHADOWMAP\n
-  float shadow = 0.5 + 0.5 * textureProj(uShadowMap, vShadowCoord);
+  float shadow = shadowCoef();
 \n#endif\n
 
   fragColor =

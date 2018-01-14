@@ -12,8 +12,10 @@ uniform mat4 NM;  // Normal matrix
 uniform int  NMU; // Use normal matrix
 
 \n#ifdef SHADOWMAP\n
-uniform mat4 uLightMVP;
-out vec4     vShadowCoord;
+\n#ifndef SHAD_SPLIT\n
+uniform mat4 uShadMVP;
+out vec4     vShadCoord;
+\n#endif\n
 \n#endif\n
 
 \n#ifndef TEX_COUNT\n
@@ -51,10 +53,12 @@ out vec2  vTEXCOORD5;
 out vec3 vPosition;
 out vec3 vNormal;
 out vec3 vEye;
+out vec4 vPos;
 
 void main() {
   vec4 pos4 = vec4(POSITION, 1.0);
 
+  vPos      = pos4;
   vPosition = vec3(MV * pos4);
   vEye      = normalize(-vPosition);
 
@@ -85,7 +89,9 @@ void main() {
 \n#endif\n
   
 \n#ifdef SHADOWMAP\n
-  vShadowCoord = uLightMVP * pos4;
+\n#ifndef SHAD_SPLIT\n
+  vShadCoord = uShadMVP * pos4;
+\n#endif\n
 \n#endif\n
 }
 )
