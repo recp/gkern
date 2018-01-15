@@ -143,13 +143,12 @@ gkZoom(GkScene * __restrict scene,
   if (!(cam = scene->camera) || distance == 0.0f)
     return;
 
-  glm_vec_normalize_to(cam->world[2], dir);
-  glm_vec_scale(dir, -distance, dir);
+  glm_vec_scale_as(cam->world[2], -distance, dir);
   glm_vec_add(cam->world[3], dir, cam->world[3]);
 
   gkCameraViewUpdated(cam);
-  gkApplyView(scene, scene->rootNode);
 
+  scene->camera->flags |= GK_UPDT_VIEW;
   scene->flags |= GK_SCENEF_RENDER;
 }
 

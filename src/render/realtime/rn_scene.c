@@ -77,6 +77,9 @@ gkRenderScene(GkScene * scene) {
     gkTransformAABB(scene->trans, scene->bbox);
   }
 
+  if ((scene->camera->flags & GK_UPDT_VIEW))
+    gkApplyView(scene, scene->rootNode);
+
   /* frustum culling */
   gkCullFrustum(scene, scene->camera);
 
