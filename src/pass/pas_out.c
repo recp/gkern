@@ -114,7 +114,7 @@ gkPassEnableDepthTex(GkScene *scene,
 
   glTexImage2D(GL_TEXTURE_2D,
                0,
-               GL_DEPTH_COMPONENT16, /* todo: add option for this */
+               GL_DEPTH_COMPONENT24, /* todo: add option for this */
                scene->vrect.size.w * scene->backingScale,
                scene->vrect.size.h * scene->backingScale,
                0,
@@ -179,12 +179,6 @@ gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len) {
   glTexParameteri(GL_TEXTURE_2D_ARRAY,
                   GL_TEXTURE_COMPARE_MODE,
                   GL_COMPARE_REF_TO_TEXTURE);
-
-  glFramebufferTextureLayer(GL_FRAMEBUFFER,
-                            GL_DEPTH_ATTACHMENT,
-                            pout->depth,
-                            0,
-                            0);
 
   if (currentOutput != pout)
     gkBindPassOut(scene, currentOutput);
