@@ -19,12 +19,6 @@
 #include "rn_prim.h"
 
 extern void *GK_SHADOWS_HANDLE;
-static mat4 gk__biasMatrix = {
-  0.5f, 0.0f, 0.0f, 0.0f,
-  0.0f, 0.5f, 0.0f, 0.0f,
-  0.0f, 0.0f, 0.5f, 0.0f,
-  0.5f, 0.5f, 0.5f, 1.0f
-};
 
 void
 gkRenderPrimForLight(GkScene     * __restrict scene,
@@ -42,23 +36,38 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
     gkApplyTransformToLight(scene, light, prog);
 
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
-    mat4         lightMVP;
     GkShadowMap *sm;
-    int32_t      smUnit;
+    mat4        *shadowMVP;
+    int32_t      smUnit, split, i;
 
     sm     = sceneImpl->shadows;
     smUnit = flist_indexof(gkContextOf(scene)->samplers,
                            GK_SHADOWS_HANDLE);
 
-    gkBindDepthTexTo(scene,
-                     sm->shadowPass,
-                     prog,
-                     smUnit,
-                     "uShadowMap");
+    if ((split = sm->splitc) < 1)
+      split = 1;
 
-    glm_mat4_mul(sm->viewProj[0], modelInst->trans->world, lightMVP);
+    shadowMVP = alloca(sizeof(mat4) * split);
 
-    gkUniformMat4(gkUniformLoc(prog, "uLightMVP"), lightMVP);
+    if (gkShadowTechn() != GK_SHADOW_BASIC_SHADOWMAP) {
+      gkBindDepthTexArrayTo(scene, sm->pass, prog, smUnit, "uShadMap");
+      glUniform1fv(gkUniformLoc(prog, "uShadDist"),
+                   split,
+                   sm->distances);
+    } else {
+      gkBindDepthTexTo(scene, sm->pass, prog, smUnit, "uShadMap");
+    }
+
+    for (i = 0; i < split; i++) {
+      glm_mat4_mul(sm->viewProj[i],
+                   modelInst->trans->world,
+                   shadowMVP[i]);
+    }
+
+    glUniformMatrix4fv(gkUniformLoc(prog, "uShadMVP"),
+                       split,
+                       GL_FALSE,
+                       shadowMVP[0][0]);
   }
 
   gkRenderPrim(scene, prim);

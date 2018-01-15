@@ -24,7 +24,6 @@ gkShadowMatrix(struct GkScene *scene,
 
   switch (light->type) {
     case GK_LIGHT_TYPE_DIRECTIONAL: {
-
       glm_look_anyup(cam->frustum.center, light->dir, view);
       glm_frustum_box(cam->frustum.corners, view, box);
 
@@ -34,7 +33,6 @@ gkShadowMatrix(struct GkScene *scene,
                 proj);
 
       glm_mat4_mul(proj, view, viewProj);
-
       break;
     }
     case GK_LIGHT_TYPE_POINT:

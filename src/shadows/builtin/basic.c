@@ -17,24 +17,24 @@ extern mat4 gk__biasMatrix;
 
 GkShadowMap*
 gkSetupBasicShadowMap(GkScene * __restrict scene) {
-  GkShadowMap *shadowMap;
-  GkPass      *shadowPass;
+  GkShadowMap *sm;
+  GkPass      *pass;
   GLenum       status;
 
-  shadowMap  = calloc(1, sizeof(*shadowMap));
-  shadowPass = calloc(1, sizeof(*shadowMap->pass));
+  sm   = calloc(1, sizeof(*sm));
+  pass = calloc(1, sizeof(*sm->pass));
 
-  shadowPass->prog        = gkBuiltinProg(GK_BUILTIN_PROG_SHADOWMAP);
-  shadowPass->output      = gkAllocPassOut();
-  shadowPass->noMaterials = true;
-  shadowPass->noLights    = true;
-  shadowMap->pass   = shadowPass;
+  pass->prog        = gkBuiltinProg(GK_BUILTIN_PROG_SHADOWMAP);
+  pass->output      = gkAllocPassOut();
+  pass->noMaterials = true;
+  pass->noLights    = true;
+  sm->pass          = pass;
 
-  shadowMap->viewProj     = malloc(sizeof(mat4));
-  shadowMap->splitc       = 1;
+  sm->viewProj     = malloc(sizeof(mat4));
+  sm->splitc       = 1;
 
-  gkBindPassOut(scene, shadowPass->output);
-  gkPassEnableDepthTex(scene, shadowPass);
+  gkBindPassOut(scene, pass->output);
+  gkPassEnableDepthTex(scene, pass);
 
   glDrawBuffer(GL_NONE);
   glReadBuffer(GL_NONE);
@@ -47,18 +47,18 @@ gkSetupBasicShadowMap(GkScene * __restrict scene) {
 
   gkBindPassOut(scene, scene->finalOutput);
 
-  return shadowMap;
+  return sm;
 }
 
 void
 gkRenderBasicShadowMap(GkScene * __restrict scene,
                        GkLight * __restrict light) {
-  GkContext       *ctx;
-  GkProgram       *prog;
-  GkSceneImpl     *sceneImpl;
-  GkShadowMap     *sm;
-  GkModelInst     **objs;
-  size_t           i, c;
+  GkContext   *ctx;
+  GkProgram   *prog;
+  GkSceneImpl *sceneImpl;
+  GkShadowMap *sm;
+  GkModelInst **objs;
+  size_t       i, c;
 
   ctx       = gkContextOf(scene);
   sceneImpl = (GkSceneImpl *)scene;

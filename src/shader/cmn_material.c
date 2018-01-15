@@ -12,6 +12,7 @@
 #include "../../include/gk/material.h"
 #include "../../include/gk/program.h"
 #include "../../include/gk/vertex.h"
+#include "../../include/gk/shadows.h"
 
 #include <ds/forward-list-sep.h>
 
@@ -181,8 +182,20 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
 
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
-    sprintf(pVertFlags, "\n#define SHADOWMAP\n");
-    sprintf(pFragFlags, "\n#define SHADOWMAP\n");
+    int shadowSplit;
+
+    pVertFlags += sprintf(pVertFlags, "\n#define SHADOWMAP\n");
+    pFragFlags += sprintf(pFragFlags, "\n#define SHADOWMAP\n");
+
+    shadowSplit = gkShadowSplit();
+    switch (gkShadowTechn()) {
+      case GK_SHADOW_CSM:
+        sprintf(pVertFlags, "\n#define SHAD_SPLIT %d\n", shadowSplit);
+        sprintf(pFragFlags, "\n#define SHAD_SPLIT %d\n", shadowSplit);
+        break;
+      default:
+        break;
+    }
   }
 }
 
