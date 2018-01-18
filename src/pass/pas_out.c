@@ -180,6 +180,12 @@ gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len) {
                   GL_TEXTURE_COMPARE_MODE,
                   GL_COMPARE_REF_TO_TEXTURE);
 
+  glFramebufferTextureLayer(GL_FRAMEBUFFER,
+                            GL_DEPTH_ATTACHMENT,
+                            pout->depth,
+                            0,
+                            0);
+
   if (currentOutput != pout)
     gkBindPassOut(scene, currentOutput);
 }

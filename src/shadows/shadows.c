@@ -20,12 +20,13 @@
 #include "../gpu_state/common.h"
 
 #include "builtin/basic.h"
+#include "builtin/csm.h"
 #include <ds/forward-list.h>
 
 void *GK_SHADOWS_HANDLE                = &GK_SHADOWS_HANDLE;
-GkShadowTechnType   gk__shadow_techn   = GK_SHADOW_DEFAULT;
-gkSetupShadowsFunc  gk__setupShadowsFn = gkSetupBasicShadowMap;
-gkRenderShadowsFunc gk__rnShadowsFn    = gkRenderBasicShadowMap;
+GkShadowTechnType   gk__shadow_techn   = GK_SHADOW_CSM;
+gkSetupShadowsFunc  gk__setupShadowsFn = gkSetupShadowMapCSM;
+gkRenderShadowsFunc gk__rnShadowsFn    = gkRenderShadowMapCSM;
 uint32_t            gk__shadSplitCount = 4;
 
 mat4 gk__biasMatrix = {
@@ -41,6 +42,11 @@ gkSetShadowTechn(GkShadowTechnType techn) {
   switch (techn) {
     case GK_SHADOW_BASIC_SHADOWMAP:
       gk__setupShadowsFn = gkSetupBasicShadowMap;
+      gk__rnShadowsFn    = gkRenderBasicShadowMap;
+      break;
+    case GK_SHADOW_CSM:
+      gk__setupShadowsFn = gkSetupShadowMapCSM;
+      gk__rnShadowsFn    = gkRenderShadowMapCSM;
       break;
     default:
       break;
