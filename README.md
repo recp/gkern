@@ -7,18 +7,33 @@ libgk doesn't depend on AssetKit, so there are another library to load AssetKit 
 Currently this library only renders using OpenGL, but in the future other apis like `Vulkan`, `DirectX`, `Metal` are considered to be supported! 
 
 # Features:
-todo
+- Similar scene data structure with COLLADA/glTF 
+- Shader generator for common materials (phong, blinn, lambert, const) 
+   - This generator also supports textures, shadowmaps ... all feeatures to render scene perfectly and fast
+- Shader manager (currently for common profile)
+- Transform caching
+- Uniform location caching
+- Built-in trackball
+- Multi-pass rendering 
+- Rendering to Texture
+- Multiple Render Targets
+- Textures
+- State Manager / Caching
+- Frustum Culling
+- Configurable shadowmaps: Yes you can select which technique to use! More techniques may be supportted by time
+   - Basic/Simple Shadow Maps
+   - Cascaded Shadow Maps (PSSM)
+- ... 
+- and some built-in helpers for many common tasks and more by fetures time...
+ 
 
 # Todo
-- [ ] PBR 
-- [ ] Transparency in common profile
-- [ ] Frustum culling
+- [ ] Order objects before rendering
+- [ ] PBR
+- [ ] Transparency
 - [ ] Occlusion Culling
 - [ ] Level of Detail for mesh
-- [ ] Separate common profile into multiple small shaders to reduce branching in GPU
 - [ ] Multithread rendering
-- [ ] Textures
-   - [x] 2D textures for common profile
 - [ ] Instanced Rendering
 - [ ] Animations
 - [ ] ... 
