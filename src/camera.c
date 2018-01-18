@@ -42,9 +42,9 @@ gkMakeCameraForScene(GkScene *scene) {
   float aspectRatio;
 
   aspectRatio = scene->vrect.size.w / scene->vrect.size.h;
-  glm_vec_center(scene->bboxMin, scene->bboxMax, target);
+  glm_vec_center(scene->bbox->world[0], scene->bbox->world[1], target);
 
-  glm_vec_sub(scene->bboxMax, target, eye);
+  glm_vec_sub(scene->bbox->world[1], target, eye);
   glm_vec_scale(eye, 2.5f, eye); // TODO: read this as option
   glm_vec_add(target, eye, eye);
 

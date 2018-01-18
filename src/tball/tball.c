@@ -72,7 +72,7 @@ gk_tall_vec(GkTrackball * __restrict tball,
                tball->nodeTrans->local,
                m);
 
-  glm_vec_center(tball->bboxMin, tball->bboxMax, center);
+  glm_vec_center(tball->bbox->world[0], tball->bbox->world[1], center);
 
   vrc = tball->scene->vrect;
   c   = gk_project2d(vrc, m, center);

@@ -13,7 +13,5 @@
 void
 gkTransformAABB(GkTransform * __restrict trans,
                 GkBBox      * __restrict bbox) {
-  glm_aabb_transform(bbox->local.arr,
-                     trans->world,
-                     bbox->world.arr);
+  glm_aabb_transform(bbox->local, trans->world, bbox->world);
 }

@@ -26,7 +26,7 @@ gkAABBInFrustum(GkBBox *bbox, GkPlane planes[6]) {
   float *p, dp;
   int    i;
 
-  box = bbox->world.arr;
+  box = bbox->world;
   for (i = 0; i < 6; i++) {
     p  = planes[i];
     dp = p[0] * box[p[0] > 0.0f][0]
@@ -78,7 +78,8 @@ gkCullFrustum(GkScene  * __restrict scene,
 
       while (modelInst) {
         if (modelInst->bbox
-            && gkAABBInFrustum(modelInst->bbox, cam->frustum.planes)) {
+            && glm_aabb_frustum(modelInst->bbox->world,
+                                cam->frustum.planes)) {
           if (cam->frustum.objsCount == cam->frustum.objsLen) {
             cam->frustum.objsLen += 512;
             cam->frustum.objs = realloc(cam->frustum.objs,
@@ -115,7 +116,8 @@ gkCullSubFrustum(GkFrustum * __restrict frustum,
   for (i = 0; i < frustum->objsCount; i++) {
     modelInst = it[i];
 
-    if (gkAABBInFrustum(modelInst->bbox, subfrustum->planes)) {
+    if (glm_aabb_frustum(modelInst->bbox->world,
+                         subfrustum->planes)) {
       if (subfrustum->objsCount == subfrustum->objsLen) {
         subfrustum->objsLen += 512;
         subfrustum->objs = realloc(subfrustum->objs,
@@ -142,7 +144,7 @@ gkBoxInFrustum(GkFrustum * __restrict frustum,
   c  = frustum->objsCount;
 
   for (i = 0; i < c; i++)
-    glm_aabb_merge(t, it[i]->bbox->world.arr, t);
+    glm_aabb_merge(t, it[i]->bbox->world, t);
 
   memcpy(box, t, sizeof(t));
 }

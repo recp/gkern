@@ -88,8 +88,8 @@ gkDrawBBox(GkScene * __restrict scene,
   else
     glBindVertexArray(gk__cube_vao);
 
-  glm_vec_sub(bboxMax, bboxMin, size);
-  glm_vec_center(bboxMax, bboxMin, center);
+  glm_vec_sub(bbox->world[1], bbox->world[0], size);
+  glm_vec_center(bbox->world[1], bbox->world[0], center);
 
   glm_translate(tran, center);
   glm_scale(tran, size);

@@ -24,8 +24,8 @@ union GkBBoxU {
 };
 
 typedef struct GkBBox {
-  union GkBBoxU local;
-  union GkBBoxU world;
+  vec3 local[2];
+  vec3 world[2];
 } GkBBox;
 
 #define boxMin world.vec.min
