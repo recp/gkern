@@ -97,6 +97,11 @@ void
 gkCullSubFrustum(GkFrustum * __restrict frustum,
                  GkFrustum * __restrict subfrustum);
 
+GK_EXPORT
+void
+gkBoxInFrustum(GkFrustum * __restrict frustum,
+               vec3                   box[2]);
+
 #ifdef __cplusplus
 }
 #endif

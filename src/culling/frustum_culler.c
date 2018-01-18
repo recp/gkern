@@ -127,3 +127,22 @@ gkCullSubFrustum(GkFrustum * __restrict frustum,
     }
   }
 }
+
+GK_EXPORT
+void
+gkBoxInFrustum(GkFrustum * __restrict frustum,
+               vec3                   box[2]) {
+  GkModelInst **it;
+  vec3          t[2];
+  size_t        i, c;
+
+  memset(t, 0, sizeof(t));
+
+  it = frustum->objs;
+  c  = frustum->objsCount;
+
+  for (i = 0; i < c; i++)
+    glm_aabb_merge(t, it[i]->bbox->world.arr, t);
+
+  memcpy(box, t, sizeof(t));
+}
