@@ -31,7 +31,7 @@ gkShadowMatrix(struct GkScene *scene,
 
       glm_aabb_transform(boxInFrustum, view, boxInFrustum);
       glm_aabb_crop(box, boxInFrustum, finalBox);
-      glm_ortho_box(finalBox, proj);
+      glm_ortho_aabb(finalBox, proj);
 
       glm_mat4_mul(proj, view, viewProj);
       break;

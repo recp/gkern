@@ -130,7 +130,7 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
     glm_aabb_crop(box, boxInFrustum, finalBox);
 
     /* TODO: why 50? is it enough for large scenes ?*/
-    glm_ortho_boxpz(finalBox, 50.0f, proj);
+    glm_ortho_aabb_pz(finalBox, 50.0f, proj);
 
     glm_mat4_mul(proj, view, sm->viewProj[i]);
 
