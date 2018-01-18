@@ -17,20 +17,21 @@ gkShadowMatrix(struct GkScene *scene,
   mat4       view, proj;
   GkCamera  *cam;
   GkFrustum *frustum;
-  vec3       box[2];
+  vec3       box[2], boxInFrustum[2], finalBox[2];
 
   cam     = scene->camera;
   frustum = &cam->frustum;
+
+  gkBoxInFrustum(frustum, boxInFrustum);
 
   switch (light->type) {
     case GK_LIGHT_TYPE_DIRECTIONAL: {
       glm_look_anyup(cam->frustum.center, light->dir, view);
       glm_frustum_box(cam->frustum.corners, view, box);
 
-      glm_ortho(box[0][0], box[1][0],
-                box[0][1], box[1][1],
-                box[0][2], box[1][2],
-                proj);
+      glm_aabb_transform(boxInFrustum, view, boxInFrustum);
+      glm_aabb_crop(box, boxInFrustum, finalBox);
+      glm_ortho_box(finalBox, proj);
 
       glm_mat4_mul(proj, view, viewProj);
       break;
