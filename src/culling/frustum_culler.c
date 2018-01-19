@@ -138,7 +138,8 @@ gkBoxInFrustum(GkFrustum * __restrict frustum,
   vec3          t[2];
   size_t        i, c;
 
-  memset(t, 0, sizeof(t));
+  glm_vec_broadcast(FLT_MAX,  t[0]);
+  glm_vec_broadcast(-FLT_MAX, t[1]);
 
   it = frustum->objs;
   c  = frustum->objsCount;
