@@ -8,6 +8,7 @@
 #include "../../common.h"
 #include "csm.h"
 #include "../render.h"
+#include "../shad_common.h"
 #include "../../shader/shader.h"
 #include "../../shader/builtin_shader.h"
 #include "../../gpu_state/common.h"
@@ -64,7 +65,6 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   GkSceneImpl     *sceneImpl;
   GkShadowMap     *sm;
   GkFrustum       *frustum, subFrustum;
-  vec3             box[2], boxInFrustum[2], finalBox[2];
   size_t           j;
   uint32_t         i, m;
   GLint            depth;
@@ -96,7 +96,7 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   m        = sm->splitc;
   depth    = sm->pass->output->depth;
 
-  glm_look_anyup(scene->camera->frustum.center, light->dir, view);
+  gkShadowViewMatrix(scene, light, &scene->camera->frustum, view);
 
   memcpy(&subFrustum, frustum, sizeof(subFrustum));
   for (i = 0; i < m; i++) {
@@ -121,17 +121,10 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
     if (subFrustum.objsCount == 0)
       continue;
 
-    /* prepare projection maxtix for subFrustum */
+    /* prepare projection matrix for subFrustum */
     glm_frustum_corners_at(corners, C, f, &subFrustum.corners[4]);
-    glm_frustum_box(subFrustum.corners, view, box);
 
-    gkBoxInFrustum(&subFrustum, boxInFrustum);
-    glm_aabb_transform(boxInFrustum, view, boxInFrustum);
-    glm_aabb_crop(box, boxInFrustum, finalBox);
-
-    /* TODO: why 50? is it enough for large scenes ?*/
-    glm_ortho_aabb_pz(finalBox, f, proj);
-
+    gkShadowProjMatrix(light, &subFrustum, view, f, proj);
     glm_mat4_mul(proj, view, sm->viewProj[i]);
 
     /* render scene light's POV */

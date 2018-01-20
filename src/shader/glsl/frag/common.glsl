@@ -111,12 +111,9 @@ float shadowCoef() {
       break;
   }
 
-  if (i >= SHAD_SPLIT)
-    return 1.0;
-
-  shadCoord   = uShadMVP[i] * vPos;
-  shadCoord.w = shadCoord.z;
-  shadCoord.z = float(i);
+  shadCoord     = uShadMVP[i] * vPos;
+  shadCoord.xyw = (shadCoord / shadCoord.w).xyz;
+  shadCoord.z   = float(i);
 
   return texture(uShadMap, shadCoord);
 }
