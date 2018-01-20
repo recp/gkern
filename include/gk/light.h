@@ -72,6 +72,7 @@ typedef struct GkSpotLight {
   float   constAttn;
   float   linearAttn;
   float   quadAttn;
+  float   falloffAngle;
   float   cutoffCosine;
   float   cutoffExp;
 } GkSpotLight;

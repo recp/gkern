@@ -93,7 +93,7 @@ uniform sampler2DShadow      uShadMap;
 in vec4                      vShadCoord;
 
 float shadowCoef() {
-  return textureProj(uShadMap, vShadCoord);;
+  return textureProj(uShadMap, vShadCoord);
 }
 
 \n#else\n

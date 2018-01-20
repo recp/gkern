@@ -32,16 +32,34 @@ gkShadowMatrix(struct GkScene *scene,
       glm_aabb_transform(boxInFrustum, view, boxInFrustum);
       glm_aabb_crop(box, boxInFrustum, finalBox);
       glm_ortho_aabb(finalBox, proj);
-
-      glm_mat4_mul(proj, view, viewProj);
       break;
     }
+    case GK_LIGHT_TYPE_SPOT: {
+      GkSpotLight *spot;
+      vec3         pos;
+
+      spot = (GkSpotLight*)light;
+
+      gkLightPos(scene, light, pos);
+      glm_look_anyup(pos, light->dir, view);
+      glm_frustum_box(cam->frustum.corners, view, box);
+
+      glm_aabb_transform(boxInFrustum, view, boxInFrustum);
+      glm_aabb_crop(box, boxInFrustum, finalBox);
+
+      glm_perspective(spot->falloffAngle,
+                      1.0f,
+                      glm_max(-finalBox[1][2], 0.0f),
+                     -finalBox[0][2],
+                      proj);
+    }
     case GK_LIGHT_TYPE_POINT:
-    case GK_LIGHT_TYPE_SPOT:
 
     default:
       break;
   }
+
+  glm_mat4_mul(proj, view, viewProj);
 }
 
 GkTransform*
