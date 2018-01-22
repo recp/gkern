@@ -88,6 +88,10 @@ void
 gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len);
 
 GK_EXPORT
+void
+gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass);
+
+GK_EXPORT
 GkPassOutColor*
 gkGetRenderTarget(GkPass *rt, int32_t index);
 

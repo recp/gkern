@@ -144,6 +144,51 @@ gkPassEnableDepthTex(GkScene *scene,
 
 GK_EXPORT
 void
+gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass) {
+  GkPassOut *pout, *currentOutput;
+  float      size;
+
+  if (!(pout = pass->output))
+    pass->output = pout = gkAllocPassOut();
+
+  if (pout->depth != 0)
+    return;
+
+  currentOutput = gkCurrentOutput(gkContextOf(scene));
+  if (currentOutput != pout)
+    gkBindPassOut(scene, pout);
+
+  glGenTextures(1, &pout->depth);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, pout->depth);
+
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP,
+                  GL_TEXTURE_COMPARE_MODE,
+                  GL_COMPARE_REF_TO_TEXTURE);
+
+  size =  scene->vrect.size.w * scene->backingScale;
+  for (unsigned int i = 0; i < 6; ++i)
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                 0,
+                 GL_DEPTH_COMPONENT24,
+                 size,
+                 size,
+                 0,
+                 GL_DEPTH_COMPONENT,
+                 GL_FLOAT,
+                 NULL);
+
+  if (currentOutput != pout)
+    gkBindPassOut(scene, currentOutput);
+}
+
+GK_EXPORT
+void
 gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len) {
   GkPassOut *pout, *currentOutput;
 
