@@ -147,6 +147,7 @@ void
 gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass) {
   GkPassOut *pout, *currentOutput;
   float      size;
+  int        i;
 
   if (!(pout = pass->output))
     pass->output = pout = gkAllocPassOut();
@@ -172,7 +173,7 @@ gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass) {
                   GL_COMPARE_REF_TO_TEXTURE);
 
   size =  scene->vrect.size.w * scene->backingScale;
-  for (unsigned int i = 0; i < 6; ++i)
+  for (i = 0; i < 6; ++i)
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
                  0,
                  GL_DEPTH_COMPONENT24,
@@ -458,7 +459,7 @@ gkAddRenderTargetEx(GkScene *scene,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
   glFramebufferTexture2D(GL_FRAMEBUFFER,
-                         GL_COLOR_ATTACHMENT0,
+                         GL_COLOR_ATTACHMENT0 + pout->colorCount,
                          GL_TEXTURE_2D,
                          poc->buffId,
                          0);
