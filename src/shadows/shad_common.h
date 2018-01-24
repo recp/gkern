@@ -23,11 +23,7 @@ gkShadowViewMatrix(GkScene   *scene,
       break;
     }
     case GK_LIGHT_TYPE_SPOT: {
-      GkSpotLight *spot;
-      vec3         pos;
-
-      spot = (GkSpotLight*)light;
-
+      vec3 pos;
       gkLightPos(scene, light, pos);
       glm_look_anyup(pos, light->dir, view);
     }
