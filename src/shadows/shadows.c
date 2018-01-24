@@ -72,8 +72,9 @@ gkShadowSplit() {
 }
 
 GkShadowMap*
-gkSetupShadows(GkScene * __restrict scene) {
-  return gk__setupShadowsFn(scene);
+gkSetupShadows(GkScene * __restrict scene,
+               GkLight * __restrict light) {
+  return gk__setupShadowsFn(scene, light);
 }
 
 void
@@ -88,6 +89,10 @@ gkEnableShadows(GkScene * __restrict scene) {
   GkSceneImpl *sceneImpl;
 
   sceneImpl = (GkSceneImpl *)scene;
+
+  if (!sceneImpl->shadows)
+    sceneImpl->shadows = hash_new_i32(8);
+
   sceneImpl->rpath = GK_RNPATH_SCENE_PERLIGHT;
   sceneImpl->rp    = gkScenePerLightRenderPath;
   scene->flags    |= GK_SCENEF_SHADOWS;

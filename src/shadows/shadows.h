@@ -18,14 +18,18 @@ typedef struct GkShadowMap {
   float   *distances;
   mat4    *viewProj;
   int      splitc;
+  float    near;
+  float    far;
 } GkShadowMap;
 
-typedef GkShadowMap* (*gkSetupShadowsFunc)(GkScene * __restrict scene);
+typedef GkShadowMap* (*gkSetupShadowsFunc)(GkScene * __restrict scene,
+                                           GkLight * __restrict light);
 typedef void (*gkRenderShadowsFunc)(GkScene * __restrict scene,
                                     GkLight * __restrict light);
 
 GkShadowMap*
-gkSetupShadows(GkScene * __restrict scene);
+gkSetupShadows(GkScene * __restrict scene,
+               GkLight * __restrict light);
 
 void
 gkRenderShadows(GkScene * __restrict scene,

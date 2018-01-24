@@ -119,14 +119,15 @@ uniform float     uShininess;
 \n#ifndef SHAD_SPLIT\n
 
 \n#ifdef SHAD_CUBE\n
+uniform samplerCubeShadow    uShadMap;
+uniform vec2 uFarNear;
+
 float depthValue(const in vec3 v) {
   vec3 absv = abs(v);
   float z   = max(absv.x, max(absv.y, absv.z));
   return uFarNear.x + uFarNear.y / z;
 }
 
-uniform samplerCubeShadow    uShadMap;
-uniform vec2 uFarNear;
 \n#else\n
 uniform sampler2DShadow      uShadMap;
 in vec4                      vShadCoord;

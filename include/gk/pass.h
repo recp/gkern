@@ -57,6 +57,7 @@ gkCurrentOutput(struct GkContext * __restrict ctx);
 GK_EXPORT
 GkPass*
 gkGetOrCreatPass(struct GkScene     *scene,
+                 struct GkLight     *light,
                  struct GkPrimitive *prim,
                  GkMaterial         *mat);
 

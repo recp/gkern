@@ -18,7 +18,8 @@
 extern mat4 gk__biasMatrix;
 
 GkShadowMap*
-gkSetupShadowMapCSM(GkScene * __restrict scene) {
+gkSetupShadowMapCSM(GkScene * __restrict scene,
+                    GkLight * __restrict light) {
   GkShadowMap *sm;
   GkPass      *pass;
   GLenum       status;
@@ -74,7 +75,7 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   sceneImpl = (GkSceneImpl *)scene;
 
   if (!(sm = sceneImpl->shadows))
-    sceneImpl->shadows = sm = gkSetupShadows(scene);
+    sceneImpl->shadows = sm = gkSetupShadows(scene, light);
 
   prog          = sm->pass->prog;
   sm->currLight = light;
@@ -136,7 +137,7 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
 
     glClear(GL_DEPTH_BUFFER_BIT);
     for (j = 0; j < subFrustum.objsCount; j++)
-      gkRenderShadowMap(scene, subFrustum.objs[j], prog, i);
+      gkRenderShadowMap(scene, sm, subFrustum.objs[j], prog, i);
 
     /* push near to next's far */
     subFrustum.planes[4][3] = subFrustum.planes[5][3];

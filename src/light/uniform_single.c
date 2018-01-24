@@ -20,6 +20,7 @@ gkApplyTransformToLight(struct GkScene * __restrict scene,
   vec4  dir;
   char  buf[32];
   vec4 *transView;
+  vec4 *model;
   GLint loc;
 
   transView = NULL;
@@ -34,18 +35,24 @@ gkApplyTransformToLight(struct GkScene * __restrict scene,
       glm_mul(node->trans->world, scene->camera->view, mv);
       transView = mv;
     }
+
+    model = node->trans->world;
   } else { /* todo: make sure light always has a node */
     glm_mat4_copy(GLM_MAT4_IDENTITY, mv);
     transView = mv;
+    model     = mv;
   }
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "light.");
 
+  /* view space */
   loc = gkUniformLocBuff(prog, "position", buf);
-
-  /* position must be in view space */
   glUniform3fv(loc, 1, transView[3]);
+
+  /* world space */
+  loc = gkUniformLocBuff(prog, "position_ws", buf);
+  glUniform3fv(loc, 1, model[3]);
 
   /* light/cone direction */
   glm_vec_rotate_m4(scene->camera->view, light->dir, dir);
@@ -62,6 +69,7 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   vec4  dir;
   char  buf[32];
   vec4 *transView;
+  vec4 *model;
   GLint loc;
   
   transView = NULL;
@@ -76,11 +84,13 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
       glm_mul(node->trans->world, scene->camera->view, mv);
       transView = mv;
     }
+
+    model = node->trans->world;
   } else { /* todo: make sure light always has a node */
     glm_mat4_copy(GLM_MAT4_IDENTITY, mv);
     transView = mv;
+    model     = mv;
   }
-
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "light.");
@@ -139,10 +149,13 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   loc = gkUniformLocBuff(prog, "color", buf);
   glUniform4fv(loc, 1, light->color.vec);
 
+  /* view space */
   loc = gkUniformLocBuff(prog, "position", buf);
-
-  /* position must be in view space */
   glUniform3fv(loc, 1, transView[3]);
+
+  /* world space */
+  loc = gkUniformLocBuff(prog, "position_ws", buf);
+  glUniform3fv(loc, 1, model[3]);
 
   /* light/cone direction */
   glm_vec_rotate_m4(scene->camera->view, light->dir, dir);

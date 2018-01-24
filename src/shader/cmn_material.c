@@ -31,6 +31,7 @@ gk_creatProgForCmnMat(char *name, void *userData);
 
 size_t
 gkShaderNameFor(GkScene     * __restrict scene,
+                GkLight     * __restrict light,
                 GkPrimitive * __restrict prim,
                 GkTechnique * __restrict techn,
                 char        * __restrict nameBuff) {
@@ -82,6 +83,7 @@ gkShaderNameFor(GkScene     * __restrict scene,
 
 void
 gkShaderFlagsFor(GkScene     * __restrict scene,
+                 GkLight     * __restrict light,
                  GkPrimitive * __restrict prim,
                  GkTechnique * __restrict techn,
                  char       ** __restrict vertFlags,
@@ -190,17 +192,31 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
     shadowSplit = gkShadowSplit();
     switch (gkShadowTechn()) {
       case GK_SHADOW_CSM:
-        sprintf(pVertFlags, "\n#define SHAD_SPLIT %d\n", shadowSplit);
-        sprintf(pFragFlags, "\n#define SHAD_SPLIT %d\n", shadowSplit);
+        pVertFlags += sprintf(pVertFlags,
+                              "\n#define SHAD_SPLIT %d\n",
+                              shadowSplit);
+        pFragFlags += sprintf(pFragFlags,
+                              "\n#define SHAD_SPLIT %d\n",
+                              shadowSplit);
         break;
       default:
         break;
+    }
+
+    if (light) {
+      if (light->type == GK_LIGHT_TYPE_POINT) {
+        pVertFlags += sprintf(pVertFlags, "\n#define SHAD_CUBE\n");
+        pFragFlags += sprintf(pFragFlags, "\n#define SHAD_CUBE\n");
+        pVertFlags += sprintf(pVertFlags, "\n#define POS_WS\n");
+        pFragFlags += sprintf(pFragFlags, "\n#define POS_WS\n");
+      }
     }
   }
 }
 
 GkShader*
 gkShadersFor(GkScene     * __restrict scene,
+             GkLight     * __restrict light,
              GkPrimitive * __restrict prim,
              GkTechnique * __restrict techn) {
   GkShader *vert, *frag;
@@ -243,6 +259,7 @@ gkShadersFor(GkScene     * __restrict scene,
   ;
 
   gkShaderFlagsFor(scene,
+                   light,
                    prim,
                    techn,
                    &vertSource[1],
@@ -274,19 +291,22 @@ gkShadersFor(GkScene     * __restrict scene,
 
 GkProgram*
 gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
+                          GkLight     * __restrict light,
                           GkPrimitive * __restrict prim,
                           GkMaterial  * __restrict mat) {
   char  name[64];
-  void *userData[3];
+  void *userData[4];
 
   (void)gkShaderNameFor(scene,
+                        light,
                         prim,
                         mat->technique,
                         name);
 
   userData[0] = scene;
-  userData[1] = prim;
-  userData[2] = mat;
+  userData[1] = light;
+  userData[2] = prim;
+  userData[3] = mat;
 
   return gkGetOrCreatProg(name,
                           gk_creatProgForCmnMat,
@@ -320,13 +340,15 @@ gk_creatProgForCmnMat(char *name, void *userData) {
   GkShader    *shaders;
   GkScene     *scene;
   GkPrimitive *prim;
+  GkLight     *light;
   GkMaterial  *mat;
 
   scene = ((void **)userData)[0];
-  prim  = ((void **)userData)[1];
-  mat   = ((void **)userData)[2];
+  light = ((void **)userData)[1];
+  prim  = ((void **)userData)[2];
+  mat   = ((void **)userData)[3];
 
-  if ((shaders = gkShadersFor(scene, prim, mat->technique)))
+  if ((shaders = gkShadersFor(scene, light, prim, mat->technique)))
     return gkMakeProgram(shaders, gk__beforeLinking, prim);
 
   return NULL;

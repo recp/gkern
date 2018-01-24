@@ -14,6 +14,8 @@
 
 #include "rn_material.h"
 #include "rn_pass.h"
+#include "rn_light.h"
+#include "rn_prim.h"
 
 void
 gkPrepMaterial(GkScene     *scene,
@@ -59,10 +61,13 @@ gkApplyMaterial(GkScene     * __restrict scene,
     pass = sceneImpl->overridePass;
     goto apply;
   }
-  
+
   if (!(pass = material->technique->pass)
       && !(material->technique->pass =
-           pass = gkGetOrCreatPass(scene, prim, material)))
+           pass = gkGetOrCreatPass(scene,
+                                   sceneImpl->forLight,
+                                   prim,
+                                   material)))
     return;
 
 apply:

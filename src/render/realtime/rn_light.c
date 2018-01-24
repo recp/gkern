@@ -40,7 +40,7 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
     mat4        *shadowMVP;
     int32_t      smUnit, split, i;
 
-    sm     = sceneImpl->shadows;
+    sm     = hash_get(sceneImpl->shadows, &light->type);
     smUnit = flist_indexof(gkContextOf(scene)->samplers,
                            GK_SHADOWS_HANDLE);
 
@@ -58,16 +58,33 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
       gkBindDepthTexTo(scene, sm->pass, prog, smUnit, "uShadMap");
     }
 
-    for (i = 0; i < split; i++) {
-      glm_mat4_mul(sm->viewProj[i],
-                   modelInst->trans->world,
-                   shadowMVP[i]);
-    }
+    if (light->type != GK_LIGHT_TYPE_POINT) {
+      for (i = 0; i < split; i++) {
+        glm_mat4_mul(sm->viewProj[i],
+                     modelInst->trans->world,
+                     shadowMVP[i]);
+      }
 
-    glUniformMatrix4fv(gkUniformLoc(prog, "uShadMVP"),
-                       split,
-                       GL_FALSE,
-                       shadowMVP[0][0]);
+      glUniformMatrix4fv(gkUniformLoc(prog, "uShadMVP"),
+                         split,
+                         GL_FALSE,
+                         shadowMVP[0][0]);
+    } else {
+      float n, f, nfsub, nf[2];
+
+      n = sm->near;
+      f = sm->far;
+
+      nfsub = f - n;
+      nf[0] = (f + n) / nfsub * 0.5f + 0.5f;
+      nf[1] = (-2.0f * f * n) / nfsub * 0.5f;
+
+      glUniform2f(gkUniformLoc(prog, "uFarNear"), nf[0], nf[1]);
+      glUniformMatrix4fv(gkUniformLoc(prog, "M"),
+                         1,
+                         GL_FALSE,
+                         modelInst->trans->world[0]);
+    }
   }
 
   gkRenderPrim(scene, prim);

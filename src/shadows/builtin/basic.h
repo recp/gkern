@@ -14,7 +14,8 @@
 #include "../shadows.h"
 
 GkShadowMap*
-gkSetupBasicShadowMap(GkScene * __restrict scene);
+gkSetupBasicShadowMap(GkScene * __restrict scene,
+                      GkLight * __restrict light);
 
 void
 gkRenderBasicShadowMap(GkScene * __restrict scene,
