@@ -56,7 +56,7 @@ uniform Material material;
 uniform Light    lights[16];
 uniform int      lightCount;
 
-in vec3 vPosition;
+in vec3 vPos;
 in vec3 vNormal;
 in vec3 vEye;
 
@@ -117,7 +117,7 @@ constant(vec4 light, vec3 L) {
 float
 point(Light light, inout vec3 L) {
   float dist;
-  L    = light.position - vPosition;
+  L    = light.position - vPos;
   dist = length(L);
   L    = L / dist;
   return 1.0 / (light.constAttn
@@ -130,7 +130,7 @@ spot(Light light, inout vec3 L) {
   float dist;
   float spotCos;
 
-  L    = light.position - vPosition;
+  L    = light.position - vPos;
   dist = length(L);
   L    = L / dist;
 

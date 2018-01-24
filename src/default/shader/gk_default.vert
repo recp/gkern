@@ -16,15 +16,15 @@ uniform int  NMU; // Use normal matrix
 layout(location = 0) in vec3 POSITION;
 layout(location = 1) in vec3 NORMAL;
 
-out vec3 vPosition;
+out vec3 vPos;
 out vec3 vNormal;
 out vec3 vEye;
 
 void main() {
   vec4 pos4 = vec4(POSITION, 1.0);
 
-  vPosition = vec3(MV * pos4);
-  vEye      = normalize(-vPosition);
+  vPos = vec3(MV * pos4);
+  vEye = normalize(-vPos);
 
   if (NMU == 1)
     vNormal = normalize(vec3(NM * vec4(NORMAL, 0.0)));

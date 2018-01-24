@@ -10,6 +10,9 @@ uniform mat4 MVP; // Projection * View * Model matrix
 uniform mat4 MV;  // View * Model Matrix
 uniform mat4 NM;  // Normal matrix
 uniform int  NMU; // Use normal matrix
+\n#ifdef POS_WS\n
+uniform mat4 M;   // Model matrix
+\n#endif\n
 
 \n#ifdef SHADOWMAP\n
 \n#ifndef SHAD_SPLIT\n
@@ -50,17 +53,29 @@ in  vec2   TEXCOORD5;
 out vec2  vTEXCOORD5;
 \n#endif\n
 
-out vec3 vPosition;
+out vec3 vPos;
 out vec3 vNormal;
 out vec3 vEye;
-out vec4 vPos;
+
+\n#ifdef POS_MS\n
+\n#endif\n
+out vec4 vPosMS;
+\n#ifdef POS_WS\n
+out vec3 vPosWS;
+\n#endif\n
 
 void main() {
   vec4 pos4 = vec4(POSITION, 1.0);
+  vPos      = vec3(MV * pos4);
+  vEye      = normalize(-vPos);
 
-  vPos      = pos4;
-  vPosition = vec3(MV * pos4);
-  vEye      = normalize(-vPosition);
+\n#ifdef POS_WS\n
+  vPosWS    = vec3(M  * pos4);
+\n#endif\n
+
+\n#ifdef POS_MS\n
+  vPosMS    = pos4;
+\n#endif\n
 
   if (NMU == 1)
     vNormal = normalize(vec3(NM * vec4(NORMAL, 0.0)));
@@ -89,8 +104,10 @@ void main() {
 \n#endif\n
   
 \n#ifdef SHADOWMAP\n
+\n#ifndef SHAD_CUBE\n
 \n#ifndef SHAD_SPLIT\n
   vShadCoord = uShadMVP * pos4;
+\n#endif\n
 \n#endif\n
 \n#endif\n
 }

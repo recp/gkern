@@ -6,10 +6,39 @@
  */
 
 GK_STRINGIFY(
-in vec3 vPosition;
-in vec4 vPos;
+
+\n#define AmbientlLight    0x00000001u \n
+\n#define DirectionalLight 0x00000002u \n
+\n#define PointLight       0x00000003u \n
+\n#define SpotLight        0x00000004u \n
+
+struct Light {
+  vec4  ambient;
+  vec4  color;
+  vec3  position;
+  vec3  position_ws;
+  vec3  direction;
+
+  float cutoffCos;
+  float cutoffExp;
+  float constAttn;
+  float linAttn;
+  float quadAttn;
+};
+
+uniform Light light;
+uniform uint  lightType;
+
+in vec3 vPos;
 in vec3 vNormal;
 in vec3 vEye;
+
+\n#ifdef POS_MS\n
+\n#endif\n
+in vec4 vPosMS;
+\n#ifdef POS_WS\n
+in vec3 vPosWS;
+\n#endif\n
 
 \n#if TEX_COUNT > 0\n
 in vec2 vTEXCOORD;
@@ -89,11 +118,32 @@ uniform float     uShininess;
 \n#ifdef SHADOWMAP\n
 \n#ifndef SHAD_SPLIT\n
 
+\n#ifdef SHAD_CUBE\n
+float depthValue(const in vec3 v) {
+  vec3 absv = abs(v);
+  float z   = max(absv.x, max(absv.y, absv.z));
+  return uFarNear.x + uFarNear.y / z;
+}
+
+uniform samplerCubeShadow    uShadMap;
+uniform vec2 uFarNear;
+\n#else\n
 uniform sampler2DShadow      uShadMap;
 in vec4                      vShadCoord;
+\n#endif\n
 
 float shadowCoef() {
+\n#ifdef SHAD_CUBE\n
+  vec3  L;
+  float d;
+
+  L = vPosWS - light.position_ws;
+  d = depthValue(L);
+
+  return texture(uShadMap, vec4(L, d));
+\n#else\n
   return textureProj(uShadMap, vShadCoord);
+\n#endif\n
 }
 
 \n#else\n
@@ -111,7 +161,7 @@ float shadowCoef() {
       break;
   }
 
-  shadCoord     = uShadMVP[i] * vPos;
+  shadCoord     = uShadMVP[i] * vPosMS;
   shadCoord.xyw = (shadCoord / shadCoord.w).xyz;
   shadCoord.z   = float(i);
 
