@@ -37,10 +37,19 @@ gkSetupBasicShadowMap(GkScene * __restrict scene,
 
   gkBindPassOut(scene, pass->output);
 
-  if (light->type != GK_LIGHT_TYPE_POINT)
-    gkPassEnableDepthTex(scene, pass);
-  else
-    gkPassEnableDepthCubeTex(scene, pass);
+  if (light->type != GK_LIGHT_TYPE_POINT) {
+    /* TODO: optimize it */
+    sm->size.w = scene->vrect.size.w * scene->backingScale;
+    sm->size.h = scene->vrect.size.h * scene->backingScale;
+
+    gkPassEnableDepthTex(scene, pass, sm->size);
+  } else {
+    /* TODO: optimize it */
+    sm->size.w = scene->vrect.size.w * scene->backingScale;
+    sm->size.h = sm->size.w;
+
+    gkPassEnableDepthCubeTex(scene, pass, sm->size.w);
+  }
 
   glDrawBuffer(GL_NONE);
   glReadBuffer(GL_NONE);
@@ -74,10 +83,6 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
     hash_set(sceneImpl->shadows, &light->type, sm);
   }
 
-
-//  if (!(sm = sceneImpl->shadows))
-//    sceneImpl->shadows = sm = gkSetupShadows(scene, light);
-
   prog          = sm->pass->prog;
   sm->currLight = light;
 
@@ -95,6 +100,8 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
 
   /* render point of view of light  */
   glCullFace(GL_FRONT); /* todo: add to gpu state */
+
+  glViewport(0, 0, sm->size.w, sm->size.h);
 
   if (light->type != GK_LIGHT_TYPE_POINT) {
     gkShadowMatrix(scene, light, sm->viewProj[0]);
@@ -120,13 +127,8 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
 
     gkLightPos(scene, light, pos);
 
-    glViewport(0,
-               0,
-               scene->vrect.size.w * scene->backingScale,
-               scene->vrect.size.w * scene->backingScale);
-
-    sm->near = 0.1f;  /* TODO: */
-    sm->far = 100.0f; /* TODO: */
+    sm->near = 0.1f;   /* TODO: calculate it */
+    sm->far  = 100.0f; /* TODO: calculate it */
 
     glm_perspective(glm_rad(90.0f), 1.0f, sm->near, sm->far, proj);
 
@@ -145,15 +147,6 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
       for (i = 0; i < c; i++)
         gkRenderShadowMap(scene, sm, objs[i], prog, 0);
     }
-
-#ifdef DEBUG
-    int status;
-    status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE) {
-      /* todo: handle error */
-      printf("error: couldn't create framebuff for samplerCUBE");
-    }
-#endif
   }
 
   glCullFace(GL_BACK);

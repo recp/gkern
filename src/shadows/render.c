@@ -19,12 +19,10 @@ gkRenderShadowMap(GkScene     * __restrict scene,
   mat4         mvp;
   GkModel     *model;
   GkPrimitive *primi;
-  GkSceneImpl *sceneImpl;
   vec4        *world;
 
-  model     = modelInst->model;
-  sceneImpl = (GkSceneImpl *)scene;
-  world     = modelInst->trans->world;
+  model = modelInst->model;
+  world = modelInst->trans->world;
 
   glm_mul(sm->viewProj[split], world, mvp);
   gkUniformMat4(prog->mvpi, mvp);

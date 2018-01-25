@@ -20,6 +20,7 @@ typedef struct GkShadowMap {
   int      splitc;
   float    near;
   float    far;
+  GkSize   size;
 } GkShadowMap;
 
 typedef GkShadowMap* (*gkSetupShadowsFunc)(GkScene * __restrict scene,

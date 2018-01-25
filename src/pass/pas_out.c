@@ -96,7 +96,8 @@ gkPassEnableDepth(GkScene *scene,
 GK_EXPORT
 void
 gkPassEnableDepthTex(GkScene *scene,
-                     GkPass  *pass) {
+                     GkPass  *pass,
+                     GkSize   size) {
   GkPassOut *pout, *currentOutput;
 
   if (!(pout = pass->output))
@@ -115,8 +116,8 @@ gkPassEnableDepthTex(GkScene *scene,
   glTexImage2D(GL_TEXTURE_2D,
                0,
                GL_DEPTH_COMPONENT24, /* todo: add option for this */
-               scene->vrect.size.w * scene->backingScale,
-               scene->vrect.size.h * scene->backingScale,
+               size.w,
+               size.h,
                0,
                GL_DEPTH_COMPONENT,
                GL_FLOAT,
@@ -144,9 +145,8 @@ gkPassEnableDepthTex(GkScene *scene,
 
 GK_EXPORT
 void
-gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass) {
+gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass, float size) {
   GkPassOut *pout, *currentOutput;
-  float      size;
   int        i;
 
   if (!(pout = pass->output))
@@ -172,7 +172,6 @@ gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass) {
                   GL_TEXTURE_COMPARE_MODE,
                   GL_COMPARE_REF_TO_TEXTURE);
 
-  size =  scene->vrect.size.w * scene->backingScale;
   for (i = 0; i < 6; ++i)
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
                  0,
