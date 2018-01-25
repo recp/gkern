@@ -74,8 +74,10 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   ctx       = gkContextOf(scene);
   sceneImpl = (GkSceneImpl *)scene;
 
-  if (!(sm = sceneImpl->shadows))
-    sceneImpl->shadows = sm = gkSetupShadows(scene, light);
+  if (!(sm = hash_get(sceneImpl->shadows, &light->type))) {
+    sm = gkSetupShadows(scene, light);
+    hash_set(sceneImpl->shadows, &light->type, sm);
+  }
 
   prog          = sm->pass->prog;
   sm->currLight = light;

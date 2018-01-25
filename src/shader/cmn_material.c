@@ -198,6 +198,9 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
         pFragFlags += sprintf(pFragFlags,
                               "\n#define SHAD_SPLIT %d\n",
                               shadowSplit);
+
+        pVertFlags += sprintf(pVertFlags, "\n#define POS_MS\n");
+        pFragFlags += sprintf(pFragFlags, "\n#define POS_MS\n");
         break;
       default:
         break;
