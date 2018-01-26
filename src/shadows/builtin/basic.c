@@ -74,9 +74,8 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   GkProgram   *prog;
   GkSceneImpl *sceneImpl;
   GkShadowMap *sm;
-  GkModelInst **objs;
   GkFrustum   *frustum, subFrustum;
-  size_t       i, c;
+  size_t       i;
 
   ctx       = gkContextOf(scene);
   sceneImpl = (GkSceneImpl *)scene;
@@ -98,21 +97,19 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
     gkUseProgram(ctx, prog);
 
   frustum = &scene->camera->frustum;
-  objs    = frustum->objs;
-  c       = frustum->objsCount;
 
   /* render point of view of light  */
   glCullFace(GL_FRONT); /* todo: add to gpu state */
   glViewport(0, 0, sm->size.w, sm->size.h);
+
   memcpy(&subFrustum, frustum, sizeof(subFrustum));
+  subFrustum.objs      = NULL;
+  subFrustum.objsCount = 0;
+  subFrustum.objsLen   = 0;
 
   if (light->type != GK_LIGHT_TYPE_POINT) {
     gkShadowMatrix(scene, light, sm->viewProj[0]);
     glClear(GL_DEPTH_BUFFER_BIT);
-
-    subFrustum.objs      = NULL;
-    subFrustum.objsCount = 0;
-    subFrustum.objsLen   = 0;
 
     /* cull sub frustum */
     gkCullSubFrustum(frustum, &subFrustum);
@@ -154,10 +151,6 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
       glm_mat4_mul(proj, view, sm->viewProj[0]);
 
       glm_frustum_planes(sm->viewProj[0], subFrustum.planes);
-
-      subFrustum.objs      = NULL;
-      subFrustum.objsCount = 0;
-      subFrustum.objsLen   = 0;
 
       /* cull sub frustum */
       gkCullSubFrustum(frustum, &subFrustum);

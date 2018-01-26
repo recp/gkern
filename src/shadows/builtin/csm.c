@@ -102,12 +102,11 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   gkShadowViewMatrix(scene, light, &scene->camera->frustum, view);
 
   memcpy(&subFrustum, frustum, sizeof(subFrustum));
-  for (i = 0; i < m; i++) {
-    /* prepare subFrustum for next */
-    subFrustum.objs      = NULL;
-    subFrustum.objsCount = 0;
-    subFrustum.objsLen   = 0;
+  subFrustum.objs      = NULL;
+  subFrustum.objsCount = 0;
+  subFrustum.objsLen   = 0;
 
+  for (i = 0; i < m; i++) {
     /* split sceheme: PSSM */
     im   = (float)(i + 1) / m;
     Clog = n * powf(f / n, im);
