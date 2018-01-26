@@ -89,10 +89,13 @@ gkPrepareNode(GkScene * __restrict scene,
   GkCameraImpl *camImpl;
   FListItem    *camItem;
   GkTransform  *tr;
+  GkLight      *light;
+  bool          finalComputed;
 
   sceneImpl = (GkSceneImpl *)scene;
   camItem   = sceneImpl->transfCacheSlots->first;
 
+  finalComputed = false;
   if (!(tr = node->trans))
     tr = node->trans = parentNode->trans;
 
@@ -114,6 +117,8 @@ gkPrepareNode(GkScene * __restrict scene,
       camItem = camItem->next;
     }
 
+    finalComputed = true;
+
     modelInst = node->model;
     do {
       /* this may be moved to prepare scene */
@@ -131,18 +136,19 @@ gkPrepareNode(GkScene * __restrict scene,
 
       modelInst = modelInst->next;
     } while (modelInst);
-  } else if (node->light) {
-    GkLight *light;
+  }
 
-    light = node->light;
+  if ((light = node->light)) {
+    if (!finalComputed) {
+      while (camItem) {
+        camImpl = camItem->data;
+        gkCalcViewTransf(scene, &camImpl->pub, tr);
+        camItem = camItem->next;
+      }
+    }
 
-    gkCalcViewTransf(scene, scene->camera, tr);
     light->flags |= GK_LIGHTF_TRANSFORMED;
-
-    glm_vec_rotate_m4(tr->world,
-                      (float *)gk_opt(GK_OPT_LIGHT_DIR),
-                      light->dir);
-
+    glm_vec_rotate_m4(tr->world, light->defdir, light->dir);
     glm_vec_normalize(light->dir);
   }
 }
@@ -203,6 +209,8 @@ gkPrepareView(GkScene * __restrict scene,
   GkCameraImpl *camImpl;
   FListItem    *camItem;
   GkTransform  *tr;
+  GkLight      *light;
+  bool          finalComputed;
 
   sceneImpl = (GkSceneImpl *)scene;
   camItem   = sceneImpl->transfCacheSlots->first;
@@ -211,28 +219,29 @@ gkPrepareView(GkScene * __restrict scene,
   if (!(node->flags & GK_NODEF_HAVE_TRANSFORM))
     return;
 
+  finalComputed = false;
   if (node->model) {
     while (camItem) {
       camImpl = camItem->data;
       gkCalcFinalTransf(scene, &camImpl->pub, tr);
       camItem = camItem->next;
     }
-  } else if (node->light) {
-    GkLight *light;
 
-    light = node->light;
+    finalComputed = true;
+  }
 
-    gkCalcViewTransf(scene, scene->camera, tr);
+  if ((light = node->light)) {
+    if (!finalComputed) {
+      while (camItem) {
+        camImpl = camItem->data;
+        gkCalcViewTransf(scene, &camImpl->pub, tr);
+        camItem = camItem->next;
+      }
+    }
+
     light->flags |= GK_LIGHTF_TRANSFORMED;
-
-    glm_vec_rotate_m4(tr->world,
-                      (float *)gk_opt(GK_OPT_LIGHT_DIR),
-                      light->dir);
-
+    glm_vec_rotate_m4(tr->world, light->defdir, light->dir);
     glm_vec_normalize(light->dir);
-
-    versor lightOri;
-    glm_quatv(lightOri, -M_PI, GLM_XUP);
   }
 }
 

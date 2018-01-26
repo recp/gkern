@@ -54,11 +54,13 @@ gkApplyTransformToLight(struct GkScene * __restrict scene,
   loc = gkUniformLocBuff(prog, "position_ws", buf);
   glUniform3fv(loc, 1, model[3]);
 
-  /* light/cone direction */
-  glm_vec_rotate_m4(scene->camera->view, light->dir, dir);
+  if (light->type != GK_LIGHT_TYPE_POINT) {
+    /* light/cone direction */
+    glm_vec_rotate_m4(scene->camera->view, light->dir, dir);
 
-  loc = gkUniformLocBuff(prog, "direction", buf);
-  glUniform3fv(loc, 1, dir);
+    loc = gkUniformLocBuff(prog, "direction", buf);
+    glUniform3fv(loc, 1, dir);
+  }
 }
 
 void
@@ -157,11 +159,13 @@ gkUniformSingleLight(struct GkScene * __restrict scene,
   loc = gkUniformLocBuff(prog, "position_ws", buf);
   glUniform3fv(loc, 1, model[3]);
 
-  /* light/cone direction */
-  glm_vec_rotate_m4(scene->camera->view, light->dir, dir);
+  if (light->type != GK_LIGHT_TYPE_POINT) {
+    /* light/cone direction */
+    glm_vec_rotate_m4(scene->camera->view, light->dir, dir);
 
-  loc = gkUniformLocBuff(prog, "direction", buf);
-  glUniform3fv(loc, 1, dir);
+    loc = gkUniformLocBuff(prog, "direction", buf);
+    glUniform3fv(loc, 1, dir);
+  }
   
   gkUniform1ui(prog, "lightType", light->type);
   prog->lastLight = light;

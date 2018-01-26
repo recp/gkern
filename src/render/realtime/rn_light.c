@@ -80,10 +80,7 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
       nf[1] = (-2.0f * f * n) / nfsub * 0.5f;
 
       glUniform2f(gkUniformLoc(prog, "uFarNear"), nf[0], nf[1]);
-      glUniformMatrix4fv(gkUniformLoc(prog, "M"),
-                         1,
-                         GL_FALSE,
-                         modelInst->trans->world[0]);
+      gkUniformMat4(gkUniformLoc(prog, "M"), modelInst->trans->world);
     }
   }
 
