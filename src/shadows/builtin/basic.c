@@ -14,6 +14,8 @@
 #include "../../shader/builtin_shader.h"
 #include "../../gpu_state/common.h"
 
+#include <string.h>
+
 extern mat4 gk__biasMatrix;
 
 GkShadowMap*
@@ -73,6 +75,7 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   GkSceneImpl *sceneImpl;
   GkShadowMap *sm;
   GkModelInst **objs;
+  GkFrustum   *frustum, subFrustum;
   size_t       i, c;
 
   ctx       = gkContextOf(scene);
@@ -94,21 +97,27 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   if (ctx->currState->prog != prog)
     gkUseProgram(ctx, prog);
 
-  /* todo: no extra cull required for directional but cull for others! */
-  objs = scene->camera->frustum.objs;
-  c    = scene->camera->frustum.objsCount;
+  frustum = &scene->camera->frustum;
+  objs    = frustum->objs;
+  c       = frustum->objsCount;
 
   /* render point of view of light  */
   glCullFace(GL_FRONT); /* todo: add to gpu state */
-
   glViewport(0, 0, sm->size.w, sm->size.h);
+  memcpy(&subFrustum, frustum, sizeof(subFrustum));
 
   if (light->type != GK_LIGHT_TYPE_POINT) {
     gkShadowMatrix(scene, light, sm->viewProj[0]);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    for (i = 0; i < c; i++)
-      gkRenderShadowMap(scene, sm, objs[i], prog, 0);
+    subFrustum.objs      = NULL;
+    subFrustum.objsCount = 0;
+    subFrustum.objsLen   = 0;
+
+    /* cull sub frustum */
+    gkCullSubFrustum(frustum, &subFrustum);
+    for (i = 0; i < subFrustum.objsCount; i++)
+      gkRenderShadowMap(scene, sm, subFrustum.objs[i], prog, 0);
 
     glm_mat4_mul(gk__biasMatrix, sm->viewProj[0], sm->viewProj[0]);
   } else {
@@ -144,8 +153,19 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
       glm_look(pos, cubeData[side].dir, cubeData[side].up, view);
       glm_mat4_mul(proj, view, sm->viewProj[0]);
 
-      for (i = 0; i < c; i++)
-        gkRenderShadowMap(scene, sm, objs[i], prog, 0);
+      glm_frustum_planes(sm->viewProj[0], subFrustum.planes);
+
+      subFrustum.objs      = NULL;
+      subFrustum.objsCount = 0;
+      subFrustum.objsLen   = 0;
+
+      /* cull sub frustum */
+      gkCullSubFrustum(frustum, &subFrustum);
+      if (subFrustum.objsCount == 0)
+        continue;
+
+      for (i = 0; i < subFrustum.objsCount; i++)
+        gkRenderShadowMap(scene, sm, subFrustum.objs[i], prog, 0);
     }
   }
 
