@@ -236,7 +236,7 @@ gkUniformTransform(struct GkProgram * __restrict prog,
 
   /* Normal Matrix */
   if (hasNM) {
-    usenm = !(trans->flags & GK_TRANSF_FMAT_NORMAT);
+    usenm = GK_FLG(trans->flags, GK_TRANSF_FMAT_NORMAT);
     if (usenm) {
       if (!ftr) {
         glm_mat4_inv(pmv, nm);
