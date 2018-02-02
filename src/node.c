@@ -31,7 +31,7 @@ gkAllocNode(struct GkScene * __restrict scene) {
   sceneImpl = (GkSceneImpl *)scene;
   np        = sceneImpl->lastPage;
 
-  if (!np || np->isfull)
+  if (!np || np->size == np->count)
     goto nw;
 
   for (i = 0; i < gk_nodesPerPage; i++) {
@@ -40,13 +40,15 @@ gkAllocNode(struct GkScene * __restrict scene) {
       continue;
 
     node->flags |= GK_NODEF_NODE;
+    np->count++;
     return node;
   }
 
 nw:
-  np = calloc(1, sizeof(*np) + gk_nodesPerPage * sizeof(GkNode));
-  np->isfull = false;
-  np->next = sceneImpl->lastPage;
+  np        = calloc(1, sizeof(*np) + gk_nodesPerPage * sizeof(GkNode));
+  np->size  = gk_nodesPerPage;
+  np->next  = sceneImpl->lastPage;
+  np->count = 1;
 
   sceneImpl->lastPage = np;
   if (!sceneImpl->nodePages)

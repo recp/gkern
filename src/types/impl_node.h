@@ -12,8 +12,8 @@
 
 typedef struct GkNodePage {
   struct GkNodePage *next;
-  size_t             size;
-  bool               isfull;
+  uint32_t           size;
+  uint32_t           count;
   GkNode             nodes[];
 } GkNodePage;
 
