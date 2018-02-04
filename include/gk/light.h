@@ -47,6 +47,7 @@ typedef struct GkLight {
   const char      *name;
   vec4            *ambient;
   vec3             dir;
+  vec3             defdir;
   GkLightType      type;
   GkColor          color;
   int32_t          index;
