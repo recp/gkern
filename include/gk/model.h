@@ -56,6 +56,8 @@ typedef struct GkPrimitive {
 typedef struct GkPrimInst {
   GkPrimitive *prim;
   GkMaterial  *material;
+  GkMaterial  *activeMaterial;
+  GkTransform *trans;
   vec3         bbox[2];
 } GkPrimInst;
 
@@ -65,7 +67,6 @@ typedef enum GkModelFlags {
 } GkModelFlags;
 
 typedef struct GkModel {
-  GkPrimitive     *prim;
   GkProgram       *prog;
   GkMaterial      *material;
   GkGLEvents      *events;
@@ -73,17 +74,19 @@ typedef struct GkModel {
   vec3             bbox[2];   /* local */
   uint32_t         flags;
   uint32_t         primc;
+  GkPrimitive      prims[];
 } GkModel;
 
 typedef struct GkModelInst {
+  struct GkModelInst *next;
   GkModel            *model;
   GkTransform        *trans;    /* readonly: don't set this manually */
-  RBTree             *prims;    /* to customize each primitive material  */
   GkMaterial         *material; /* instances may use different materials */
   GkMaterial         *activeMaterial;
   vec3                bbox[2];
   uint64_t            flags;
-  char                data[];   /* private field */
+  int32_t             primc;
+  GkPrimInst          prims[];
 } GkModelInst;
 
 void
@@ -97,9 +100,5 @@ gk_model_find(struct GkContext * __restrict ctx,
 
 GkModelInst*
 gkMakeInstance(GkModel *model);
-
-GkPrimInst*
-gkMakePrimInst(GkModelInst *modelInst,
-               GkPrimitive *prim);
 
 #endif /* gk_model_h */
