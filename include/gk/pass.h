@@ -11,12 +11,13 @@
 #include "common.h"
 #include "program.h"
 #include "material.h"
-
+#include "geom-types.h"
 #include <ds/forward-list.h>
 
 struct GkScene;
 struct GkContext;
 struct GkPrimitive;
+struct GkLight;
 
 /* GL_COLOR_ATTACHMENT[n] */
 typedef struct GkPassOutColor {
@@ -87,11 +88,11 @@ gkPassEnableDepthTex(struct GkScene *scene,
 
 GK_EXPORT
 void
-gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len);
+gkPassEnableDepthTexArray(struct GkScene *scene, GkPass *pass, GLsizei len);
 
 GK_EXPORT
 void
-gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass, float size);
+gkPassEnableDepthCubeTex(struct GkScene *scene, GkPass *pass, float size);
 
 GK_EXPORT
 GkPassOutColor*
@@ -120,11 +121,11 @@ gkBindDepthTexTo(struct GkScene *scene,
 
 GK_EXPORT
 void
-gkBindDepthTexArrayTo(GkScene    *scene,
-                      GkPass     *pass,
-                      GkProgram  *prog,
-                      int32_t     texUnit,
-                      const char  *uniformName);
+gkBindDepthTexArrayTo(struct GkScene *scene,
+                      GkPass         *pass,
+                      GkProgram      *prog,
+                      int32_t         texUnit,
+                      const char     *uniformName);
 
 GK_EXPORT
 GLuint
