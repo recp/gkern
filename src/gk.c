@@ -10,6 +10,7 @@
 #include "gpu_state/default.h"
 
 #include <ds/forward-list.h>
+#include <string.h>
 
 GkContext*
 gkAllocContext() {
@@ -33,45 +34,38 @@ gkContextFree(GkContext *ctx) {
 
 GkModelInst *
 gkMakeInstance(GkModel *model) {
-  GkModelInst *instance, *prevInstance;
+  GkModelInst *inst, *prevInst;
+  int32_t      primc, i;
 
-  instance     = calloc(1, sizeof(*instance));
-  prevInstance = NULL;
+  primc    = model->primc;
+  inst     = calloc(1, sizeof(*inst) + sizeof(GkPrimInst) * primc);
+  prevInst = NULL;
 
   if (!model->instances)
     model->instances = calloc(1, sizeof(*model->instances));
   else
-    prevInstance = model->instances->instance;
+    prevInst = model->instances->instance;
 
-  model->instances->instance = instance;
+  model->instances->instance = inst;
   model->instances->instanceCount++;
-  instance->model = model;
+  inst->model = model;
 
-  if (prevInstance)
-    instance->next = prevInstance;
+  if (prevInst)
+    inst->next = prevInst;
 
-  return instance;
-}
+  inst->primc = primc;
+  for (i = 0; i < primc; i++) {
+    memcpy(&inst->prims[i].bbox,
+           &model->prims[i].bbox,
+           sizeof(model->prims[i].bbox));
 
-GkPrimInst*
-gkMakePrimInst(GkModelInst *modelInst,
-               GkPrimitive *prim) {
-  GkPrimInst *primInst;
+    inst->prims[i].material = model->prims[i].material;
+    inst->prims[i].prim     = &model->prims[i];
 
-  if (!modelInst->prims)
-    modelInst->prims = rb_newtree_ptr();
+    assert(!inst->prims[i].material);
+  }
 
-  primInst = rb_find(modelInst->prims, prim);
-  if (primInst)
-    return primInst;
-
-  primInst = calloc(1, sizeof(*primInst));
-  primInst->prim     = prim;
-  primInst->material = NULL;
-
-  rb_insert(modelInst->prims, prim, primInst);
-
-  return primInst;
+  return inst;
 }
 
 void

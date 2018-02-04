@@ -45,7 +45,7 @@ typedef struct GkPrimitive {
   GkMaterial         *activeMaterial;
   GkBuffer           *bufs;
   struct FListItem   *inputs;
-  GkBBox             *bbox;
+  vec3                bbox[2]; /* local */
   GLuint              flags;
   GLuint              vao;
   GLsizei             bufc;
@@ -56,6 +56,7 @@ typedef struct GkPrimitive {
 typedef struct GkPrimInst {
   GkPrimitive *prim;
   GkMaterial  *material;
+  vec3         bbox[2];
 } GkPrimInst;
 
 typedef enum GkModelFlags {
@@ -69,19 +70,18 @@ typedef struct GkModel {
   GkMaterial      *material;
   GkGLEvents      *events;
   GkModelInstList *instances; /* TODO: */
-  GkBBox          *bbox;
+  vec3             bbox[2];   /* local */
   uint32_t         flags;
   uint32_t         primc;
 } GkModel;
 
 typedef struct GkModelInst {
   GkModel            *model;
-  GkBBox             *bbox;
   GkTransform        *trans;    /* readonly: don't set this manually */
   RBTree             *prims;    /* to customize each primitive material  */
   GkMaterial         *material; /* instances may use different materials */
   GkMaterial         *activeMaterial;
-  struct GkModelInst *next;
+  vec3                bbox[2];
   uint64_t            flags;
   char                data[];   /* private field */
 } GkModelInst;

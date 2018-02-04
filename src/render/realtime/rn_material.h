@@ -9,14 +9,11 @@
 #define material_h
 
 void
-gkApplyMaterial(GkScene     * __restrict scene,
-                GkModelInst * __restrict modelInst,
-                GkPrimitive * __restrict prim,
-                GkMaterial  * __restrict material);
+gkApplyMaterial(GkScene    * __restrict scene,
+                GkPrimInst * __restrict primInst);
 
 void
-gkApplyMaterials(GkScene     * __restrict scene,
-                 GkModelInst * __restrict modelInst,
-                 GkPrimitive * __restrict prim);
+gkApplyMaterials(GkScene    * __restrict scene,
+                 GkPrimInst * __restrict primInst);
 
 #endif /* material_h */

@@ -15,7 +15,7 @@
 void
 gkRenderShadowMap(GkScene     * __restrict scene,
                   GkShadowMap * __restrict sm,
-                  GkModelInst * __restrict modelInst,
+                  GkPrimInst  * __restrict primInst,
                   GkProgram   * __restrict prog,
                   int                      split);
 

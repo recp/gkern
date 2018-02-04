@@ -21,6 +21,8 @@
 
 #include <string.h>
 
+/*
+
 void
 gkPrepModel(GkScene     *scene,
             GkModelInst *modelInst,
@@ -116,6 +118,7 @@ gkRenderModel(GkScene     *scene,
     model->events->onDraw(model, NULL, true);
 }
 
+
 void
 gkRnModelNoMatOPass(GkScene     *scene,
                     GkModelInst *modelInst) {
@@ -152,3 +155,5 @@ gkRnModelNoMatOPass(GkScene     *scene,
   /* reset the state */
   glBindVertexArray(0);
 }
+
+*/

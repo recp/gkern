@@ -75,7 +75,8 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   GkSceneImpl *sceneImpl;
   GkShadowMap *sm;
   GkFrustum   *frustum, subFrustum;
-  size_t       i;
+  GkPrimInst **prims;
+  size_t       i, primc;
 
   ctx       = gkContextOf(scene);
   sceneImpl = (GkSceneImpl *)scene;
@@ -103,9 +104,8 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   glViewport(0, 0, sm->size.w, sm->size.h);
 
   memcpy(&subFrustum, frustum, sizeof(subFrustum));
-  subFrustum.objs      = NULL;
-  subFrustum.objsCount = 0;
-  subFrustum.objsLen   = 0;
+  subFrustum.transp = NULL;
+  subFrustum.opaque = NULL;
 
   if (light->type != GK_LIGHT_TYPE_POINT) {
     gkShadowMatrix(scene, light, sm->viewProj[0]);
@@ -113,8 +113,18 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
 
     /* cull sub frustum */
     gkCullSubFrustum(frustum, &subFrustum);
-    for (i = 0; i < subFrustum.objsCount; i++)
-      gkRenderShadowMap(scene, sm, subFrustum.objs[i], prog, 0);
+
+    /* opaque */
+    prims = subFrustum.opaque->items;
+    primc = subFrustum.opaque->count;
+    for (i = 0; i < primc; i++)
+      gkRenderShadowMap(scene, sm, prims[i], prog, 0);
+
+    /* transparent */
+    prims = subFrustum.transp->items;
+    primc = subFrustum.transp->count;
+    for (i = 0; i < primc; i++)
+      gkRenderShadowMap(scene, sm, prims[i], prog, 0);
 
     glm_mat4_mul(gk__biasMatrix, sm->viewProj[0], sm->viewProj[0]);
   } else {
@@ -154,13 +164,26 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
 
       /* cull sub frustum */
       gkCullSubFrustum(frustum, &subFrustum);
-      if (subFrustum.objsCount == 0)
-        continue;
 
-      for (i = 0; i < subFrustum.objsCount; i++)
-        gkRenderShadowMap(scene, sm, subFrustum.objs[i], prog, 0);
+      /* opaque */
+      prims = subFrustum.opaque->items;
+      primc = subFrustum.opaque->count;
+      for (i = 0; i < primc; i++)
+        gkRenderShadowMap(scene, sm, prims[i], prog, 0);
+
+      /* transparent */
+      prims = subFrustum.transp->items;
+      primc = subFrustum.transp->count;
+      for (i = 0; i < primc; i++)
+        gkRenderShadowMap(scene, sm, prims[i], prog, 0);
     }
   }
+
+  if (subFrustum.opaque)
+    free(subFrustum.opaque);
+
+  if (subFrustum.transp)
+    free(subFrustum.transp);
 
   glCullFace(GL_BACK);
   gkPopState(ctx);

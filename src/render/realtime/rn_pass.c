@@ -18,29 +18,33 @@
 #include "rn_prim.h"
 
 void
-gkRenderPass(GkScene     * __restrict scene,
-             GkModelInst * __restrict modelInst,
-             GkPrimitive * __restrict prim,
-             GkMaterial  * __restrict material,
-             GkPass      * __restrict pass) {
+gkRenderPass(GkScene    * __restrict scene,
+             GkPrimInst * __restrict primInst,
+             GkPass     * __restrict pass) {
   GkContext   *ctx;
   GkProgram   *prog;
   GkSceneImpl *sceneImpl;
+  GkTransform *trans;
+  GkPrimitive *prim;
+  GkMaterial  *material;
 
-  if (!pass || !prim || !scene || !(prog = pass->prog))
+  if (!(prog = pass->prog))
     return;
 
   sceneImpl = (GkSceneImpl *)scene;
   ctx       = gkContextOf(scene);
+  prim      = primInst->prim;
+  trans     = primInst->trans;
+  material  = primInst->activeMaterial;
 
   if (ctx->currState->prog != prog)
     gkUseProgram(ctx, prog);
-  
+
   if (prog->lastMaterial != material && !pass->noMaterials)
     gkUniformMaterial(ctx, prog, material);
 
-  gkUniformTransform(prog, modelInst->trans, scene->camera);
-  
+  gkUniformTransform(prog, trans, scene->camera);
+
   if (!pass->noLights) {
     switch (sceneImpl->rpath) {
       case GK_RNPATH_MODEL_PERLIGHT:
@@ -50,7 +54,7 @@ gkRenderPass(GkScene     * __restrict scene,
           gkRenderTranspPrimPerLight(scene, prim, prog);
         break;
       case GK_RNPATH_SCENE_PERLIGHT:
-        gkRenderPrimForLight(scene, modelInst, prim, prog);
+        gkRenderPrimForLight(scene, trans, prim, prog);
         break;
       default: break;
     }

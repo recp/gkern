@@ -17,50 +17,52 @@
 #include "rn_light.h"
 #include "rn_prim.h"
 
-void
-gkPrepMaterial(GkScene     *scene,
-               GkModelInst *modelInst) {
+GkMaterial*
+gkMaterialFor(GkScene     *scene,
+              GkModelInst *modelInst,
+              GkPrimInst  *primInst) {
   GkModel     *model;
-  GkPrimitive *primi;
-  GkMaterial  *modelMaterial;
+  GkSceneImpl *sceneImpl;
+  GkMaterial  *material;
+
+  material  = NULL;
+  model     = modelInst->model;
+  sceneImpl = (GkSceneImpl *)scene;
+
+  if (sceneImpl->overrideMaterial)
+    return sceneImpl->overrideMaterial;
+
+  if (!(material = primInst->material))
+    material = primInst->prim->material;
+
+  if (!material && !(material = modelInst->material))
+    material = model->material;
+
+  if (!material)
+    material = gk_def_material();
   
-  model = modelInst->model;
-  /*
-   make sure model instance has a material
-   (to avoid access model multiple times)
-   */
-  modelMaterial = NULL;
-  if (!modelInst->material) {
-    /* model doesn't has a material set default material */
-    if (!(modelInst->activeMaterial = modelMaterial = model->material))
-      modelInst->activeMaterial = modelMaterial = gk_def_material();
-  }
-  
-  /* make sure every primitive has a material */
-  primi = model->prim;
-  while (primi) {
-    if (!(primi->activeMaterial = primi->material))
-      primi->activeMaterial = modelMaterial;
-    primi = primi->next;
-  }
+  primInst->activeMaterial = material;
+
+  return material;
 }
 
 void
-gkApplyMaterial(GkScene     * __restrict scene,
-                GkModelInst * __restrict modelInst,
-                GkPrimitive * __restrict prim,
-                GkMaterial  * __restrict material) {
+gkApplyMaterial(GkScene    * __restrict scene,
+                GkPrimInst * __restrict primInst) {
   GkSceneImpl *sceneImpl;
   GkPass      *pass;
-
-  if (!material || !material->technique)
-    return;
-
+  GkMaterial  *material;
+  GkPrimitive *prim;
+  
   sceneImpl = (GkSceneImpl *)scene;
   if (sceneImpl->overridePass) {
     pass = sceneImpl->overridePass;
     goto apply;
   }
+  
+  
+  material = primInst->activeMaterial;
+  prim     = primInst->prim;
 
   if (!(pass = material->technique->pass)
       && !(material->technique->pass =
@@ -69,42 +71,10 @@ gkApplyMaterial(GkScene     * __restrict scene,
                                    prim,
                                    material)))
     return;
-
+  
 apply:
   while (pass) {
-    gkRenderPass(scene, modelInst, prim, material, pass);
+    gkRenderPass(scene, primInst, pass);
     pass = pass->next;
   }
-}
-
-void
-gkApplyMaterials(GkScene     * __restrict scene,
-                 GkModelInst * __restrict modelInst,
-                 GkPrimitive * __restrict prim) {
-  GkSceneImpl *sceneImpl;
-  GkMaterial  *material;
-
-  sceneImpl = (GkSceneImpl *)scene;
-  if (sceneImpl->overrideMaterial) {
-    material = sceneImpl->overrideMaterial;
-    goto apply;
-  }
-
-  material = NULL;
-
-  /* instance primitive specific effects */
-  if (modelInst->prims) {
-    GkPrimInst *primInst;
-    if ((primInst = rb_find(modelInst->prims, prim)))
-      material = primInst->material;
-  }
-
-  if (!material)
-    material = prim->activeMaterial;
-
-  if (!material)
-    material = gk_def_material();
-
-apply:
-  gkApplyMaterial(scene, modelInst, prim, material);
 }

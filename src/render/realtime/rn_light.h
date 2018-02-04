@@ -12,7 +12,7 @@
 
 void
 gkRenderPrimForLight(GkScene     * __restrict scene,
-                     GkModelInst * __restrict modelInst,
+                     GkTransform * __restrict trans,
                      GkPrimitive * __restrict prim,
                      GkProgram   * __restrict prog);
 

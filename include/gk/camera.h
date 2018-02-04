@@ -19,6 +19,9 @@ extern "C" {
 
 struct GkScene;
 struct GkModelInst;
+struct GkMaterial;
+struct GkPrimitive;
+struct GkPrimInst;
 
 typedef enum GkCameraFlags {
   GK_CAMF_NONE     = 0,
@@ -29,13 +32,19 @@ typedef enum GkCameraFlags {
 
 GK_MAKE_C_ENUM(GkCameraFlags)
 
+typedef struct GkRenderList {
+  size_t             size;
+  size_t             count;
+  struct GkPrimInst *items[];
+} GkRenderList;
+
 typedef struct GkFrustum {
-  vec4                 center;
-  GkPlane              planes[6]; /* left, right, bottom, top, near, far */
-  vec4                 corners[8];
-  struct GkModelInst **objs;
-  size_t               objsLen;
-  size_t               objsCount;
+  vec4          center;
+  GkPlane       planes[6]; /* left, right, bottom, top, near, far */
+  vec4          corners[8];
+
+  GkRenderList *opaque;
+  GkRenderList *transp;
 } GkFrustum;
 
 typedef struct GkCamera {

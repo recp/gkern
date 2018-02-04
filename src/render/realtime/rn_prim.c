@@ -7,6 +7,7 @@
 
 #include "../../common.h"
 #include "rn_prim.h"
+#include "rn_material.h"
 
 void
 gkRenderPrim(GkScene     * __restrict scene,
@@ -18,4 +19,15 @@ gkRenderPrim(GkScene     * __restrict scene,
                    NULL);
   else if (prim->flags & GK_DRAW_ARRAYS)
     glDrawArrays(prim->mode, 0, prim->count);
+}
+
+void
+gkRenderPrimInst(GkScene    * __restrict scene,
+                 GkPrimInst * __restrict primInst) {
+  GkPrimitive *prim;
+  
+  prim = primInst->prim;
+  
+  glBindVertexArray(prim->vao);
+  gkApplyMaterial(scene, primInst);
 }

@@ -14,4 +14,8 @@ void
 gkRenderPrim(GkScene     * __restrict scene,
              GkPrimitive * __restrict prim);
 
+void
+gkRenderPrimInst(GkScene    * __restrict scene,
+                 GkPrimInst * __restrict primInst);
+
 #endif /* rn_prim_h */

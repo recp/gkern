@@ -13,22 +13,8 @@
 #include "rn_transp.h"
 
 bool
-gkPrimIsTransparent(GkModelInst * __restrict modelInst,
-                    GkPrimitive * __restrict prim) {
-  GkMaterial *material;
-  
-  material = NULL;
-
-  /* instance primitive specific effects */
-  if (modelInst->prims) {
-    GkPrimInst *primInst;
-    primInst = rb_find(modelInst->prims, prim);
-    if (primInst)
-      material = primInst->material;
-  }
-  
-  if (!material && !(material = prim->activeMaterial))
-    return false;
-
-  return material->transparent != NULL;
+gkPrimIsTransparent(GkScene     * __restrict scene,
+                    GkModelInst * __restrict modelInst,
+                    GkPrimInst  * __restrict primInst) {
+  return primInst->activeMaterial->transparent != NULL;
 }

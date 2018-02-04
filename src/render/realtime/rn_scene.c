@@ -13,6 +13,7 @@
 #include "../../../include/gk/pass.h"
 #include "../../default/def_light.h"
 #include "../../../include/gk/gpu_state.h"
+#include "rn_prim.h"
 
 static
 void
@@ -108,16 +109,16 @@ GK_EXPORT
 void
 gkScenePerLightRenderPath(GkScene * __restrict scene) {
   GkSceneImpl *sceneImpl;
+  GkFrustum   *frustum;
   GkLight     *light, *firstLight;
-  GkModelInst *modelInst, **objs;
-  size_t       i, c;
+  GkPrimInst  **prims;
+  size_t       i, primc;
 
   sceneImpl  = (GkSceneImpl *)scene;
   light      = (GkLight *)sceneImpl->pub.lights;
   firstLight = light;
-  objs       = scene->camera->frustum.objs;
-  c          = scene->camera->frustum.objsCount;
-
+  frustum    = &scene->camera->frustum;
+  
   do {
     sceneImpl->forLight = light;
 
@@ -131,32 +132,39 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
     if (scene->flags & GK_SCENEF_SHADOWS)
       gkRenderShadows(scene, light);
 
-    for (i = 0; i < c; i++) {
-      modelInst = objs[i];
-
-      if (!scene->renderModelFn)
-        gkRenderModel(scene, modelInst);
+    /* opaque objects */
+    primc = frustum->opaque->count;
+    prims = frustum->opaque->items;
+    for (i = 0; i < primc; i++) {
+      if (!scene->renderPrimFunc)
+        gkRenderPrimInst(scene, prims[i]);
       else
-        scene->renderModelFn(scene, modelInst);
+        scene->renderPrimFunc(scene, prims[i]);
     }
+    
+    /* transparent objects */
+
   } while ((light = (GkLight *)light->ref.next));
 }
 
 GK_EXPORT
 void
 gkModelPerLightRenderPath(GkScene * __restrict scene) {
-  GkModelInst *modelInst, **objs;
-  size_t       i, c;
+  GkFrustum    *frustum;
+  GkPrimInst  **prims;
+  size_t        i, primc;
+  
+  frustum = &scene->camera->frustum;
 
-  objs = scene->camera->frustum.objs;
-  c    = scene->camera->frustum.objsCount;
-
-  for (i = 0; i < c; i++) {
-    modelInst = objs[i];
-
-    if (!scene->renderModelFn)
-      gkRenderModel(scene, modelInst);
+  /* opaque objects */
+  primc = frustum->opaque->count;
+  prims = frustum->opaque->items;
+  for (i = 0; i < primc; i++) {
+    if (!scene->renderPrimFunc)
+      gkRenderPrimInst(scene, prims[i]);
     else
-      scene->renderModelFn(scene, modelInst);
+      scene->renderPrimFunc(scene, prims[i]);
   }
+  
+  /* transparent objects */
 }

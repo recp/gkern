@@ -66,8 +66,9 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   GkSceneImpl     *sceneImpl;
   GkShadowMap     *sm;
   GkFrustum       *frustum, subFrustum;
-  size_t           j;
-  uint32_t         i, m;
+  GkPrimInst      **prims;
+  size_t           primc;
+  uint32_t         i, j, m;
   GLint            depth;
   float            n, f, im, Clog, Cuni, C, p22, p32;
 
@@ -102,9 +103,8 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   gkShadowViewMatrix(scene, light, &scene->camera->frustum, view);
 
   memcpy(&subFrustum, frustum, sizeof(subFrustum));
-  subFrustum.objs      = NULL;
-  subFrustum.objsCount = 0;
-  subFrustum.objsLen   = 0;
+  subFrustum.transp = NULL;
+  subFrustum.opaque = NULL;
 
   for (i = 0; i < m; i++) {
     /* split sceheme: PSSM */
@@ -120,7 +120,7 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
 
     /* cull sub frustum */
     gkCullSubFrustum(frustum, &subFrustum);
-    if (subFrustum.objsCount == 0)
+    if (subFrustum.opaque->count == 0 && subFrustum.transp->count == 0)
       continue;
 
     /* prepare projection matrix for subFrustum */
@@ -137,8 +137,18 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
                               i);
 
     glClear(GL_DEPTH_BUFFER_BIT);
-    for (j = 0; j < subFrustum.objsCount; j++)
-      gkRenderShadowMap(scene, sm, subFrustum.objs[j], prog, i);
+
+    /* opaque */
+    prims = subFrustum.opaque->items;
+    primc = subFrustum.opaque->count;
+    for (j = 0; j < primc; j++)
+      gkRenderShadowMap(scene, sm, prims[j], prog, i);
+
+    /* transparent */
+    prims = subFrustum.transp->items;
+    primc = subFrustum.transp->count;
+    for (j = 0; j < primc; j++)
+      gkRenderShadowMap(scene, sm, prims[j], prog, i);
 
     /* push near to next's far */
     subFrustum.planes[4][3] = subFrustum.planes[5][3];
@@ -151,6 +161,12 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
                  sm->viewProj[i],
                  sm->viewProj[i]);
   }
+
+  if (subFrustum.opaque)
+    free(subFrustum.opaque);
+
+  if (subFrustum.transp)
+    free(subFrustum.transp);
 
   glCullFace(GL_BACK);
   gkPopState(ctx);

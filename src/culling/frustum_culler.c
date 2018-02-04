@@ -10,6 +10,7 @@
 #include <string.h>
 #include <ds/forward-list-sep.h>
 #include "../types/impl_scene.h"
+#include "../render/realtime/rn_transp.h"
 
 /*
  Cull AAB ref:
@@ -18,6 +19,9 @@
  */
 
 extern uint32_t gk_nodesPerPage;
+
+#define rnListSizeInit(x) (sizeof(*x) + sizeof(void *) * 1024)
+#define rnListSize(x)     (sizeof(*x) + sizeof(void *) * x->size)
 
 GK_INLINE
 bool
@@ -44,31 +48,48 @@ bool
 gkPrimIsInFrustum(GkScene     * __restrict scene,
                   GkCamera    * __restrict cam,
                   GkPrimitive * __restrict prim) {
-  return gkAABBInFrustum(prim->bbox, cam->frustum.planes);
+  return glm_aabb_frustum(prim->bbox, cam->frustum.planes);
 }
 
 GK_EXPORT
 void
 gkCullFrustum(GkScene  * __restrict scene,
               GkCamera * __restrict cam) {
-  GkNodePage  *np;
-  GkSceneImpl *sceneImpl;
-  GkNode      *node;
-  GkModelInst *modelInst;
-  size_t       i;
+  GkNodePage   *np;
+  GkSceneImpl  *sceneImpl;
+  GkNode       *node;
+  GkModelInst  *modelInst;
+  GkFrustum    *frustum;
+  GkRenderList *rl[2];
+  vec4         *camPlanes;
+  size_t        i;
 
   sceneImpl = (GkSceneImpl *)scene;
   np        = sceneImpl->lastPage;
+  frustum   = &cam->frustum;
+  camPlanes = frustum->planes;
 
-  if (cam->frustum.objs)
-    free(cam->frustum.objs);
+  if (frustum->opaque)
+    frustum->opaque->count = 0;
+  else {
+    frustum->opaque        = malloc(rnListSizeInit(frustum->opaque));
+    frustum->opaque->count = 0;
+    frustum->opaque->size  = 1024;
+  }
 
-  cam->frustum.objsCount = 0;
-  cam->frustum.objsLen   = 1024;
-  cam->frustum.objs      = malloc(sizeof(void *) * cam->frustum.objsLen);
+  if (frustum->transp)
+    frustum->transp->count = 0;
+  else {
+    frustum->transp        = malloc(rnListSizeInit(frustum->transp));
+    frustum->transp->count = 0;
+    frustum->transp->size  = 1024;
+  }
+
+  rl[0] = frustum->opaque;
+  rl[1] = frustum->transp;
 
   while (np) {
-    for (i = 0; i < gk_nodesPerPage; i++) {
+    for (i = 0; i < np->count; i++) {
       node = &np->nodes[i];
 
       /* unallocated node */
@@ -77,17 +98,31 @@ gkCullFrustum(GkScene  * __restrict scene,
         continue;
 
       while (modelInst) {
-        if (modelInst->bbox
-            && glm_aabb_frustum(modelInst->bbox->world,
-                                cam->frustum.planes)) {
-          if (cam->frustum.objsCount == cam->frustum.objsLen) {
-            cam->frustum.objsLen += 512;
-            cam->frustum.objs = realloc(cam->frustum.objs,
-                                        sizeof(void *) * cam->frustum.objsLen);
-          }
+        if (glm_aabb_frustum(modelInst->bbox, camPlanes)) {
+          GkPrimInst *prims, *primInst;
+          int32_t     j, primc;
 
-          cam->frustum.objs[cam->frustum.objsCount] = modelInst;
-          cam->frustum.objsCount++;
+          prims = modelInst->prims;
+          primc = modelInst->primc;
+
+          for (j = 0; j < primc; j++) {
+            if (glm_aabb_frustum(prims[j].bbox, camPlanes)) {
+              int isTransp;
+
+              primInst = &prims[j];
+
+              (void)gkMaterialFor(scene, modelInst, primInst);
+
+              isTransp = gkPrimIsTransparent(scene, modelInst, primInst);
+              if (rl[isTransp]->count == rl[isTransp]->size) {
+                rl[isTransp]->size += 512;
+                rl[isTransp] = realloc(rl[isTransp], rnListSize(rl[isTransp]));
+              }
+
+              rl[isTransp]->items[rl[isTransp]->count] = primInst;
+              rl[isTransp]->count++;
+            }
+          }
         }
 
         modelInst = modelInst->next;
@@ -96,56 +131,84 @@ gkCullFrustum(GkScene  * __restrict scene,
 
     np = np->next;
   }
+
+  /* because of realloc */
+  frustum->opaque = rl[0];
+  frustum->transp = rl[1];
 }
 
 GK_EXPORT
 void
 gkCullSubFrustum(GkFrustum * __restrict frustum,
                  GkFrustum * __restrict subfrustum) {
-  GkModelInst **it, *modelInst;
-  size_t        i;
+  GkPrimInst  **it;
+  GkRenderList *rl[2], *subrl[2];
+  size_t        i, j, c;
 
-  if (subfrustum->objs)
-    free(subfrustum->objs);
+  if (subfrustum->opaque)
+    subfrustum->opaque->count = 0;
+  else {
+    subfrustum->opaque        = malloc(rnListSizeInit(subfrustum->opaque));
+    subfrustum->opaque->count = 0;
+    subfrustum->opaque->size  = 1024;
+  }
 
-  subfrustum->objsCount = 0;
-  subfrustum->objsLen   = glm_min(1024, subfrustum->objsCount);
-  subfrustum->objs      = malloc(sizeof(void *) * subfrustum->objsLen);
+  if (subfrustum->transp)
+    subfrustum->transp->count = 0;
+  else {
+    subfrustum->transp        = malloc(rnListSizeInit(subfrustum->transp));
+    subfrustum->transp->count = 0;
+    subfrustum->transp->size  = 1024;
+  }
 
-  it = frustum->objs;
-  for (i = 0; i < frustum->objsCount; i++) {
-    modelInst = it[i];
+  rl[0]    = frustum->opaque;
+  rl[1]    = frustum->transp;
+  subrl[0] = subfrustum->opaque;
+  subrl[1] = subfrustum->transp;
 
-    if (glm_aabb_frustum(modelInst->bbox->world,
-                         subfrustum->planes)) {
-      if (subfrustum->objsCount == subfrustum->objsLen) {
-        subfrustum->objsLen += 512;
-        subfrustum->objs = realloc(subfrustum->objs,
-                                   sizeof(void *) * subfrustum->objsLen);
+  for (i = 0; i < 2; i++) {
+    c  = rl[i]->count;
+    it = rl[i]->items;
+
+    for (j = 0; j < c; j++) {
+      if (glm_aabb_frustum(it[j]->bbox, subfrustum->planes)) {
+        if (subrl[i]->count == subrl[i]->size) {
+          subrl[i]->size += 512;
+          subrl[i] = realloc(subrl[i], rnListSize(subrl[i]));
+        }
+
+        subrl[i]->items[subrl[i]->count] = it[j];
+        subrl[i]->count++;
       }
-
-      subfrustum->objs[subfrustum->objsCount] = modelInst;
-      subfrustum->objsCount++;
     }
   }
+
+  /* because of realloc */
+  subfrustum->opaque = subrl[0];
+  subfrustum->transp = subrl[1];
 }
 
 GK_EXPORT
 void
 gkBoxInFrustum(GkFrustum * __restrict frustum,
                vec3                   box[2]) {
-  GkModelInst **it;
+  GkPrimInst  **it;
+  GkRenderList *rl[2];
   vec3          t[2];
-  size_t        i, c;
+  size_t        i, j, c;
 
   glm_vec_broadcast(FLT_MAX,  t[0]);
   glm_vec_broadcast(-FLT_MAX, t[1]);
 
-  it = frustum->objs;
-  c  = frustum->objsCount;
+  rl[0] = frustum->opaque;
+  rl[1] = frustum->transp;
 
-  for (i = 0; i < c; i++)
-    glm_aabb_merge(t, it[i]->bbox->world, t);
+  for (i = 0; i < 2; i++) {
+    c  = rl[i]->count;
+    it = rl[i]->items;
+    for (j = 0; j < c; j++)
+      glm_aabb_merge(t, it[j]->bbox, t);
+  }
 
   memcpy(box, t, sizeof(t));
 }

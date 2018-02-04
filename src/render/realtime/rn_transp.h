@@ -11,7 +11,8 @@
 #include "../../../include/gk/gk.h"
 
 bool
-gkPrimIsTransparent(GkModelInst * __restrict modelInst,
-                    GkPrimitive * __restrict prim);
+gkPrimIsTransparent(GkScene     * __restrict scene,
+                    GkModelInst * __restrict modelInst,
+                    GkPrimInst  * __restrict primInst);
 
 #endif /* rn_transp_h */

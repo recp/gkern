@@ -120,20 +120,25 @@ gkPrepareNode(GkScene * __restrict scene,
     }
 
     finalComputed = true;
+    modelInst     = node->model;
 
-    modelInst = node->model;
     do {
-      /* this may be moved to prepare scene */
-      modelInst->trans = tr;
-      if (modelInst->model->bbox) {
-        if (!modelInst->bbox) {
-          modelInst->bbox = malloc(sizeof(*modelInst->bbox));
-          memcpy(modelInst->bbox,
-                 modelInst->model->bbox,
-                 sizeof(*modelInst->bbox));
-        }
+      GkPrimInst *prims;
+      int32_t     i, primc;
 
-        gkTransformAABB(tr, modelInst->bbox);
+      modelInst->trans = tr;
+      glm_aabb_transform(modelInst->model->bbox,
+                         tr->world,
+                         modelInst->bbox);
+
+      prims = modelInst->prims;
+      primc = modelInst->primc;
+
+      for (i = 0; i < primc; i++) {
+        glm_aabb_transform(prims[i].prim->bbox,
+                           tr->world,
+                           prims[i].bbox);
+        prims[i].trans = tr;
       }
 
       modelInst = modelInst->next;

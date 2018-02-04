@@ -21,13 +21,14 @@ struct GkLight;
 struct GkContext;
 struct GkMaterial;
 struct GkModelInst;
+struct GkPrimInst;
 struct GkNode;
 struct GkProgram;
 struct GkLightRef;
 struct GkBBox;
 
-typedef void (*GkRenderModelFn)(struct GkScene     *scene,
-                                struct GkModelInst *modelInst);
+typedef void (*GkRenderPrimFunc)(struct GkScene    *scene,
+                                 struct GkPrimInst *primInst);
 
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE          = 0,
@@ -55,7 +56,7 @@ typedef struct GkScene {
   struct GkLightRef *lights;
   struct GkBBox     *bbox;
   struct GkPassOut  *finalOutput; /* set NULL for default FBO (screen) */
-  GkRenderModelFn    renderModelFn;
+  GkRenderPrimFunc   renderPrimFunc;
   GkRect             vrect;
   uint32_t           lightCount;
   uint32_t           lastLightIndex;

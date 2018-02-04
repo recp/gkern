@@ -22,7 +22,7 @@ extern void *GK_SHADOWS_HANDLE;
 
 void
 gkRenderPrimForLight(GkScene     * __restrict scene,
-                     GkModelInst * __restrict modelInst,
+                     GkTransform * __restrict trans,
                      GkPrimitive * __restrict prim,
                      GkProgram   * __restrict prog) {
   GkLight     *light;
@@ -61,7 +61,7 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
     if (light->type != GK_LIGHT_TYPE_POINT) {
       for (i = 0; i < split; i++) {
         glm_mat4_mul(sm->viewProj[i],
-                     modelInst->trans->world,
+                     trans->world,
                      shadowMVP[i]);
       }
 
@@ -80,7 +80,7 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
       nf[1] = (-2.0f * f * n) / nfsub * 0.5f;
 
       glUniform2f(gkUniformLoc(prog, "uFarNear"), nf[0], nf[1]);
-      gkUniformMat4(gkUniformLoc(prog, "M"), modelInst->trans->world);
+      gkUniformMat4(gkUniformLoc(prog, "M"), trans->world);
     }
   }
 

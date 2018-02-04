@@ -9,6 +9,8 @@
 #include "../../../include/gk/gk.h"
 #include "../../types/impl_transform.h"
 
+/*
+
 void
 gkRenderNode(GkScene     *scene,
              GkNode      *node,
@@ -86,3 +88,5 @@ gkPrepNode(GkScene     *scene,
     node = node->next;
   }
 }
+
+*/

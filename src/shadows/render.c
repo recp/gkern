@@ -13,27 +13,21 @@
 void
 gkRenderShadowMap(GkScene     * __restrict scene,
                   GkShadowMap * __restrict sm,
-                  GkModelInst * __restrict modelInst,
+                  GkPrimInst  * __restrict primInst,
                   GkProgram   * __restrict prog,
                   int                      split) {
   mat4         mvp;
-  GkModel     *model;
-  GkPrimitive *primi;
   vec4        *world;
+  GkPrimitive *prim;
 
-  model = modelInst->model;
-  world = modelInst->trans->world;
+  world = primInst->trans->world;
+  prim  = primInst->prim;
 
   glm_mul(sm->viewProj[split], world, mvp);
   gkUniformMat4(prog->mvpi, mvp);
 
-  /* render */
-  primi = model->prim;
-  while (primi) {
-    glBindVertexArray(primi->vao);
-    gkRenderPrim(scene, primi);
-    primi = primi->next;
-  }
+  glBindVertexArray(prim->vao);
+  gkRenderPrim(scene, prim);
 
   /* reset the state */
   glBindVertexArray(0);
