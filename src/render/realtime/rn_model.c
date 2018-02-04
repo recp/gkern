@@ -87,14 +87,14 @@ gkRenderModel(GkScene     *scene,
 
   model = modelInst->model;
 
-  /* pre events */
+  / * pre events * /
   if (model->events && model->events->onDraw)
     model->events->onDraw(model, NULL, false);
 
-  /* render */
+  / * render * /
   primi = model->prim;
   while (primi) {
-    /* dont render transparent primitives at first */
+    / * dont render transparent primitives at first * /
 //    if (gkPrimIsTransparent(modelInst, primi))
 //      goto cont;
 
@@ -105,7 +105,7 @@ gkRenderModel(GkScene     *scene,
     primi = primi->next;
   }
 
-  /* reset the state */
+  / * reset the state * /
   glBindVertexArray(0);
 
   if ((model->flags & GK_MODEL_FLAGS_DRAW_BBOX) && model->bbox)
@@ -113,7 +113,7 @@ gkRenderModel(GkScene     *scene,
                modelInst->bbox,
                modelInst->trans->world);
 
-  /* post events */
+  / * post events * /
   if (model->events && model->events->onDraw)
     model->events->onDraw(model, NULL, true);
 }
@@ -141,7 +141,7 @@ gkRnModelNoMatOPass(GkScene     *scene,
   cam   = scene->camera;
   model = modelInst->model;
 
-  /* render */
+  / * render * /
   primi = model->prim;
   while (primi) {
     glBindVertexArray(primi->vao);
@@ -152,7 +152,7 @@ gkRnModelNoMatOPass(GkScene     *scene,
     primi = primi->next;
   }
 
-  /* reset the state */
+  / * reset the state * /
   glBindVertexArray(0);
 }
 
