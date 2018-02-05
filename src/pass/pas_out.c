@@ -12,6 +12,17 @@
 #include "../gpu_state/common.h"
 
 GK_EXPORT
+GkPass*
+gkAllocPass(void) {
+  GkPass *pass;
+
+  pass         = calloc(1, sizeof(*pass));
+  pass->output = gkAllocPassOut();
+
+  return pass;
+}
+
+GK_EXPORT
 GkPassOut*
 gkAllocPassOut(void) {
   GkPassOut *pout;

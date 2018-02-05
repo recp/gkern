@@ -13,6 +13,7 @@
 #include "material.h"
 #include "geom-types.h"
 #include <ds/forward-list.h>
+#include <stdbool.h>
 
 struct GkScene;
 struct GkContext;
@@ -61,6 +62,10 @@ gkGetOrCreatPass(struct GkScene     *scene,
                  struct GkLight     *light,
                  struct GkPrimitive *prim,
                  GkMaterial         *mat);
+
+GK_EXPORT
+GkPass*
+gkAllocPass(void);
 
 GK_EXPORT
 GkPassOut*
