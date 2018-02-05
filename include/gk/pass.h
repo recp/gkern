@@ -20,12 +20,28 @@ struct GkContext;
 struct GkPrimitive;
 struct GkLight;
 
+typedef struct GkClearOp {
+  vec4    *color;
+  float    depth;
+  bool     clearColor:1;
+  bool     clearDepth:1;
+  bool     enabled;
+} GkClearOp;
+
+typedef struct GkBlendOp {
+  bool     enabled;
+  GLenum   src;
+  GLenum   dst;
+} GkBlendOp;
+
 /* GL_COLOR_ATTACHMENT[n] */
 typedef struct GkPassOutColor {
   GLuint                 buffId;
   GLsizei                width;
   GLsizei                height;
   GLenum                 attachment;
+  GkClearOp             *clear;
+  GkBlendOp             *blend;
   struct GkPassOutColor *next;
 } GkPassOutColor;
 
