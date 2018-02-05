@@ -320,14 +320,15 @@ GK_EXPORT
 GLuint
 gkAddRenderTarget(GkScene *scene,
                   GkPass  *pass,
-                  GLenum   format) {
+                  GLenum   format,
+                  GLenum   type) {
   return gkAddRenderTargetEx(scene,
                              pass,
-                             scene->internalFormat,
+                             format,
                              format,
                              scene->vrect.size.w * scene->backingScale,
                              scene->vrect.size.h * scene->backingScale,
-                             GL_UNSIGNED_BYTE);
+                             type);
 }
 
 GK_EXPORT

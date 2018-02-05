@@ -152,7 +152,8 @@ GK_EXPORT
 GLuint
 gkAddRenderTarget(struct GkScene *scene,
                   GkPass         *pass,
-                  GLenum          format);
+                  GLenum          format,
+                  GLenum          type);
 
 GK_EXPORT
 GLuint
