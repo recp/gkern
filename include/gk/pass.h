@@ -178,4 +178,8 @@ gkAddRenderTargetRBEx(struct GkScene *scene,
                       GLsizei width,
                       GLsizei height);
 
+GK_EXPORT
+void
+gkClearColor(GkPassOutColor *poutColor);
+
 #endif /* gk_pass_h */
