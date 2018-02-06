@@ -182,4 +182,12 @@ GK_EXPORT
 void
 gkClearColor(GkPassOutColor *poutColor);
 
+GK_EXPORT
+void
+gkClearColorAt(GkPassOut *pout, int32_t buffIndex);
+
+GK_EXPORT
+void
+gkClearColors(GkPassOut *pout);
+
 #endif /* gk_pass_h */
