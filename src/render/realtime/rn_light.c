@@ -77,7 +77,7 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
 
       nfsub = f - n;
       nf[0] = (f + n) / nfsub * 0.5f + 0.5f;
-      nf[1] = (-2.0f * f * n) / nfsub * 0.5f;
+      nf[1] =-(f * n) / nfsub;
 
       glUniform2f(gkUniformLoc(prog, "uFarNear"), nf[0], nf[1]);
       gkUniformMat4(gkUniformLoc(prog, "M"), trans->world);
