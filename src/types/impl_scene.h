@@ -27,6 +27,7 @@ typedef struct GkSceneImpl {
   GkNodePage        *lastPage;
 
   GkRenderPathFn     rp;
+  GkRenderPathFn     renderFunc;
   GkRenderPathType   rpath;
   GkRect             vrect;
   int32_t            internalFormat;

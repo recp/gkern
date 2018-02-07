@@ -21,6 +21,21 @@ gkPrepareScene(GkScene * scene);
 
 static
 void
+gkDefRenderFunc(GkScene * scene) ;
+
+static
+void
+gkDefRenderFunc(GkScene * scene) {
+  GkFrustum *frustum;
+
+  frustum = &scene->camera->frustum;
+
+  gkRenderPrims(scene, frustum->opaque);
+  gkRenderPrims(scene, frustum->transp);
+}
+
+static
+void
 gkPrepareScene(GkScene * scene) {
   GkSceneImpl *sceneImpl;
 
@@ -44,6 +59,9 @@ gkPrepareScene(GkScene * scene) {
     sceneImpl->pub.lightCount = 1;
     sceneImpl->pub.lights     = (GkLightRef *)light;
   }
+
+  if (!sceneImpl->renderFunc)
+    sceneImpl->renderFunc = gkDefRenderFunc;
 
   scene->flags |= GK_SCENEF_PREPARED;
 }
@@ -109,15 +127,11 @@ GK_EXPORT
 void
 gkScenePerLightRenderPath(GkScene * __restrict scene) {
   GkSceneImpl *sceneImpl;
-  GkFrustum   *frustum;
   GkLight     *light, *firstLight;
-  GkPrimInst  **prims;
-  size_t       i, primc;
 
   sceneImpl  = (GkSceneImpl *)scene;
   light      = (GkLight *)sceneImpl->pub.lights;
   firstLight = light;
-  frustum    = &scene->camera->frustum;
   
   do {
     sceneImpl->forLight = light;
@@ -132,17 +146,7 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
     if (scene->flags & GK_SCENEF_SHADOWS)
       gkRenderShadows(scene, light);
 
-    /* opaque objects */
-    primc = frustum->opaque->count;
-    prims = frustum->opaque->items;
-    for (i = 0; i < primc; i++) {
-      if (!scene->renderPrimFunc)
-        gkRenderPrimInst(scene, prims[i]);
-      else
-        scene->renderPrimFunc(scene, prims[i]);
-    }
-    
-    /* transparent objects */
+    sceneImpl->renderFunc(scene);
 
   } while ((light = (GkLight *)light->ref.next));
 }
@@ -150,21 +154,8 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
 GK_EXPORT
 void
 gkModelPerLightRenderPath(GkScene * __restrict scene) {
-  GkFrustum    *frustum;
-  GkPrimInst  **prims;
-  size_t        i, primc;
-  
-  frustum = &scene->camera->frustum;
+  GkSceneImpl *sceneImpl;
 
-  /* opaque objects */
-  primc = frustum->opaque->count;
-  prims = frustum->opaque->items;
-  for (i = 0; i < primc; i++) {
-    if (!scene->renderPrimFunc)
-      gkRenderPrimInst(scene, prims[i]);
-    else
-      scene->renderPrimFunc(scene, prims[i]);
-  }
-  
-  /* transparent objects */
+  sceneImpl = (GkSceneImpl *)scene;
+  sceneImpl->renderFunc(scene);
 }
