@@ -40,6 +40,7 @@ typedef struct GkPassOutColor {
   GLsizei                width;
   GLsizei                height;
   GLenum                 attachment;
+  GLenum                 drawIndex;
   GkClearOp             *clear;
   GkBlendOp             *blend;
   struct GkPassOutColor *next;
@@ -125,7 +126,7 @@ gkBindRenderTargetToTexUnit(GkPassOutColor *rt, int32_t texUnit);
 
 GK_EXPORT
 void
-gkBindRenderTargetToTex(struct GkScene *scene,
+gkBindRenderTargetTo(struct GkScene *scene,
                         GkPass         *pass,
                         int32_t         targetIndex,
                         GkProgram      *prog,
@@ -152,6 +153,7 @@ GK_EXPORT
 GLuint
 gkAddRenderTarget(struct GkScene *scene,
                   GkPass         *pass,
+                  GLenum          internalformat,
                   GLenum          format,
                   GLenum          type);
 

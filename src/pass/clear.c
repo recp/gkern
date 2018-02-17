@@ -13,13 +13,13 @@ void
 gkClearColor(GkPassOutColor *poutColor) {
   if (poutColor->clear->color) {
     glClearBufferfv(GL_COLOR,
-                    poutColor->attachment,
+                    poutColor->drawIndex,
                    *poutColor->clear->color);
     return;
   }
 
   /* TODO: add this to state manager */
-  glClearBufferfv(GL_COLOR, poutColor->attachment, GLM_VEC4_ZERO);
+  glClearBufferfv(GL_COLOR, poutColor->drawIndex, GLM_VEC4_ZERO);
 }
 
 GK_EXPORT
