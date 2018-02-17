@@ -103,7 +103,6 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
 
   /* opaque pass */
   gkBindPassOut(scene, transp->opaquePass->output);
-  glClearColor(1, 1, 1, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gkRenderPrims(scene, frustum->opaque);
 
