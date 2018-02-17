@@ -80,10 +80,10 @@ gkBuiltinProg(GkBuiltinProg progtype) {
       ;
 
       src[1] =
-#include "glsl/frag/wbloit_compos.glsl"
+#include "glsl/frag/wboit_compos.glsl"
       ;
 
-      return gkGetOrCreatProgByName("wbloit_compos",
+      return gkGetOrCreatProgByName("wboit_compos",
                                     src,
                                     typ,
                                     2,
