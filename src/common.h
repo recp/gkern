@@ -30,5 +30,6 @@
 
 #include "types/impl_transform.h"
 #include "types/impl_scene.h"
+#include "error/gpu/err.h"
 
 #endif /* gk_src_common_h */
