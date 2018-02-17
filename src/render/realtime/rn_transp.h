@@ -15,4 +15,8 @@ gkPrimIsTransparent(GkScene     * __restrict scene,
                     GkModelInst * __restrict modelInst,
                     GkPrimInst  * __restrict primInst);
 
+bool
+gkIsTransparent(GkScene    * __restrict scene,
+                GkMaterial * __restrict mat);
+
 #endif /* rn_transp_h */

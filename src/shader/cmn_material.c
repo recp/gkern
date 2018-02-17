@@ -14,7 +14,7 @@
 #include "../../include/gk/vertex.h"
 #include "../../include/gk/shadows.h"
 #include "../../include/gk/transparent.h"
-
+#include "../render/realtime/rn_transp.h"
 #include <ds/forward-list-sep.h>
 
 #include <malloc/malloc.h>
@@ -80,7 +80,7 @@ gkShaderNameFor(GkScene     * __restrict scene,
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS))
     pname += sprintf(pname, "_shdw");
 
-  if (mat->transparent) {
+  if (gkIsTransparent(scene, mat)) {
     switch (gkTranspTechn()) {
       case GK_TRANSP_WEIGHTED_BLENDED:
         pname += sprintf(pname, "_trsp_wbl");
@@ -232,7 +232,7 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
     }
   }
 
-  if (mat->transparent) {
+  if (gkIsTransparent(scene, mat)) {
     pVertFlags += sprintf(pVertFlags, "\n#define TRANSP\n");
     pFragFlags += sprintf(pFragFlags, "\n#define TRANSP\n");
 
