@@ -176,7 +176,7 @@ float shadowCoef() {
 \n#ifdef TRANSP_WBL\n
 
 layout(location = 0) out vec4  accum;
-layout(location = 1) out vec4 revealage;
+layout(location = 1) out float revealage;
 
 void
 transpWrite(vec4 clr /* , vec4 transmit */) {
@@ -203,7 +203,7 @@ transpWrite(vec4 clr /* , vec4 transmit */) {
      w = clamp(clr.a * max(1e-2, 3e3 * dz * dz * dz), 1e-2, 3e2);
   */
 
-  revealage = vec4(clr.a);
+  revealage = clr.a;
   accum     = vec4(clr.rgb * clr.a, clr.a) * w;
 }
 

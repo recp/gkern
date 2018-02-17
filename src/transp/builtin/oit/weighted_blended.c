@@ -8,6 +8,7 @@
 #include "../../../../include/gk/pass.h"
 #include "../../../common.h"
 #include "../../../render/realtime/rn_prim.h"
+#include "../../../render/realtime/rn_texture.h"
 #include "../../../shader/builtin_shader.h"
 #include "weighted_blended.h"
 
@@ -20,7 +21,7 @@ GkClearOp GK__TRANS_WEIGBL_ACCUM_CLEAR = {
 };
 
 GkClearOp GK__TRANS_WEIGBL_REVEALAGE_CLEAR = {
-  .color      = &((vec4){1.1f, 1.1f, 1.1f, 1.1f}),
+  .color      = &((vec4){1.0f, 1.0f, 1.0f, 1.0f}),
   .depth      = 1.0f,
   .clearColor = true,
   .clearDepth = false,
@@ -90,7 +91,6 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   GkPass                  *tpass;
   GkFrustum               *frustum;
   GkProgram               *composProg;
-  float                    w, h;
 
   sceneImpl  = (GkSceneImpl *)scene;
   frustum    = &scene->camera->frustum;
@@ -112,7 +112,7 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
 
   /* TODO: add to state manager */
   glDepthMask(GL_FALSE);
-  glDisable(GL_BLEND);
+  glEnable(GL_BLEND);
   glEnable(GL_CULL_FACE);
 
   glBlendFunci(0, GL_ONE,  GL_ONE);

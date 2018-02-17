@@ -30,7 +30,7 @@ void main() {
   revealage = texelFetch(uReveal, C, 0).r;
 
   /* Save the blending and color texture fetch cost */
-  if (revealage > 1.0)
+  if (revealage >= 1.0)
     discard;
 
   accum = texelFetch(uAccum, C, 0);
@@ -41,6 +41,6 @@ void main() {
 
   averageColor = accum.rgb / max(accum.a, 0.00001);
 
-  fragcolor = vec4(averageColor, 1.0 - revealage);
+  fragcolor = vec4(averageColor, revealage);
 }
 )
