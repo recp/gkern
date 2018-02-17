@@ -67,4 +67,9 @@ static inline ENM operator&(ENM a, ENM b) {                                     
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifdef __APPLE__
+#  include <OpenGL/gl3.h>
+#  include <OpenGL/gl3ext.h>
+#endif
+
 #endif /* gk_common_h */
