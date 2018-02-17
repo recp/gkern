@@ -68,6 +68,27 @@ gkBuiltinProg(GkBuiltinProg progtype) {
                                     2,
                                     GK_SHADER_FLAG_MVP);
     }
+    case GK_BUILTIN_PROG_WEIGBL_COMPOS: {
+      const char *src[2];
+      GLenum      typ[2] = {
+        GL_VERTEX_SHADER,
+        GL_FRAGMENT_SHADER
+      };
+
+      src[0] =
+#include "glsl/vert/rtt.glsl"
+      ;
+
+      src[1] =
+#include "glsl/frag/wbloit_compos.glsl"
+      ;
+
+      return gkGetOrCreatProgByName("wbloit_compos",
+                                    src,
+                                    typ,
+                                    2,
+                                    GK_SHADER_FLAG_MVP);
+    }
     default:
       break;
   }

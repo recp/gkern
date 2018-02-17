@@ -8,11 +8,12 @@
 GK_STRINGIFY(
 
 void main() {
+  vec4  clr;
 \n#ifdef SHADOWMAP\n
   float shadow = shadowCoef();
 \n#endif\n
 
-  fragColor =
+  clr =
 \n#ifdef SHADOWMAP\n
   shadow * (
 \n#endif\n
@@ -36,5 +37,6 @@ void main() {
 \n#endif\n
 ;
 
+  write(clr);
 }
 )

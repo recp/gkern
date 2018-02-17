@@ -15,14 +15,14 @@ size_t
 gkShaderNameFor(GkScene     * __restrict scene,
                 GkLight     * __restrict light,
                 GkPrimitive * __restrict prim,
-                GkTechnique * __restrict techn,
+                GkMaterial  * __restrict mat,
                 char        * __restrict nameBuff);
 
 void
 gkShaderFlagsFor(GkScene     * __restrict scene,
                  GkLight     * __restrict light,
                  GkPrimitive * __restrict prim,
-                 GkTechnique * __restrict techn,
+                 GkMaterial  * __restrict mat,
                  char       ** __restrict vertFlags,
                  char       ** __restrict fragFlags);
 
@@ -30,7 +30,7 @@ GkShader*
 gkShadersFor(GkScene     * __restrict scene,
              GkLight     * __restrict light,
              GkPrimitive * __restrict prim,
-             GkTechnique * __restrict techn);
+             GkMaterial  * __restrict mat);
 
 GkProgram*
 gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,

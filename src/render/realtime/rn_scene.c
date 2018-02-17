@@ -60,9 +60,6 @@ gkPrepareScene(GkScene * scene) {
     sceneImpl->pub.lights     = (GkLightRef *)light;
   }
 
-  if (!sceneImpl->renderFunc)
-    sceneImpl->renderFunc = gkDefRenderFunc;
-
   scene->flags |= GK_SCENEF_PREPARED;
 }
 
@@ -146,8 +143,10 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
     if (scene->flags & GK_SCENEF_SHADOWS)
       gkRenderShadows(scene, light);
 
-    sceneImpl->renderFunc(scene);
-
+    if (!sceneImpl->renderFunc)
+      gkDefRenderFunc(scene);
+    else
+      sceneImpl->renderFunc(scene);
   } while ((light = (GkLight *)light->ref.next));
 }
 
@@ -157,5 +156,8 @@ gkModelPerLightRenderPath(GkScene * __restrict scene) {
   GkSceneImpl *sceneImpl;
 
   sceneImpl = (GkSceneImpl *)scene;
-  sceneImpl->renderFunc(scene);
+  if (!sceneImpl->renderFunc)
+    gkDefRenderFunc(scene);
+  else
+    sceneImpl->renderFunc(scene);
 }

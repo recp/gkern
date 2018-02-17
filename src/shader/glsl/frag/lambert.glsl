@@ -8,7 +8,7 @@
 GK_STRINGIFY(
 
 void main() {
-  vec4  lightc;
+  vec4  clr, lightc;
   vec3  L;
   float a, Ld;
 
@@ -32,9 +32,21 @@ void main() {
   }
 
   lightc = light.color * a;
-  Ld     = max(0.0, dot(vNormal, L));
 
-  fragColor =
+\n#ifndef TRANSP\n
+  Ld     = max(0.0, dot(vNormal, L));
+\n#else\n
+  float normdir;
+
+  if (dot(vNormal, L) < cos(radians(90)))
+    normdir =-1;
+  else
+    normdir = 1;
+
+  Ld     = max(0.0, dot(vNormal * normdir, L));
+\n#endif\n
+
+  clr =
 \n#ifdef SHADOWMAP\n
   shadow * (
 \n#endif\n
@@ -65,5 +77,6 @@ void main() {
 
 ;
 
+  write(clr);
 }
 )

@@ -13,6 +13,7 @@
 #include "../../include/gk/program.h"
 #include "../../include/gk/vertex.h"
 #include "../../include/gk/shadows.h"
+#include "../../include/gk/transparent.h"
 
 #include <ds/forward-list-sep.h>
 
@@ -33,8 +34,9 @@ size_t
 gkShaderNameFor(GkScene     * __restrict scene,
                 GkLight     * __restrict light,
                 GkPrimitive * __restrict prim,
-                GkTechnique * __restrict techn,
+                GkMaterial  * __restrict mat,
                 char        * __restrict nameBuff) {
+  GkTechnique   *techn;
   char          *pname;
   GkColorOrTex  *attr[4];
   GkVertexInput *inp;
@@ -47,6 +49,7 @@ gkShaderNameFor(GkScene     * __restrict scene,
    */
 
   pname = nameBuff;
+  techn = mat->technique;
 
   gk__fillAttribs(attr, NULL, techn);
   sprintf(pname, "%d_", techn->type);
@@ -77,6 +80,17 @@ gkShaderNameFor(GkScene     * __restrict scene,
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS))
     pname += sprintf(pname, "_shdw");
 
+  if (mat->transparent) {
+    switch (gkTranspTechn()) {
+      case GK_TRANSP_WEIGHTED_BLENDED:
+        pname += sprintf(pname, "_trsp_wbl");
+        break;
+      default:
+        pname += sprintf(pname, "_trsp");
+        break;
+    }
+  }
+
   /* TODO: transparent, reflectivity */
   return nameBuff - pname;
 }
@@ -85,13 +99,14 @@ void
 gkShaderFlagsFor(GkScene     * __restrict scene,
                  GkLight     * __restrict light,
                  GkPrimitive * __restrict prim,
-                 GkTechnique * __restrict techn,
+                 GkMaterial  * __restrict mat,
                  char       ** __restrict vertFlags,
                  char       ** __restrict fragFlags) {
-  char   *pFragFlags, *pVertFlags;
-  float  *shininess;
-  size_t  fragFlagsLen, vertFlagsLen;
-  int32_t i, texCount;
+  GkTechnique *tech;
+  char        *pFragFlags, *pVertFlags;
+  float       *shininess;
+  size_t       fragFlagsLen, vertFlagsLen;
+  int32_t      i, texCount;
 
   GkColorOrTex *attr[4];
   char *attrname[] = {
@@ -104,16 +119,17 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
     "SHADOWMAP"
   };
 
-  fragFlagsLen = vertFlagsLen = PAGE_SIZE;
-  *fragFlags   = malloc(fragFlagsLen);
-  *vertFlags   = malloc(vertFlagsLen);
-  pFragFlags   = *fragFlags;
-  pVertFlags   = *vertFlags;
+  fragFlagsLen  = vertFlagsLen = PAGE_SIZE;
+  *fragFlags    = malloc(fragFlagsLen);
+  *vertFlags    = malloc(vertFlagsLen);
+  pFragFlags    = *fragFlags;
+  pVertFlags    = *vertFlags;
+  tech          = mat->technique;
 
   pVertFlags[0] = pFragFlags[0] = '\0';
 
   shininess = NULL;
-  gk__fillAttribs(attr, &shininess, techn);
+  gk__fillAttribs(attr, &shininess, tech);
 
   texCount = 0;
   for (i = 0; i < 4; i++) {
@@ -215,20 +231,34 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
       }
     }
   }
+
+  if (mat->transparent) {
+    pVertFlags += sprintf(pVertFlags, "\n#define TRANSP\n");
+    pFragFlags += sprintf(pFragFlags, "\n#define TRANSP\n");
+
+    switch (gkTranspTechn()) {
+      case GK_TRANSP_WEIGHTED_BLENDED:
+        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_WBL\n");
+        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_WBL\n");
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 GkShader*
 gkShadersFor(GkScene     * __restrict scene,
              GkLight     * __restrict light,
              GkPrimitive * __restrict prim,
-             GkTechnique * __restrict techn) {
-  GkShader *vert, *frag;
-  char     *fragSource[5], *vertSource[3];
+             GkMaterial  * __restrict mat) {
+  GkShader    *vert, *frag;
+  char        *fragSource[5], *vertSource[3];
 
   /* TODO: create dynamic by platform */
   vertSource[0] = fragSource[0] = "\n#version 410 \n";
 
-  switch (techn->type) {
+  switch (mat->technique->type) {
     case GK_MATERIAL_PHONG:
       fragSource[4] =
 #include "glsl/frag/phong.glsl"
@@ -264,7 +294,7 @@ gkShadersFor(GkScene     * __restrict scene,
   gkShaderFlagsFor(scene,
                    light,
                    prim,
-                   techn,
+                   mat,
                    &vertSource[1],
                    &fragSource[1]);
 
@@ -300,20 +330,14 @@ gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
   char  name[64];
   void *userData[4];
 
-  (void)gkShaderNameFor(scene,
-                        light,
-                        prim,
-                        mat->technique,
-                        name);
+  (void)gkShaderNameFor(scene, light, prim, mat, name);
 
   userData[0] = scene;
   userData[1] = light;
   userData[2] = prim;
   userData[3] = mat;
 
-  return gkGetOrCreatProg(name,
-                          gk_creatProgForCmnMat,
-                          userData);
+  return gkGetOrCreatProg(name, gk_creatProgForCmnMat, userData);
 }
 
 static
@@ -351,7 +375,7 @@ gk_creatProgForCmnMat(char *name, void *userData) {
   prim  = ((void **)userData)[2];
   mat   = ((void **)userData)[3];
 
-  if ((shaders = gkShadersFor(scene, light, prim, mat->technique)))
+  if ((shaders = gkShadersFor(scene, light, prim, mat)))
     return gkMakeProgram(shaders, gk__beforeLinking, prim);
 
   return NULL;

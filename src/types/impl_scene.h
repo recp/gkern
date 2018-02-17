@@ -19,6 +19,7 @@ typedef struct GkSceneImpl {
   struct FListItem  *transpPrims;
   struct GkLight    *forLight;
   void              *shadows;
+  void              *transp;
   struct GkPass     *overridePass;     /* override all passes    */
   struct GkMaterial *overrideMaterial; /* override all materials */
   FList             *transfCacheSlots;
@@ -32,6 +33,7 @@ typedef struct GkSceneImpl {
   GkRect             vrect;
   int32_t            internalFormat;
   float              backingScale;
+  bool               transpPass;
 } GkSceneImpl;
 
 #endif /* impl_scene_h */

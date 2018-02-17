@@ -172,5 +172,55 @@ float shadowCoef() {
 \n#endif\n
 \n#endif\n
 
+\n#ifdef TRANSP\n
+\n#ifdef TRANSP_WBL\n
+
+layout(location = 0) out vec4  accum;
+layout(location = 1) out vec4 revealage;
+
+void
+transpWrite(vec4 clr /* , vec4 transmit */) {
+  float a, b, w, z;
+
+  /*
+     clr.a *= 1.0 - clamp((transmit.r + transmit.g + transmit.b) * (1.0 / 3.0),
+                          0, 1);
+   */
+
+  /* Intermediate terms to be cubed */
+  a = min(1.0, clr.a) * 8.0 + 0.01;
+  b =-gl_FragCoord.z * 0.95 + 1.0;
+
+  /* If your scene has a lot of content very close to the far plane,
+     then include this line (one rsqrt instruction):
+     b /= sqrt(1e4 * abs(csZ));
+   */
+
+  w = clamp(a * a * a * 1e8 * b * b * b, 1e-2, 3e2);
+
+  /* alternative: equation (10)
+     float dz = (1 - gl_FragCoord.z);
+     w = clamp(clr.a * max(1e-2, 3e3 * dz * dz * dz), 1e-2, 3e2);
+  */
+
+  revealage = vec4(clr.a);
+  accum     = vec4(clr.rgb * clr.a, clr.a) * w;
+}
+
+\n#endif\n
+\n#else\n
 out vec4 fragColor;
+\n#endif\n
+
+void
+write(vec4 clr) {
+\n#ifdef TRANSP\n
+\n#ifdef TRANSP_WBL\n
+  transpWrite(vec4(clr.rgb, 0.7));
+  return;
+\n#endif\n
+\n#else\n
+  fragColor = clr;
+\n#endif\n
+}
 )
