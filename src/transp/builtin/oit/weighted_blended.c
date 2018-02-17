@@ -124,15 +124,8 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   sceneImpl->transpPass = false;
 
   /* compositing pass */
+  gkBlit(scene, transp->opaquePass->output, scene->finalOutput);
   gkBindPassOut(scene, scene->finalOutput);
-  glBindFramebuffer(GL_READ_FRAMEBUFFER, transp->opaquePass->output->fbo);
-  glReadBuffer(GL_COLOR_ATTACHMENT0);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-  w = scene->vrect.size.w * scene->backingScale;
-  h = scene->vrect.size.h * scene->backingScale;
-
-  glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
   gkUseProgram(gkContextOf(scene), transp->composProg);
   gkBindRenderTargetTo(scene, tpass, 0, composProg, 0, "uAccum");
@@ -144,18 +137,11 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
   gkRenderBuiltinPrim(scene, GK_PRIM_TEXQUAD);
 
-  /*
-   Alternative to blit
-
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glDisable(GL_BLEND);
-   gkRenderTexture(scene, transp->opaquePass);
-  */
-
+  /* TODO: add to state manager */
   glDepthMask(GL_TRUE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
   glDepthFunc(GL_LESS);
   glDrawBuffer(GL_BACK);
-  glEnable(GL_CULL_FACE);
+  glDisable(GL_BLEND);
 }

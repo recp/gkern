@@ -36,6 +36,7 @@ gkBlit(GkScene   * __restrict scene,
   w = scene->vrect.size.w * scene->backingScale;
   h = scene->vrect.size.h * scene->backingScale;
 
+  gkBindPassOut(scene, scene->finalOutput);
   glBindFramebuffer(GL_READ_FRAMEBUFFER, src->fbo);
   glReadBuffer(GL_COLOR_ATTACHMENT0);
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
