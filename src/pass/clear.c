@@ -32,7 +32,8 @@ gkClearColorAt(GkPassOut *pout, int32_t buffIndex) {
   for (i = 0; i < buffIndex && color; i++)
     color = color->next;
 
-  gkClearColor(color);
+  if (color && i == buffIndex)
+    gkClearColor(color);
 }
 
 GK_EXPORT

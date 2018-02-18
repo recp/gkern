@@ -95,8 +95,10 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   sceneImpl  = (GkSceneImpl *)scene;
   frustum    = &scene->camera->frustum;
 
-  if (!(transp = sceneImpl->transp))
+  if (!(transp = sceneImpl->transp)) {
     gkTranspWeightedBlendedInit(scene);
+    transp = sceneImpl->transp;
+  }
 
   tpass      = transp->transpPass;
   composProg = transp->composProg;
@@ -107,7 +109,7 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   gkRenderPrims(scene, frustum->opaque);
 
   /* transparent pass */
-  sceneImpl->transpPass = false;
+  sceneImpl->transpPass = true;
   gkBindPassOut(scene, tpass->output);
 
   /* TODO: add to state manager */
