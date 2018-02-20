@@ -42,16 +42,12 @@ void main() {
   else
     Ls = pow(Ls, uShininess);
 \n#else\n
-  float normdir;
+  vec3 N;
 
-  if (dot(vNormal, L) < cos(radians(90)))
-    normdir =-1;
-  else
-    normdir = 1;
-
+  N  = vNormal * sign(dot(vNormal, L));
   H  = normalize(L + vEye);
-  Ld = max(0.0, dot(vNormal * normdir, L));
-  Ls = max(0.0, dot(vNormal * normdir, H));
+  Ld = max(0.0, dot(N, L));
+  Ls = max(0.0, dot(N, H));
   if (Ld == 0.0)
     Ls = 0.0;
   else

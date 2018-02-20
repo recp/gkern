@@ -39,18 +39,14 @@ void main() {
   else
     Ls = pow(max(0.0, dot(reflect(-L, vNormal), vEye)), uShininess);
 \n#else\n
-  float normdir;
-  
-  if (dot(vNormal, L) < cos(radians(90)))
-    normdir =-1;
-  else
-    normdir = 1;
-  
-  Ld = max(0.1, dot(vNormal * normdir, L));
+  vec3 N;
+
+  N  = vNormal * sign(dot(vNormal, L));
+  Ld = max(0.1, dot(N, L));
   if (Ld == 0.0)
     Ls = 0.0;
   else
-    Ls = pow(max(0.0, dot(reflect(-L, vNormal * normdir), vEye)), uShininess);
+    Ls = pow(max(0.0, dot(reflect(-L, N), vEye)), uShininess);
 \n#endif\n
 
   clr =

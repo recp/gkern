@@ -36,14 +36,10 @@ void main() {
 \n#ifndef TRANSP\n
   Ld     = max(0.0, dot(vNormal, L));
 \n#else\n
-  float normdir;
+  vec3 N;
 
-  if (dot(vNormal, L) < cos(radians(90)))
-    normdir =-1;
-  else
-    normdir = 1;
-
-  Ld     = max(0.0, dot(vNormal * normdir, L));
+  N  = vNormal * sign(dot(vNormal, L));
+  Ld = max(0.0, dot(N, L));
 \n#endif\n
 
   clr =
