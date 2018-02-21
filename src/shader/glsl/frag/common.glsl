@@ -93,16 +93,6 @@ uniform sampler2D uReflectiveTex;
 uniform vec4      uReflective;
 \n#endif\n
 
-\n#ifdef TRANSP_TEX\n
-uniform sampler2D uTransparentTex;
-\n#elif defined(TRANSP_COLOR)\n
-uniform vec4      uTransparent;
-\n#endif\n
-
-\n#if defined(TRANSP_TEX) || defined(TRANSP_COLOR)\n
-uniform float     uTransparency;
-\n#endif\n
-
 \n#if defined(REFLECTIVE_TEX) || defined(REFLECTIVE_COLOR)\n
 uniform float     uReflectivity;
 \n#endif\n
@@ -115,108 +105,21 @@ uniform float     uIndexOfRefraction;
 uniform float     uShininess;
 \n#endif\n
 
-\n#ifdef SHADOWMAP\n
-\n#ifndef SHAD_SPLIT\n
-
-\n#ifdef SHAD_CUBE\n
-uniform samplerCubeShadow    uShadMap;
-uniform vec2 uFarNear;
-
-float depthValue(const in vec3 v) {
-  vec3 absv = abs(v);
-  float z   = max(absv.x, max(absv.y, absv.z));
-  return uFarNear.x + uFarNear.y / z;
-}
-
-\n#else\n
-uniform sampler2DShadow      uShadMap;
-in vec4                      vShadCoord;
-\n#endif\n
-
-float shadowCoef() {
-\n#ifdef SHAD_CUBE\n
-  vec3  L;
-  float d;
-
-  L = vPosWS - light.position_ws;
-  d = depthValue(L);
-
-  return texture(uShadMap, vec4(L, d));
-\n#else\n
-  return textureProj(uShadMap, vShadCoord);
-\n#endif\n
-}
-
-\n#else\n
-
-uniform sampler2DArrayShadow uShadMap;
-uniform mat4                 uShadMVP[SHAD_SPLIT];
-uniform float                uShadDist[SHAD_SPLIT];
-
-float shadowCoef() {
-  vec4 shadCoord;
-  int  i;
-
-  for (i = 0; i < SHAD_SPLIT; i++) {
-    if (gl_FragCoord.z < uShadDist[i])
-      break;
-  }
-
-  shadCoord     = uShadMVP[i] * vPosMS;
-  shadCoord.xyw = (shadCoord / shadCoord.w).xyz;
-  shadCoord.z   = float(i);
-
-  return texture(uShadMap, shadCoord);
-}
-
-\n#endif\n
-\n#endif\n
-
-\n#ifdef TRANSP\n
-\n#ifdef TRANSP_WBL\n
-
-layout(location = 0) out vec4  accum;
-layout(location = 1) out float revealage;
-
-void
-transpWrite(vec4 clr /* , vec4 transmit */) {
-  float a, b, w, z;
-
-  /*
-     clr.a *= 1.0 - clamp((transmit.r + transmit.g + transmit.b) * (1.0 / 3.0),
-                          0, 1);
-   */
-
-  /* Intermediate terms to be cubed */
-  a = min(1.0, clr.a) * 8.0 + 0.01;
-  b =-gl_FragCoord.z * 0.95 + 1.0;
-
-  /* If your scene has a lot of content very close to the far plane,
-     then include this line (one rsqrt instruction):
-     b /= sqrt(1e4 * abs(csZ));
-   */
-
-  w = clamp(a * a * a * 1e8 * b * b * b, 1e-2, 3e2);
-
-  /* alternative: equation (10)
-     float dz = (1 - gl_FragCoord.z);
-     w = clamp(clr.a * max(1e-2, 3e3 * dz * dz * dz), 1e-2, 3e2);
-  */
-
-  revealage = clr.a;
-  accum     = vec4(clr.rgb * clr.a, clr.a) * w;
-}
-
-\n#endif\n
-\n#else\n
+\n#ifndef TRANSP\n
 out vec4 fragColor;
 \n#endif\n
 
+)
+
+#include "transp.glsl"
+#include "shadows.glsl"
+
+GK_STRINGIFY(
 void
 write(vec4 clr) {
 \n#ifdef TRANSP\n
 \n#ifdef TRANSP_WBL\n
-  transpWrite(vec4(clr.rgb, 0.7));
+  transpWrite(clamp(clr, 0, 1));
   return;
 \n#endif\n
 \n#else\n

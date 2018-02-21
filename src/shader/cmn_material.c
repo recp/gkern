@@ -22,6 +22,14 @@
 
 static
 void
+gk__colorOrTexFlag(GkColorOrTex * __restrict attr,
+                   char         * __restrict attrname,
+                   char        ** __restrict pVertFlags,
+                   char        ** __restrict pFragFlags,
+                   int          * __restrict texCount);
+
+static
+void
 gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
                 float       ** __restrict shininess,
                 GkTechnique  * __restrict techn);
@@ -115,7 +123,7 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
     "AMBIENT",
     "EMISSION",
     "REFLECTIVE",
-    "TRANSPARENT",
+    "TRANSP",
     "SHADOWMAP"
   };
 
@@ -133,62 +141,20 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
   texCount = 0;
   for (i = 0; i < 4; i++) {
-    ptrdiff_t pdiff;
-
     if (!attr[i])
       continue;
 
-    pdiff = pFragFlags - *fragFlags;
-    if (pFragFlags != *fragFlags && pdiff < 64) {
-      *fragFlags = realloc(*fragFlags, fragFlagsLen + 256);
-      fragFlagsLen += 256;
-      pFragFlags = *fragFlags + pdiff;
-    }
-
-    pdiff = pVertFlags - *vertFlags;
-    if (pVertFlags != *vertFlags && pdiff < 64) {
-      *vertFlags = realloc(*vertFlags, vertFlagsLen + 256);
-      vertFlagsLen += 256;
-      pVertFlags = *vertFlags + pdiff;
-    }
-
-    switch (attr[i]->method) {
-      case GK_COLOR_COLOR:
-        pFragFlags += sprintf(pFragFlags,
-                              "\n#define %s_COLOR\n",
-                              attrname[i]);
-        break;
-      case GK_COLOR_TEX: {
-        GkTexture  *tex;
-        GkSampler  *sampler;
-        const char *coordInpName;
-
-        tex     = attr[i]->val;
-        coordInpName = NULL;
-        if ((sampler = tex->sampler))
-          coordInpName = sampler->coordInputName;
-        if (!coordInpName)
-          coordInpName = "TEXCOORD";
-
-        pFragFlags += sprintf(pFragFlags,
-                              "\n#define %s_TEX\n"
-                              "\n#define %s_TEX_COORD v%s\n",
-                              attrname[i],
-                              attrname[i],
-                              coordInpName);
-        texCount++;
-        break;
-      }
-      default:
-        continue;
-    }
+    gk__colorOrTexFlag(attr[i],
+                       attrname[i],
+                       &pVertFlags,
+                       &pFragFlags,
+                       &texCount);
   }
 
   /* TODO: transparent, reflectivity */
 
-  if (shininess) {
+  if (shininess)
     pFragFlags += sprintf(pFragFlags, "\n#define SHININESS\n");
-  }
 
   pVertFlags += sprintf(pVertFlags,
                         "\n#define TEX_COUNT %d\n",
@@ -197,7 +163,6 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
   pFragFlags += sprintf(pFragFlags,
                         "\n#define TEX_COUNT %d\n",
                         texCount);
-
 
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
     int shadowSplit;
@@ -233,6 +198,38 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
   }
 
   if (gkIsTransparent(scene, mat)) {
+    if (mat->transparent->color) {
+      gk__colorOrTexFlag(mat->transparent->color,
+                         "TRANSP",
+                         &pVertFlags,
+                         &pFragFlags,
+                         &texCount);
+    } else {
+      pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_NO_COLOR\n");
+      pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_NO_COLOR\n");
+    }
+
+    switch (mat->transparent->opaque) {
+      case GK_OPAQUE_A_ONE:
+        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_A_ONE\n");
+        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_A_ONE\n");
+        break;
+      case GK_OPAQUE_A_ZERO:
+        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_A_ZERO\n");
+        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_A_ZERO\n");
+        break;
+      case GK_OPAQUE_RGB_ONE:
+        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_RGB_ONE\n");
+        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_RGB_ONE\n");
+        break;
+      case GK_OPAQUE_RGB_ZERO:
+        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_RGB_ZERO\n");
+        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_RGB_ZERO\n");
+        break;
+      default:
+        break;
+    }
+
     pVertFlags += sprintf(pVertFlags, "\n#define TRANSP\n");
     pFragFlags += sprintf(pFragFlags, "\n#define TRANSP\n");
 
@@ -319,6 +316,7 @@ gkShadersFor(GkScene     * __restrict scene,
 
   vert->next = frag;
 
+  /* TODO: free  vertSource and fragSource */
   return vert;
 }
 
@@ -379,6 +377,44 @@ gk_creatProgForCmnMat(char *name, void *userData) {
     return gkMakeProgram(shaders, gk__beforeLinking, prim);
 
   return NULL;
+}
+
+static
+void
+gk__colorOrTexFlag(GkColorOrTex * __restrict attr,
+                   char         * __restrict attrname,
+                   char        ** __restrict pVertFlags,
+                   char        ** __restrict pFragFlags,
+                   int          * __restrict texCount) {
+  switch (attr->method) {
+    case GK_COLOR_COLOR:
+      *pFragFlags += sprintf(*pFragFlags,
+                             "\n#define %s_COLOR\n",
+                             attrname);
+      break;
+    case GK_COLOR_TEX: {
+      GkTexture  *tex;
+      GkSampler  *sampler;
+      const char *coordInpName;
+
+      tex     = attr->val;
+      coordInpName = NULL;
+      if ((sampler = tex->sampler))
+        coordInpName = sampler->coordInputName;
+      if (!coordInpName)
+        coordInpName = "TEXCOORD";
+
+      *pFragFlags += sprintf(*pFragFlags,
+                             "\n#define %s_TEX\n"
+                             "\n#define %s_TEX_COORD v%s\n",
+                             attrname,
+                             attrname,
+                             coordInpName);
+      (*texCount)++;
+      break;
+    }
+    default: break;
+  }
 }
 
 static

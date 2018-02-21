@@ -19,6 +19,14 @@ struct GkProgram;
 struct GkPrimitive;
 struct GkPrimInst;
 
+typedef enum GkOpaque {
+  GK_OPAQUE_A_ONE    = 0, /* Default */
+  GK_OPAQUE_A_ZERO   = 1,
+  GK_OPAQUE_RGB_ONE  = 2,
+  GK_OPAQUE_RGB_ZERO = 3,
+  GK_OPAQUE_DEFAULT  = GK_OPAQUE_A_ONE
+} GkOpaque;
+
 typedef enum GkMaterialType {
   GK_MATERIAL_PHONG    = 1,
   GK_MATERIAL_BLINN    = 2,
@@ -77,6 +85,7 @@ typedef enum GkAlphaMode {
 typedef struct GkTransparent {
   GkColorOrTex *color;
   GkAlphaMode   mode;
+  GkOpaque      opaque;
   float         amount;
   float         cutoff;
 } GkTransparent;

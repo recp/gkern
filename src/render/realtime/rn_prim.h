@@ -22,11 +22,9 @@ GK_INLINE
 void
 gkRenderPrims(GkScene      * __restrict scene,
               GkRenderList * __restrict rnlist) {
-  GkSceneImpl *sceneImpl;
   GkPrimInst **prims;
   size_t       i, primc;
 
-  sceneImpl = (GkSceneImpl *)scene;
   primc     = rnlist->count;
   prims     = rnlist->items;
 
