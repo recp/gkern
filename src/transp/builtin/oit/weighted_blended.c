@@ -126,7 +126,7 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   sceneImpl->transpPass = false;
 
   /* compositing pass */
-  gkBlit(scene, transp->opaquePass->output, scene->finalOutput);
+  gkBlit(scene, transp->opaquePass->output, scene->finalOutput, 0);
   gkBindPassOut(scene, scene->finalOutput);
 
   gkUseProgram(gkContextOf(scene), transp->composProg);

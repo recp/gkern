@@ -30,16 +30,16 @@ gkRenderTexture(GkScene * __restrict scene, GkPass * __restrict pass) {
 void
 gkBlit(GkScene   * __restrict scene,
        GkPassOut * __restrict src,
-       GkPassOut * __restrict dst) {
+       GkPassOut * __restrict dst,
+       int32_t                colorIndex) {
   float w, h;
 
   w = scene->vrect.size.w * scene->backingScale;
   h = scene->vrect.size.h * scene->backingScale;
 
-  gkBindPassOut(scene, scene->finalOutput);
   glBindFramebuffer(GL_READ_FRAMEBUFFER, src->fbo);
-  glReadBuffer(GL_COLOR_ATTACHMENT0);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+  glReadBuffer(GL_COLOR_ATTACHMENT0 + colorIndex);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dst->fbo);
 
   glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 }

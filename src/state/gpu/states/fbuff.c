@@ -20,7 +20,6 @@ gkSrcBuff(GkContext * __restrict ctx, GLenum buff) {
   glReadBuffer(buff);
 }
 
-
 GK_EXPORT
 void
 gkDstBuff(GkContext * __restrict ctx, GLenum buff) {

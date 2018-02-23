@@ -17,6 +17,7 @@ gkRenderTexture(GkScene * __restrict scene, GkPass * __restrict pass);
 void
 gkBlit(GkScene   * __restrict scene,
        GkPassOut * __restrict src,
-       GkPassOut * __restrict dst);
+       GkPassOut * __restrict dst,
+       int32_t                colorIndex);
 
 #endif /* rn_texture_h */
