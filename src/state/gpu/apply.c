@@ -49,9 +49,9 @@ gkApplyBlendState(GkContext   * __restrict ctx,
       glDisable(GL_BLEND);
   }
   
-  if (blendState->sfactor != ast->blendState.sfactor
-      || blendState->dfactor != ast->blendState.dfactor)
-    glBlendFunc(blendState->sfactor, blendState->dfactor);
+  if (blendState->src != ast->blendState.src
+      || blendState->dst != ast->blendState.dst)
+    glBlendFunc(blendState->src, blendState->dst);
 }
 
 _gk_hide
@@ -66,8 +66,8 @@ gkApplyTexState(GkContext   * __restrict ctx,
   ast      = ctx->currState;
   texState = (GkTextureState *)st;
   
-  if (texState->base.arrayIndex != ast->activeTex)
-    glActiveTexture(GL_TEXTURE0 + texState->base.arrayIndex);
+  if (texState->base.index != ast->activeTex)
+    glActiveTexture(GL_TEXTURE0 + texState->base.index);
   
   if (!(sti = flist_last(ctx->states)))
     return;
@@ -79,7 +79,7 @@ gkApplyTexState(GkContext   * __restrict ctx,
     
     state = item->data;
     if (state->type == GK_GPUSTATE_TEXTURE
-        && state->arrayIndex == texState->base.arrayIndex) {
+        && state->index == texState->base.index) {
       GkTextureState *ts;
       ts = (GkTextureState *)state;
       

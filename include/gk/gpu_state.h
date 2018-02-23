@@ -53,6 +53,28 @@ gkFrontFace(GkContext * __restrict ctx, GLenum face);
 
 GK_EXPORT
 void
+gkEnableBlend(GkContext * __restrict ctx);
+
+GK_EXPORT
+void
+gkBlendFunc(GkContext * __restrict ctx, GLenum src, GLenum dst);
+
+GK_EXPORT
+void
+gkBlendFunci(GkContext * __restrict ctx,
+             GLint                  buf,
+             GLenum                 src,
+             GLenum                 dst);
+GK_EXPORT
+void
+gkDisabeBlend(GkContext * __restrict ctx);
+
+GK_EXPORT
+void
+gkBlendEq(GkContext * __restrict ctx, GLenum eq);
+
+GK_EXPORT
+void
 gkActiveTexture(GkContext * __restrict ctx,
                 uint32_t               unit);
 

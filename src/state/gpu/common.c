@@ -44,6 +44,37 @@ gkGetOrCreatState(GkContext * __restrict ctx,
 
 _gk_hide
 void*
+gkGetOrCreatStatei(GkContext * __restrict ctx,
+                   GLint                  index,
+                   GkGPUStateType         type) {
+  GkStatesItem *sti;
+  FListItem    *item;
+
+  sti = flist_last(ctx->states);
+  if (!sti) {
+    sti = calloc(1, sizeof(*sti));
+    flist_insert(ctx->states, sti);
+  }
+
+  item = sti->states;
+  while (item) {
+    GkStateBase *state;
+
+    state = item->data;
+    if (state->type == type
+        && state->index == index)
+      return state;
+    item = item->next;
+  }
+
+  if (type != GK_GPUSTATE_TEXTURE)
+    return gkCreatState(ctx, sti, type);
+
+  return NULL;
+}
+
+_gk_hide
+void*
 gkGetOrCreatTexState(GkContext * __restrict ctx,
                      uint32_t               arrayIndex,
                      GLenum                 target) {
@@ -62,7 +93,7 @@ gkGetOrCreatTexState(GkContext * __restrict ctx,
 
     state = item->data;
     if (state->type == GK_GPUSTATE_TEXTURE
-        && state->arrayIndex == arrayIndex) {
+        && state->index == arrayIndex) {
       GkTextureState *texState;
       texState = (GkTextureState *)state;
       if (texState->target == target)
@@ -151,14 +182,14 @@ gkCreatTexState(GkContext    * __restrict ctx,
   curr   = ctx->currState;
   state  = calloc(1, sizeof(*state));
 
-  state->base.arrayIndex = index;
+  state->base.index = index;
   state->base.type       = GK_GPUSTATE_TEXTURE;
   state->target          = target;
   state->texunit         = index;
 
   statei = curr->texStates;
   while (statei) {
-    if (statei->base.arrayIndex == index
+    if (statei->base.index == index
         && statei->target == target) {
       state->texid = statei->texid;
       return &state->base;

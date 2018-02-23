@@ -24,9 +24,10 @@ GkGPUStates gk__defstate = {
   },
 
   .blendState = {
-    .blend   = GL_FUNC_ADD,
-    .sfactor = GL_ONE,
-    .dfactor = GL_ZERO
+    .blend = false,
+    .eq    = GL_FUNC_ADD,
+    .src   = GL_ONE,
+    .dst   = GL_ZERO
   },
 
   .activeTex    = 0,

@@ -25,7 +25,7 @@ typedef enum GkGPUStateType {
 typedef struct GkStateBase {
   struct GkStateBase *next;
   GkGPUStateType      type;
-  int32_t             arrayIndex;
+  int32_t             index;
 } GkStateBase;
 
 typedef struct GkDepthState {
@@ -45,8 +45,9 @@ typedef struct GkFaceState {
 typedef struct GkBlendState {
   GkStateBase base;
   bool        blend;
-  GLenum      sfactor;
-  GLenum      dfactor;
+  GLenum      eq;
+  GLenum      src;
+  GLenum      dst;
 } GkBlendState;
 
 typedef struct GkTextureState {
@@ -84,6 +85,12 @@ _gk_hide
 void*
 gkGetOrCreatState(GkContext * __restrict ctx,
                   GkGPUStateType         type);
+
+_gk_hide
+void*
+gkGetOrCreatStatei(GkContext * __restrict ctx,
+                   GLint                  index,
+                   GkGPUStateType         type);
 
 _gk_hide
 GkStateBase*

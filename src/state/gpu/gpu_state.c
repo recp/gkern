@@ -67,7 +67,7 @@ gkPopState(GkContext * __restrict ctx) {
 
         /* linear search, todo: */
         if (prevst->type == currst->type
-            && prevst->arrayIndex == currst->arrayIndex)
+            && prevst->index == currst->index)
           goto foundst;
         oldi = oldi->next;
       } while (oldi);
