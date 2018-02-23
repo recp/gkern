@@ -27,6 +27,9 @@ gkApplyDepthState(GkContext   * __restrict ctx,
   
   if (depthState->depthFunc != ast->depthState.depthFunc)
     glDepthFunc(depthState->depthFunc);
+
+  if (depthState->mask != ast->depthState.mask)
+    glDepthMask(depthState->mask);
 }
 
 _gk_hide

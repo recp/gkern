@@ -37,3 +37,16 @@ gkDisableDepthTest(GkContext * __restrict ctx) {
   state->depthTest = false;
   glDisable(GL_DEPTH_TEST);
 }
+
+GK_EXPORT
+void
+gkDepthMask(GkContext * __restrict ctx, GLboolean flag) {
+  GkDepthState *state;
+
+  state = gkGetOrCreatState(ctx, GK_GPUSTATE_DEPTH);
+  if (!state->mask)
+    return;
+
+  state->mask = flag;
+  glDepthMask(flag);
+}

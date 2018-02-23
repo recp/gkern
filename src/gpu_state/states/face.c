@@ -14,19 +14,6 @@
 
 GK_EXPORT
 void
-gkDisableCullFace(GkContext * __restrict ctx) {
-  GkFaceState *state;
-
-  state = gkGetOrCreatState(ctx, GK_GPUSTATE_CULLFACE);
-  if (!state->cull)
-    return;
-
-  state->cull = false;
-  glDisable(GL_CULL_FACE);
-}
-
-GK_EXPORT
-void
 gkEnableCullFace(GkContext * __restrict ctx) {
   GkFaceState *state;
 
@@ -36,6 +23,19 @@ gkEnableCullFace(GkContext * __restrict ctx) {
 
   state->cull = true;
   glEnable(GL_CULL_FACE);
+}
+
+GK_EXPORT
+void
+gkDisableCullFace(GkContext * __restrict ctx) {
+  GkFaceState *state;
+
+  state = gkGetOrCreatState(ctx, GK_GPUSTATE_CULLFACE);
+  if (!state->cull)
+    return;
+
+  state->cull = false;
+  glDisable(GL_CULL_FACE);
 }
 
 GK_EXPORT
