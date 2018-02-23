@@ -30,8 +30,8 @@ typedef struct GkStateBase {
 
 typedef struct GkDepthState {
   GkStateBase base;
-  bool        depthTest;
-  GLenum      depthFunc;
+  bool        test;
+  GLenum      func;
   GLboolean   mask;
 } GkDepthState;
 

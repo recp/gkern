@@ -18,15 +18,15 @@ gkApplyDepthState(GkContext   * __restrict ctx,
   
   ast        = ctx->currState;
   depthState = (GkDepthState *)st;
-  if (depthState->depthTest != ast->depthState.depthTest) {
-    if (depthState->depthTest)
+  if (depthState->test != ast->depthState.test) {
+    if (depthState->test)
       glEnable(GL_DEPTH_TEST);
     else
       glDisable(GL_DEPTH_TEST);
   }
   
-  if (depthState->depthFunc != ast->depthState.depthFunc)
-    glDepthFunc(depthState->depthFunc);
+  if (depthState->func != ast->depthState.func)
+    glDepthFunc(depthState->func);
 
   if (depthState->mask != ast->depthState.mask)
     glDepthMask(depthState->mask);

@@ -33,6 +33,10 @@ gkDepthMask(GkContext * __restrict ctx, GLboolean flag);
 
 GK_EXPORT
 void
+gkDepthFunc(GkContext * __restrict ctx, GLenum func);
+
+GK_EXPORT
+void
 gkDisableCullFace(GkContext * __restrict ctx);
 
 GK_EXPORT
