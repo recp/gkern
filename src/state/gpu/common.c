@@ -67,8 +67,13 @@ gkGetOrCreatStatei(GkContext * __restrict ctx,
     item = item->next;
   }
 
-  if (type != GK_GPUSTATE_TEXTURE)
-    return gkCreatState(ctx, sti, type);
+  if (type != GK_GPUSTATE_TEXTURE) {
+    GkStateBase *st;
+
+    st = gkCreatState(ctx, sti, type);
+    st->indexed = true;
+    return st;
+  }
 
   return NULL;
 }

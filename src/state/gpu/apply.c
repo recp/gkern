@@ -50,8 +50,17 @@ gkApplyBlendState(GkContext   * __restrict ctx,
   }
   
   if (blendState->src != ast->blendState.src
-      || blendState->dst != ast->blendState.dst)
-    glBlendFunc(blendState->src, blendState->dst);
+      || blendState->dst != ast->blendState.dst) {
+    if (!st->indexed) {
+      glBlendFunc(blendState->src, blendState->dst);
+    } else {
+      glBlendFunci(blendState->base.index, blendState->src, blendState->dst);
+    }
+  }
+
+  if (blendState->eq != ast->blendState.eq) {
+    glBlendEquation(blendState->eq);
+  }
 }
 
 _gk_hide
