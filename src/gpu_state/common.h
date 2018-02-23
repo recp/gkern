@@ -18,7 +18,8 @@ typedef enum GkGPUStateType {
   GK_GPUSTATE_DEPTH      = 1,
   GK_GPUSTATE_BLEND      = 2,
   GK_GPUSTATE_TEXTURE    = 3,
-  GK_GPUSTATE_RENDER_OUT = 4
+  GK_GPUSTATE_RENDER_OUT = 4,
+  GK_GPUSTATE_CULLFACE   = 5
 } GkGPUStateType;
 
 typedef struct GkStateBase {
@@ -32,6 +33,13 @@ typedef struct GkDepthState {
   bool        depthTest;
   GLenum      depthFunc;
 } GkDepthState;
+
+typedef struct GkCullFaceState {
+  GkStateBase base;
+  bool        cull;
+  GLenum      face;
+  GLenum      frontFace;
+} GkCullFaceState;
 
 typedef struct GkBlendState {
   GkStateBase base;
@@ -61,6 +69,7 @@ typedef struct GkGPUStates {
   GkDepthState     depthState;
   GkBlendState     blendState;
   GkRenderOutState outputState;
+  GkCullFaceState  cullfaceState;
   GLuint           activeTex;
   GkTextureState  *texStates;
   GkProgram       *prog;

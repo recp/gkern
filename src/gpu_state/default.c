@@ -12,8 +12,14 @@
 
 GkGPUStates gk__defstate = {
   .depthState = {
-    .depthTest = true,
+    .depthTest = false,
     .depthFunc = GL_LESS
+  },
+
+  .cullfaceState = {
+    .cull      = true,
+    .face      = GL_BACK,
+    .frontFace = GL_CCW
   },
 
   .blendState = {
@@ -38,4 +44,7 @@ gkSetDefaultState(GkContext * __restrict ctx) {
   memcpy(ctx->currState,
          &gk__defstate,
          sizeof(gk__defstate));
+
+  gkEnableDepthTest(ctx);
+  gkEnableCullFace(ctx);
 }

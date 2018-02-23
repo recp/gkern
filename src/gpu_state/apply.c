@@ -107,3 +107,28 @@ gkApplyOutputState(GkContext   * __restrict ctx,
   ast->outputState.renderOutput = outputState->renderOutput;
   glBindFramebuffer(GL_FRAMEBUFFER, outputState->renderOutput->fbo);
 }
+
+_gk_hide
+void
+gkApplyCullFaceState(GkContext   * __restrict ctx,
+                     GkStateBase * __restrict st) {
+  GkCullFaceState *cullfaceState;
+  GkGPUStates     *ast;
+
+  ast           = ctx->currState;
+  cullfaceState = (GkCullFaceState *)st;
+
+  if (ast->cullfaceState.face != cullfaceState->cull) {
+    if (cullfaceState->cull)
+      glEnable(GL_CULL_FACE);
+    else
+      glDisable(GL_CULL_FACE);
+
+    ast->cullfaceState.cull = cullfaceState->cull;
+  }
+
+  if (ast->cullfaceState.face == cullfaceState->face)  {
+    glCullFace(cullfaceState->face);
+    ast->cullfaceState.face = cullfaceState->face;
+  }
+}

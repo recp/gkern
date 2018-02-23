@@ -5,11 +5,10 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "../../common.h"
 #include "../common.h"
-#include "../../include/gk/gk.h"
-#include "../../include/gk/gpu_state.h"
-
-#include "common.h"
+#include "../../../include/gk/gk.h"
+#include "../../../include/gk/gpu_state.h"
 
 GK_EXPORT
 void

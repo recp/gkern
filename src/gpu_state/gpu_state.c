@@ -20,7 +20,8 @@ GkGPUApplyStateFn gk__stateFuncs[] = {
   gkApplyDepthState,
   gkApplyBlendState,
   gkApplyTexState,
-  gkApplyOutputState
+  gkApplyOutputState,
+  gkApplyCullFaceState
 };
 
 GK_EXPORT
@@ -72,6 +73,9 @@ gkPopState(GkContext * __restrict ctx) {
       } while (oldi);
     }
 
+    /* not found in prev states apply default */
+    /* todo: */
+
     continue;
   foundst:
     gk__stateFuncs[prevst->type](ctx, prevst);
@@ -80,30 +84,4 @@ gkPopState(GkContext * __restrict ctx) {
 fr:
   /* we are no longer need to current state */
   free(curr);
-}
-
-GK_EXPORT
-void
-gkEnableDepthTest(GkContext * __restrict ctx) {
-  GkDepthState *state;
-
-  state = gkGetOrCreatState(ctx, GK_GPUSTATE_DEPTH);
-  if (state->depthTest)
-    return;
-
-  state->depthTest = true;
-  glEnable(GL_DEPTH_TEST);
-}
-
-GK_EXPORT
-void
-gkDisableDepthTest(GkContext * __restrict ctx) {
-  GkDepthState *state;
-
-  state = gkGetOrCreatState(ctx, GK_GPUSTATE_DEPTH);
-  if (!state->depthTest)
-    return;
-
-  state->depthTest = false;
-  glDisable(GL_DEPTH_TEST);
 }
