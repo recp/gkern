@@ -8,8 +8,8 @@
 #ifndef src_gpu_state_impl_h
 #define src_gpu_state_impl_h
 
-#include "../../include/gk/gk.h"
-#include "../../include/gk/gpu_state.h"
+#include "../../../include/gk/gk.h"
+#include "../../../include/gk/gpu_state.h"
 
 #include "common.h"
 

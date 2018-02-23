@@ -8,9 +8,9 @@
 #ifndef src_gpustate_common_h
 #define src_gpustate_common_h
 
-#include "../../include/gk/gk.h"
-#include "../../include/gk/gpu_state.h"
-#include "../../include/gk/pass.h"
+#include "../../../include/gk/gk.h"
+#include "../../../include/gk/gpu_state.h"
+#include "../../../include/gk/pass.h"
 
 #include <ds/hash.h>
 

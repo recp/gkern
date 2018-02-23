@@ -11,7 +11,7 @@
 #include "../../../include/gk/prims/cube.h"
 #include "../../default/def_effect.h"
 #include "../../default/def_light.h"
-#include "../../gpu_state/common.h"
+#include "../../state/gpu.h"
 
 #include "rn_light.h"
 #include "rn_material.h"

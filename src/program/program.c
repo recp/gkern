@@ -11,7 +11,7 @@
 #include "../default/shader/def_shader.h"
 
 #include "program.h"
-#include "../gpu_state/common.h"
+#include "../state/gpu.h"
 #include <stdlib.h>
 #include <string.h>
 

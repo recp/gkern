@@ -10,7 +10,7 @@
 #include "../../../include/gk/gpu_state.h"
 #include "../../shader/builtin_shader.h"
 #include "../../program/uniform_cache.h"
-#include "../../gpu_state/common.h"
+#include "../../state/gpu.h"
 
 #include "rn_light.h"
 #include "rn_material.h"

@@ -7,7 +7,7 @@
 
 #include "common.h"
 #include "../include/gk/context.h"
-#include "gpu_state/default.h"
+#include "state/gpu.h"
 
 #include <ds/forward-list.h>
 #include <string.h>

@@ -11,7 +11,7 @@
 #include "../shad_common.h"
 #include "../../shader/shader.h"
 #include "../../shader/builtin_shader.h"
-#include "../../gpu_state/common.h"
+#include "../../state/gpu.h"
 
 #include <string.h>
 

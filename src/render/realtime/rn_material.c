@@ -9,7 +9,7 @@
 #include "../../../include/gk/gk.h"
 #include "../../../include/gk/material.h"
 
-#include "../../gpu_state/common.h"
+#include "../../state/gpu.h"
 #include "../../default/def_effect.h"
 
 #include "rn_material.h"

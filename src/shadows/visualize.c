@@ -11,7 +11,7 @@
 #include "shadows.h"
 #include "../shader/builtin_shader.h"
 #include "../program/uniform_cache.h"
-#include "../gpu_state/common.h"
+#include "../state/gpu.h"
 
 void
 gkRenderShadowMapTo(GkScene   * __restrict scene,
