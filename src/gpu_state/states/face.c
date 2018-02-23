@@ -12,9 +12,6 @@
 #include "common.h"
 #include "apply.h"
 
-#include <ds/forward-list.h>
-#include <string.h>
-
 GK_EXPORT
 void
 gkDisableCullFace(GkContext * __restrict ctx) {
