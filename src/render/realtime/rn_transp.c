@@ -16,12 +16,60 @@ bool
 gkPrimIsTransparent(GkScene     * __restrict scene,
                     GkModelInst * __restrict modelInst,
                     GkPrimInst  * __restrict primInst) {
-  return primInst->activeMaterial->transparent != NULL
-         && primInst->activeMaterial->transparent->amount > 0;
+  return gkIsTransparent(scene, primInst->activeMaterial);
 }
 
 bool
 gkIsTransparent(GkScene    * __restrict scene,
                 GkMaterial * __restrict mat) {
-  return mat->transparent != NULL && mat->transparent->amount > 0;
+  GkColor *color;
+
+  if (!mat->transparent)
+    return false;
+
+  color = NULL;
+  if (mat->transparent->color
+      && mat->transparent->color->method == GK_COLOR_COLOR)
+    color = mat->transparent->color->val;
+
+  switch (mat->transparent->opaque) {
+    case GK_OPAQUE_A_ONE: {
+      float opacity;
+      opacity = 1.0f - mat->transparent->amount;
+
+      if (color)
+        return (color->rgba.A * opacity) < 1.0f;
+
+      return opacity < 1.0f;
+    }
+    case GK_OPAQUE_A_ZERO: {
+      float opacity;
+      opacity = mat->transparent->amount;
+
+      if (color)
+        return (glm_luminance(color->vec) * opacity) < 1.0f;
+
+      return opacity < 1.0f;
+    }
+    case GK_OPAQUE_RGB_ONE: {
+      float opacity;
+      opacity = 1.0f - mat->transparent->amount;
+
+      if (color)
+        return (glm_luminance(color->vec) * opacity) < 1.0f;
+
+      return opacity < 1.0f;
+    }
+    case GK_OPAQUE_RGB_ZERO: {
+      float opacity;
+      opacity = mat->transparent->amount;
+
+      if (color)
+        return (glm_luminance(color->vec) * opacity) < 1.0f;
+
+      return opacity < 1.0f;
+    }
+
+    default: return true;
+  }
 }
