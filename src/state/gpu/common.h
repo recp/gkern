@@ -19,13 +19,15 @@ typedef enum GkGPUStateType {
   GK_GPUSTATE_BLEND      = 2,
   GK_GPUSTATE_TEXTURE    = 3,
   GK_GPUSTATE_RENDER_OUT = 4,
-  GK_GPUSTATE_CULLFACE   = 5
+  GK_GPUSTATE_CULLFACE   = 5,
+  GK_GPUSTATE_FRAME      = 6
 } GkGPUStateType;
 
 typedef struct GkStateBase {
   struct GkStateBase *next;
   GkGPUStateType      type;
   int32_t             index;
+  bool                indexed;
 } GkStateBase;
 
 typedef struct GkDepthState {
@@ -57,6 +59,12 @@ typedef struct GkTextureState {
   GLuint      texid;
 } GkTextureState;
 
+typedef struct GkFramebuffState {
+  GkStateBase base;
+  GLenum      readbuff;
+  GLenum      drawbuff;
+} GkFramebuffState;
+
 typedef struct GkRenderOutState {
   GkStateBase base;
   GkPassOut  *renderOutput;
@@ -72,6 +80,7 @@ typedef struct GkGPUStates {
   GkBlendState     blendState;
   GkRenderOutState outputState;
   GkFaceState      faceState;
+  GkFramebuffState frame;
   GLuint           activeTex;
   GkTextureState  *texStates;
   GkProgram       *prog;

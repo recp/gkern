@@ -21,7 +21,8 @@ GkGPUApplyStateFn gk__stateFuncs[] = {
   gkApplyBlendState,
   gkApplyTexState,
   gkApplyOutputState,
-  gkApplyCullFaceState
+  gkApplyCullFaceState,
+  gkApplyFrameBuffState
 };
 
 GK_EXPORT

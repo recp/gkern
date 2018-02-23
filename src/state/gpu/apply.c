@@ -140,3 +140,20 @@ gkApplyCullFaceState(GkContext   * __restrict ctx,
     ast->faceState.frontFace = faceState->frontFace;
   }
 }
+
+_gk_hide
+void
+gkApplyFrameBuffState(GkContext   * __restrict ctx,
+                      GkStateBase * __restrict st) {
+  GkFramebuffState *frmState;
+  GkGPUStates      *ast;
+
+  ast      = ctx->currState;
+  frmState = (GkFramebuffState *)st;
+
+  if (ast->frame.drawbuff != frmState->drawbuff)
+    glDrawBuffer(frmState->drawbuff);
+
+  if (ast->frame.readbuff != frmState->readbuff)
+    glDrawBuffer(frmState->readbuff);
+}
