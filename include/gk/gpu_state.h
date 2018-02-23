@@ -41,6 +41,10 @@ gkCullFace(GkContext * __restrict ctx, GLenum face);
 
 GK_EXPORT
 void
+gkFrontFace(GkContext * __restrict ctx, GLenum face);
+
+GK_EXPORT
+void
 gkActiveTexture(GkContext * __restrict ctx,
                 uint32_t               unit);
 

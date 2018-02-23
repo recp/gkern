@@ -16,7 +16,7 @@ GkGPUStates gk__defstate = {
     .depthFunc = GL_LESS
   },
 
-  .cullfaceState = {
+  .faceState = {
     .cull      = true,
     .face      = GL_BACK,
     .frontFace = GL_CCW

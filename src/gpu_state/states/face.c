@@ -18,7 +18,7 @@
 GK_EXPORT
 void
 gkDisableCullFace(GkContext * __restrict ctx) {
-  GkCullFaceState *state;
+  GkFaceState *state;
 
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_CULLFACE);
   if (!state->cull)
@@ -31,7 +31,7 @@ gkDisableCullFace(GkContext * __restrict ctx) {
 GK_EXPORT
 void
 gkEnableCullFace(GkContext * __restrict ctx) {
-  GkCullFaceState *state;
+  GkFaceState *state;
 
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_CULLFACE);
   if (state->cull)
@@ -44,10 +44,21 @@ gkEnableCullFace(GkContext * __restrict ctx) {
 GK_EXPORT
 void
 gkCullFace(GkContext * __restrict ctx, GLenum face) {
-  GkCullFaceState *state;
+  GkFaceState *state;
 
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_CULLFACE);
 
   state->face = face;
   glCullFace(face);
+}
+
+GK_EXPORT
+void
+gkFrontFace(GkContext * __restrict ctx, GLenum face) {
+  GkFaceState *state;
+
+  state = gkGetOrCreatState(ctx, GK_GPUSTATE_CULLFACE);
+
+  state->frontFace = face;
+  glFrontFace(face);
 }

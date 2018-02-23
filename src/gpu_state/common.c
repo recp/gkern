@@ -99,7 +99,7 @@ gkCreatState(GkContext    * __restrict ctx,
       len = sizeof(GkRenderOutState);
       break;
     case GK_GPUSTATE_CULLFACE:
-      ptr = &curr->cullfaceState;
+      ptr = &curr->faceState;
       len = sizeof(GkRenderOutState);
       break;
     default:

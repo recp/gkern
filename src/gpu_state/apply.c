@@ -112,23 +112,28 @@ _gk_hide
 void
 gkApplyCullFaceState(GkContext   * __restrict ctx,
                      GkStateBase * __restrict st) {
-  GkCullFaceState *cullfaceState;
-  GkGPUStates     *ast;
+  GkFaceState *faceState;
+  GkGPUStates *ast;
 
   ast           = ctx->currState;
-  cullfaceState = (GkCullFaceState *)st;
+  faceState = (GkFaceState *)st;
 
-  if (ast->cullfaceState.face != cullfaceState->cull) {
-    if (cullfaceState->cull)
+  if (ast->faceState.face != faceState->cull) {
+    if (faceState->cull)
       glEnable(GL_CULL_FACE);
     else
       glDisable(GL_CULL_FACE);
 
-    ast->cullfaceState.cull = cullfaceState->cull;
+    ast->faceState.cull = faceState->cull;
   }
 
-  if (ast->cullfaceState.face == cullfaceState->face)  {
-    glCullFace(cullfaceState->face);
-    ast->cullfaceState.face = cullfaceState->face;
+  if (ast->faceState.face == faceState->face)  {
+    glCullFace(faceState->face);
+    ast->faceState.face = faceState->face;
+  }
+
+  if (ast->faceState.frontFace == faceState->frontFace)  {
+    glFrontFace(faceState->frontFace);
+    ast->faceState.frontFace = faceState->frontFace;
   }
 }

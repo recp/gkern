@@ -34,12 +34,12 @@ typedef struct GkDepthState {
   GLenum      depthFunc;
 } GkDepthState;
 
-typedef struct GkCullFaceState {
+typedef struct GkFaceState {
   GkStateBase base;
   bool        cull;
   GLenum      face;
   GLenum      frontFace;
-} GkCullFaceState;
+} GkFaceState;
 
 typedef struct GkBlendState {
   GkStateBase base;
@@ -69,7 +69,7 @@ typedef struct GkGPUStates {
   GkDepthState     depthState;
   GkBlendState     blendState;
   GkRenderOutState outputState;
-  GkCullFaceState  cullfaceState;
+  GkFaceState      faceState;
   GLuint           activeTex;
   GkTextureState  *texStates;
   GkProgram       *prog;
