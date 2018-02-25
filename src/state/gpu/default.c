@@ -42,8 +42,8 @@ GkGPUStates gk__defstate = {
     .dst   = GL_ZERO
   },
 
-  .outputState = &(GkRenderOutState){
-    GK__STATE_BASE(GK_GPUSTATE_RENDER_OUT),
+  .outputState = &(GkOutputState){
+    GK__STATE_BASE(GK_GPUSTATE_OUTPUT),
     .renderOutput = NULL
   },
 

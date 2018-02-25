@@ -131,7 +131,7 @@ gkCreatState(GkContext    * __restrict ctx,
     {offsetof(GkGPUStates, depthState),  sizeof(GkDepthState)},
     {offsetof(GkGPUStates, blendState),  sizeof(GkBlendState)},
     {offsetof(GkGPUStates, texStates),   sizeof(GkTextureState)},
-    {offsetof(GkGPUStates, outputState), sizeof(GkRenderOutState)},
+    {offsetof(GkGPUStates, outputState), sizeof(GkOutputState)},
     {offsetof(GkGPUStates, faceState),   sizeof(GkFaceState)},
     {offsetof(GkGPUStates, frame),       sizeof(GkFramebuffState)},
   }[type - 1]);

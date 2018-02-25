@@ -112,11 +112,11 @@ _gk_hide
 void
 gkApplyOutputState(GkContext   * __restrict ctx,
                    GkStateBase * __restrict st) {
-  GkRenderOutState *outputState;
+  GkOutputState *outputState;
   GkGPUStates      *cst;
   
   cst         = ctx->currState;
-  outputState = (GkRenderOutState *)st;
+  outputState = (GkOutputState *)st;
 
   if (cst->outputState->renderOutput != outputState->renderOutput) {
     cst->outputState->renderOutput = outputState->renderOutput;
