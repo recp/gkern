@@ -17,6 +17,7 @@ gkEnableBlend(GkContext * __restrict ctx) {
     return;
 
   state->blend = true;
+
   glEnable(GL_BLEND);
 }
 
@@ -30,6 +31,7 @@ gkDisabeBlend(GkContext * __restrict ctx) {
     return;
 
   state->blend = false;
+
   glDisable(GL_BLEND);
 }
 
@@ -43,6 +45,7 @@ gkBlendEq(GkContext * __restrict ctx, GLenum eq) {
     return;
 
   state->eq = eq;
+
   glBlendEquation(eq);
 }
 
@@ -55,6 +58,7 @@ gkBlendFunc(GkContext * __restrict ctx, GLenum src, GLenum dst) {
 
   state->src = src;
   state->dst = dst;
+
   glBlendFunc(src, dst);
 }
 
@@ -70,5 +74,6 @@ gkBlendFunci(GkContext * __restrict ctx,
 
   state->src = src;
   state->dst = dst;
+
   glBlendFunci(buf, src, dst);
 }

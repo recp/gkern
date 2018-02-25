@@ -17,7 +17,7 @@
 #include "../program/uniform_cache.h"
 
 #include "../shader/shader.h"
-#include "../gpu_state/common.h"
+#include "../state/gpu.h"
 
 #include "builtin/basic.h"
 #include "builtin/csm.h"

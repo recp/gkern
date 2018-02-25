@@ -93,9 +93,7 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   gkBindPassOut(scene, sm->pass->output);
 
   gkEnableDepthTest(ctx);
-
-  if (ctx->currState->prog != prog)
-    gkUseProgram(ctx, prog);
+  gkUseProgram(ctx, prog);
 
   frustum = &scene->camera->frustum;
 

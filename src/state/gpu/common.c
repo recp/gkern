@@ -115,64 +115,43 @@ GkStateBase*
 gkCreatState(GkContext    * __restrict ctx,
              GkStatesItem * __restrict sti,
              GkGPUStateType            type) {
-  GkStateBase *state;
-  GkGPUStates *curr;
-  void        *ptr;
-  size_t       len;
+  struct stateMap { size_t st; size_t len; };
+  GkStateBase     *state;
+  GkGPUStates     *curr;
+  void            **pptr, *ptr;
+  char            *pCurr;
+  struct stateMap  stm;
 
   curr = ctx->currState;
-  switch (type) {
-    case GK_GPUSTATE_DEPTH:
-      ptr = &curr->depthState;
-      len = sizeof(GkDepthState);
-      break;
-    case GK_GPUSTATE_BLEND:
-      ptr = &curr->blendState;
-      len = sizeof(GkBlendState);
-      break;
-    case GK_GPUSTATE_RENDER_OUT:
-      ptr = &curr->outputState;
-      len = sizeof(GkRenderOutState);
-      break;
-    case GK_GPUSTATE_CULLFACE:
-      ptr = &curr->faceState;
-      len = sizeof(GkRenderOutState);
-      break;
-    default:
-      return NULL;
-  }
 
-  state = calloc(1, len);
-  memcpy(state, ptr, len);
+  if (type >= GK_GPUSTATE_COUNT)
+    return NULL;
+
+  stm = ((struct stateMap[]){
+    {offsetof(GkGPUStates, depthState),  sizeof(GkDepthState)},
+    {offsetof(GkGPUStates, blendState),  sizeof(GkBlendState)},
+    {offsetof(GkGPUStates, texStates),   sizeof(GkTextureState)},
+    {offsetof(GkGPUStates, outputState), sizeof(GkRenderOutState)},
+    {offsetof(GkGPUStates, faceState),   sizeof(GkFaceState)},
+    {offsetof(GkGPUStates, frame),       sizeof(GkFramebuffState)},
+  }[type - 1]);
+
+  pCurr = (char *)curr;
+  pptr  = (void **)(pCurr + stm.st);
+  ptr   = *pptr;
+
+  state = calloc(1, stm.len);
+  memcpy(state, ptr, stm.len);
 
   state->type = type;
+  state->prev = ptr;
 
   sti->isempty = false;
   flist_sp_insert(&sti->states, state);
 
+  *pptr = state;
+
   return state;
-}
-
-_gk_hide
-void
-gkStateMakeCurrent(GkContext   * __restrict ctx,
-                   GkStateBase * __restrict st) {
-  GkGPUStates *ast;
-
-  ast = ctx->currState;
-  switch (st->type) {
-    case GK_GPUSTATE_DEPTH:
-      memcpy(&ast->depthState, st, sizeof(GkDepthState));
-      break;
-    case GK_GPUSTATE_BLEND:
-      memcpy(&ast->blendState, st, sizeof(GkBlendState));
-      break;
-    case GK_GPUSTATE_RENDER_OUT:
-      memcpy(&ast->outputState, st, sizeof(GkRenderOutState));
-      break;
-    default:
-      return;
-  }
 }
 
 _gk_hide

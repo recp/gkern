@@ -39,47 +39,37 @@ gkPushState(GkContext * __restrict ctx) {
 
   newst = calloc(1, sizeof(*newst));
   newst->isempty = true;
+
   flist_append(ctx->states, newst);
 }
 
 GK_EXPORT
 void
 gkPopState(GkContext * __restrict ctx) {
-  GkStatesItem *old,    *curr;
-  FListItem    *oldi,   *curri;
+  GkStatesItem *curr;
+  FListItem    *curri;
   GkStateBase  *prevst, *currst;
 
   curr = flist_pop(ctx->states);
   if (!curr)
     return;
 
-  if (!(old = flist_last(ctx->states)))
+  if (!(curri = curr->states))
     goto fr;
-
-  curri = curr->states;
 
   /* revert each state to previous */
   do {
     currst = curri->data;
+    prevst = currst->prev;
 
-    if ((oldi = old->states)) {
-      do {
-        prevst = oldi->data;
+#ifdef DEBUG
+    assert(currst->prev != currst);
+    assert(prevst);
+#endif
 
-        /* linear search, todo: */
-        if (prevst->type == currst->type
-            && prevst->index == currst->index)
-          goto foundst;
-        oldi = oldi->next;
-      } while (oldi);
-    }
-
-    /* not found in prev states apply default */
-    /* todo: */
-
-    continue;
-  foundst:
     gk__stateFuncs[prevst->type](ctx, prevst);
+
+    free(currst);
   } while ((curri = curri->next));
 
 fr:

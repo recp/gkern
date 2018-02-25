@@ -17,6 +17,7 @@ gkSrcBuff(GkContext * __restrict ctx, GLenum buff) {
     return;
 
   state->readbuff = buff;
+
   glReadBuffer(buff);
 }
 
@@ -30,5 +31,6 @@ gkDstBuff(GkContext * __restrict ctx, GLenum buff) {
     return;
 
   state->drawbuff = buff;
+
   glDrawBuffer(buff);
 }

@@ -17,6 +17,7 @@ gkEnableCullFace(GkContext * __restrict ctx) {
     return;
 
   state->cull = true;
+
   glEnable(GL_CULL_FACE);
 }
 
@@ -30,6 +31,7 @@ gkDisableCullFace(GkContext * __restrict ctx) {
     return;
 
   state->cull = false;
+
   glDisable(GL_CULL_FACE);
 }
 
@@ -41,6 +43,7 @@ gkCullFace(GkContext * __restrict ctx, GLenum face) {
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_CULLFACE);
 
   state->face = face;
+
   glCullFace(face);
 }
 
@@ -52,5 +55,6 @@ gkFrontFace(GkContext * __restrict ctx, GLenum face) {
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_CULLFACE);
 
   state->frontFace = face;
+
   glFrontFace(face);
 }

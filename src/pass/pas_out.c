@@ -9,7 +9,7 @@
 #include "../../include/gk/gk.h"
 #include "../../include/gk/pass.h"
 #include "../../include/gk/scene.h"
-#include "../gpu_state/common.h"
+#include "../state/gpu.h"
 
 GK_EXPORT
 GkPass*
@@ -38,7 +38,7 @@ GkPassOut*
 gkCurrentOutput(GkContext * __restrict ctx) {
   GkPassOut *output;
 
-  if ((output = ctx->currState->outputState.renderOutput))
+  if ((output = ctx->currState->outputState->renderOutput))
     return output;
 
   return gkDefaultRenderOut();
@@ -53,7 +53,7 @@ gkBindPassOut(GkScene   *scene,
 
   ctx   = gkContextOf(scene);
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_RENDER_OUT);
-  if (ctx->currState->outputState.renderOutput == pout)
+  if (ctx->currState->outputState->renderOutput == pout)
     return;
 
   state->renderOutput = pout;

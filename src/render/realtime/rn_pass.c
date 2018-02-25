@@ -37,8 +37,7 @@ gkRenderPass(GkScene    * __restrict scene,
   trans     = primInst->trans;
   material  = primInst->activeMaterial;
 
-  if (ctx->currState->prog != prog)
-    gkUseProgram(ctx, prog);
+  gkUseProgram(ctx, prog);
 
   if (prog->lastMaterial != material && !pass->noMaterials)
     gkUniformMaterial(ctx, prog, material);

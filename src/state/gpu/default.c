@@ -10,29 +10,45 @@
 #include "common.h"
 #include <string.h>
 
+#define GK__STATE_BASE(T) \
+   .base = { \
+      .prev    = NULL, \
+      .next    = NULL, \
+      .type    = T, \
+      .index   = 0, \
+      .indexed = false \
+   }
+
 GkGPUStates gk__defstate = {
-  .depthState = {
+  .depthState = &(GkDepthState){
+    GK__STATE_BASE(GK_GPUSTATE_DEPTH),
     .test = true,
     .func = GL_LESS,
-    .mask = GL_TRUE
+    .mask = GL_TRUE,
   },
 
-  .faceState = {
+  .faceState = &(GkFaceState){
+    GK__STATE_BASE(GK_GPUSTATE_CULLFACE),
     .cull      = true,
     .face      = GL_BACK,
     .frontFace = GL_CCW
   },
 
-  .blendState = {
+  .blendState = &(GkBlendState){
+    GK__STATE_BASE(GK_GPUSTATE_BLEND),
     .blend = false,
     .eq    = GL_FUNC_ADD,
     .src   = GL_ONE,
     .dst   = GL_ZERO
   },
 
+  .outputState = &(GkRenderOutState){
+    GK__STATE_BASE(GK_GPUSTATE_RENDER_OUT),
+    .renderOutput = NULL
+  },
+
   .activeTex    = 0,
   .texStates    = NULL,
-  .outputState  = NULL,
   .prog         = NULL
 };
 
