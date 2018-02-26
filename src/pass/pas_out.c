@@ -48,33 +48,30 @@ GK_EXPORT
 void
 gkBindPassOut(GkScene   *scene,
               GkPassOut *pout) {
-  GkRenderOutState *state;
+  GkOutputState *state;
   GkContext        *ctx;
 
   ctx   = gkContextOf(scene);
-  state = gkGetOrCreatState(ctx, GK_GPUSTATE_RENDER_OUT);
+  state = gkGetOrCreatState(ctx, GK_GPUSTATE_OUTPUT);
   if (ctx->currState->outputState->renderOutput == pout)
     return;
 
   state->renderOutput = pout;
-
-  gkStateMakeCurrent(ctx, &state->base);
   glBindFramebuffer(GL_FRAMEBUFFER, pout->fbo);
 }
 
 GK_EXPORT
 void
 gkBindDefaultPassOut(GkScene *scene) {
-  GkRenderOutState *state;
+  GkOutputState *state;
   GkContext        *ctx;
 
   ctx   = gkContextOf(scene);
-  state = gkGetOrCreatState(ctx, GK_GPUSTATE_RENDER_OUT);
-  if (ctx->currState->outputState.renderOutput == NULL)
+  state = gkGetOrCreatState(ctx, GK_GPUSTATE_OUTPUT);
+  if (ctx->currState->outputState->renderOutput == NULL)
     return;
 
   state->renderOutput = NULL;
-  gkStateMakeCurrent(ctx, &state->base);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
