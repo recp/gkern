@@ -17,26 +17,26 @@ gkAllocPass(void) {
   GkPass *pass;
 
   pass         = calloc(1, sizeof(*pass));
-  pass->output = gkAllocPassOut();
+  pass->output = gkAllocOutput();
 
   return pass;
 }
 
 GK_EXPORT
-GkPassOut*
-gkAllocPassOut(void) {
-  GkPassOut *pout;
+GkOutput*
+gkAllocOutput(void) {
+  GkOutput *output;
 
-  pout = calloc(1, sizeof(*pout));
-  glGenFramebuffers(1, &pout->fbo);
+  output = calloc(1, sizeof(*output));
+  glGenFramebuffers(1, &output->fbo);
 
-  return pout;
+  return output;
 }
 
 GK_EXPORT
-GkPassOut*
+GkOutput*
 gkCurrentOutput(GkContext * __restrict ctx) {
-  GkPassOut *output;
+  GkOutput *output;
 
   if ((output = ctx->currState->outputState->renderOutput))
     return output;
@@ -46,23 +46,23 @@ gkCurrentOutput(GkContext * __restrict ctx) {
 
 GK_EXPORT
 void
-gkBindPassOut(GkScene   *scene,
-              GkPassOut *pout) {
+gkBindOutput(GkScene  *scene,
+              GkOutput *output) {
   GkOutputState *state;
-  GkContext        *ctx;
+  GkContext     *ctx;
 
   ctx   = gkContextOf(scene);
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_OUTPUT);
-  if (ctx->currState->outputState->renderOutput == pout)
+  if (ctx->currState->outputState->renderOutput == output)
     return;
 
-  state->renderOutput = pout;
-  glBindFramebuffer(GL_FRAMEBUFFER, pout->fbo);
+  state->renderOutput = output;
+  glBindFramebuffer(GL_FRAMEBUFFER, output->fbo);
 }
 
 GK_EXPORT
 void
-gkBindDefaultPassOut(GkScene *scene) {
+gkBindDefaultOutput(GkScene *scene) {
   GkOutputState *state;
   GkContext        *ctx;
 
@@ -79,16 +79,16 @@ GK_EXPORT
 void
 gkPassEnableDepth(GkScene *scene,
                   GkPass  *pass) {
-  GkPassOut *pout;
+  GkOutput *output;
 
-  if (!(pout = pass->output))
-    pass->output = pout = gkAllocPassOut();
+  if (!(output = pass->output))
+    pass->output = output = gkAllocOutput();
 
-  if (pout->depth != 0)
+  if (output->depth != 0)
     return;
 
-  glGenRenderbuffers(1, &pout->depth);
-  glBindRenderbuffer(GL_RENDERBUFFER, pout->depth);
+  glGenRenderbuffers(1, &output->depth);
+  glBindRenderbuffer(GL_RENDERBUFFER, output->depth);
 
   glRenderbufferStorage(GL_RENDERBUFFER,
                         GL_DEPTH_COMPONENT24,
@@ -98,7 +98,7 @@ gkPassEnableDepth(GkScene *scene,
   glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                             GL_DEPTH_ATTACHMENT,
                             GL_RENDERBUFFER,
-                            pout->depth);
+                            output->depth);
 }
 
 GK_EXPORT
@@ -106,20 +106,20 @@ void
 gkPassEnableDepthTex(GkScene *scene,
                      GkPass  *pass,
                      GkSize   size) {
-  GkPassOut *pout, *currentOutput;
+  GkOutput *output, *currentOutput;
 
-  if (!(pout = pass->output))
-    pass->output = pout = gkAllocPassOut();
+  if (!(output = pass->output))
+    pass->output = output = gkAllocOutput();
 
-  if (pout->depth != 0)
+  if (output->depth != 0)
     return;
 
   currentOutput = gkCurrentOutput(gkContextOf(scene));
-  if (currentOutput != pout)
-    gkBindPassOut(scene, pout);
+  if (currentOutput != output)
+    gkBindOutput(scene, output);
 
-  glGenTextures(1, &pout->depth);
-  glBindTexture(GL_TEXTURE_2D, pout->depth);
+  glGenTextures(1, &output->depth);
+  glBindTexture(GL_TEXTURE_2D, output->depth);
 
   glTexImage2D(GL_TEXTURE_2D,
                0,
@@ -144,31 +144,31 @@ gkPassEnableDepthTex(GkScene *scene,
   glFramebufferTexture2D(GL_FRAMEBUFFER,
                          GL_DEPTH_ATTACHMENT,
                          GL_TEXTURE_2D,
-                         pout->depth,
+                         output->depth,
                          0);
 
-  if (currentOutput != pout)
-    gkBindPassOut(scene, currentOutput);
+  if (currentOutput != output)
+    gkBindOutput(scene, currentOutput);
 }
 
 GK_EXPORT
 void
 gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass, float size) {
-  GkPassOut *pout, *currentOutput;
-  int        i;
+  GkOutput *output, *currentOutput;
+  int       i;
 
-  if (!(pout = pass->output))
-    pass->output = pout = gkAllocPassOut();
+  if (!(output = pass->output))
+    pass->output = output = gkAllocOutput();
 
-  if (pout->depth != 0)
+  if (output->depth != 0)
     return;
 
   currentOutput = gkCurrentOutput(gkContextOf(scene));
-  if (currentOutput != pout)
-    gkBindPassOut(scene, pout);
+  if (currentOutput != output)
+    gkBindOutput(scene, output);
 
-  glGenTextures(1, &pout->depth);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, pout->depth);
+  glGenTextures(1, &output->depth);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, output->depth);
 
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -191,27 +191,27 @@ gkPassEnableDepthCubeTex(GkScene *scene, GkPass *pass, float size) {
                  GL_FLOAT,
                  NULL);
 
-  if (currentOutput != pout)
-    gkBindPassOut(scene, currentOutput);
+  if (currentOutput != output)
+    gkBindOutput(scene, currentOutput);
 }
 
 GK_EXPORT
 void
 gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len) {
-  GkPassOut *pout, *currentOutput;
+  GkOutput *output, *currentOutput;
 
-  if (!(pout = pass->output))
-    pass->output = pout = gkAllocPassOut();
+  if (!(output = pass->output))
+    pass->output = output = gkAllocOutput();
 
-  if (pout->depth != 0)
+  if (output->depth != 0)
     return;
 
   currentOutput = gkCurrentOutput(gkContextOf(scene));
-  if (currentOutput != pout)
-    gkBindPassOut(scene, pout);
+  if (currentOutput != output)
+    gkBindOutput(scene, output);
 
-  glGenTextures(1, &pout->depth);
-  glBindTexture(GL_TEXTURE_2D_ARRAY, pout->depth);
+  glGenTextures(1, &output->depth);
+  glBindTexture(GL_TEXTURE_2D_ARRAY, output->depth);
 
   glTexImage3D(GL_TEXTURE_2D_ARRAY,
                0,
@@ -235,21 +235,21 @@ gkPassEnableDepthTexArray(GkScene *scene, GkPass *pass, GLsizei len) {
 
   glFramebufferTextureLayer(GL_FRAMEBUFFER,
                             GL_DEPTH_ATTACHMENT,
-                            pout->depth,
+                            output->depth,
                             0,
                             0);
 
-  if (currentOutput != pout)
-    gkBindPassOut(scene, currentOutput);
+  if (currentOutput != output)
+    gkBindOutput(scene, currentOutput);
 }
 
 GK_EXPORT
-GkPassOutColor*
+GkColorOutput*
 gkGetRenderTarget(GkPass *pass, int32_t index) {
-  GkPassOut      *pout;
-  GkPassOutColor *poc;
+  GkOutput      *output;
+  GkColorOutput *poc;
 
-  if (!(pout = pass->output) || !(poc = pout->color))
+  if (!(output = pass->output) || !(poc = output->color))
     return NULL;
 
   while (index > 0) {
@@ -262,7 +262,7 @@ gkGetRenderTarget(GkPass *pass, int32_t index) {
 
 GK_EXPORT
 void
-gkBindRenderTargetToTexUnit(GkPassOutColor *rt, int32_t texUnit) {
+gkBindRenderTargetToTexUnit(GkColorOutput *rt, int32_t texUnit) {
   glActiveTexture(GL_TEXTURE0 + texUnit);
   glBindTexture(GL_TEXTURE_2D, rt->buffId);
 }
@@ -346,13 +346,13 @@ gkAddRenderTargetRBEx(GkScene *scene,
                       GLenum   internalFormat,
                       GLsizei  width,
                       GLsizei  height) {
-  GkPassOutColor *poc, *last_poc;
-  GkPassOut      *pout, *currentOutput;
-  GLenum         *drawBuffs;
-  int32_t         i;
+  GkColorOutput *poc, *last_poc;
+  GkOutput      *output, *currentOutput;
+  GLenum        *drawBuffs;
+  int32_t        i;
 
-  if (!(pout = pass->output))
-    pass->output = pout = gkAllocPassOut();
+  if (!(output = pass->output))
+    pass->output = output = gkAllocOutput();
 
   /* TODO:
    GLint maxAttach = 0;
@@ -361,17 +361,17 @@ gkAddRenderTargetRBEx(GkScene *scene,
    do this when context initilized
    */
 
-  if (pout->colorCount >= 15) {
+  if (output->colorCount >= 15) {
     /* TODO: log and raise warning/errors */
     return 0;
   }
 
-  last_poc = pout->color;
+  last_poc = output->color;
   poc = calloc(1, sizeof(*poc));
 
   currentOutput = gkCurrentOutput(gkContextOf(scene));
-  if (currentOutput != pout)
-    gkBindPassOut(scene, pout);
+  if (currentOutput != output)
+    gkBindOutput(scene, output);
 
   glGenRenderbuffers(1, &poc->buffId);
   glBindRenderbuffer(GL_RENDERBUFFER, poc->buffId);
@@ -381,20 +381,20 @@ gkAddRenderTargetRBEx(GkScene *scene,
                         width,
                         height);
 
-  poc->attachment = GL_COLOR_ATTACHMENT0 + pout->colorCount;
+  poc->attachment = GL_COLOR_ATTACHMENT0 + output->colorCount;
 
   glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                             poc->attachment,
                             GL_RENDERBUFFER,
                             poc->buffId);
 
-  poc->drawIndex = pout->colorCount++;
+  poc->drawIndex = output->colorCount++;
 
-  drawBuffs = malloc(sizeof(GLenum) * pout->colorCount);
-  for (i = 0; i < pout->colorCount; i++)
+  drawBuffs = malloc(sizeof(GLenum) * output->colorCount);
+  for (i = 0; i < output->colorCount; i++)
     drawBuffs[i] = GL_COLOR_ATTACHMENT0 + i;
 
-  glDrawBuffers(pout->colorCount, drawBuffs);
+  glDrawBuffers(output->colorCount, drawBuffs);
   free(drawBuffs);
 
   if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -408,13 +408,13 @@ gkAddRenderTargetRBEx(GkScene *scene,
 
     last_poc->next = poc;
   } else {
-    pout->color = poc;
+    output->color = poc;
   }
 
-  if (currentOutput != pout)
-    gkBindPassOut(scene, currentOutput);
+  if (currentOutput != output)
+    gkBindOutput(scene, currentOutput);
 
-  return pout->colorCount - 1;
+  return output->colorCount - 1;
 }
 
 GK_EXPORT
@@ -426,13 +426,13 @@ gkAddRenderTargetEx(GkScene *scene,
                     GLsizei  width,
                     GLsizei  height,
                     GLenum   type) {
-  GkPassOutColor *poc, *last_poc;
-  GkPassOut      *pout, *currentOutput;
-  GLenum         *drawBuffs;
-  int32_t         i;
+  GkColorOutput *poc, *last_poc;
+  GkOutput      *output, *currentOutput;
+  GLenum        *drawBuffs;
+  int32_t        i;
 
-  if (!(pout = pass->output))
-    pass->output = pout = gkAllocPassOut();
+  if (!(output = pass->output))
+    pass->output = output = gkAllocOutput();
 
   /* TODO:
        GLint maxAttach = 0;
@@ -441,17 +441,17 @@ gkAddRenderTargetEx(GkScene *scene,
        do this when context initilized
    */
 
-  if (pout->colorCount >= 15) {
+  if (output->colorCount >= 15) {
     /* TODO: log and raise warning/errors */
     return 0;
   }
 
-  last_poc = pout->color;
+  last_poc = output->color;
   poc = calloc(1, sizeof(*poc));
 
   currentOutput = gkCurrentOutput(gkContextOf(scene));
-  if (currentOutput != pout)
-    gkBindPassOut(scene, pout);
+  if (currentOutput != output)
+    gkBindOutput(scene, output);
 
   glGenTextures(1, &poc->buffId);
   glBindTexture(GL_TEXTURE_2D, poc->buffId);
@@ -464,7 +464,7 @@ gkAddRenderTargetEx(GkScene *scene,
   glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height);
 
 
-  poc->attachment = GL_COLOR_ATTACHMENT0 + pout->colorCount;
+  poc->attachment = GL_COLOR_ATTACHMENT0 + output->colorCount;
 
   glFramebufferTexture2D(GL_FRAMEBUFFER,
                          poc->attachment,
@@ -472,13 +472,13 @@ gkAddRenderTargetEx(GkScene *scene,
                          poc->buffId,
                          0);
 
-  poc->drawIndex = pout->colorCount++;
+  poc->drawIndex = output->colorCount++;
 
-  drawBuffs = malloc(sizeof(GLenum) * pout->colorCount);
-  for (i = 0; i < pout->colorCount; i++)
+  drawBuffs = malloc(sizeof(GLenum) * output->colorCount);
+  for (i = 0; i < output->colorCount; i++)
     drawBuffs[i] = GL_COLOR_ATTACHMENT0 + i;
 
-  glDrawBuffers(pout->colorCount, drawBuffs);
+  glDrawBuffers(output->colorCount, drawBuffs);
   free(drawBuffs);
 
   if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -492,11 +492,11 @@ gkAddRenderTargetEx(GkScene *scene,
 
     last_poc->next = poc;
   } else {
-    pout->color = poc;
+    output->color = poc;
   }
 
-  if (currentOutput != pout)
-    gkBindPassOut(scene, currentOutput);
+  if (currentOutput != output)
+    gkBindOutput(scene, currentOutput);
 
-  return pout->colorCount - 1;
+  return output->colorCount - 1;
 }

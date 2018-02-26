@@ -84,7 +84,7 @@ gkRenderScene(GkScene * scene) {
   if (!GK_FLG(scene->flags, GK_SCENEF_PREPARED))
     gkPrepareScene(scene);
 
-  gkBindPassOut(scene, scene->finalOutput);
+  gkBindOutput(scene, scene->finalOutput);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   /* todo: use frustum culler here */
