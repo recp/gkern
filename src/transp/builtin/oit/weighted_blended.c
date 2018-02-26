@@ -10,6 +10,7 @@
 #include "../../../render/realtime/rn_prim.h"
 #include "../../../render/realtime/rn_texture.h"
 #include "../../../shader/builtin_shader.h"
+#include "../../../state/gpu.h"
 #include "weighted_blended.h"
 
 GkClearOp GK__TRANS_WEIGBL_ACCUM_CLEAR = {
@@ -86,12 +87,14 @@ gkTranspWeightedBlendedInit(GkScene * __restrict scene) {
 
 void
 gkTranspWeightedBlended(GkScene * __restrict scene) {
+  GkContext               *ctx;
   GkSceneImpl             *sceneImpl;
   GkTranspWeightedBlended *transp;
   GkPass                  *tpass;
   GkFrustum               *frustum;
   GkProgram               *composProg;
 
+  ctx        = gkContextOf(scene);
   sceneImpl  = (GkSceneImpl *)scene;
   frustum    = &scene->camera->frustum;
 
@@ -103,7 +106,12 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   tpass      = transp->transpPass;
   composProg = transp->composProg;
 
+  gkPushState(ctx);
+
   /* opaque pass */
+  gkEnableDepthTest(ctx);
+  gkEnableCullFace(ctx); /* TODO: add option for this */
+
   gkBindPassOut(scene, transp->opaquePass->output);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gkRenderPrims(scene, frustum->opaque);
@@ -112,13 +120,12 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   sceneImpl->transpPass = true;
   gkBindPassOut(scene, tpass->output);
 
-  /* TODO: add to state manager */
-  glDepthMask(GL_FALSE);
-  glEnable(GL_BLEND);
-  glEnable(GL_CULL_FACE);
+  gkDepthMask(ctx, GL_FALSE);
+  gkEnableBlend(ctx);
+  gkEnableCullFace(ctx); /* TODO: add option for this */
 
-  glBlendFunci(0, GL_ONE,  GL_ONE);
-  glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+  gkBlendFunci(ctx, 0, GL_ONE,  GL_ONE);
+  gkBlendFunci(ctx, 1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 
   gkClearColors(tpass->output);
   gkRenderPrims(scene, frustum->transp);
@@ -128,22 +135,13 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   /* compositing pass */
   gkBlit(scene, transp->opaquePass->output, scene->finalOutput, 0);
   gkBindPassOut(scene, scene->finalOutput);
+  gkDisableDepthTest(ctx);
+  gkBlendFunc(ctx, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
 
-  gkUseProgram(gkContextOf(scene), transp->composProg);
+  gkUseProgram(ctx, transp->composProg);
   gkBindRenderTargetTo(scene, tpass, 0, composProg, 0, "uAccum");
   gkBindRenderTargetTo(scene, tpass, 1, composProg, 1, "uReveal");
-
-  glEnable(GL_BLEND);
-  glDisable(GL_DEPTH_TEST);
-
-  glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
   gkRenderBuiltinPrim(scene, GK_PRIM_TEXQUAD);
 
-  /* TODO: add to state manager */
-  glDepthMask(GL_TRUE);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-  glDepthFunc(GL_LESS);
-  glDrawBuffer(GL_BACK);
-  glDisable(GL_BLEND);
+  gkPopState(ctx);
 }
