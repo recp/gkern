@@ -64,6 +64,34 @@ gkBlendFunc(GkContext * __restrict ctx, GLenum src, GLenum dst) {
 
 GK_EXPORT
 void
+gkEnableBlendi(GkContext * __restrict ctx, GLuint buf) {
+  GkBlendState *state;
+
+  state = gkGetOrCreatStatei(ctx, buf, GK_GPUSTATE_BLEND);
+  if (state->blend)
+    return;
+
+  state->blend = true;
+
+  glEnablei(GL_BLEND, buf);
+}
+
+GK_EXPORT
+void
+gkDisableBlendi(GkContext * __restrict ctx, GLuint buf) {
+  GkBlendState *state;
+
+  state = gkGetOrCreatStatei(ctx, buf, GK_GPUSTATE_BLEND);
+  if (!state->blend)
+    return;
+
+  state->blend = false;
+
+  glDisablei(GL_BLEND, buf);
+}
+
+GK_EXPORT
+void
 gkBlendFunci(GkContext * __restrict ctx,
              GLint                  buf,
              GLenum                 src,
