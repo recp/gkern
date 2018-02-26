@@ -29,7 +29,7 @@ gkSetupBasicShadowMap(GkScene * __restrict scene,
   pass = calloc(1, sizeof(*sm->pass));
 
   pass->prog        = gkBuiltinProg(GK_BUILTIN_PROG_SHADOWMAP);
-  pass->output      = gkAllocPassOut();
+  pass->output      = gkAllocOutput();
   pass->noMaterials = true;
   pass->noLights    = true;
   sm->pass          = pass;
@@ -37,7 +37,7 @@ gkSetupBasicShadowMap(GkScene * __restrict scene,
   sm->viewProj     = malloc(sizeof(mat4));
   sm->splitc       = 1;
 
-  gkBindPassOut(scene, pass->output);
+  gkBindOutput(scene, pass->output);
 
   if (light->type != GK_LIGHT_TYPE_POINT) {
     /* TODO: optimize it */
@@ -62,7 +62,7 @@ gkSetupBasicShadowMap(GkScene * __restrict scene,
     printf("error: framebuff couldn't be created");
   }
 
-  gkBindPassOut(scene, scene->finalOutput);
+  gkBindOutput(scene, scene->finalOutput);
 
   return sm;
 }
@@ -90,7 +90,7 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
   sm->currLight = light;
 
   gkPushState(ctx);
-  gkBindPassOut(scene, sm->pass->output);
+  gkBindOutput(scene, sm->pass->output);
 
   gkEnableDepthTest(ctx);
   gkUseProgram(ctx, prog);

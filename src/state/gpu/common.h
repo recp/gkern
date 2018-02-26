@@ -70,7 +70,7 @@ typedef struct GkFramebuffState {
 
 typedef struct GkRenderOutState {
   GkStateBase base;
-  GkPassOut  *renderOutput;
+  GkOutput   *renderOutput;
 } GkOutputState;
 
 typedef struct GkStatesItem {

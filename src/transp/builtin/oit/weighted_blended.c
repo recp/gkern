@@ -46,7 +46,7 @@ gkTranspWeightedBlendedInit(GkScene * __restrict scene) {
   GkSceneImpl             *sceneImpl;
   GkTranspWeightedBlended *transp;
   GkPass                  *opaquePass, *transpPass;
-  GkPassOutColor          *accum, *revealage;
+  GkColorOutput           *accum, *revealage;
 
   sceneImpl          = (GkSceneImpl *)scene;
   sceneImpl->transp  = transp = calloc(1, sizeof(*transp));
@@ -54,13 +54,13 @@ gkTranspWeightedBlendedInit(GkScene * __restrict scene) {
 
   /* opaque pass */
   transp->opaquePass = opaquePass = gkAllocPass();
-  gkBindPassOut(scene, opaquePass->output);
+  gkBindOutput(scene, opaquePass->output);
   gkPassEnableDepth(scene, opaquePass);
   gkAddRenderTarget(scene, opaquePass, GL_RGBA32F, GL_RGBA, GL_FLOAT);
 
   /* transparency pass */
   transp->transpPass = transpPass = gkAllocPass();
-  gkBindPassOut(scene, transpPass->output);
+  gkBindOutput(scene, transpPass->output);
 
   /* use opaque's depth */
   glFramebufferRenderbuffer(GL_FRAMEBUFFER,
@@ -112,13 +112,13 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   gkEnableDepthTest(ctx);
   gkEnableCullFace(ctx); /* TODO: add option for this */
 
-  gkBindPassOut(scene, transp->opaquePass->output);
+  gkBindOutput(scene, transp->opaquePass->output);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gkRenderPrims(scene, frustum->opaque);
 
   /* transparent pass */
   sceneImpl->transpPass = true;
-  gkBindPassOut(scene, tpass->output);
+  gkBindOutput(scene, tpass->output);
 
   gkDepthMask(ctx, GL_FALSE);
   gkEnableBlend(ctx);
@@ -134,7 +134,7 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
 
   /* compositing pass */
   gkBlit(scene, transp->opaquePass->output, scene->finalOutput, 0);
-  gkBindPassOut(scene, scene->finalOutput);
+  gkBindOutput(scene, scene->finalOutput);
   gkDisableDepthTest(ctx);
   gkBlendFunc(ctx, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
 

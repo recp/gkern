@@ -29,7 +29,7 @@ gkSetupShadowMapCSM(GkScene * __restrict scene,
   pass = calloc(1, sizeof(*pass));
 
   pass->prog        = gkBuiltinProg(GK_BUILTIN_PROG_SHADOWMAP);
-  pass->output      = gkAllocPassOut();
+  pass->output      = gkAllocOutput();
   pass->noMaterials = true;
   pass->noLights    = true;
   sm->pass          = pass;
@@ -39,7 +39,7 @@ gkSetupShadowMapCSM(GkScene * __restrict scene,
   sm->distances     = malloc(sizeof(float) * splitc);
   sm->viewProj      = malloc(sizeof(mat4)  * splitc);
 
-  gkBindPassOut(scene, pass->output);
+  gkBindOutput(scene, pass->output);
   gkPassEnableDepthTexArray(scene, pass, splitc);
 
   glDrawBuffer(GL_NONE);
@@ -51,7 +51,7 @@ gkSetupShadowMapCSM(GkScene * __restrict scene,
     printf("error: framebuff couldn't be created");
   }
 
-  gkBindPassOut(scene, scene->finalOutput);
+  gkBindOutput(scene, scene->finalOutput);
 
   return sm;
 }
@@ -84,7 +84,7 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   sm->currLight = light;
 
   gkPushState(ctx);
-  gkBindPassOut(scene, sm->pass->output);
+  gkBindOutput(scene, sm->pass->output);
 
   gkUseProgram(ctx, prog);
   gkEnableDepthTest(ctx);

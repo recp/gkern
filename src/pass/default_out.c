@@ -10,7 +10,7 @@
 #include "../../include/gk/pass.h"
 #include "../../include/gk/scene.h"
 
-GkPassOut gk_def_renderout = {
+GkOutput gk_def_renderout = {
   .fbo        = 0,
   .depth      = 0,
   .stencil    = 0,
@@ -19,7 +19,7 @@ GkPassOut gk_def_renderout = {
 };
 
 GK_EXPORT
-GkPassOut*
+GkOutput*
 gkDefaultRenderOut(void) {
   return &gk_def_renderout;
 }

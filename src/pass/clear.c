@@ -10,25 +10,25 @@
 
 GK_EXPORT
 void
-gkClearColor(GkPassOutColor *poutColor) {
-  if (poutColor->clear->color) {
+gkClearColor(GkColorOutput *colorOutput) {
+  if (colorOutput->clear->color) {
     glClearBufferfv(GL_COLOR,
-                    poutColor->drawIndex,
-                   *poutColor->clear->color);
+                    colorOutput->drawIndex,
+                   *colorOutput->clear->color);
     return;
   }
 
   /* TODO: add this to state manager */
-  glClearBufferfv(GL_COLOR, poutColor->drawIndex, GLM_VEC4_ZERO);
+  glClearBufferfv(GL_COLOR, colorOutput->drawIndex, GLM_VEC4_ZERO);
 }
 
 GK_EXPORT
 void
-gkClearColorAt(GkPassOut *pout, int32_t buffIndex) {
-  GkPassOutColor *color;
-  int32_t         i;
+gkClearColorAt(GkOutput *output, int32_t buffIndex) {
+  GkColorOutput *color;
+  int32_t        i;
 
-  color = pout->color;
+  color = output->color;
   for (i = 0; i < buffIndex && color; i++)
     color = color->next;
 
@@ -38,10 +38,10 @@ gkClearColorAt(GkPassOut *pout, int32_t buffIndex) {
 
 GK_EXPORT
 void
-gkClearColors(GkPassOut *pout) {
-  GkPassOutColor *color;
+gkClearColors(GkOutput *output) {
+  GkColorOutput *color;
 
-  color = pout->color;
+  color = output->color;
   while (color) {
     gkClearColor(color);
     color = color->next;

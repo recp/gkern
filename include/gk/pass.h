@@ -35,29 +35,30 @@ typedef struct GkBlendOp {
 } GkBlendOp;
 
 /* GL_COLOR_ATTACHMENT[n] */
-typedef struct GkPassOutColor {
-  GLuint                 buffId;
-  GLsizei                width;
-  GLsizei                height;
-  GLenum                 attachment;
-  GLenum                 drawIndex;
-  GkClearOp             *clear;
-  GkBlendOp             *blend;
-  struct GkPassOutColor *next;
-} GkPassOutColor;
+typedef struct GkColorOutput {
+  GLuint                buffId;
+  GLsizei               width;
+  GLsizei               height;
+  GLenum                attachment;
+  GLenum                drawIndex;
+  GkClearOp            *clear;
+  GkBlendOp            *blend;
+  struct GkColorOutput *next;
+} GkColorOutput;
 
-typedef struct GkPassOut {
-  GLuint          fbo;
-  GLuint          depth;   /* GL_DEPTH_ATTACHMENT   */
-  GLuint          stencil; /* GL_STENCIL_ATTACHMENT */
-  GkPassOutColor *color;   /* GL_COLOR_ATTACHMENT0  */
-  uint32_t        colorCount;
-} GkPassOut;
+typedef struct GkOutput {
+  GLuint         fbo;
+  GLuint         depth;   /* GL_DEPTH_ATTACHMENT   */
+  GLuint         stencil; /* GL_STENCIL_ATTACHMENT */
+  GkColorOutput *color;   /* GL_COLOR_ATTACHMENT0  */
+  uint32_t       colorCount;
+  bool           cleared;
+} GkOutput;
 
 typedef struct GkPass {
   GkProgram     *prog;
   FListItem     *states;
-  GkPassOut     *output;
+  GkOutput      *output;
   struct GkPass *inPasses;
   struct GkPass *outPass;
   struct GkPass *next;
@@ -66,11 +67,11 @@ typedef struct GkPass {
 } GkPass;
 
 GK_EXPORT
-GkPassOut*
+GkOutput*
 gkDefaultRenderOut(void);
 
 GK_EXPORT
-GkPassOut*
+GkOutput*
 gkCurrentOutput(struct GkContext * __restrict ctx);
 
 GK_EXPORT
@@ -85,17 +86,17 @@ GkPass*
 gkAllocPass(void);
 
 GK_EXPORT
-GkPassOut*
-gkAllocPassOut(void);
+GkOutput*
+gkAllocOutput(void);
 
 GK_EXPORT
 void
-gkBindPassOut(struct GkScene *scene,
-              GkPassOut      *pout);
+gkBindOutput(struct GkScene *scene,
+              GkOutput       *output);
 
 GK_EXPORT
 void
-gkBindDefaultPassOut(struct GkScene *scene);
+gkBindDefaultOutput(struct GkScene *scene);
 
 GK_EXPORT
 void
@@ -117,12 +118,12 @@ void
 gkPassEnableDepthCubeTex(struct GkScene *scene, GkPass *pass, float size);
 
 GK_EXPORT
-GkPassOutColor*
+GkColorOutput*
 gkGetRenderTarget(GkPass *rt, int32_t index);
 
 GK_EXPORT
 void
-gkBindRenderTargetToTexUnit(GkPassOutColor *rt, int32_t texUnit);
+gkBindRenderTargetToTexUnit(GkColorOutput *rt, int32_t texUnit);
 
 GK_EXPORT
 void
@@ -182,14 +183,14 @@ gkAddRenderTargetRBEx(struct GkScene *scene,
 
 GK_EXPORT
 void
-gkClearColor(GkPassOutColor *poutColor);
+gkClearColor(GkColorOutput *colorOutput);
 
 GK_EXPORT
 void
-gkClearColorAt(GkPassOut *pout, int32_t buffIndex);
+gkClearColorAt(GkOutput *output, int32_t buffIndex);
 
 GK_EXPORT
 void
-gkClearColors(GkPassOut *pout);
+gkClearColors(GkOutput *output);
 
 #endif /* gk_pass_h */

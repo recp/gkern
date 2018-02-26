@@ -14,8 +14,8 @@
 #include "../state/gpu.h"
 
 void
-gkRenderShadowMapTo(GkScene   * __restrict scene,
-                    GkPassOut * __restrict output) {
+gkRenderShadowMapTo(GkScene  * __restrict scene,
+                    GkOutput * __restrict output) {
   GkContext   *ctx;
   GkSceneImpl *sceneImpl;
   GkShadowMap *sm;
@@ -32,7 +32,7 @@ gkRenderShadowMapTo(GkScene   * __restrict scene,
   ctx = gkContextOf(scene);
 
   gkPushState(ctx);
-  gkBindPassOut(scene, output);
+  gkBindOutput(scene, output);
 
   texUnit   = (int32_t)ctx->samplers->count;
   depthProg = gkBuiltinProg(GK_BUILTIN_PROG_DEPTH);

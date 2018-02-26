@@ -28,10 +28,10 @@ gkRenderTexture(GkScene * __restrict scene, GkPass * __restrict pass) {
 }
 
 void
-gkBlit(GkScene   * __restrict scene,
-       GkPassOut * __restrict src,
-       GkPassOut * __restrict dst,
-       int32_t                colorIndex) {
+gkBlit(GkScene  * __restrict scene,
+       GkOutput * __restrict src,
+       GkOutput * __restrict dst,
+       int32_t               colorIndex) {
   float w, h;
 
   w = scene->vrect.size.w * scene->backingScale;

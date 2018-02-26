@@ -11,7 +11,7 @@
 #include "common.h"
 
 struct GkScene;
-struct GkPassOut;
+struct GkOutput;
 
 /* Shadow technique type */
 
@@ -41,7 +41,7 @@ void
 gkSetShadowSplit(uint32_t splitCount);
 
 void
-gkRenderShadowMapTo(GkScene          * __restrict scene,
-                    struct GkPassOut * __restrict output);
+gkRenderShadowMapTo(GkScene         * __restrict scene,
+                    struct GkOutput * __restrict output);
 
 #endif /* transparency_h */

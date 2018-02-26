@@ -14,7 +14,7 @@ extern "C" {
 #include "common.h"
 #include "renderpath.h"
 
-struct GkPassOut;
+struct GkOutput;
 struct FListItem;
 struct GkScene;
 struct GkLight;
@@ -55,7 +55,7 @@ typedef struct GkScene {
   struct GkNode     *rootNode;
   struct GkLightRef *lights;
   struct GkBBox     *bbox;
-  struct GkPassOut  *finalOutput; /* set NULL for default FBO (screen) */
+  struct GkOutput   *finalOutput; /* set NULL for default FBO (screen) */
   GkRenderPrimFunc   renderPrimFunc;
   GkRect             vrect;
   uint32_t           lightCount;
