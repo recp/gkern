@@ -23,7 +23,7 @@ gkEnableBlend(GkContext * __restrict ctx) {
 
 GK_EXPORT
 void
-gkDisabeBlend(GkContext * __restrict ctx) {
+gkDisableBlend(GkContext * __restrict ctx) {
   GkBlendState *state;
 
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_BLEND);

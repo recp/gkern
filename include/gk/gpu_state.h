@@ -57,6 +57,10 @@ gkEnableBlend(GkContext * __restrict ctx);
 
 GK_EXPORT
 void
+gkDisableBlend(GkContext * __restrict ctx);
+
+GK_EXPORT
+void
 gkBlendFunc(GkContext * __restrict ctx, GLenum src, GLenum dst);
 
 GK_EXPORT
@@ -80,10 +84,6 @@ gkSrcBuff(GkContext * __restrict ctx, GLenum buff);
 GK_EXPORT
 void
 gkDstBuff(GkContext * __restrict ctx, GLenum buff);
-
-GK_EXPORT
-void
-gkDisabeBlend(GkContext * __restrict ctx);
 
 GK_EXPORT
 void

@@ -18,7 +18,7 @@ typedef enum GkGPUStateType {
   GK_GPUSTATE_DEPTH      = 1,
   GK_GPUSTATE_BLEND      = 2,
   GK_GPUSTATE_TEXTURE    = 3,
-  GK_GPUSTATE_OUTPUT = 4,
+  GK_GPUSTATE_OUTPUT     = 4,
   GK_GPUSTATE_CULLFACE   = 5,
   GK_GPUSTATE_FRAME      = 6,
 
