@@ -30,9 +30,16 @@ typedef struct GkClearOp {
 
 typedef struct GkBlendOp {
   bool     enabled;
+  bool     separate;
   GLenum   src;
   GLenum   dst;
 } GkBlendOp;
+
+typedef struct GkDepthTest {
+  bool        enabled;
+  GLenum      func;
+  GLboolean   mask;
+} GkDepthTest;
 
 /* GL_COLOR_ATTACHMENT[n] */
 typedef struct GkColorOutput {
@@ -51,6 +58,8 @@ typedef struct GkOutput {
   GLuint         depth;   /* GL_DEPTH_ATTACHMENT   */
   GLuint         stencil; /* GL_STENCIL_ATTACHMENT */
   GkColorOutput *color;   /* GL_COLOR_ATTACHMENT0  */
+  GkClearOp     *clear;
+  GkBlendOp     *blend;
   uint32_t       colorCount;
   bool           cleared;
 } GkOutput;
@@ -62,6 +71,9 @@ typedef struct GkPass {
   struct GkPass *inPasses;
   struct GkPass *outPass;
   struct GkPass *next;
+  GkClearOp     *clear;
+  GkBlendOp     *blend;
+  GkDepthTest   *depthTest;
   bool           noLights;
   bool           noMaterials;
 } GkPass;
@@ -80,6 +92,11 @@ gkGetOrCreatPass(struct GkScene     *scene,
                  struct GkLight     *light,
                  struct GkPrimitive *prim,
                  GkMaterial         *mat);
+
+GK_EXPORT
+void
+gkBindPass(struct GkScene * __restrict scene,
+           GkPass         * __restrict pass);
 
 GK_EXPORT
 GkPass*
