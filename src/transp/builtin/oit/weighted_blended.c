@@ -37,7 +37,7 @@ GkBlendOp GK__TRANS_WEIGBL_ACCUM_BLEND = {
 
 GkBlendOp GK__TRANS_WEIGBL_REVEALAGE_BLEND = {
   .enabled    = true,
-  .src        = GL_ONE,
+  .src        = GL_ZERO,
   .dst        = GL_ONE_MINUS_SRC_COLOR
 };
 
