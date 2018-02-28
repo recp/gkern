@@ -291,18 +291,11 @@ gkApplyView(struct GkScene * __restrict scene,
       node = &np->nodes[i];
 
       /* unallocated node */
-      if (!(node->flags & GK_NODEF_NODE)
-          || !(modelInst = node->model))
+      if (!(node->flags & GK_NODEF_NODE))
         continue;
 
-      while (modelInst) {
-        if (modelInst->trans->flags & GK_TRANSF_CALC_VIEW) {
-          gkCalcFinalTransf(scene, cam, modelInst->trans);
-          modelInst->trans->flags &= ~GK_TRANSF_CALC_VIEW;
-        }
-
-        modelInst = modelInst->next;
-      }
+      if (node->model || node->light)
+        gkPrepareView(scene, node);
     }
 
     np = np->next;
