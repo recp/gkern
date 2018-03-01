@@ -1,4 +1,4 @@
-# 🎥 libgk - Graphics Kernel
+# 🎥 Graphics Kernel ( Render Engine )
 
 Basically this is a rendering library/kernel. The main purpose was render [AssetKit](https://github.com/recp/assetkit) content. Then it became general purpose rendering library. You can also call this "Graphics Kit".
 
