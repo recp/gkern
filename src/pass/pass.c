@@ -13,6 +13,7 @@
 #include "../../include/gk/program.h"
 
 #include "../shader/cmn_material.h"
+#include "../state/gpu.h"
 
 #include <ds/rb.h>
 
