@@ -24,7 +24,7 @@ gkIsTransparent(GkScene    * __restrict scene,
                 GkMaterial * __restrict mat) {
   GkColor *color;
 
-  if (!mat->transparent)
+  if (!(scene->flags & GK_SCENEF_TRANSP) || !mat->transparent)
     return false;
 
   color = NULL;
