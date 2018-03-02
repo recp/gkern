@@ -56,7 +56,7 @@ gkTranspWeightedBlendedInit(GkScene * __restrict scene) {
   transp->opaquePass = opaquePass = gkAllocPass();
   gkBindOutput(scene, opaquePass->output);
   gkPassEnableDepth(scene, opaquePass);
-  gkAddRenderTarget(scene, opaquePass, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+  gkAddRenderTarget(scene, opaquePass, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
 
   /* transparency pass */
   transp->transpPass = transpPass = gkAllocPass();
@@ -93,6 +93,7 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   GkPass                  *tpass;
   GkFrustum               *frustum;
   GkProgram               *composProg;
+  GkLight                 *light, *firstLight;
 
   ctx        = gkContextOf(scene);
   sceneImpl  = (GkSceneImpl *)scene;
@@ -114,12 +115,29 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
 
   gkBindOutput(scene, transp->opaquePass->output);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  gkRenderPrims(scene, frustum->opaque);
+  gkDepthFunc(ctx, GL_LESS);
+  gkDisableBlend(ctx);
+
+  light      = (GkLight *)sceneImpl->pub.lights;
+  firstLight = light;
+
+  do {
+    sceneImpl->forLight = light;
+    if (light != firstLight) {
+      gkDepthFunc(ctx, GL_EQUAL);
+      gkEnableBlend(ctx);
+      gkBlendEq(ctx, GL_FUNC_ADD);
+      gkBlendFunc(ctx, GL_ONE, GL_ONE);
+    }
+
+    gkRenderPrims(scene, frustum->opaque);
+  } while ((light = (GkLight *)light->ref.next));
 
   /* transparent pass */
   sceneImpl->transpPass = true;
   gkBindOutput(scene, tpass->output);
 
+  gkDepthFunc(ctx, GL_LESS);
   gkDepthMask(ctx, GL_FALSE);
   gkEnableBlend(ctx);
   gkEnableCullFace(ctx); /* TODO: add option for this */
@@ -128,13 +146,26 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   gkBlendFunci(ctx, 1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 
   gkClearColors(tpass->output);
-  gkRenderPrims(scene, frustum->transp);
+
+  light      = (GkLight *)sceneImpl->pub.lights;
+  firstLight = light;
+
+  do {
+    sceneImpl->forLight = light;
+    if (light != firstLight) {
+      glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+      glDisablei(GL_BLEND, 1);
+    }
+
+    gkRenderPrims(scene, frustum->transp);
+  } while ((light = (GkLight *)light->ref.next));
+
+  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
   sceneImpl->transpPass = false;
 
   /* compositing pass */
-  gkBlit(scene, transp->opaquePass->output, scene->finalOutput, 0);
-  gkBindOutput(scene, scene->finalOutput);
+  gkBindOutput(scene, transp->opaquePass->output);
   gkDisableDepthTest(ctx);
   gkBlendFunc(ctx, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
 
@@ -144,4 +175,6 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   gkRenderBuiltinPrim(scene, GK_PRIM_TEXQUAD);
 
   gkPopState(ctx);
+
+  gkRenderTexture(scene, transp->opaquePass);
 }

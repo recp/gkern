@@ -31,7 +31,11 @@ void main() {
       return;
   }
 
-  lightc = light.color * a;
+\n#ifdef TRANSP\n
+   lightAttn = a;
+\n#endif\n
+
+  lightc = vec4(light.color.rgb, 1.0) * a;
 
 \n#ifndef TRANSP\n
   H  = normalize(L + vEye);

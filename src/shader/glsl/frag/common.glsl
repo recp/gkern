@@ -109,6 +109,9 @@ uniform float     uShininess;
 out vec4 fragColor;
 \n#endif\n
 
+\n#ifdef TRANSP\n
+float lightAttn;
+\n#endif\n
 )
 
 #include "transp.glsl"
@@ -119,7 +122,7 @@ void
 write(vec4 clr) {
 \n#ifdef TRANSP\n
 \n#ifdef TRANSP_WBL\n
-  transpWrite(clamp(clr, 0, 1));
+  transpWrite(clamp(clr, 0.0, 1.0));
   return;
 \n#endif\n
 \n#else\n

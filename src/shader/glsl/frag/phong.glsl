@@ -30,10 +30,14 @@ void main() {
       return;
   }
 
-  lightc = light.color * a;
+\n#ifdef TRANSP\n
+   lightAttn = a;
+\n#endif\n
+
+  lightc = vec4(light.color.rgb, 1.0) * a;
 
 \n#ifndef TRANSP\n
-  Ld = max(0.01, dot(vNormal, L));
+  Ld = max(0.0, dot(vNormal, L));
   if (Ld == 0.0)
     Ls = 0.0;
   else
@@ -42,7 +46,7 @@ void main() {
   vec3 N;
 
   N  = vNormal * sign(dot(vNormal, L));
-  Ld = max(0.1, dot(N, L));
+  Ld = max(0.0, dot(N, L));
   if (Ld == 0.0)
     Ls = 0.0;
   else
