@@ -49,8 +49,11 @@ gkEnableTransp(GkScene * __restrict scene) {
   if (!sceneImpl->transp)
     gk__transp_intfn(scene);
 
-  sceneImpl->renderFunc = gk__transp_rnfn;
-  scene->flags         |= GK_SCENEF_TRANSP;
+  sceneImpl->lightIterFunc = gk__transp_rnfn;
+  scene->flags            |= GK_SCENEF_TRANSP;
+
+  sceneImpl->rpath = GK_RNPATH_SCENE_PERLIGHT;
+  sceneImpl->rp    = gkScenePerLightRenderPath;
 }
 
 GK_EXPORT
@@ -63,6 +66,20 @@ gkDisableTransp(GkScene * __restrict scene) {
   if (!sceneImpl->transp)
     gk__transp_intfn(scene);
 
-  sceneImpl->renderFunc = NULL;
-  scene->flags         &= ~GK_SCENEF_TRANSP;
+  if (scene->flags & GK_SCENEF_SHADOWS) {
+    sceneImpl->rpath = GK_RNPATH_SCENE_PERLIGHT;
+    sceneImpl->rp    = gkScenePerLightRenderPath;
+  } else {
+    sceneImpl->rpath = GK_RNPATH_MODEL_PERLIGHT;
+    sceneImpl->rp    = gkModelPerLightRenderPath;
+  }
+
+  sceneImpl->lightIterFunc = NULL;
+  scene->flags            &= ~GK_SCENEF_TRANSP;
+}
+
+_gk_hide
+GkRenderPathFn
+gkTranpRenderFunc() {
+  return gk__transp_rnfn;
 }

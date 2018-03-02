@@ -47,8 +47,8 @@ gkPrepareScene(GkScene * scene) {
     scene->trans = gk_def_idmat();
 
   if (!sceneImpl->rp) {
-    sceneImpl->rp    = gkModelPerLightRenderPath;
-    sceneImpl->rpath = GK_RNPATH_MODEL_PERLIGHT;
+    sceneImpl->rp    = gkScenePerLightRenderPath;
+    sceneImpl->rpath = GK_RNPATH_SCENE_PERLIGHT;
   }
 
   /* default sun light */
@@ -125,19 +125,26 @@ void
 gkScenePerLightRenderPath(GkScene * __restrict scene) {
   GkSceneImpl *sceneImpl;
   GkLight     *light, *firstLight;
+  GkContext   *ctx;
 
+  ctx        = gkContextOf(scene);
   sceneImpl  = (GkSceneImpl *)scene;
   light      = (GkLight *)sceneImpl->pub.lights;
   firstLight = light;
-  
+
+  if (sceneImpl->lightIterFunc) {
+    sceneImpl->lightIterFunc(scene);
+    return;
+  }
+
   do {
     sceneImpl->forLight = light;
 
     if (light != firstLight) {
-      glDepthFunc(GL_EQUAL);
-      glEnable(GL_BLEND);
-      glBlendEquation(GL_FUNC_ADD);
-      glBlendFunc(GL_ONE, GL_ONE);
+      gkDepthFunc(ctx, GL_EQUAL);
+      gkEnableBlend(ctx);
+      gkBlendEq(ctx, GL_FUNC_ADD);
+      gkBlendFunc(ctx, GL_ONE, GL_ONE);
     }
 
     if (scene->flags & GK_SCENEF_SHADOWS)
@@ -148,6 +155,9 @@ gkScenePerLightRenderPath(GkScene * __restrict scene) {
     else
       sceneImpl->renderFunc(scene);
   } while ((light = (GkLight *)light->ref.next));
+
+  gkDisableBlend(ctx);
+  gkDepthFunc(ctx, GL_LESS);
 }
 
 GK_EXPORT

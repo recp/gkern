@@ -106,9 +106,16 @@ gkDisableShadows(GkScene * __restrict scene) {
   GkSceneImpl *sceneImpl;
 
   sceneImpl = (GkSceneImpl *)scene;
-  sceneImpl->rpath = GK_RNPATH_MODEL_PERLIGHT;
-  sceneImpl->rp    = gkModelPerLightRenderPath;
-  scene->flags    &= ~GK_SCENEF_SHADOWS;
+
+  if (scene->flags & GK_SCENEF_TRANSP) {
+    sceneImpl->rpath = GK_RNPATH_SCENE_PERLIGHT;
+    sceneImpl->rp    = gkScenePerLightRenderPath;
+  } else {
+    sceneImpl->rpath = GK_RNPATH_MODEL_PERLIGHT;
+    sceneImpl->rp    = gkModelPerLightRenderPath;
+  }
+
+  scene->flags &= ~GK_SCENEF_SHADOWS;
 
   flist_remove_by(gkContextOf(scene)->samplers, GK_SHADOWS_HANDLE);
 }

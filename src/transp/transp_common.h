@@ -16,4 +16,8 @@ typedef struct GkTranspBase {
   GkTranspTechnType type;
 } GkTranspBase;
 
+_gk_hide
+GkRenderPathFn
+gkTranpRenderFunc(void);
+
 #endif /* src_transp_common_h */
