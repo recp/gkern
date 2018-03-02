@@ -17,10 +17,6 @@
 
 static
 void
-gkPrepareScene(GkScene * scene);
-
-static
-void
 gkDefRenderFunc(GkScene * scene) ;
 
 static
@@ -34,9 +30,9 @@ gkDefRenderFunc(GkScene * scene) {
   gkRenderPrims(scene, frustum->transp);
 }
 
-static
+GK_EXPORT
 void
-gkPrepareScene(GkScene * scene) {
+gkPrepareScene(GkScene * __restrict scene) {
   GkSceneImpl *sceneImpl;
 
   sceneImpl = (GkSceneImpl *)scene;

@@ -41,6 +41,9 @@ gkMakeCameraForScene(GkScene *scene) {
   mat4  view, proj;
   float aspectRatio;
 
+  if (!(scene->flags & GK_SCENEF_PREPARED))
+    gkPrepareScene(scene);
+
   aspectRatio = scene->vrect.size.w / scene->vrect.size.h;
   glm_vec_center(scene->bbox->world[0], scene->bbox->world[1], target);
 

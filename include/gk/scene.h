@@ -78,6 +78,10 @@ GK_EXPORT
 GkScene*
 gkAllocScene(struct GkContext * __restrict context);
 
+GK_EXPORT
+void
+gkPrepareScene(GkScene * __restrict scene);
+
 GK_INLINE
 struct GkContext*
 gkContextOf(GkScene * __restrict scene) {
