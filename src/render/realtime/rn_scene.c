@@ -56,6 +56,11 @@ gkPrepareScene(GkScene * __restrict scene) {
     sceneImpl->pub.lights     = (GkLightRef *)light;
   }
 
+  if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID)) {
+    gkApplyTransform(scene, scene->rootNode);
+    gkTransformAABB(scene->trans, scene->bbox);
+  }
+
   scene->flags |= GK_SCENEF_PREPARED;
 }
 
