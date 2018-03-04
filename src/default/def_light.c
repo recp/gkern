@@ -17,6 +17,7 @@ GkDirectionalLight gkdef_light_directional = {
     .next      = NULL,
     .node      = NULL,
     .dir       = {0.0f, 0.0f, -1.0f},
+    .defdir    = {0.0f, 0.0f, -1.0f},
     .type      = GK_LIGHT_TYPE_DIRECTIONAL,
     .color     = { 1.0, 1.0, 1.0, 1.0 },
     .index     = -1,

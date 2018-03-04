@@ -54,6 +54,12 @@ gkPrepareScene(GkScene * __restrict scene) {
     light->isvalid            = false;
     sceneImpl->pub.lightCount = 1;
     sceneImpl->pub.lights     = (GkLightRef *)light;
+
+    if (scene->camera) {
+      glm_vec_rotate_m4(scene->camera->world,
+                        light->defdir,
+                        light->dir);
+    }
   }
 
   if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID)) {

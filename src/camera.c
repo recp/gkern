@@ -30,8 +30,15 @@ gkAllocCamera() {
 void
 gkSetCamera(struct GkScene * __restrict scene,
             GkCamera       * __restrict camera) {
+  GkLight *light;
+
   scene->camera = camera;
   scene->camera->flags = 0;
+
+  if ((light = (GkLight *)scene->lights) && !light->node)
+    glm_vec_rotate_m4(camera->world,
+                      light->defdir,
+                      light->dir);
 }
 
 GkCamera*

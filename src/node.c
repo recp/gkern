@@ -259,12 +259,10 @@ gkApplyView(struct GkScene * __restrict scene,
   GkNodePage  *np;
   GkSceneImpl *sceneImpl;
   GkModelInst *modelInst;
-  GkCamera    *cam;
   size_t       i;
 
   sceneImpl = (GkSceneImpl *)scene;
   np        = sceneImpl->lastPage;
-  cam       = scene->camera;
 
   /* invalidate */
   while (np) {
