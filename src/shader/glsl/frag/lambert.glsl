@@ -56,7 +56,7 @@ void main() {
 \n#elif defined(DIFFUSE_COLOR)\n
   lightc * uDiffuse * Ld
 \n#else\n
-  lightc * vec4(0, 0, 0, 1)
+  lightc * vec4(1, 1, 1, 1) * Ld
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
@@ -69,6 +69,8 @@ void main() {
   + texture(uEmissionTex, EMISSION_TEX_COORD)
 \n#elif defined(EMISSION_COLOR)\n
   + uEmission
+\n#else\n
+  + lightc * vec4(1, 1, 1, 1) * Ls
 \n#endif\n
 
 \n#ifdef SHADOWMAP\n

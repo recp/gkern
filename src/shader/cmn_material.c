@@ -397,8 +397,10 @@ gk__colorOrTexFlag(GkColorOrTex * __restrict attr,
       GkSampler  *sampler;
       const char *coordInpName;
 
-      tex     = attr->val;
       coordInpName = NULL;
+      if (!(tex = attr->val))
+        break;
+
       if ((sampler = tex->sampler))
         coordInpName = sampler->coordInputName;
       if (!coordInpName)

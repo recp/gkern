@@ -68,7 +68,7 @@ void main() {
 \n#elif defined(DIFFUSE_COLOR)\n
   lightc * uDiffuse * Ld
 \n#else\n
-  lightc * vec4(0, 0, 0, 1)
+  lightc * vec4(1, 1, 1, 1) * Ld
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
@@ -87,6 +87,8 @@ void main() {
   +  lightc * texture(uSpecularTex, SPECULAR_TEX_COORD) * Ls
 \n#elif defined(SPECULAR_COLOR)\n
   +  lightc * uSpecular * Ls
+\n#else\n
+  + lightc * vec4(1, 1, 1, 1) * Ls
 \n#endif\n
                 
 \n#ifdef SHADOWMAP\n
