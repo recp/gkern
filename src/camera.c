@@ -46,7 +46,7 @@ gkMakeCameraForScene(GkScene *scene) {
   vec3  target;
   vec3  eye;
   mat4  view, proj;
-  float aspectRatio, far;
+  float aspectRatio, far, dist;
 
   if (!(scene->flags & GK_SCENEF_PREPARED))
     gkPrepareScene(scene);
@@ -55,11 +55,12 @@ gkMakeCameraForScene(GkScene *scene) {
   glm_vec_center(scene->bbox->world[0], scene->bbox->world[1], target);
 
   glm_vec_sub(scene->bbox->world[1], target, eye);
+  dist = glm_vec_distance(target, eye);
   glm_vec_scale(eye, 2.5f, eye); // TODO: read this as option
   glm_vec_add(target, eye, eye);
 
-  far = glm_vec_distance(eye, scene->bbox->world[0]) + 0.01;
-  glm_perspective(M_PI_4, aspectRatio, 0.01, far, proj);
+  far = glm_vec_distance(eye, scene->bbox->world[0]) + dist;
+  glm_perspective(M_PI_4, aspectRatio, dist * 0.01, far, proj);
 
   glm_lookat(eye, target, GLM_YUP, view); // TODO: up axis
 
