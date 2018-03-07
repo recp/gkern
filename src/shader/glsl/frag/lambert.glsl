@@ -69,8 +69,6 @@ void main() {
   + texture(uEmissionTex, EMISSION_TEX_COORD)
 \n#elif defined(EMISSION_COLOR)\n
   + uEmission
-\n#else\n
-  + lightc * vec4(1, 1, 1, 1)
 \n#endif\n
 
 \n#ifdef SHADOWMAP\n

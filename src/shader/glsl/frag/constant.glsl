@@ -23,7 +23,7 @@ void main() {
 \n#elif defined(EMISSION_COLOR)\n
   uEmission
 \n#else\n
-  vec4(0, 0, 0, 1)
+  vec4(0, 0, 0, 0)
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
