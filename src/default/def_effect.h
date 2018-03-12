@@ -26,4 +26,7 @@ gk_def_material_lambert(void);
 GkConstant*
 gk_def_material_constant(void);
 
+GkMetalRough*
+gk_def_material_mtlrough(void);
+
 #endif /* gk_def_effect_h */

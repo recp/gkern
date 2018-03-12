@@ -28,10 +28,11 @@ typedef enum GkOpaque {
 } GkOpaque;
 
 typedef enum GkMaterialType {
-  GK_MATERIAL_PHONG    = 1,
-  GK_MATERIAL_BLINN    = 2,
-  GK_MATERIAL_LAMBERT  = 3,
-  GK_MATERIAL_CONSTANT = 4
+  GK_MATERIAL_PHONG      = 1,
+  GK_MATERIAL_BLINN      = 2,
+  GK_MATERIAL_LAMBERT    = 3,
+  GK_MATERIAL_CONSTANT   = 4,
+  GK_MATERIAL_METALROUGH = 5
 } GkMaterialType;
 
 typedef enum GkColorMethod {
@@ -76,6 +77,17 @@ typedef struct GkConstant {
 
 typedef GkPhong GkBlinn;
 
+/* Common PBR Materials */
+
+typedef struct GkMetalRough {
+  GkTechnique base;
+  GkColor     baseColor;
+  GkTexture  *baseColorTex;
+  GkTexture  *metalRoughTex;
+  float       metallic;
+  float       roughness;
+} GkMetalRough;
+
 typedef enum GkAlphaMode {
   GK_ALPHA_OPAQUE,
   GK_ALPHA_MASK,
@@ -115,6 +127,9 @@ gkMaterialNewLambert(void);
 
 GkConstant*
 gkMaterialNewConstant(void);
+
+GkMetalRough*
+gkMaterialNewMetalRough(void);
 
 void
 gkUniformMaterial(struct GkContext  * __restrict ctx,

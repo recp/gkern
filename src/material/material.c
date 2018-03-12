@@ -51,3 +51,13 @@ gkMaterialNewConstant() {
          sizeof(*constant));
   return constant;
 }
+
+GkMetalRough*
+gkMaterialNewMetalRough() {
+  GkMetalRough *mtlrough;
+  mtlrough = malloc(sizeof(*mtlrough));
+  memcpy(mtlrough,
+         gk_def_material_mtlrough(),
+         sizeof(*mtlrough));
+  return mtlrough;
+}
