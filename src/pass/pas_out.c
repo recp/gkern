@@ -481,9 +481,7 @@ gkAddRenderTargetEx(GkScene *scene,
   glDrawBuffers(output->colorCount, drawBuffs);
   free(drawBuffs);
 
-  if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-    /* TODO: log and raise warning/errors */
-  }
+  GK_DEBUG_GPU_FRAMEBUFF_ASSERT_ONERROR();
 
   if (last_poc) {
     while (last_poc->next) {
