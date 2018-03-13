@@ -408,7 +408,7 @@ gk__colorOrTexFlag(GkColorOrTex * __restrict attr,
 
       *pFragFlags += sprintf(*pFragFlags,
                              "\n#define %s_TEX\n"
-                             "\n#define %s_TEX_COORD v%s\n",
+                             "\n#define %s_TEXCOORD v%s\n",
                              attrname,
                              attrname,
                              coordInpName);

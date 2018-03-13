@@ -52,7 +52,7 @@ void main() {
 \n#endif\n
 
 \n#ifdef DIFFUSE_TEX\n
-  lightc * texture(uDiffuseTex, DIFFUSE_TEX_COORD) * Ld
+  lightc * texture(uDiffuseTex, DIFFUSE_TEXCOORD) * Ld
 \n#elif defined(DIFFUSE_COLOR)\n
   lightc * uDiffuse * Ld
 \n#else\n
@@ -60,13 +60,13 @@ void main() {
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
-  + texture(uAmbientTex, AMBIENT_TEX_COORD)
+  + texture(uAmbientTex, AMBIENT_TEXCOORD)
 \n#elif defined(AMBIENT_COLOR)\n
   + uAmbient
 \n#endif\n
 
 \n#ifdef EMISSION_TEX\n
-  + texture(uEmissionTex, EMISSION_TEX_COORD)
+  + texture(uEmissionTex, EMISSION_TEXCOORD)
 \n#elif defined(EMISSION_COLOR)\n
   + uEmission
 \n#endif\n

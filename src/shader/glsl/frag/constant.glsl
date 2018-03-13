@@ -19,7 +19,7 @@ void main() {
 \n#endif\n
 
 \n#ifdef EMISSION_TEX\n
-  texture(uEmissionTex, EMISSION_TEX_COORD)
+  texture(uEmissionTex, EMISSION_TEXCOORD)
 \n#elif defined(EMISSION_COLOR)\n
   uEmission
 \n#else\n
@@ -27,7 +27,7 @@ void main() {
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
-  + texture(uAmbientTex, AMBIENT_TEX_COORD)
+  + texture(uAmbientTex, AMBIENT_TEXCOORD)
 \n#elif defined(AMBIENT_COLOR)\n
   + uAmbient
 \n#endif\n

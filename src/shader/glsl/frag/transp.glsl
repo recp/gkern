@@ -37,7 +37,7 @@ applytransp(inout vec4 clr) {
 \n#endif\n
 
 \n#ifdef TRANSP_TEX\n
-  c = texture(uTransparentTex, TRANSP_TEX_COORD);
+  c = texture(uTransparentTex, TRANSP_TEXCOORD);
 \n#elif defined(TRANSP_COLOR)\n
   c = uTransparent;
 \n#else\n
