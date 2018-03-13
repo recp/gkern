@@ -116,6 +116,7 @@ float lightAttn;
 
 #include "transp.glsl"
 #include "shadows.glsl"
+#include "lights.glsl"
 
 GK_STRINGIFY(
 void

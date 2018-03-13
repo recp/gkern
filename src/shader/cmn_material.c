@@ -250,43 +250,35 @@ gkShadersFor(GkScene     * __restrict scene,
              GkPrimitive * __restrict prim,
              GkMaterial  * __restrict mat) {
   GkShader    *vert, *frag;
-  char        *fragSource[5], *vertSource[3];
+  char        *fragSource[3], *vertSource[3];
 
   /* TODO: create dynamic by platform */
   vertSource[0] = fragSource[0] = "\n#version 410 \n";
 
   switch (mat->technique->type) {
     case GK_MATERIAL_PHONG:
-      fragSource[4] =
+      fragSource[2] =
 #include "glsl/frag/phong.glsl"
       ;
       break;
     case GK_MATERIAL_BLINN:
-      fragSource[4] =
+      fragSource[2] =
 #include "glsl/frag/blinn.glsl"
       ;
       break;
     case GK_MATERIAL_LAMBERT:
-      fragSource[4] =
+      fragSource[2] =
 #include "glsl/frag/lambert.glsl"
       ;
       break;
     case GK_MATERIAL_CONSTANT:
-      fragSource[4] =
+      fragSource[2] =
 #include "glsl/frag/constant.glsl"
       ;
       break;
     default:
       return NULL;
   }
-
-  fragSource[2] =
-#include "glsl/frag/common.glsl"
-  ;
-
-  fragSource[3] =
-#include "glsl/frag/lights.glsl"
-  ;
 
   gkShaderFlagsFor(scene,
                    light,
@@ -303,16 +295,12 @@ gkShadersFor(GkScene     * __restrict scene,
 #include "glsl/vert/common.glsl"
   ;
 
-  vert->shaderId = gkShaderLoadN(vert->shaderType,
-                                 vertSource,
-                                 3);
+  vert->shaderId = gkShaderLoadN(vert->shaderType, vertSource, 3);
 
   frag = calloc(1, sizeof(*frag));
   frag->isValid    = 1;
   frag->shaderType = GL_FRAGMENT_SHADER;
-  frag->shaderId   = gkShaderLoadN(frag->shaderType,
-                                   fragSource,
-                                   5);
+  frag->shaderId   = gkShaderLoadN(frag->shaderType, fragSource, 3);
 
   vert->next = frag;
 

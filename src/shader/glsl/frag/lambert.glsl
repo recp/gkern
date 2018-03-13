@@ -5,6 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "common.glsl"
+
 GK_STRINGIFY(
 
 void main() {
