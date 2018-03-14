@@ -5,22 +5,11 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../common.h"
-#include "../../include/gk/gk.h"
-#include "../../include/gk/pass.h"
-#include "../../include/gk/scene.h"
-#include "../state/gpu.h"
-
-GK_EXPORT
-GkPass*
-gkAllocPass(void) {
-  GkPass *pass;
-
-  pass         = calloc(1, sizeof(*pass));
-  pass->output = gkAllocOutput();
-
-  return pass;
-}
+#include "../../common.h"
+#include "../../../include/gk/gk.h"
+#include "../../../include/gk/pass.h"
+#include "../../../include/gk/scene.h"
+#include "../../state/gpu.h"
 
 GK_EXPORT
 GkOutput*

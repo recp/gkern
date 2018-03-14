@@ -19,6 +19,17 @@
 
 GK_EXPORT
 GkPass*
+gkAllocPass(void) {
+  GkPass *pass;
+
+  pass         = calloc(1, sizeof(*pass));
+  pass->output = gkAllocOutput();
+
+  return pass;
+}
+
+GK_EXPORT
+GkPass*
 gkGetOrCreatPass(GkScene     *scene,
                  GkLight     *light,
                  GkPrimitive *prim,
