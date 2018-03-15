@@ -25,33 +25,20 @@ out vec4     vShadCoord;
 \n#define TEX_COUNT 0\n
 \n#endif\n
 
+\n#define TEX_OUT0   vTEXCOORD      = TEXCOORD;\n
+\n#define TEX_OUT(X) vTEXCOORD ## X = TEXCOORD ## X;\n
+\n#define TEX_OUT_DEF0   in vec2 TEXCOORD;      out vec2 vTEXCOORD;\n
+\n#define TEX_OUT_DEF(X) in vec2 TEXCOORD ## X; out vec2 vTEXCOORD ## X;\n
+
 in vec3 POSITION;
 in vec3 NORMAL;
 
-\n#if TEX_COUNT > 0\n
-in  vec2   TEXCOORD;
-out vec2  vTEXCOORD;
-\n#endif\n
-\n#if TEX_COUNT > 1\n
-in  vec2   TEXCOORD1;
-out vec2  vTEXCOORD1;
-\n#endif\n
-\n#if TEX_COUNT > 2\n
-in  vec2   TEXCOORD2;
-out vec2  vTEXCOORD2;
-\n#endif\n
-\n#if TEX_COUNT > 3\n
-in  vec2   TEXCOORD3;
-out vec2  vTEXCOORD3;
-\n#endif\n
-\n#if TEX_COUNT > 4\n
-in  vec2   TEXCOORD4;
-out vec2  vTEXCOORD4;
-\n#endif\n
-\n#if TEX_COUNT > 5\n
-in  vec2   TEXCOORD5;
-out vec2  vTEXCOORD5;
-\n#endif\n
+\n#if TEX_COUNT > 0\n  TEX_OUT_DEF0    \n#endif\n
+\n#if TEX_COUNT > 1\n  TEX_OUT_DEF(1)  \n#endif\n
+\n#if TEX_COUNT > 2\n  TEX_OUT_DEF(2)  \n#endif\n
+\n#if TEX_COUNT > 3\n  TEX_OUT_DEF(3)  \n#endif\n
+\n#if TEX_COUNT > 4\n  TEX_OUT_DEF(4)  \n#endif\n
+\n#if TEX_COUNT > 5\n  TEX_OUT_DEF(5)  \n#endif\n
 
 out vec3 vPos;
 out vec3 vNormal;
@@ -84,25 +71,13 @@ void main() {
 
   gl_Position = MVP * pos4;
 
-\n#if TEX_COUNT > 0\n
-  vTEXCOORD  = TEXCOORD;
-\n#endif\n
-\n#if TEX_COUNT > 1\n
-  vTEXCOORD1 = TEXCOORD1;
-\n#endif\n
-\n#if TEX_COUNT > 2\n
-  vTEXCOORD2 = TEXCOORD2;
-\n#endif\n
-\n#if TEX_COUNT > 3\n
-  vTEXCOORD3 = TEXCOORD3;
-\n#endif\n
-\n#if TEX_COUNT > 4\n
-  vTEXCOORD4 = TEXCOORD4;
-\n#endif\n
-\n#if TEX_COUNT > 5\n
-  vTEXCOORD5 = TEXCOORD5;
-\n#endif\n
-  
+\n#if TEX_COUNT > 0\n  TEX_OUT0    \n#endif\n
+\n#if TEX_COUNT > 1\n  TEX_OUT(1)  \n#endif\n
+\n#if TEX_COUNT > 2\n  TEX_OUT(2)  \n#endif\n
+\n#if TEX_COUNT > 3\n  TEX_OUT(3)  \n#endif\n
+\n#if TEX_COUNT > 4\n  TEX_OUT(4)  \n#endif\n
+\n#if TEX_COUNT > 5\n  TEX_OUT(5)  \n#endif\n
+
 \n#ifdef SHADOWMAP\n
 \n#ifndef SHAD_CUBE\n
 \n#ifndef SHAD_SPLIT\n

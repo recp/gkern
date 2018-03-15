@@ -40,24 +40,15 @@ in vec4 vPosMS;
 in vec3 vPosWS;
 \n#endif\n
 
-\n#if TEX_COUNT > 0\n
-in vec2 vTEXCOORD;
-\n#endif\n
-\n#if TEX_COUNT > 1\n
-in vec2  vTEXCOORD1;
-\n#endif\n
-\n#if TEX_COUNT > 2\n
-in vec2  vTEXCOORD2;
-\n#endif\n
-\n#if TEX_COUNT > 3\n
-in vec2  vTEXCOORD3;
-\n#endif\n
-\n#if TEX_COUNT > 4\n
-in vec2  vTEXCOORD4;
-\n#endif\n
-\n#if TEX_COUNT > 5\n
-in vec2  vTEXCOORD5;
-\n#endif\n
+\n#define TEX_IN_DEF0   in vec2 vTEXCOORD; \n
+\n#define TEX_IN_DEF(X) in vec2 vTEXCOORD ## X; \n
+
+\n#if TEX_COUNT > 0\n  TEX_IN_DEF0        \n#endif\n
+\n#if TEX_COUNT > 1\n  TEX_IN_DEF(1)      \n#endif\n
+\n#if TEX_COUNT > 2\n  TEX_IN_DEF(2)      \n#endif\n
+\n#if TEX_COUNT > 3\n  TEX_IN_DEF(3)      \n#endif\n
+\n#if TEX_COUNT > 4\n  TEX_IN_DEF(4)      \n#endif\n
+\n#if TEX_COUNT > 5\n  TEX_IN_DEF(5)      \n#endif\n
 
 \n#ifdef SHADOWMAP\n
 in vec2  vSHADOWMAP;
