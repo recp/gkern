@@ -117,22 +117,22 @@ gkBindDefaultOutput(struct GkScene *scene);
 
 GK_EXPORT
 void
-gkPassEnableDepth(struct GkScene *scene,
+gkAddDepthTarget(struct GkScene *scene,
                   GkPass         *pass);
 
 GK_EXPORT
 void
-gkPassEnableDepthTex(struct GkScene *scene,
+gkAddDepthTexTarget(struct GkScene *scene,
                      GkPass         *pass,
                      GkSize          size);
 
 GK_EXPORT
 void
-gkPassEnableDepthTexArray(struct GkScene *scene, GkPass *pass, GLsizei len);
+gkAddDepthTexArrayTarget(struct GkScene *scene, GkPass *pass, GLsizei len);
 
 GK_EXPORT
 void
-gkPassEnableDepthCubeTex(struct GkScene *scene, GkPass *pass, float size);
+gkAddDepthCubeTexTarget(struct GkScene *scene, GkPass *pass, float size);
 
 GK_EXPORT
 GkColorOutput*
@@ -145,11 +145,11 @@ gkBindRenderTargetToTexUnit(GkColorOutput *rt, int32_t texUnit);
 GK_EXPORT
 void
 gkBindRenderTargetTo(struct GkScene *scene,
-                        GkPass         *pass,
-                        int32_t         targetIndex,
-                        GkProgram      *prog,
-                        int32_t         texUnit,
-                        const char      *uniformName);
+                     GkPass         *pass,
+                     int32_t         targetIndex,
+                     GkProgram      *prog,
+                     int32_t         texUnit,
+                     const char      *uniformName);
 
 GK_EXPORT
 void

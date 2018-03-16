@@ -40,7 +40,7 @@ gkSetupShadowMapCSM(GkScene * __restrict scene,
   sm->viewProj      = malloc(sizeof(mat4)  * splitc);
 
   gkBindOutput(scene, pass->output);
-  gkPassEnableDepthTexArray(scene, pass, splitc);
+  gkAddDepthTexArrayTarget(scene, pass, splitc);
 
   glDrawBuffer(GL_NONE);
   glReadBuffer(GL_NONE);

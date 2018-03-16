@@ -44,13 +44,13 @@ gkSetupBasicShadowMap(GkScene * __restrict scene,
     sm->size.w = scene->vrect.size.w * scene->backingScale;
     sm->size.h = scene->vrect.size.h * scene->backingScale;
 
-    gkPassEnableDepthTex(scene, pass, sm->size);
+    gkAddDepthTexTarget(scene, pass, sm->size);
   } else {
     /* TODO: optimize it */
     sm->size.w = scene->vrect.size.w * scene->backingScale;
     sm->size.h = sm->size.w;
 
-    gkPassEnableDepthCubeTex(scene, pass, sm->size.w);
+    gkAddDepthCubeTexTarget(scene, pass, sm->size.w);
   }
 
   glDrawBuffer(GL_NONE);
