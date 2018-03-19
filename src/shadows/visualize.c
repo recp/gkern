@@ -40,8 +40,7 @@ gkRenderShadowMapTo(GkScene  * __restrict scene,
   glm_persp_decomp_z(cam->proj, &near, &far);
 
   gkUseProgram(gkContextOf(scene), depthProg);
-  glActiveTexture(GL_TEXTURE0 + texUnit);
-  glBindTexture(GL_TEXTURE_2D, sm->pass->output->depth);
+  gkBindTextureTo(ctx, texUnit, GL_TEXTURE_2D, sm->pass->output->depth);
   gkUniform1i(depthProg, "uColorTex", texUnit);
   gkUniform1f(depthProg, "uNear",     near);
   gkUniform1f(depthProg, "uFar",      far);

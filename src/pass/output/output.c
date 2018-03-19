@@ -41,7 +41,7 @@ GkOutput*
 gkCurrentOutput(GkContext * __restrict ctx) {
   GkOutput *output;
 
-  if ((output = ctx->currState->outputState->renderOutput))
+  if ((output = ctx->currState->output->renderOutput))
     return output;
 
   return gkDefaultRenderOut();
@@ -56,7 +56,7 @@ gkBindOutput(GkScene  *scene,
 
   ctx   = gkContextOf(scene);
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_OUTPUT);
-  if (ctx->currState->outputState->renderOutput == output)
+  if (ctx->currState->output->renderOutput == output)
     return;
 
   state->renderOutput = output;
@@ -71,7 +71,7 @@ gkBindDefaultOutput(GkScene *scene) {
 
   ctx   = gkContextOf(scene);
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_OUTPUT);
-  if (ctx->currState->outputState->renderOutput == NULL)
+  if (ctx->currState->output->renderOutput == NULL)
     return;
 
   state->renderOutput = NULL;

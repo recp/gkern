@@ -19,20 +19,20 @@ gkApplyDepthState(GkContext   * __restrict ctx,
   cst        = ctx->currState;
   depthState = (GkDepthState *)st;
 
-  if (depthState->test != cst->depthState->test) {
+  if (depthState->test != cst->depth->test) {
     if (depthState->test)
       glEnable(GL_DEPTH_TEST);
     else
       glDisable(GL_DEPTH_TEST);
   }
   
-  if (depthState->func != cst->depthState->func)
+  if (depthState->func != cst->depth->func)
     glDepthFunc(depthState->func);
 
-  if (depthState->mask != cst->depthState->mask)
+  if (depthState->mask != cst->depth->mask)
     glDepthMask(depthState->mask);
 
-  ctx->currState->depthState = depthState;
+  ctx->currState->depth = depthState;
 }
 
 _gk_hide
@@ -45,15 +45,15 @@ gkApplyBlendState(GkContext   * __restrict ctx,
   cst        = ctx->currState;
   blendState = (GkBlendState *)st;
 
-  if (blendState->blend != cst->blendState->blend) {
+  if (blendState->blend != cst->blend->blend) {
     if (blendState->blend)
       glEnable(GL_BLEND);
     else
       glDisable(GL_BLEND);
   }
 
-  if (blendState->src != cst->blendState->src
-      || blendState->dst != cst->blendState->dst) {
+  if (blendState->src != cst->blend->src
+      || blendState->dst != cst->blend->dst) {
     if (!st->indexed) {
       glBlendFunc(blendState->src, blendState->dst);
     } else {
@@ -61,50 +61,35 @@ gkApplyBlendState(GkContext   * __restrict ctx,
     }
   }
 
-  if (blendState->eq != cst->blendState->eq) {
+  if (blendState->eq != cst->blend->eq) {
     glBlendEquation(blendState->eq);
   }
 
-  ctx->currState->blendState = blendState;
+  ctx->currState->blend = blendState;
 }
 
 _gk_hide
 void
 gkApplyTexState(GkContext   * __restrict ctx,
                 GkStateBase * __restrict st) {
-  GkStatesItem   *sti;
-  GkTextureState *texState;
+  GkTextureState *texState, *currtex;
   GkGPUStates    *cst;
-  FListItem      *item;
+  HTable         *texu;
   
   cst      = ctx->currState;
   texState = (GkTextureState *)st;
   
-  if (texState->base.index != cst->activeTex)
-    glActiveTexture(GL_TEXTURE0 + texState->base.index);
-  
-  if (!(sti = flist_last(ctx->states)))
-    return;
+  if (texState->texunit != cst->activeTex)
+    gkActiveTexture(ctx, texState->texunit);
 
-  /* todo: optimize this. */
-  item = sti->states;
-  while (item) {
-    GkStateBase *state;
-    
-    state = item->data;
-    if (state->type == GK_GPUSTATE_TEXTURE
-        && state->index == texState->base.index) {
-      GkTextureState *ts;
-      ts = (GkTextureState *)state;
-      
-      /* no need to change texture */
-      if (ts->target == texState->target
-          && ts->texid == texState->texid)
+  if ((texu = hash_get(cst->tex, DS_ITOP(texState->texunit)))) {
+    if ((currtex = hash_get(texu, DS_ITOP(texState->target)))) {
+      if (currtex->texid == texState->texid)
         return;
     }
-    item = item->next;
   }
-  
+
+  hash_set(texu, (void *)(uintptr_t)texState->target, texState);
   glBindTexture(texState->target, texState->texid);
 }
 
@@ -118,12 +103,12 @@ gkApplyOutputState(GkContext   * __restrict ctx,
   cst         = ctx->currState;
   outputState = (GkOutputState *)st;
 
-  if (cst->outputState->renderOutput != outputState->renderOutput) {
-    cst->outputState->renderOutput = outputState->renderOutput;
+  if (cst->output->renderOutput != outputState->renderOutput) {
+    cst->output->renderOutput = outputState->renderOutput;
     glBindFramebuffer(GL_FRAMEBUFFER, outputState->renderOutput->fbo);
   }
 
-  ctx->currState->outputState = outputState;
+  ctx->currState->output = outputState;
 }
 
 _gk_hide
@@ -136,26 +121,26 @@ gkApplyCullFaceState(GkContext   * __restrict ctx,
   cst           = ctx->currState;
   faceState = (GkFaceState *)st;
 
-  if (cst->faceState->face != faceState->cull) {
+  if (cst->face->face != faceState->cull) {
     if (faceState->cull)
       glEnable(GL_CULL_FACE);
     else
       glDisable(GL_CULL_FACE);
 
-    cst->faceState->cull = faceState->cull;
+    cst->face->cull = faceState->cull;
   }
 
-  if (cst->faceState->face == faceState->face)  {
+  if (cst->face->face == faceState->face)  {
     glCullFace(faceState->face);
-    cst->faceState->face = faceState->face;
+    cst->face->face = faceState->face;
   }
 
-  if (cst->faceState->frontFace == faceState->frontFace)  {
+  if (cst->face->frontFace == faceState->frontFace)  {
     glFrontFace(faceState->frontFace);
-    cst->faceState->frontFace = faceState->frontFace;
+    cst->face->frontFace = faceState->frontFace;
   }
 
-  ctx->currState->faceState = faceState;
+  ctx->currState->face = faceState;
 }
 
 _gk_hide

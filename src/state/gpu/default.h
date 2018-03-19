@@ -12,6 +12,6 @@
 
 _gk_hide
 void
-gkSetDefaultState(GkContext * __restrict ctx);
+gkInitStates(GkContext * __restrict ctx);
 
 #endif /* default_h */

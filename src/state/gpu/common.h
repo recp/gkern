@@ -28,6 +28,7 @@ typedef enum GkGPUStateType {
 typedef struct GkStateBase {
   struct GkStateBase *prev;
   struct GkStateBase *next;
+  struct GkStateBase *allbuf;
   GkGPUStateType      type;
   int32_t             index;
   bool                indexed;
@@ -79,22 +80,15 @@ typedef struct GkStatesItem {
 } GkStatesItem;
 
 typedef struct GkGPUStates {
-  GkDepthState     *depthState;
-  GkBlendState     *blendState;
-  GkOutputState *outputState;
-  GkFaceState      *faceState;
+  GkDepthState     *depth;
+  GkBlendState     *blend;
+  GkOutputState    *output;
+  GkFaceState      *face;
   GkFramebuffState *frame;
-  GLuint           activeTex;
-  GkTextureState  *texStates;
-  GkProgram       *prog;
-} GkGPUStates;
-
-typedef struct GkGPUStateCheckPoint {
-  GkStateBase     **states[GK_GPUSTATE_COUNT];
-  GLuint           *activeTex;
-  GkTextureState   *texStates;
+  HTable           *tex;
   GkProgram        *prog;
-} GkGPUStateCheckPoint;
+  GLuint            activeTex;
+} GkGPUStates;
 
 typedef void (*GkGPUApplyStateFn)(GkContext   * __restrict ctx,
                                   GkStateBase * __restrict st);
@@ -120,7 +114,7 @@ gkCreatState(GkContext    * __restrict ctx,
 _gk_hide
 void*
 gkGetOrCreatTexState(GkContext * __restrict ctx,
-                     uint32_t               arrayIndex,
+                     uint32_t               index,
                      GLenum                 target);
 
 _gk_hide

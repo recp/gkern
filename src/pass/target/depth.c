@@ -183,9 +183,10 @@ gkBindDepthTexTo(GkScene    *scene,
                  GkProgram  *prog,
                  int32_t     texUnit,
                  const char  *uniformName) {
-  /* then bind it to texture unit */
-  glActiveTexture(GL_TEXTURE0 + texUnit);
-  glBindTexture(GL_TEXTURE_2D, pass->output->depth);
+  gkBindTextureTo(gkContextOf(scene),
+                  texUnit,
+                  GL_TEXTURE_2D,
+                  pass->output->depth);
 
   /* uniform texture unit to program */
   gkUniform1i(prog, uniformName, texUnit);
@@ -198,9 +199,10 @@ gkBindDepthTexArrayTo(GkScene    *scene,
                       GkProgram  *prog,
                       int32_t     texUnit,
                       const char  *uniformName) {
-  /* then bind it to texture unit */
-  glActiveTexture(GL_TEXTURE0 + texUnit);
-  glBindTexture(GL_TEXTURE_2D_ARRAY, pass->output->depth);
+  gkBindTextureTo(gkContextOf(scene),
+                  texUnit,
+                  GL_TEXTURE_2D_ARRAY,
+                  pass->output->depth);
 
   /* uniform texture unit to program */
   gkUniform1i(prog, uniformName, texUnit);

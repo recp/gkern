@@ -13,6 +13,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+extern GkTextureState gk__deftexst;
+
 _gk_hide
 void*
 gkGetOrCreatState(GkContext * __restrict ctx,
@@ -81,7 +83,7 @@ gkGetOrCreatStatei(GkContext * __restrict ctx,
 _gk_hide
 void*
 gkGetOrCreatTexState(GkContext * __restrict ctx,
-                     uint32_t               arrayIndex,
+                     uint32_t               index,
                      GLenum                 target) {
   GkStatesItem *sti;
   FListItem    *item;
@@ -98,7 +100,7 @@ gkGetOrCreatTexState(GkContext * __restrict ctx,
 
     state = item->data;
     if (state->type == GK_GPUSTATE_TEXTURE
-        && state->index == arrayIndex) {
+        && state->index == index) {
       GkTextureState *texState;
       texState = (GkTextureState *)state;
       if (texState->target == target)
@@ -107,7 +109,7 @@ gkGetOrCreatTexState(GkContext * __restrict ctx,
     item = item->next;
   }
 
-  return gkCreatTexState(ctx, sti, arrayIndex, target);
+  return gkCreatTexState(ctx, sti, index, target);
 }
 
 _gk_hide
@@ -128,12 +130,12 @@ gkCreatState(GkContext    * __restrict ctx,
     return NULL;
 
   stm = ((struct stateMap[]){
-    {offsetof(GkGPUStates, depthState),  sizeof(GkDepthState)},
-    {offsetof(GkGPUStates, blendState),  sizeof(GkBlendState)},
-    {offsetof(GkGPUStates, texStates),   sizeof(GkTextureState)},
-    {offsetof(GkGPUStates, outputState), sizeof(GkOutputState)},
-    {offsetof(GkGPUStates, faceState),   sizeof(GkFaceState)},
-    {offsetof(GkGPUStates, frame),       sizeof(GkFramebuffState)},
+    {offsetof(GkGPUStates, depth),     sizeof(GkDepthState)},
+    {offsetof(GkGPUStates, blend),     sizeof(GkBlendState)},
+    {offsetof(GkGPUStates, tex),       sizeof(GkTextureState)},
+    {offsetof(GkGPUStates, output),    sizeof(GkOutputState)},
+    {offsetof(GkGPUStates, face),      sizeof(GkFaceState)},
+    {offsetof(GkGPUStates, frame),     sizeof(GkFramebuffState)},
   }[type - 1]);
 
   pCurr = (char *)curr;
@@ -158,32 +160,43 @@ _gk_hide
 GkStateBase*
 gkCreatTexState(GkContext    * __restrict ctx,
                 GkStatesItem * __restrict sti,
-                uint32_t                  index,
+                uint32_t                  unit,
                 GLenum                    target) {
   GkTextureState *state, *statei;
   GkGPUStates    *curr;
+  HTable         *texu;
+  size_t          stlen;
+  bool            foundUnit, foundTarget;
 
+  foundUnit = foundTarget  = false;
+
+  stlen  = sizeof(GkTextureState);
   curr   = ctx->currState;
-  state  = calloc(1, sizeof(*state));
+  state  = calloc(1, stlen);
 
-  state->base.index = index;
-  state->base.type       = GK_GPUSTATE_TEXTURE;
-  state->target          = target;
-  state->texunit         = index;
-
-  statei = curr->texStates;
-  while (statei) {
-    if (statei->base.index == index
-        && statei->target == target) {
-      state->texid = statei->texid;
-      return &state->base;
+  if ((texu = hash_get(curr->tex, DS_ITOP(unit)))) {
+    if ((statei = hash_get(texu, DS_ITOP(target)))) {
+      foundTarget = true;
+      memcpy(state, statei, stlen);
+      state->base.prev = &statei->base;
     }
-    statei = (GkTextureState *)statei->base.next;
+  } else {
+    texu = hash_new(NULL, ds_hashfn_ui32p, ds_cmp_ui32p, 4);
+    hash_set(curr->tex, DS_ITOP(unit), texu);
   }
 
-  if (curr->texStates)
-    state->base.next = &curr->texStates->base;
-  curr->texStates = statei;
+  /* bind default */
+  if (!foundTarget) {
+    memcpy(state, &gk__deftexst, stlen);
+    state->base.prev = &gk__deftexst.base;
+  }
+
+  state->base.index = unit;
+  state->base.type  = GK_GPUSTATE_TEXTURE;
+  state->target     = target;
+  state->texunit    = unit;
+
+  hash_set(texu, DS_ITOP(target), state);
 
   sti->isempty = false;
   flist_sp_insert(&sti->states, state);

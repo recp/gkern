@@ -28,12 +28,16 @@ gkBindTextureTo(GkContext * __restrict ctx,
                 uint32_t               target,
                 uint32_t               texid) {
   GkTextureState *state;
+  GkGPUStates    *ast;
+
+  ast   = ctx->currState;
   state = gkGetOrCreatTexState(ctx, unit, target);
-  if (state->texid == texid)
-    return;
-  
-  gkActiveTexture(ctx, unit);
-  glBindTexture(target, texid);
+
+  if (ast->activeTex != unit)
+    gkActiveTexture(ctx, unit);
+
+  if (state->texid != texid)
+    gkBindTexture(ctx, target, texid);
 }
 
 GK_EXPORT
@@ -42,13 +46,14 @@ gkBindTexture(GkContext * __restrict ctx,
               uint32_t               target,
               uint32_t               texid) {
   GkTextureState *state;
-  GkGPUStates *ast;
+  GkGPUStates    *ast;
   
   ast = ctx->currState;
   
   state = gkGetOrCreatTexState(ctx, ast->activeTex, target);
   if (state->texid == texid)
     return;
-  
+
+  state->texid = texid;
   glBindTexture(target, texid);
 }

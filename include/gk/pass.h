@@ -140,10 +140,6 @@ gkGetRenderTarget(GkPass *rt, int32_t index);
 
 GK_EXPORT
 void
-gkBindRenderTargetToTexUnit(GkColorOutput *rt, int32_t texUnit);
-
-GK_EXPORT
-void
 gkBindRenderTargetTo(struct GkScene *scene,
                      GkPass         *pass,
                      int32_t         targetIndex,
