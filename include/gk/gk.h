@@ -39,6 +39,10 @@ extern "C" {
 void
 gkReshape(GkScene *scene, GkRect rect);
 
+GK_EXPORT
+void
+gkGetDepthForPoint(vec3 point);
+
 #ifdef __cplusplus
 }
 #endif

@@ -79,3 +79,15 @@ gkReshape(GkScene *scene, GkRect rect) {
 
   scene->vrect = rect;
 }
+
+GK_EXPORT
+void
+gkGetDepthForPoint(vec3 point) {
+  glReadPixels((GLint)point[0],
+               (GLint)point[1],
+               1,
+               1,
+               GL_DEPTH_COMPONENT,
+               GL_FLOAT,
+               &point[2]);
+}
