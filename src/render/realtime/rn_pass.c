@@ -39,7 +39,7 @@ gkRenderPass(GkScene    * __restrict scene,
 
   gkUseProgram(ctx, prog);
 
-  if (prog->lastMaterial != material && !pass->noMaterials)
+  if (!pass->noMaterials)
     gkUniformMaterial(ctx, prog, material);
 
   gkUniformTransform(prog, trans, scene->camera);

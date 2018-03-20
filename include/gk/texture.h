@@ -61,6 +61,7 @@ typedef struct GkTexture {
   GkImage          *image;
   GkSampler        *sampler;
   GLuint            index;
+  GLenum            boundUnit;
   GLenum            target; /* 1D, 2D, 3D, cube... */
   GLenum            internalFormat;
   GLenum            swizzle[4];

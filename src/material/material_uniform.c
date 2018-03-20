@@ -12,6 +12,7 @@
 #include "../../include/gk/material.h"
 #include "../program/uniform_cache.h"
 #include "../default/def_effect.h"
+#include "../state/gpu.h"
 
 #include <ds/forward-list.h>
 #include <string.h>
@@ -19,69 +20,83 @@
 void
 gkUniformMaterialStruct(struct GkContext  * __restrict ctx,
                         struct GkProgram  * __restrict prog,
-                        struct GkMaterial * __restrict material) {
+                        struct GkMaterial * __restrict mat) {
   GkTechnique *technique;
   char         buf[256];
   GLint        loc;
-  uint32_t     texUnit;
 
-  if (prog->lastMaterial == material
-      && !prog->updtMaterials)
+  /* only re-bind textures if needed */
+  if (prog->lastMaterial == mat
+      && !prog->updtMaterials) {
+    FListItem *itm;
+    GkTexture *tex;
+
+    itm = mat->boundTextures;
+    while (itm) {
+      tex = itm->data;
+      gkBindTextureTo(ctx, tex->boundUnit, tex->target, tex->index);
+      itm = itm->next;
+    }
+
     return;
+  }
 
   /* apply default material */
-  if (!material)
-    material = gk_def_material();
+  if (!mat)
+    mat = gk_def_material();
 
   /* TODO: read uniform structure/names from options */
   strcpy(buf, "mat.");
 
-  texUnit   = (uint32_t)ctx->samplers->count;
-  technique = material->technique;
+  /* reset tex unit for this material */
+  ctx->availTexUnit = (uint32_t)ctx->samplers->count;
+  technique         = mat->technique;
+
   if (technique->type == GK_MATERIAL_PHONG
       || technique->type == GK_MATERIAL_BLINN) {
     GkPhong *phong;
-    phong  = (GkPhong *)material->technique;
+    phong  = (GkPhong *)mat->technique;
 
     if (phong->ambient)
-      gkUniformColorOrTexBuff(phong->ambient,  buf, "ambient",  prog, &texUnit);
+      gkUniformColorOrTexBuff(ctx, mat, phong->ambient,  buf, "ambient",  prog);
     if (phong->diffuse)
-      gkUniformColorOrTexBuff(phong->diffuse,  buf, "diffuse",  prog, &texUnit);
+      gkUniformColorOrTexBuff(ctx, mat, phong->diffuse,  buf, "diffuse",  prog);
     if (phong->specular)
-      gkUniformColorOrTexBuff(phong->specular, buf, "specular", prog, &texUnit);
+      gkUniformColorOrTexBuff(ctx, mat, phong->specular, buf, "specular", prog);
     if (phong->emission)
-      gkUniformColorOrTexBuff(phong->emission, buf, "emission", prog, &texUnit);
+      gkUniformColorOrTexBuff(ctx, mat, phong->emission, buf, "emission", prog);
 
     loc = gkUniformLocBuff(prog, "shininess", buf);
     glUniform1f(loc, phong->shininess);
   } else if (technique->type == GK_MATERIAL_LAMBERT) {
     GkLambert *lambert;
-    lambert  = (GkLambert *)material->technique;
+    lambert  = (GkLambert *)mat->technique;
 
     if (lambert->ambient)
-      gkUniformColorOrTexBuff(lambert->ambient,  buf, "ambient",  prog, &texUnit);
+      gkUniformColorOrTexBuff(ctx, mat, lambert->ambient,  buf, "ambient",  prog);
     if (lambert->diffuse)
-      gkUniformColorOrTexBuff(lambert->diffuse,  buf, "diffuse",  prog, &texUnit);
+      gkUniformColorOrTexBuff(ctx, mat, lambert->diffuse,  buf, "diffuse",  prog);
     if (lambert->emission)
-      gkUniformColorOrTexBuff(lambert->emission, buf, "emission", prog, &texUnit);
+      gkUniformColorOrTexBuff(ctx, mat, lambert->emission, buf, "emission", prog);
   } else if (technique->type == GK_MATERIAL_CONSTANT) {
     GkConstant *constant;
-    constant  = (GkConstant *)material->technique;
+    constant  = (GkConstant *)mat->technique;
 
     if (constant->emission)
-      gkUniformColorOrTexBuff(constant->emission, buf, "emission", prog, &texUnit);
+      gkUniformColorOrTexBuff(ctx, mat, constant->emission, buf, "emission", prog);
   }
 
-  if (material->transparent) {
+  if (mat->transparent) {
     GkTransparent *transp;
 
-    transp = material->transparent;
+    transp = mat->transparent;
     if (transp->color) {
-      gkUniformColorOrTexBuff(transp->color,
+      gkUniformColorOrTexBuff(ctx,
+                              mat,
+                              transp->color,
                               buf,
                               "transparent",
-                              prog,
-                              &texUnit);
+                              prog);
     } else {
       loc = gkUniformLocBuff(prog, "transparent", buf);
       glUniform4fv(loc, 1, (vec4){1.0f, 1.0f, 1.0f, 1.0f});
@@ -91,89 +106,102 @@ gkUniformMaterialStruct(struct GkContext  * __restrict ctx,
     glUniform1f(loc, transp->amount);
   }
 
-  if (material->reflective) {
+  if (mat->reflective) {
     GkReflective *refl;
-    refl = material->reflective;
+    refl = mat->reflective;
 
     if (refl->color)
-      gkUniformColorOrTexBuff(refl->color,
+      gkUniformColorOrTexBuff(ctx,
+                              mat,
+                              refl->color,
                               buf,
                               "reflective",
-                              prog,
-                              &texUnit);
+                              prog);
 
     loc = gkUniformLocBuff(prog, "reflectivity", buf);
     glUniform1f(loc, refl->amount);
   }
 
   loc = gkUniformLocBuff(prog, "indexOfRefraction", buf);
-  glUniform1f(loc, material->indexOfRefraction);
+  glUniform1f(loc, mat->indexOfRefraction);
 
-  prog->lastMaterial  = material;
+  prog->lastMaterial  = mat;
   prog->updtMaterials = false;
 }
 
 void
 gkUniformMaterial(struct GkContext  * __restrict ctx,
                   struct GkProgram  * __restrict prog,
-                  struct GkMaterial * __restrict material) {
+                  struct GkMaterial * __restrict mat) {
   GkTechnique *technique;
   GLint        loc;
-  uint32_t     texUnit;
 
-  if (prog->lastMaterial == material
-      && !prog->updtMaterials)
+  /* only re-bind textures if needed */
+  if (prog->lastMaterial == mat
+      && !prog->updtMaterials) {
+    FListItem *itm;
+    GkTexture *tex;
+
+    itm = mat->boundTextures;
+    while (itm) {
+      tex = itm->data;
+      gkBindTextureTo(ctx, tex->boundUnit, tex->target, tex->index);
+      itm = itm->next;
+    }
+
     return;
-  
+  }
+
   /* apply default material */
-  if (!material)
-    material = gk_def_material();
-  
-  texUnit   = (uint32_t)ctx->samplers->count;
-  technique = material->technique;
+  if (!mat)
+    mat = gk_def_material();
+
+  flist_sp_destroy(&mat->boundTextures);
+
+  /* reset tex unit for this material */
+  ctx->availTexUnit = (uint32_t)ctx->samplers->count;
+  technique         = mat->technique;
+
   if (technique->type == GK_MATERIAL_PHONG
       || technique->type == GK_MATERIAL_BLINN) {
     GkPhong *phong;
-    phong  = (GkPhong *)material->technique;
+    phong  = (GkPhong *)mat->technique;
     
     if (phong->ambient)
-      gkUniformColorOrTex(phong->ambient, "uAmbient",  prog, &texUnit);
+      gkUniformColorOrTex(ctx, mat, phong->ambient,  "uAmbient",  prog);
     if (phong->diffuse)
-      gkUniformColorOrTex(phong->diffuse, "uDiffuse",  prog, &texUnit);
+      gkUniformColorOrTex(ctx, mat, phong->diffuse,  "uDiffuse",  prog);
     if (phong->specular)
-      gkUniformColorOrTex(phong->specular,"uSpecular", prog, &texUnit);
+      gkUniformColorOrTex(ctx, mat, phong->specular, "uSpecular", prog);
     if (phong->emission)
-      gkUniformColorOrTex(phong->emission, "uEmission", prog, &texUnit);
+      gkUniformColorOrTex(ctx, mat, phong->emission, "uEmission", prog);
     
     loc = gkUniformLoc(prog, "uShininess");
     glUniform1f(loc, phong->shininess);
   } else if (technique->type == GK_MATERIAL_LAMBERT) {
     GkLambert *lambert;
-    lambert  = (GkLambert *)material->technique;
+    lambert  = (GkLambert *)mat->technique;
     
     if (lambert->ambient)
-      gkUniformColorOrTex(lambert->ambient, "uAmbient",  prog, &texUnit);
+      gkUniformColorOrTex(ctx, mat, lambert->ambient, "uAmbient",  prog);
     if (lambert->diffuse)
-      gkUniformColorOrTex(lambert->diffuse, "uDiffuse",  prog, &texUnit);
+      gkUniformColorOrTex(ctx, mat, lambert->diffuse, "uDiffuse",  prog);
     if (lambert->emission)
-      gkUniformColorOrTex(lambert->emission, "uSpecular", prog, &texUnit);
+      gkUniformColorOrTex(ctx, mat, lambert->emission, "uSpecular", prog);
   } else if (technique->type == GK_MATERIAL_CONSTANT) {
     GkConstant *constant;
-    constant  = (GkConstant *)material->technique;
+    constant  = (GkConstant *)mat->technique;
     
     if (constant->emission)
-      gkUniformColorOrTex(constant->emission, "uEmission", prog, &texUnit);
+      gkUniformColorOrTex(ctx, mat, constant->emission, "uEmission", prog);
   }
   
-  if (material->transparent) {
+  if (mat->transparent) {
     GkTransparent *transp;
     
-    transp = material->transparent;
+    transp = mat->transparent;
     if (transp->color) {
-      gkUniformColorOrTex(transp->color,
-                          "uTransparent",
-                          prog,
-                          &texUnit);
+      gkUniformColorOrTex(ctx, mat, transp->color, "uTransparent", prog);
     } else {
       loc = gkUniformLoc(prog, "uTransparent");
       glUniform4fv(loc, 1, (vec4){1.0f, 1.0f, 1.0f, 1.0f});
@@ -183,23 +211,24 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
     glUniform1f(loc, transp->amount);
   }
   
-  if (material->reflective) {
+  if (mat->reflective) {
     GkReflective *refl;
-    refl = material->reflective;
+    refl = mat->reflective;
     
     if (refl->color)
-      gkUniformColorOrTex(refl->color,
+      gkUniformColorOrTex(ctx,
+                          mat,
+                          refl->color,
                           "uReflective",
-                          prog,
-                          &texUnit);
+                          prog);
     
     loc = gkUniformLoc(prog, "uReflectivity");
     glUniform1f(loc, refl->amount);
   }
   
   loc = gkUniformLoc(prog, "uIndexOfRefraction");
-  glUniform1f(loc, material->indexOfRefraction);
+  glUniform1f(loc, mat->indexOfRefraction);
   
-  prog->lastMaterial  = material;
+  prog->lastMaterial  = mat;
   prog->updtMaterials = false;
 }

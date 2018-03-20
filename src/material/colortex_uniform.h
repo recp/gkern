@@ -11,16 +11,36 @@
 #include "../../include/gk/gk.h"
 
 void
-gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
-                    char         * __restrict name,
-                    GkProgram    * __restrict prog,
-                    uint32_t     * __restrict texUnit);
+gkUniformColor(GkColor   * __restrict color,
+               char      * __restrict name,
+               GkProgram * __restrict prog);
 
 void
-gkUniformColorOrTexBuff(GkColorOrTex * __restrict crtx,
+gkUniformTex(GkContext  * __restrict ctx,
+             GkMaterial * __restrict mat,
+             GkTexture  * __restrict tex,
+             char       * __restrict name,
+             GkProgram  * __restrict prog);
+
+void
+gkUniformColorOrTex(GkContext    * __restrict ctx,
+                    GkMaterial   * __restrict mat,
+                    GkColorOrTex * __restrict crtx,
+                    char         * __restrict name,
+                    GkProgram    * __restrict prog);
+
+void
+gkUniformColorBuff(GkColor   * __restrict color,
+                   char      * __restrict buf,
+                   char      * __restrict name,
+                   GkProgram * __restrict prog);
+
+void
+gkUniformColorOrTexBuff(GkContext    * __restrict ctx,
+                        GkMaterial   * __restrict mat,
+                        GkColorOrTex * __restrict crtx,
                         char         * __restrict buf,
                         char         * __restrict name,
-                        GkProgram    * __restrict prog,
-                        uint32_t     * __restrict texUnit);
+                        GkProgram    * __restrict prog);
 
 #endif /* gk_colortex_uniform_h */

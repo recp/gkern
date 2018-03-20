@@ -8,15 +8,60 @@
 #include "../common.h"
 #include "colortex_uniform.h"
 #include "../program/uniform_cache.h"
+#include "../state/gpu.h"
 
 #include <string.h>
 
 void
-gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
+gkUniformColor(GkColor   * __restrict color,
+               char      * __restrict name,
+               GkProgram * __restrict prog) {
+  glUniform4fv(gkUniformLoc(prog, name), 1, color->vec);
+}
+
+void
+gkUniformColorBuff(GkColor   * __restrict color,
+                   char      * __restrict buf,
+                   char      * __restrict name,
+                   GkProgram * __restrict prog) {
+  glUniform4fv(gkUniformLocBuff(prog, name, buf), 1, color->vec);
+}
+
+void
+gkUniformTex(GkContext  * __restrict ctx,
+             GkMaterial * __restrict mat,
+             GkTexture  * __restrict tex,
+             char       * __restrict name,
+             GkProgram  * __restrict prog) {
+  char        uniformNameBuff[32];
+  const char *uniformName;
+
+  if (!tex->sampler)
+    return;
+
+  gkBindTextureTo(ctx,
+                  ctx->availTexUnit,
+                  tex->target,
+                  tex->index);
+
+  tex->boundUnit = ctx->availTexUnit;
+  flist_sp_insert(&mat->boundTextures, tex);
+
+  if (!(uniformName = tex->sampler->uniformName)) {
+    sprintf(uniformNameBuff, "%sTex", name);
+    uniformName = uniformNameBuff;
+  }
+
+  gkUniform1i(prog, uniformName, ctx->availTexUnit);
+  ctx->availTexUnit++;
+}
+
+void
+gkUniformColorOrTex(GkContext    * __restrict ctx,
+                    GkMaterial   * __restrict mat,
+                    GkColorOrTex * __restrict crtx,
                     char         * __restrict name,
-                    GkProgram    * __restrict prog,
-                    uint32_t     * __restrict texUnit) {
-  GLint         loc;
+                    GkProgram    * __restrict prog) {
   GkColorMethod method;
 
   method = crtx->method;
@@ -30,41 +75,19 @@ gkUniformColorOrTex(GkColorOrTex * __restrict crtx,
     return;
 
   if (method == GK_COLOR_COLOR) {
-    GkColor *color;
-
-    color = crtx->val;
-    loc   = gkUniformLoc(prog, name);
-    glUniform4fv(loc, 1, color->vec);
+    gkUniformColor(crtx->val, name, prog);
   } else if (method == GK_COLOR_TEX) {
-    GkTexture *tex;
-
-    tex = crtx->val;
-    if (tex->sampler) {
-      char        uniformNameBuff[32];
-      const char *uniformName;
-
-      glActiveTexture(GL_TEXTURE0 + *texUnit);
-      glBindTexture(tex->target, tex->index);
-      
-      if (!(uniformName = tex->sampler->uniformName)) {
-        sprintf(uniformNameBuff, "%sTex", name);
-        uniformName = uniformNameBuff;
-      }
-
-      loc = gkUniformLoc(prog, (char *)uniformName);
-      glUniform1i(loc, *texUnit);
-      (*texUnit)++;
-    }
+    gkUniformTex(ctx, mat, crtx->val, name, prog);
   }
 }
 
 void
-gkUniformColorOrTexBuff(GkColorOrTex * __restrict crtx,
+gkUniformColorOrTexBuff(GkContext    * __restrict ctx,
+                        GkMaterial   * __restrict mat,
+                        GkColorOrTex * __restrict crtx,
                         char         * __restrict buf,
                         char         * __restrict name,
-                        GkProgram    * __restrict prog,
-                        uint32_t     * __restrict texUnit) {
-  GLint         loc;
+                        GkProgram    * __restrict prog) {
   GkColorMethod method;
   
   method = crtx->method;
@@ -78,11 +101,7 @@ gkUniformColorOrTexBuff(GkColorOrTex * __restrict crtx,
   return;
   
   if (method == GK_COLOR_COLOR) {
-    GkColor *color;
-    
-    color = crtx->val;
-    loc = gkUniformLocBuff(prog, name, buf);
-    glUniform4fv(loc, 1, color->vec);
+    gkUniformColorBuff(crtx->val, buf, name, prog);
   } else if (method == GK_COLOR_TEX) {
     GkTexture *tex;
     
@@ -90,15 +109,22 @@ gkUniformColorOrTexBuff(GkColorOrTex * __restrict crtx,
     if (tex->sampler) {
       const char *uniformName;
       
-      glActiveTexture(GL_TEXTURE0 + *texUnit);
-      glBindTexture(tex->target, tex->index);
+      gkBindTextureTo(ctx,
+                      ctx->availTexUnit,
+                      tex->target,
+                      tex->index);
+
+      tex->boundUnit = ctx->availTexUnit;
+      flist_sp_insert(&mat->boundTextures, tex);
       
       if (!(uniformName = tex->sampler->uniformName))
         uniformName = name;
-      
-      loc = gkUniformLocBuff(prog, (char *)uniformName, buf);
-      glUniform1i(loc, *texUnit);
-      (*texUnit)++;
+
+      glUniform1i(gkUniformLocBuff(prog,
+                                   (char *)uniformName,
+                                   buf),
+                  ctx->availTexUnit);
+      ctx->availTexUnit++;
     }
   }
 }

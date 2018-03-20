@@ -21,6 +21,7 @@ typedef struct GkContext {
   struct RBTree      *mdltree;
   struct GkGPUStates *currState;
   struct FList       *samplers; /* private          */
+  uint32_t            availTexUnit;
 } GkContext;
 
 GK_EXPORT

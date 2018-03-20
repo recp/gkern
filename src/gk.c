@@ -17,11 +17,11 @@ gkAllocContext() {
   GkContext *ctx;
 
   ctx = calloc(1, sizeof(*ctx));
-  ctx->mdltree  = rb_newtree_ptr();
-  ctx->states   = flist_new(NULL);
-  ctx->samplers = flist_new(NULL);
+  ctx->mdltree   = rb_newtree_ptr();
+  ctx->states    = flist_new(NULL);
+  ctx->samplers  = flist_new(NULL);
 
-  gkSetDefaultState(ctx);
+  gkInitStates(ctx);
 
   return ctx;
 }
