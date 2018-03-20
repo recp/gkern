@@ -75,22 +75,23 @@ gkApplyTexState(GkContext   * __restrict ctx,
   GkTextureState *texState, *currtex;
   GkGPUStates    *cst;
   HTable         *texu;
+  bool            chTex;
   
   cst      = ctx->currState;
   texState = (GkTextureState *)st;
-  
+  chTex    = true;
+  texu     = hash_get(cst->tex, DS_ITOP(texState->texunit));
+
   if (texState->texunit != cst->activeTex)
     gkActiveTexture(ctx, texState->texunit);
 
-  if ((texu = hash_get(cst->tex, DS_ITOP(texState->texunit)))) {
-    if ((currtex = hash_get(texu, DS_ITOP(texState->target)))) {
-      if (currtex->texid == texState->texid)
-        return;
-    }
-  }
+  if ((currtex = hash_get(texu, DS_ITOP(texState->target))))
+    chTex = currtex->texid != texState->texid;
 
-  hash_set(texu, (void *)(uintptr_t)texState->target, texState);
-  glBindTexture(texState->target, texState->texid);
+  hash_set(texu, DS_ITOP(texState->target), st);
+
+  if (chTex)
+    glBindTexture(texState->target, texState->texid);
 }
 
 _gk_hide

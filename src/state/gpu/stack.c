@@ -63,7 +63,7 @@ gkPopState(GkContext * __restrict ctx) {
     prevst = currst->prev;
 
 #ifdef DEBUG
-    assert(currst->prev != currst);
+    assert(prevst != currst);
     assert(prevst);
 #endif
 

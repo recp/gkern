@@ -162,39 +162,34 @@ gkCreatTexState(GkContext    * __restrict ctx,
                 GkStatesItem * __restrict sti,
                 uint32_t                  unit,
                 GLenum                    target) {
-  GkTextureState *state, *statei;
+  GkTextureState *state, *prev;
   GkGPUStates    *curr;
   HTable         *texu;
   size_t          stlen;
-  bool            foundUnit, foundTarget;
-
-  foundUnit = foundTarget  = false;
 
   stlen  = sizeof(GkTextureState);
   curr   = ctx->currState;
   state  = calloc(1, stlen);
+  prev   = NULL;
 
   if ((texu = hash_get(curr->tex, DS_ITOP(unit)))) {
-    if ((statei = hash_get(texu, DS_ITOP(target)))) {
-      foundTarget = true;
-      memcpy(state, statei, stlen);
-      state->base.prev = &statei->base;
-    }
+    prev = hash_get(texu, DS_ITOP(target));
   } else {
     texu = hash_new(NULL, ds_hashfn_ui32p, ds_cmp_ui32p, 4);
     hash_set(curr->tex, DS_ITOP(unit), texu);
   }
 
   /* bind default */
-  if (!foundTarget) {
-    memcpy(state, &gk__deftexst, stlen);
-    state->base.prev = &gk__deftexst.base;
+  if (!prev) {
+    prev             = calloc(1, stlen);
+    prev->base.index = unit;
+    prev->base.type  = GK_GPUSTATE_TEXTURE;
+    prev->target     = target;
+    prev->texunit    = unit;
   }
 
-  state->base.index = unit;
-  state->base.type  = GK_GPUSTATE_TEXTURE;
-  state->target     = target;
-  state->texunit    = unit;
+  memcpy(state, prev, stlen);
+  state->base.prev = &prev->base;
 
   hash_set(texu, DS_ITOP(target), state);
 
