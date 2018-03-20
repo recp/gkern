@@ -20,13 +20,41 @@
 #include <malloc/malloc.h>
 #include <string.h>
 
+#define _DF(X)  "\n#define " X "\n"
+#define SH_V_ARG(F, ...) flg->vert += sprintf(flg->vert, _DF(F), __VA_ARGS__);
+#define SH_V(F, ...)     flg->vert += sprintf(flg->vert, _DF(F));
+#define SH_F_ARG(F, ...) flg->frag += sprintf(flg->frag, _DF(F), __VA_ARGS__);
+#define SH_F(F, ...)     flg->frag += sprintf(flg->frag, _DF(F));
+
+#define SH_VF_ARG(F, ...) \
+  do { \
+    flg->vert += sprintf(flg->vert, _DF(F), __VA_ARGS__); \
+    flg->frag += sprintf(flg->frag, _DF(F), __VA_ARGS__); \
+  } while(0);
+
+#define SH_VF(F) \
+  do { \
+    flg->vert += sprintf(flg->vert, _DF(F)); \
+    flg->frag += sprintf(flg->frag, _DF(F)); \
+  } while (0);
+
+typedef struct GkFlagsStruct {
+  char *vert;
+  char *frag;
+  int   texCount;
+} GkFlagsStruct;
+
 static
 void
-gk__colorOrTexFlag(GkColorOrTex * __restrict attr,
-                   char         * __restrict attrname,
-                   char        ** __restrict pVertFlags,
-                   char        ** __restrict pFragFlags,
-                   int          * __restrict texCount);
+gk__texFlag(GkTexture     * __restrict tex,
+            char          * __restrict attrname,
+            GkFlagsStruct * __restrict flags);
+
+static
+void
+gk__colorOrTexFlag(GkColorOrTex  * __restrict attr,
+                   char          * __restrict attrname,
+                   GkFlagsStruct * __restrict flags);
 
 static
 void
@@ -59,8 +87,9 @@ gkShaderNameFor(GkScene     * __restrict scene,
   pname = nameBuff;
   techn = mat->technique;
 
+  memset(attr, 0, sizeof(attr));
   gk__fillAttribs(attr, NULL, techn);
-  sprintf(pname, "%d_", techn->type);
+  pname += sprintf(pname, "%d_", techn->type);
 
   /* primitive inputs */
   inpi = prim->inputs;
@@ -75,6 +104,25 @@ gkShaderNameFor(GkScene     * __restrict scene,
     pname += sprintf(pname, "%s", shortName);
 
     inpi = inpi->next;
+  }
+
+  /* PBR flags */
+  switch (techn->type) {
+    case GK_MATERIAL_METALROUGH: {
+      GkMetalRough *metalRough;
+
+      metalRough = (GkMetalRough *)techn;
+
+      if (metalRough->albedoTex)
+        pname += sprintf(pname, "_a");
+
+      if (metalRough->metalRoughTex)
+        pname += sprintf(pname, "_mr");
+
+      break;
+    }
+
+    default: break;
   }
 
   /* primitive attributes, tasks */
@@ -110,11 +158,10 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
                  GkMaterial  * __restrict mat,
                  char       ** __restrict vertFlags,
                  char       ** __restrict fragFlags) {
-  GkTechnique *tech;
-  char        *pFragFlags, *pVertFlags;
-  float       *shininess;
-  size_t       fragFlagsLen, vertFlagsLen;
-  int32_t      i, texCount;
+  GkTechnique  *tech;
+  float        *shininess;
+  int32_t       i;
+  GkFlagsStruct flags, *flg;
 
   GkColorOrTex *attr[4];
   char *attrname[] = {
@@ -127,61 +174,64 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
     "SHADOWMAP"
   };
 
-  fragFlagsLen  = vertFlagsLen = PAGE_SIZE;
-  *fragFlags    = malloc(fragFlagsLen);
-  *vertFlags    = malloc(vertFlagsLen);
-  pFragFlags    = *fragFlags;
-  pVertFlags    = *vertFlags;
-  tech          = mat->technique;
+  *fragFlags     = malloc(PAGE_SIZE);
+  *vertFlags     = malloc(PAGE_SIZE);
+  flags.frag     = *fragFlags;
+  flags.vert     = *vertFlags;
+  tech           = mat->technique;
+  flg            = &flags;
 
-  pVertFlags[0] = pFragFlags[0] = '\0';
+  flags.frag[0]  = flags.vert[0] = '\0';
+  shininess      = NULL;
+  flags.texCount = 0;
 
-  shininess = NULL;
+  memset(attr, 0, sizeof(attr));
   gk__fillAttribs(attr, &shininess, tech);
 
-  texCount = 0;
+  /* Common profile: Color or Texture flags */
   for (i = 0; i < 4; i++) {
     if (!attr[i])
       continue;
 
-    gk__colorOrTexFlag(attr[i],
-                       attrname[i],
-                       &pVertFlags,
-                       &pFragFlags,
-                       &texCount);
+    gk__colorOrTexFlag(attr[i], attrname[i], flg);
   }
 
-  /* TODO: transparent, reflectivity */
+  /* TODO: reflectivity */
 
   if (shininess)
-    pFragFlags += sprintf(pFragFlags, "\n#define SHININESS\n");
+    SH_F("SHININESS");
 
-  pVertFlags += sprintf(pVertFlags,
-                        "\n#define TEX_COUNT %d\n",
-                        texCount);
+  /* PBR flags */
+  switch (tech->type) {
+    case GK_MATERIAL_METALROUGH: {
+      GkMetalRough *metalRough;
 
-  pFragFlags += sprintf(pFragFlags,
-                        "\n#define TEX_COUNT %d\n",
-                        texCount);
+      metalRough = (GkMetalRough *)tech;
+      if (metalRough->albedoTex)
+        gk__texFlag(metalRough->albedoTex, "ALBEDO", flg);
 
+      if (metalRough->metalRoughTex)
+        gk__texFlag(metalRough->metalRoughTex, "METALROUGH", flg);
+      break;
+    }
+    default:
+      break;
+  }
+
+  SH_VF_ARG("TEX_COUNT %d", flg->texCount)
+
+  /* shadow flags */
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
-    int shadowSplit;
+    int shadSplit;
 
-    pVertFlags += sprintf(pVertFlags, "\n#define SHADOWMAP\n");
-    pFragFlags += sprintf(pFragFlags, "\n#define SHADOWMAP\n");
+    SH_VF("SHADOWMAP");
 
-    shadowSplit = gkShadowSplit();
+    shadSplit = gkShadowSplit();
     switch (gkShadowTechn()) {
       case GK_SHADOW_CSM:
-        pVertFlags += sprintf(pVertFlags,
-                              "\n#define SHAD_SPLIT %d\n",
-                              shadowSplit);
-        pFragFlags += sprintf(pFragFlags,
-                              "\n#define SHAD_SPLIT %d\n",
-                              shadowSplit);
-
-        pVertFlags += sprintf(pVertFlags, "\n#define POS_MS\n");
-        pFragFlags += sprintf(pFragFlags, "\n#define POS_MS\n");
+        SH_VF("SHAD_SPLIT")
+        SH_VF("POS_MS")
+        SH_VF_ARG("SHAD_SPLIT %d", shadSplit)
         break;
       default:
         break;
@@ -189,54 +239,42 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
     if (light) {
       if (light->type == GK_LIGHT_TYPE_POINT) {
-        pVertFlags += sprintf(pVertFlags, "\n#define SHAD_CUBE\n");
-        pFragFlags += sprintf(pFragFlags, "\n#define SHAD_CUBE\n");
-        pVertFlags += sprintf(pVertFlags, "\n#define POS_WS\n");
-        pFragFlags += sprintf(pFragFlags, "\n#define POS_WS\n");
+        SH_VF("SHAD_CUBE")
+        SH_VF("POS_WS")
       }
     }
   }
 
+  /* transpareny flags */
   if (gkIsTransparent(scene, mat)) {
     if (mat->transparent->color) {
-      gk__colorOrTexFlag(mat->transparent->color,
-                         "TRANSP",
-                         &pVertFlags,
-                         &pFragFlags,
-                         &texCount);
+      gk__colorOrTexFlag(mat->transparent->color, "TRANSP", flg);
     } else {
-      pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_NO_COLOR\n");
-      pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_NO_COLOR\n");
+      SH_VF("TRANSP_NO_COLOR")
     }
 
     switch (mat->transparent->opaque) {
       case GK_OPAQUE_A_ONE:
-        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_A_ONE\n");
-        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_A_ONE\n");
+        SH_VF("TRANSP_A_ONE")
         break;
       case GK_OPAQUE_A_ZERO:
-        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_A_ZERO\n");
-        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_A_ZERO\n");
+        SH_VF("TRANSP_A_ZERO")
         break;
       case GK_OPAQUE_RGB_ONE:
-        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_RGB_ONE\n");
-        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_RGB_ONE\n");
+        SH_VF("TRANSP_RGB_ONE")
         break;
       case GK_OPAQUE_RGB_ZERO:
-        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_RGB_ZERO\n");
-        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_RGB_ZERO\n");
+        SH_VF("TRANSP_RGB_ZERO")
         break;
       default:
         break;
     }
 
-    pVertFlags += sprintf(pVertFlags, "\n#define TRANSP\n");
-    pFragFlags += sprintf(pFragFlags, "\n#define TRANSP\n");
+    SH_VF("TRANSP")
 
     switch (gkTranspTechn()) {
       case GK_TRANSP_WEIGHTED_BLENDED:
-        pVertFlags += sprintf(pVertFlags, "\n#define TRANSP_WBL\n");
-        pFragFlags += sprintf(pFragFlags, "\n#define TRANSP_WBL\n");
+        SH_VF("TRANSP_WBL")
         break;
       default:
         break;
@@ -274,6 +312,11 @@ gkShadersFor(GkScene     * __restrict scene,
     case GK_MATERIAL_CONSTANT:
       fragSource[2] =
 #include "glsl/frag/constant.glsl"
+      ;
+      break;
+    case GK_MATERIAL_METALROUGH:
+      fragSource[2] =
+#include "glsl/frag/pbr_metalrough.glsl"
       ;
       break;
     default:
@@ -369,40 +412,42 @@ gk_creatProgForCmnMat(char *name, void *userData) {
 
 static
 void
-gk__colorOrTexFlag(GkColorOrTex * __restrict attr,
-                   char         * __restrict attrname,
-                   char        ** __restrict pVertFlags,
-                   char        ** __restrict pFragFlags,
-                   int          * __restrict texCount) {
+gk__texFlag(GkTexture     * __restrict tex,
+            char          * __restrict attrname,
+            GkFlagsStruct * __restrict flags) {
+  GkSampler  *sampler;
+  const char *coordInpName;
+
+  if (!tex)
+    return;
+
+  coordInpName = NULL;
+  if ((sampler = tex->sampler))
+    coordInpName = sampler->coordInputName;
+  if (!coordInpName)
+    coordInpName = "TEXCOORD";
+
+  flags->frag += sprintf(flags->frag,
+                         "\n#define %s_TEX\n"
+                         "\n#define %s_TEXCOORD v%s\n",
+                         attrname,
+                         attrname,
+                         coordInpName);
+  flags->texCount++;
+}
+
+static
+void
+gk__colorOrTexFlag(GkColorOrTex  * __restrict attr,
+                   char          * __restrict attrname,
+                   GkFlagsStruct * __restrict flags) {
   switch (attr->method) {
     case GK_COLOR_COLOR:
-      *pFragFlags += sprintf(*pFragFlags,
-                             "\n#define %s_COLOR\n",
-                             attrname);
+      flags->frag += sprintf(flags->frag, "\n#define %s_COLOR\n", attrname);
       break;
-    case GK_COLOR_TEX: {
-      GkTexture  *tex;
-      GkSampler  *sampler;
-      const char *coordInpName;
-
-      coordInpName = NULL;
-      if (!(tex = attr->val))
-        break;
-
-      if ((sampler = tex->sampler))
-        coordInpName = sampler->coordInputName;
-      if (!coordInpName)
-        coordInpName = "TEXCOORD";
-
-      *pFragFlags += sprintf(*pFragFlags,
-                             "\n#define %s_TEX\n"
-                             "\n#define %s_TEXCOORD v%s\n",
-                             attrname,
-                             attrname,
-                             coordInpName);
-      (*texCount)++;
+    case GK_COLOR_TEX:
+      gk__texFlag(attr->val, attrname, flags);
       break;
-    }
     default: break;
   }
 }
@@ -430,7 +475,6 @@ gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
       GkLambert *lambert;
       lambert = (GkLambert *)techn;
       matAttribs[0] = lambert->diffuse;
-      matAttribs[1] = NULL;
       matAttribs[2] = lambert->ambient;
       matAttribs[3] = lambert->emission;
       break;
@@ -438,9 +482,6 @@ gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
     case GK_MATERIAL_CONSTANT: {
       GkConstant *constant;
       constant = (GkConstant *)techn;
-      matAttribs[0] = NULL;
-      matAttribs[1] = NULL;
-      matAttribs[2] = NULL;
       matAttribs[3] = constant->emission;
       break;
     }

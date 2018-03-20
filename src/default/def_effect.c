@@ -63,8 +63,8 @@ GkMetalRough gkdef_metlrough = {
     .type       = GK_MATERIAL_METALROUGH,
     .subroutine = "mtlrough"
   },
-  .baseColor     = { 1.0f, 1.0f, 1.0f, 1.0f },
-  .baseColorTex  = NULL,
+  .albedo     = { 1.0f, 1.0f, 1.0f, 1.0f },
+  .albedoTex  = NULL,
   .metalRoughTex = NULL,
   .metallic  = 1.0f,
   .roughness = 1.0f

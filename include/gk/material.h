@@ -81,8 +81,8 @@ typedef GkPhong GkBlinn;
 
 typedef struct GkMetalRough {
   GkTechnique base;
-  GkColor     baseColor;
-  GkTexture  *baseColorTex;
+  GkColor     albedo;
+  GkTexture  *albedoTex;
   GkTexture  *metalRoughTex;
   float       metallic;
   float       roughness;
@@ -111,6 +111,7 @@ typedef struct GkMaterial {
   GkTechnique   *technique;
   GkTransparent *transparent;
   GkReflective  *reflective;
+  FListItem     *boundTextures;
   float          indexOfRefraction;
   uint8_t        isvalid;
   uint8_t        enabled;

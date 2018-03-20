@@ -194,6 +194,20 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
     
     if (constant->emission)
       gkUniformColorOrTex(ctx, mat, constant->emission, "uEmission", prog);
+  } else if (technique->type == GK_MATERIAL_METALROUGH) {
+    GkMetalRough *metalRough;
+    metalRough  = (GkMetalRough *)mat->technique;
+
+    gkUniformColor(&metalRough->albedo, "uAlbedo", prog);
+
+    gkUniform1f(prog, "uMetallic",  metalRough->metallic);
+    gkUniform1f(prog, "uRoughness", metalRough->roughness);
+
+    if (metalRough->albedoTex)
+      gkUniformTex(ctx, mat, metalRough->albedoTex, "uAlbedoTex", prog);
+
+    if (metalRough->metalRoughTex)
+      gkUniformTex(ctx, mat, metalRough->metalRoughTex, "uMetalRoughTex", prog);
   }
   
   if (mat->transparent) {
