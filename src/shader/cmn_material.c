@@ -106,6 +106,10 @@ gkShaderNameFor(GkScene     * __restrict scene,
     inpi = inpi->next;
   }
 
+  /* Occlusion Map */
+  if (techn->occlusion && techn->occlusion->tex)
+    pname += sprintf(pname, "_oc");
+
   /* PBR flags */
   switch (techn->type) {
     case GK_MATERIAL_METALROUGH: {
@@ -192,6 +196,11 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
       continue;
 
     gk__colorOrTexFlag(attr[i], attrname[i], flg);
+  }
+
+  /* Occlusion Map */
+  if (tech->occlusion && tech->occlusion->tex) {
+    gk__texFlag(tech->occlusion->tex, "OCCLUSION", flg);
   }
 
   /* TODO: reflectivity */

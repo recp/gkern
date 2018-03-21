@@ -65,15 +65,23 @@ typedef struct GkReflective {
   float        amount;
 } GkReflective;
 
+typedef struct GkOcclusion {
+  GkTexture *tex;
+  float      strength;
+} GkOcclusion;
+
 typedef struct GkTechnique {
+  struct GkTechnique *next;
+
   GkTransparent      *transparent;
   GkReflective       *reflective;
   GkColorDesc        *diffuse;
   GkColorDesc        *specular;
   GkColorDesc        *emission;
   GkColorDesc        *ambient;
+  GkOcclusion        *occlusion;
+
   struct GkPass      *pass;
-  struct GkTechnique *next;
   GkMaterialType      type;
   float               shininess;
 } GkTechnique;

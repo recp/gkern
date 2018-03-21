@@ -173,6 +173,11 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
   if (techn->emission)
     gkUniformColorDesc(ctx, mat, techn->emission, "uEmission", prog);
 
+  if (techn->occlusion && techn->occlusion->tex) {
+    gkUniformTex(ctx, mat, techn->occlusion->tex, "uOcclusionTex", prog);
+    gkUniform1f(prog, "uOcclusionStrength", techn->occlusion->strength);
+  }
+
   if (techn->transparent) {
     GkTransparent *transp;
     
