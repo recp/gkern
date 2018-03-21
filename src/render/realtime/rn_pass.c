@@ -47,7 +47,8 @@ gkRenderPass(GkScene    * __restrict scene,
   if (!pass->noLights) {
     switch (sceneImpl->rpath) {
       case GK_RNPATH_MODEL_PERLIGHT:
-        if (!material->transparent)
+        if (material->technique
+            && !material->technique->transparent)
           gkRenderPrimPerLight(scene, prim, prog);
         else
           gkRenderTranspPrimPerLight(scene, prim, prog);

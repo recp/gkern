@@ -58,8 +58,8 @@ gk__colorOrTexFlag(GkColorDesc   * __restrict attr,
 
 static
 void
-gk__fillAttribs(GkColorDesc * __restrict matAttribs[4],
-                float      ** __restrict shininess,
+gk__fillAttribs(GkMaterial  * __restrict mat,
+                GkColorDesc * __restrict matAttribs[4],
                 GkTechnique * __restrict techn);
 
 static
@@ -88,7 +88,7 @@ gkShaderNameFor(GkScene     * __restrict scene,
   techn = mat->technique;
 
   memset(attr, 0, sizeof(attr));
-  gk__fillAttribs(attr, NULL, techn);
+  gk__fillAttribs(mat, attr, techn);
   pname += sprintf(pname, "%d_", techn->type);
 
   /* primitive inputs */
@@ -159,7 +159,6 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
                  char       ** __restrict vertFlags,
                  char       ** __restrict fragFlags) {
   GkTechnique  *tech;
-  float        *shininess;
   int32_t       i;
   GkFlagsStruct flags, *flg;
 
@@ -182,11 +181,10 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
   flg            = &flags;
 
   flags.frag[0]  = flags.vert[0] = '\0';
-  shininess      = NULL;
   flags.texCount = 0;
 
   memset(attr, 0, sizeof(attr));
-  gk__fillAttribs(attr, &shininess, tech);
+  gk__fillAttribs(mat, attr, tech);
 
   /* Common profile: Color or Texture flags */
   for (i = 0; i < 4; i++) {
@@ -198,7 +196,7 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
   /* TODO: reflectivity */
 
-  if (shininess)
+  if (tech->type == GK_MATERIAL_PHONG || tech->type == GK_MATERIAL_BLINN)
     SH_F("SHININESS");
 
   /* PBR flags */
@@ -248,13 +246,13 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
   /* transpareny flags */
   if (gkIsTransparent(scene, mat)) {
-    if (mat->transparent->color) {
-      gk__colorOrTexFlag(mat->transparent->color, "TRANSP", flg);
+    if (mat->technique->transparent->color) {
+      gk__colorOrTexFlag(mat->technique->transparent->color, "TRANSP", flg);
     } else {
       SH_VF("TRANSP_NO_COLOR")
     }
 
-    switch (mat->transparent->opaque) {
+    switch (mat->technique->transparent->opaque) {
       case GK_OPAQUE_A_ONE:
         SH_VF("TRANSP_A_ONE")
         break;
@@ -455,39 +453,11 @@ gk__colorOrTexFlag(GkColorDesc   * __restrict attr,
 
 static
 void
-gk__fillAttribs(GkColorDesc  * __restrict matAttribs[4],
-                float       ** __restrict shininess,
+gk__fillAttribs(GkMaterial   * __restrict mat,
+                GkColorDesc  * __restrict matAttribs[4],
                 GkTechnique  * __restrict techn) {
-  switch (techn->type) {
-    case GK_MATERIAL_PHONG:
-    case GK_MATERIAL_BLINN: {
-      GkPhong *phong;
-      phong = (GkPhong *)techn;
-      matAttribs[0] = phong->diffuse;
-      matAttribs[1] = phong->specular;
-      matAttribs[2] = phong->ambient;
-      matAttribs[3] = phong->emission;
-
-      if (shininess)
-        *shininess = &phong->shininess;
-      break;
-    }
-    case GK_MATERIAL_LAMBERT: {
-      GkLambert *lambert;
-      lambert = (GkLambert *)techn;
-      matAttribs[0] = lambert->diffuse;
-      matAttribs[2] = lambert->ambient;
-      matAttribs[3] = lambert->emission;
-      break;
-    }
-    case GK_MATERIAL_CONSTANT: {
-      GkConstant *constant;
-      constant = (GkConstant *)techn;
-      matAttribs[3] = constant->emission;
-      break;
-    }
-
-    default:
-      return;
-  }
+  matAttribs[0] = techn->diffuse;
+  matAttribs[1] = techn->specular;
+  matAttribs[2] = techn->ambient;
+  matAttribs[3] = techn->emission;
 }

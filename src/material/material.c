@@ -12,9 +12,9 @@
 
 #include "../default/def_effect.h"
 
-GkPhong*
+GkTechnique*
 gkMaterialNewPhong() {
-  GkPhong *phong;
+  GkTechnique *phong;
   phong = malloc(sizeof(*phong));
   memcpy(phong,
          gk_def_material_phong(),
@@ -22,9 +22,9 @@ gkMaterialNewPhong() {
   return phong;
 }
 
-GkBlinn*
+GkTechnique*
 gkMaterialNewBlinn() {
-  GkBlinn *blinn;
+  GkTechnique *blinn;
   blinn = malloc(sizeof(*blinn));
   memcpy(blinn,
          gk_def_material_blinn(),
@@ -32,9 +32,9 @@ gkMaterialNewBlinn() {
   return blinn;
 }
 
-GkLambert*
+GkTechnique*
 gkMaterialNewLambert() {
-  GkLambert *lambert;
+  GkTechnique *lambert;
   lambert = malloc(sizeof(*lambert));
   memcpy(lambert,
          gk_def_material_lambert(),
@@ -42,9 +42,9 @@ gkMaterialNewLambert() {
   return lambert;
 }
 
-GkConstant*
+GkTechnique*
 gkMaterialNewConstant() {
-  GkConstant *constant;
+  GkTechnique *constant;
   constant = malloc(sizeof(*constant));
   memcpy(constant,
          gk_def_material_constant(),

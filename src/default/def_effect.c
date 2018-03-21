@@ -16,52 +16,35 @@ GkColorDesc gkdef_clr_blk = { .val    = &gkdef_clr__blk,
 GkColorDesc gkdef_clr_wht = { .val    = &gkdef_clr__wht,
                               .method = GK_COLOR_COLOR };
 
-GkPhong gkdef_phong = {
-  .base = {
-    .type       = GK_MATERIAL_PHONG,
-    .subroutine = "phong"
-  },
-  .emission  = NULL,
+GkTechnique gkdef_phong = {
+  .type      = GK_MATERIAL_PHONG,
   .ambient   = NULL,
   .diffuse   = &gkdef_clr_wht,
   .specular  = &gkdef_clr_wht,
   .shininess = 1.0f
 };
 
-GkBlinn gkdef_blinn = {
-  .base = {
-    .type       = GK_MATERIAL_BLINN,
-    .subroutine = "blinn"
-  },
-  .emission  = NULL,
+GkTechnique gkdef_blinn = {
+  .type      = GK_MATERIAL_BLINN,
   .ambient   = NULL,
   .diffuse   = &gkdef_clr_wht,
   .specular  = &gkdef_clr_wht,
   .shininess = 1.0f,
 };
 
-GkLambert gkdef_lambert = {
-  .base = {
-    .type       = GK_MATERIAL_LAMBERT,
-    .subroutine = "lambert"
-  },
-  .emission = NULL,
-  .ambient  = NULL,
-  .diffuse  = &gkdef_clr_wht,
+GkTechnique gkdef_lambert = {
+  .type    = GK_MATERIAL_LAMBERT,
+  .ambient = NULL,
+  .diffuse = &gkdef_clr_wht,
 };
 
-GkConstant gkdef_constant = {
-  .base = {
-    .type       = GK_MATERIAL_CONSTANT,
-    .subroutine = "constant"
-  },
-  .emission = NULL
+GkTechnique gkdef_constant = {
+  .type = GK_MATERIAL_CONSTANT
 };
 
 GkMetalRough gkdef_metlrough = {
   .base = {
-    .type       = GK_MATERIAL_METALROUGH,
-    .subroutine = "mtlrough"
+    .type = GK_MATERIAL_METALROUGH
   },
   .albedo     = { 1.0f, 1.0f, 1.0f, 1.0f },
   .albedoMap  = NULL,
@@ -70,22 +53,22 @@ GkMetalRough gkdef_metlrough = {
   .roughness = 1.0f
 };
 
-GkPhong*
+GkTechnique*
 gk_def_material_phong() {
   return &gkdef_phong;
 }
 
-GkBlinn*
+GkTechnique*
 gk_def_material_blinn() {
   return &gkdef_blinn;
 }
 
-GkLambert*
+GkTechnique*
 gk_def_material_lambert() {
   return &gkdef_lambert;
 }
 
-GkConstant*
+GkTechnique*
 gk_def_material_constant() {
   return &gkdef_constant;
 }
@@ -96,11 +79,9 @@ gk_def_material_mtlrough() {
 }
 
 GkMaterial gkdef_material = {
-  .technique         = &gkdef_lambert.base,
+  .technique         = &gkdef_lambert,
   .isvalid           = 1,
   .enabled           = 1,
-  .reflective        = NULL,
-  .transparent       = NULL,
   .indexOfRefraction = 1.0f
 };
 

@@ -14,16 +14,16 @@
 GkMaterial*
 gk_def_material(void);
 
-GkPhong*
+GkTechnique*
 gk_def_material_phong(void);
 
-GkBlinn*
+GkTechnique*
 gk_def_material_blinn(void);
 
-GkLambert*
+GkTechnique*
 gk_def_material_lambert(void);
 
-GkConstant*
+GkTechnique*
 gk_def_material_constant(void);
 
 GkMetalRough*

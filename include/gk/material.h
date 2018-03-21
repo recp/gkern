@@ -46,48 +46,6 @@ typedef struct GkColorDesc {
   GkColorMethod method;
 } GkColorDesc;
 
-typedef struct GkTechnique {
-  GkMaterialType      type;
-  uint32_t            index; /* subroutine index */
-  char               *subroutine;
-  struct GkPass      *pass;
-  struct GkTechnique *next;
-} GkTechnique;
-
-typedef struct GkPhong {
-  GkTechnique  base;
-  GkColorDesc *emission;
-  GkColorDesc *ambient;
-  GkColorDesc *diffuse;
-  GkColorDesc *specular;
-  float        shininess;
-} GkPhong;
-
-typedef struct GkLambert {
-  GkTechnique  base;
-  GkColorDesc *emission;
-  GkColorDesc *ambient;
-  GkColorDesc *diffuse;
-} GkLambert;
-
-typedef struct GkConstant {
-  GkTechnique  base;
-  GkColorDesc *emission;
-} GkConstant;
-
-typedef GkPhong GkBlinn;
-
-/* Common PBR Materials */
-
-typedef struct GkMetalRough {
-  GkTechnique base;
-  GkColor     albedo;
-  GkTexture  *albedoTex;
-  GkTexture  *metalRoughTex;
-  float       metallic;
-  float       roughness;
-} GkMetalRough;
-
 typedef enum GkAlphaMode {
   GK_ALPHA_OPAQUE,
   GK_ALPHA_MASK,
@@ -107,26 +65,47 @@ typedef struct GkReflective {
   float        amount;
 } GkReflective;
 
+typedef struct GkTechnique {
+  GkTransparent      *transparent;
+  GkReflective       *reflective;
+  GkColorDesc        *diffuse;
+  GkColorDesc        *specular;
+  GkColorDesc        *emission;
+  GkColorDesc        *ambient;
+  struct GkPass      *pass;
+  struct GkTechnique *next;
+  GkMaterialType      type;
+  float               shininess;
+} GkTechnique;
+
+/* Common PBR Materials */
+
+typedef struct GkMetalRough {
+  GkTechnique base;
+  GkColor     albedo;
+  GkTexture  *albedoMap;
+  GkTexture  *metalRoughMap;
+  float       metallic;
+  float       roughness;
+} GkMetalRough;
 typedef struct GkMaterial {
   GkTechnique   *technique;
-  GkTransparent *transparent;
-  GkReflective  *reflective;
   FListItem     *boundTextures;
   float          indexOfRefraction;
   uint8_t        isvalid;
   uint8_t        enabled;
 } GkMaterial;
 
-GkPhong*
+GkTechnique*
 gkMaterialNewPhong(void);
 
-GkBlinn*
+GkTechnique*
 gkMaterialNewBlinn(void);
 
-GkLambert*
+GkTechnique*
 gkMaterialNewLambert(void);
 
-GkConstant*
+GkTechnique*
 gkMaterialNewConstant(void);
 
 GkMetalRough*
