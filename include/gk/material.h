@@ -70,6 +70,11 @@ typedef struct GkOcclusion {
   float      strength;
 } GkOcclusion;
 
+typedef struct GkNormalMap {
+  GkTexture *tex;
+  float      scale;
+} GkNormalMap;
+
 typedef struct GkTechnique {
   struct GkTechnique *next;
 
@@ -80,6 +85,7 @@ typedef struct GkTechnique {
   GkColorDesc        *emission;
   GkColorDesc        *ambient;
   GkOcclusion        *occlusion;
+  GkNormalMap        *normal;
 
   struct GkPass      *pass;
   GkMaterialType      type;
