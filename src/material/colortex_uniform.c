@@ -57,11 +57,11 @@ gkUniformTex(GkContext  * __restrict ctx,
 }
 
 void
-gkUniformColorOrTex(GkContext    * __restrict ctx,
-                    GkMaterial   * __restrict mat,
-                    GkColorOrTex * __restrict crtx,
-                    char         * __restrict name,
-                    GkProgram    * __restrict prog) {
+gkUniformColorDesc(GkContext    * __restrict ctx,
+                   GkMaterial   * __restrict mat,
+                   GkColorDesc * __restrict crtx,
+                   char         * __restrict name,
+                   GkProgram    * __restrict prog) {
   GkColorMethod method;
 
   method = crtx->method;
@@ -82,12 +82,12 @@ gkUniformColorOrTex(GkContext    * __restrict ctx,
 }
 
 void
-gkUniformColorOrTexBuff(GkContext    * __restrict ctx,
-                        GkMaterial   * __restrict mat,
-                        GkColorOrTex * __restrict crtx,
-                        char         * __restrict buf,
-                        char         * __restrict name,
-                        GkProgram    * __restrict prog) {
+gkUniformColorDescBuff(GkContext   * __restrict ctx,
+                       GkMaterial  * __restrict mat,
+                       GkColorDesc * __restrict crtx,
+                       char        * __restrict buf,
+                       char        * __restrict name,
+                       GkProgram   * __restrict prog) {
   GkColorMethod method;
   
   method = crtx->method;

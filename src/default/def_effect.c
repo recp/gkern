@@ -11,10 +11,10 @@
 GkColor gkdef_clr__blk = { 0.0f, 0.0f, 0.0f, 1.0f };
 GkColor gkdef_clr__wht = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-GkColorOrTex gkdef_clr_blk = { .val    = &gkdef_clr__blk,
-                               .method = GK_COLOR_COLOR };
-GkColorOrTex gkdef_clr_wht = { .val    = &gkdef_clr__wht,
-                               .method = GK_COLOR_COLOR };
+GkColorDesc gkdef_clr_blk = { .val    = &gkdef_clr__blk,
+                              .method = GK_COLOR_COLOR };
+GkColorDesc gkdef_clr_wht = { .val    = &gkdef_clr__wht,
+                              .method = GK_COLOR_COLOR };
 
 GkPhong gkdef_phong = {
   .base = {
@@ -64,8 +64,8 @@ GkMetalRough gkdef_metlrough = {
     .subroutine = "mtlrough"
   },
   .albedo     = { 1.0f, 1.0f, 1.0f, 1.0f },
-  .albedoTex  = NULL,
-  .metalRoughTex = NULL,
+  .albedoMap  = NULL,
+  .metalRoughMap = NULL,
   .metallic  = 1.0f,
   .roughness = 1.0f
 };

@@ -41,10 +41,10 @@ typedef enum GkColorMethod {
   GK_COLOR_COLOR   = 2
 } GkColorMethod;
 
-typedef struct GkColorOrTex {
+typedef struct GkColorDesc {
   void         *val;
   GkColorMethod method;
-} GkColorOrTex;
+} GkColorDesc;
 
 typedef struct GkTechnique {
   GkMaterialType      type;
@@ -55,24 +55,24 @@ typedef struct GkTechnique {
 } GkTechnique;
 
 typedef struct GkPhong {
-  GkTechnique   base;
-  GkColorOrTex *emission;
-  GkColorOrTex *ambient;
-  GkColorOrTex *diffuse;
-  GkColorOrTex *specular;
-  float         shininess;
+  GkTechnique  base;
+  GkColorDesc *emission;
+  GkColorDesc *ambient;
+  GkColorDesc *diffuse;
+  GkColorDesc *specular;
+  float        shininess;
 } GkPhong;
 
 typedef struct GkLambert {
-  GkTechnique   base;
-  GkColorOrTex *emission;
-  GkColorOrTex *ambient;
-  GkColorOrTex *diffuse;
+  GkTechnique  base;
+  GkColorDesc *emission;
+  GkColorDesc *ambient;
+  GkColorDesc *diffuse;
 } GkLambert;
 
 typedef struct GkConstant {
-  GkTechnique   base;
-  GkColorOrTex *emission;
+  GkTechnique  base;
+  GkColorDesc *emission;
 } GkConstant;
 
 typedef GkPhong GkBlinn;
@@ -95,16 +95,16 @@ typedef enum GkAlphaMode {
 } GkAlphaMode;
 
 typedef struct GkTransparent {
-  GkColorOrTex *color;
-  GkAlphaMode   mode;
-  GkOpaque      opaque;
-  float         amount;
-  float         cutoff;
+  GkColorDesc *color;
+  GkAlphaMode  mode;
+  GkOpaque     opaque;
+  float        amount;
+  float        cutoff;
 } GkTransparent;
 
 typedef struct GkReflective {
-  GkColorOrTex *color;
-  float         amount;
+  GkColorDesc *color;
+  float        amount;
 } GkReflective;
 
 typedef struct GkMaterial {

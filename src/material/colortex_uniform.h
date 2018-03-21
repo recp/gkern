@@ -23,11 +23,11 @@ gkUniformTex(GkContext  * __restrict ctx,
              GkProgram  * __restrict prog);
 
 void
-gkUniformColorOrTex(GkContext    * __restrict ctx,
-                    GkMaterial   * __restrict mat,
-                    GkColorOrTex * __restrict crtx,
-                    char         * __restrict name,
-                    GkProgram    * __restrict prog);
+gkUniformColorDesc(GkContext    * __restrict ctx,
+                    GkMaterial  * __restrict mat,
+                    GkColorDesc * __restrict crtx,
+                    char        * __restrict name,
+                    GkProgram   * __restrict prog);
 
 void
 gkUniformColorBuff(GkColor   * __restrict color,
@@ -36,11 +36,11 @@ gkUniformColorBuff(GkColor   * __restrict color,
                    GkProgram * __restrict prog);
 
 void
-gkUniformColorOrTexBuff(GkContext    * __restrict ctx,
-                        GkMaterial   * __restrict mat,
-                        GkColorOrTex * __restrict crtx,
-                        char         * __restrict buf,
-                        char         * __restrict name,
-                        GkProgram    * __restrict prog);
+gkUniformColorDescBuff(GkContext   * __restrict ctx,
+                       GkMaterial  * __restrict mat,
+                       GkColorDesc * __restrict crtx,
+                       char        * __restrict buf,
+                       char        * __restrict name,
+                       GkProgram   * __restrict prog);
 
 #endif /* gk_colortex_uniform_h */

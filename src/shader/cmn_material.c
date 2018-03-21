@@ -52,15 +52,15 @@ gk__texFlag(GkTexture     * __restrict tex,
 
 static
 void
-gk__colorOrTexFlag(GkColorOrTex  * __restrict attr,
+gk__colorOrTexFlag(GkColorDesc   * __restrict attr,
                    char          * __restrict attrname,
                    GkFlagsStruct * __restrict flags);
 
 static
 void
-gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
-                float       ** __restrict shininess,
-                GkTechnique  * __restrict techn);
+gk__fillAttribs(GkColorDesc * __restrict matAttribs[4],
+                float      ** __restrict shininess,
+                GkTechnique * __restrict techn);
 
 static
 GkProgram*
@@ -74,7 +74,7 @@ gkShaderNameFor(GkScene     * __restrict scene,
                 char        * __restrict nameBuff) {
   GkTechnique   *techn;
   char          *pname;
-  GkColorOrTex  *attr[4];
+  GkColorDesc  *attr[4];
   GkVertexInput *inp;
   FListItem     *inpi;
   int32_t        i;
@@ -113,10 +113,10 @@ gkShaderNameFor(GkScene     * __restrict scene,
 
       metalRough = (GkMetalRough *)techn;
 
-      if (metalRough->albedoTex)
+      if (metalRough->albedoMap)
         pname += sprintf(pname, "_a");
 
-      if (metalRough->metalRoughTex)
+      if (metalRough->metalRoughMap)
         pname += sprintf(pname, "_mr");
 
       break;
@@ -163,7 +163,7 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
   int32_t       i;
   GkFlagsStruct flags, *flg;
 
-  GkColorOrTex *attr[4];
+  GkColorDesc *attr[4];
   char *attrname[] = {
     "DIFFUSE",
     "SPECULAR",
@@ -207,11 +207,12 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
       GkMetalRough *metalRough;
 
       metalRough = (GkMetalRough *)tech;
-      if (metalRough->albedoTex)
-        gk__texFlag(metalRough->albedoTex, "ALBEDO", flg);
+      if (metalRough->albedoMap)
+        gk__texFlag(metalRough->albedoMap, "ALBEDO", flg);
 
-      if (metalRough->metalRoughTex)
-        gk__texFlag(metalRough->metalRoughTex, "METALROUGH", flg);
+      if (metalRough->metalRoughMap)
+        gk__texFlag(metalRough->metalRoughMap, "METALROUGH", flg);
+
       break;
     }
     default:
@@ -438,7 +439,7 @@ gk__texFlag(GkTexture     * __restrict tex,
 
 static
 void
-gk__colorOrTexFlag(GkColorOrTex  * __restrict attr,
+gk__colorOrTexFlag(GkColorDesc   * __restrict attr,
                    char          * __restrict attrname,
                    GkFlagsStruct * __restrict flags) {
   switch (attr->method) {
@@ -454,7 +455,7 @@ gk__colorOrTexFlag(GkColorOrTex  * __restrict attr,
 
 static
 void
-gk__fillAttribs(GkColorOrTex * __restrict matAttribs[4],
+gk__fillAttribs(GkColorDesc  * __restrict matAttribs[4],
                 float       ** __restrict shininess,
                 GkTechnique  * __restrict techn) {
   switch (techn->type) {
