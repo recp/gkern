@@ -41,4 +41,26 @@ directional(inout vec3 L) {
   L = -light.direction;
   return 1.0;
 }
+
+float
+getLight(inout vec3 L) {
+  float a;
+
+  switch (lightType) {
+    case SpotLight:
+      a = spot(L);
+      break;
+    case PointLight:
+      a = point(L);
+      break;
+    case DirectionalLight:
+      a = directional(L);
+      break;
+    default:
+      a = 1.0;
+  }
+
+  return a;
+}
+
 )

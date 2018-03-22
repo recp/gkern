@@ -17,20 +17,7 @@ void main() {
   float shadow = shadowCoef();
 \n#endif\n
 
-  switch (lightType) {
-    case SpotLight:
-      a = spot(L);
-      break;
-    case PointLight:
-      a = point(L);
-      break;
-    case DirectionalLight:
-      a = directional(L);
-      break;
-    default:
-      discard;
-      return;
-  }
+  a = getLight(L);
 
 \n#ifdef TRANSP\n
    lightAttn = a;

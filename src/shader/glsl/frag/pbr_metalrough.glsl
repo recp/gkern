@@ -48,21 +48,7 @@ void main() {
        reflection, diffuseContrib, specContrib,
        L, H, N, F, f0, lightc, color;
 
-  switch (lightType) {
-    case SpotLight:
-      a = spot(L);
-      break;
-    case PointLight:
-      a = point(L);
-      break;
-    case DirectionalLight:
-      a = directional(L);
-      break;
-    default:
-      discard;
-      return;
-  }
-
+  a      = getLight(L);
   lightc = light.color.rgb * a;
   metal  = uMetalRough.x;
   rough  = uMetalRough.y;
