@@ -147,18 +147,20 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
     glUniform1f(loc, techn->shininess);
   } else if (techn->type == GK_MATERIAL_METALROUGH) {
     GkMetalRough *metalRough;
-    metalRough  = (GkMetalRough *)mat->technique;
+    float         mr[2];
 
+    metalRough = (GkMetalRough *)mat->technique;
+    mr[0]      = metalRough->metallic;
+    mr[1]      = metalRough->roughness;
+
+    gkUniform2f(prog, "uMetalRough", mr);
     gkUniformColor(&metalRough->albedo, "uAlbedo", prog);
 
-    gkUniform1f(prog, "uMetallic",  metalRough->metallic);
-    gkUniform1f(prog, "uRoughness", metalRough->roughness);
-
     if (metalRough->albedoMap)
-      gkUniformTex(ctx, mat, metalRough->albedoMap, "uAlbedoTex", prog);
+      gkUniformTex(ctx, mat, metalRough->albedoMap, "uAlbedo", prog);
 
     if (metalRough->metalRoughMap)
-      gkUniformTex(ctx, mat, metalRough->metalRoughMap, "uMetalRoughTex", prog);
+      gkUniformTex(ctx, mat, metalRough->metalRoughMap, "uMetalRough", prog);
   }
 
   if (techn->ambient)
@@ -174,12 +176,12 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
     gkUniformColorDesc(ctx, mat, techn->emission, "uEmission", prog);
 
   if (techn->occlusion && techn->occlusion->tex) {
-    gkUniformTex(ctx, mat, techn->occlusion->tex, "uOcclusionTex", prog);
+    gkUniformTex(ctx, mat, techn->occlusion->tex, "uOcclusion", prog);
     gkUniform1f(prog, "uOcclusionStrength", techn->occlusion->strength);
   }
 
   if (techn->normal && techn->normal->tex) {
-    gkUniformTex(ctx, mat, techn->normal->tex, "uNormalTex", prog);
+    gkUniformTex(ctx, mat, techn->normal->tex, "uNormal", prog);
     gkUniform1f(prog, "uNormalScale", techn->normal->scale);
   }
 

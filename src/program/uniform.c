@@ -32,3 +32,12 @@ gkUniform1f(GkProgram  * __restrict prog,
             float                   val) {
   glUniform1f(gkUniformLoc(prog, name), val);
 }
+
+GK_EXPORT
+void
+gkUniform2f(GkProgram  * __restrict prog,
+            const char * __restrict name,
+            float                   val[2]) {
+  glUniform2f(gkUniformLoc(prog, name), val[0], val[1]);
+}
+
