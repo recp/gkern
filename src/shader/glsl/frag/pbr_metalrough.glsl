@@ -21,13 +21,6 @@
  https://www.cs.virginia.edu/~jdl/bib/appearance/analytic%20models/schlick94b.pdf
  */
 
-GK_STRINGIFY(
-\n#ifdef NORMAL_TEX\n
-uniform sampler2D uNormalTex;
-uniform float     uNormalScale;
-\n#endif\n
-)
-
 #include "common.glsl"
 #include "normal.glsl"
 #include "pbr_funcs.glsl"
@@ -44,21 +37,8 @@ uniform sampler2D uAlbedoTex;
 uniform sampler2D uMetalRoughTex;
 \n#endif\n
 
-\n#ifdef OCCLUSION_TEX\n
-uniform sampler2D uOcclusionTex;
-uniform float     uOcclusionStrength;
-\n#endif\n
-
 uniform vec2 uMetalRough;
 uniform vec4 uAlbedo;
-
-\n#ifdef HAS_NORMALS\n
-\n#  ifdef HAS_TANGENTS\n
-varying mat3 vTBN;
-\n#  else\n
-varying vec3 vNormal;
-\n#  endif\n
-\n#endif\n
 
 void main() {
   float metal, rough, a, alphaRough, reflectance, reflectance90,

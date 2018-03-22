@@ -20,11 +20,11 @@ vec3 normal() {
   vec3 tdy = dFdy(vec3(NORMAL_TEXCOORD, 0.0));
   vec3 t   = (tdy.t * pdx - tdx.t * pdy) / (tdx.s * tdy.t - tdy.s * tdx.t);
 
-//\n#ifdef HAS_NORMALS\n
+\n#ifdef HAS_NORMALS\n
   vec3 ng  = normalize(vNormal);
-//\n#else\n
-//  vec3 ng  = cross(pdx, pdy);
-//\n#endif\n
+\n#else\n
+  vec3 ng  = cross(pdx, pdy);
+\n#endif\n
 
   t        = normalize(t - ng * dot(ng, t));
   vec3 b   = normalize(cross(ng, t));

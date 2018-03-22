@@ -30,8 +30,17 @@ uniform Light light;
 uniform uint  lightType;
 
 in vec3 vPos;
-in vec3 vNormal;
 in vec3 vEye;
+
+\n#define HAS_NORMALS\n /* TODO: add flag for this */
+
+\n#ifdef HAS_NORMALS\n
+\n#  ifdef HAS_TANGENTS\n
+in mat3 vTBN;
+\n#  else\n
+in vec3 vNormal;
+\n#  endif\n
+\n#endif\n
 
 \n#ifdef POS_MS\n
 \n#endif\n
@@ -102,6 +111,16 @@ out vec4 fragColor;
 
 \n#ifdef TRANSP\n
 float lightAttn;
+\n#endif\n
+
+\n#ifdef NORMAL_TEX\n
+uniform sampler2D uNormalTex;
+uniform float     uNormalScale;
+\n#endif\n
+
+\n#ifdef OCCLUSION_TEX\n
+uniform sampler2D uOcclusionTex;
+uniform float     uOcclusionStrength;
 \n#endif\n
 )
 
