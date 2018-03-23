@@ -61,3 +61,13 @@ gkMaterialNewMetalRough() {
          sizeof(*mtlrough));
   return mtlrough;
 }
+
+GkSpecGloss*
+gkMaterialNewSpecGloss() {
+  GkSpecGloss *specGloss;
+  specGloss = malloc(sizeof(*specGloss));
+  memcpy(specGloss,
+         gk_def_material_specgloss(),
+         sizeof(*specGloss));
+  return specGloss;
+}

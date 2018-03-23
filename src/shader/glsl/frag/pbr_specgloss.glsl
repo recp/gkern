@@ -8,49 +8,52 @@
 #include "common.glsl"
 #include "normal.glsl"
 #include "pbr_common.glsl"
+#include "../lib/funcs/max.glsl"
 
 GK_STRINGIFY(
 
 precision highp float;
 
-\n#ifdef ALBEDO_TEX\n
-uniform sampler2D uAlbedoTex;
+\n#ifdef SPECGLOSS_TEX\n
+uniform sampler2D uSpecGlossTex;
 \n#endif\n
 
-\n#ifdef METALROUGH_TEX\n
-uniform sampler2D uMetalRoughTex;
+\n#ifndef DIFFUSE_COLOR\n
+uniform vec4  uDiffuse;
 \n#endif\n
 
-uniform vec2 uMetalRough;
-uniform vec4 uAlbedo;
+\n#ifndef SPECULAR_COLOR\n
+uniform vec4  uSpecular;
+\n#endif\n
+
+uniform float uGloss;
 
 void main() {
-  float G, D, a, metal, rough, roughSq, NdV, NdL, NdH, LdH, VdH;
+  float G, D, a, gloss, roughSq, NdV, NdL, NdH, LdH, VdH;
   vec3  L, H, N, F, f0, F0, Cdiff, Fspec, Fdiff, lightc, color;
+  vec3  specular;
 
   a      = getLight(L);
-  lightc = light.color.rgb * a;
-  metal  = uMetalRough.x;
-  rough  = uMetalRough.y;
+  lightc = light.color.rgb * a * 5;
+  gloss  = uGloss;
 
-\n#ifdef METALROUGH_TEX\n
-  vec4 mrSample = texture(uMetalRoughTex, METALROUGH_TEXCOORD);
-  rough         = mrSample.g * rough;
-  metal         = mrSample.b * metal;
+\n#ifdef SPECGLOSS_TEX\n
+  vec4 sgSample = texture(uSpecGlossTex, SPECGLOSS_TEXCOORD);
+  specular      = sgSample.rgb;
+  gloss         = sgSample.a * gloss;
 \n#endif\n
 
-  metal   = clamp(metal, 0.0,       1.0);
-  rough   = clamp(rough, cMinRough, 1.0);
-  roughSq = rough * rough;
+  gloss   = clamp(gloss, 0.0, 1.0);
+  roughSq = pow(1.0 - gloss, 2.0);
 
-\n#ifdef ALBEDO_TEX\n
-  vec4 albedo = toLinear(texture(uAlbedoTex, ALBEDO_TEXCOORD)) * uAlbedo;
+\n#ifdef DIFFUSE_TEX\n
+  vec4 albedo = toLinear(texture(uDiffuseTex, DIFFUSE_TEXCOORD)) * uDiffuse;
 \n#else\n
-  vec4 albedo = uAlbedo;
+  vec4 albedo = uDiffuse;
 \n#endif\n
 
-  Cdiff = lerp(albedo.rgb * (1.0 - cDielectricSpecular.r), cBlack, metal);
-  F0    = lerp(cDielectricSpecular, albedo.rgb, metal);
+  Cdiff = albedo.rgb * (1.0 - max(specular));
+  F0    = specular;
 
   N     =  normal();
   H     =  normalize(L + vEye);

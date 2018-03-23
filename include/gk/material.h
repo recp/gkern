@@ -32,7 +32,8 @@ typedef enum GkMaterialType {
   GK_MATERIAL_BLINN      = 2,
   GK_MATERIAL_LAMBERT    = 3,
   GK_MATERIAL_CONSTANT   = 4,
-  GK_MATERIAL_METALROUGH = 5
+  GK_MATERIAL_METALROUGH = 5,
+  GK_MATERIAL_SPECGLOSS  = 6
 } GkMaterialType;
 
 typedef enum GkColorMethod {
@@ -102,6 +103,16 @@ typedef struct GkMetalRough {
   float       metallic;
   float       roughness;
 } GkMetalRough;
+
+typedef struct GkSpecGloss {
+  GkTechnique base;
+  GkColor     diffuse;
+  GkColor     specular;
+  GkTexture  *diffuseMap;
+  GkTexture  *specGlossMap;
+  float       gloss;
+} GkSpecGloss;
+
 typedef struct GkMaterial {
   GkTechnique   *technique;
   FListItem     *boundTextures;
@@ -124,6 +135,9 @@ gkMaterialNewConstant(void);
 
 GkMetalRough*
 gkMaterialNewMetalRough(void);
+
+GkSpecGloss*
+gkMaterialNewSpecGloss(void);
 
 void
 gkUniformMaterial(struct GkContext  * __restrict ctx,

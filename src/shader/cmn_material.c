@@ -130,6 +130,19 @@ gkShaderNameFor(GkScene     * __restrict scene,
       break;
     }
 
+    case GK_MATERIAL_SPECGLOSS: {
+      GkSpecGloss *specGloss;
+
+      specGloss = (GkSpecGloss *)techn;
+
+      if (specGloss->diffuseMap)
+        pname += sprintf(pname, "_d");
+
+      if (specGloss->specGlossMap)
+        pname += sprintf(pname, "_sg");
+      break;
+    }
+
     default: break;
   }
 
@@ -228,6 +241,18 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
       if (metalRough->metalRoughMap)
         gk__texFlag(metalRough->metalRoughMap, "METALROUGH", flg);
+
+      break;
+    }
+    case GK_MATERIAL_SPECGLOSS: {
+      GkSpecGloss *specGloss;
+
+      specGloss = (GkSpecGloss *)tech;
+      if (specGloss->diffuseMap)
+        gk__texFlag(specGloss->diffuseMap, "DIFFUSE", flg);
+
+      if (specGloss->specGlossMap)
+        gk__texFlag(specGloss->specGlossMap, "SPECGLOSS", flg);
 
       break;
     }
@@ -334,6 +359,11 @@ gkShadersFor(GkScene     * __restrict scene,
     case GK_MATERIAL_METALROUGH:
       fragSource[2] =
 #include "glsl/frag/pbr_metalrough.glsl"
+      ;
+      break;
+    case GK_MATERIAL_SPECGLOSS:
+      fragSource[2] =
+#include "glsl/frag/pbr_specgloss.glsl"
       ;
       break;
     default:

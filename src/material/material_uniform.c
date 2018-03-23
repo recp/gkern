@@ -161,6 +161,20 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
 
     if (metalRough->metalRoughMap)
       gkUniformTex(ctx, mat, metalRough->metalRoughMap, "uMetalRough", prog);
+  } else if (techn->type == GK_MATERIAL_SPECGLOSS) {
+    GkSpecGloss *specGloss;
+
+    specGloss = (GkSpecGloss *)mat->technique;
+
+    gkUniform1f(prog, "uGloss", specGloss->gloss);
+    gkUniformColor(&specGloss->diffuse,  "uDiffuse",  prog);
+    gkUniformColor(&specGloss->specular, "uSpecular", prog);
+
+    if (specGloss->diffuseMap)
+      gkUniformTex(ctx, mat, specGloss->diffuseMap, "uDiffuse", prog);
+
+    if (specGloss->specGlossMap)
+      gkUniformTex(ctx, mat, specGloss->specGlossMap, "uSpecGloss", prog);
   }
 
   if (techn->ambient)

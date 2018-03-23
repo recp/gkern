@@ -53,6 +53,17 @@ GkMetalRough gkdef_metlrough = {
   .roughness = 1.0f
 };
 
+GkSpecGloss gkdef_specgloss = {
+  .base = {
+    .type = GK_MATERIAL_SPECGLOSS
+  },
+  .diffuse      = { 1.0f, 1.0f, 1.0f, 1.0f },
+  .specular     = { 1.0f, 1.0f, 1.0f, 1.0f },
+  .diffuseMap   = NULL,
+  .specGlossMap = NULL,
+  .gloss        = 1.0f
+};
+
 GkTechnique*
 gk_def_material_phong() {
   return &gkdef_phong;
@@ -76,6 +87,11 @@ gk_def_material_constant() {
 GkMetalRough*
 gk_def_material_mtlrough() {
   return &gkdef_metlrough;
+}
+
+GkSpecGloss*
+gk_def_material_specgloss() {
+  return &gkdef_specgloss;
 }
 
 GkMaterial gkdef_material = {
