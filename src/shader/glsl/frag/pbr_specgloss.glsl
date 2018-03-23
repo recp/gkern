@@ -39,7 +39,7 @@ void main() {
 
 \n#ifdef SPECGLOSS_TEX\n
   vec4 sgSample = texture(uSpecGlossTex, SPECGLOSS_TEXCOORD);
-  specular      = sgSample.rgb;
+  specular      = toLinear(sgSample.rgb);
   gloss         = sgSample.a * gloss;
 \n#endif\n
 
