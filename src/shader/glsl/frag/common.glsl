@@ -65,31 +65,36 @@ in vec2  vSHADOWMAP;
 
 \n#ifdef DIFFUSE_TEX\n
 uniform sampler2D uDiffuseTex;
-\n#elif defined(DIFFUSE_COLOR)\n
+\n#endif\n
+\n#if defined(DIFFUSE_COLOR)\n
 uniform vec4      uDiffuse;
 \n#endif\n
 
 \n#ifdef EMISSION_TEX\n
 uniform sampler2D uEmissionTex;
-\n#elif defined(EMISSION_COLOR)\n
+\n#endif\n
+\n#if defined(EMISSION_COLOR)\n
 uniform vec4      uEmission;
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
 uniform sampler2D uAmbientTex;
-\n#elif defined(AMBIENT_COLOR)\n
+\n#endif\n
+\n#if defined(AMBIENT_COLOR)\n
 uniform vec4      uAmbient;
 \n#endif\n
 
 \n#ifdef SPECULAR_TEX\n
 uniform sampler2D uSpecularTex;
-\n#elif defined(SPECULAR_COLOR)\n
+\n#endif\n
+\n#if defined(SPECULAR_COLOR)\n
 uniform vec4      uSpecular;
 \n#endif\n
 
 \n#ifdef REFLECTIVE_TEX\n
 uniform sampler2D uReflectiveTex;
-\n#elif defined(REFLECTIVE_COLOR)\n
+\n#endif\n
+\n#if defined(REFLECTIVE_COLOR)\n
 uniform vec4      uReflective;
 \n#endif\n
 
@@ -127,6 +132,8 @@ uniform float     uOcclusionStrength;
 #include "transp.glsl"
 #include "shadows.glsl"
 #include "lights.glsl"
+#include "constants.glsl"
+#include "../lib/funcs/sRGBLin.glsl"
 
 GK_STRINGIFY(
 void
@@ -138,6 +145,25 @@ write(vec4 clr) {
 \n#endif\n
 \n#else\n
   fragColor = clr;
+\n#endif\n
+}
+
+void
+applyOcclusion(inout vec3 color) {
+\n#ifdef OCCLUSION_TEX\n
+  float ao = texture(uOcclusionTex, OCCLUSION_TEXCOORD).r;
+  color    = mix(color, color * ao, uOcclusionStrength);
+\n#endif\n
+}
+
+void
+applyEmission(inout vec3 color) {
+\n#ifdef EMISSION_TEX\n
+  color += sRGBLin(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb;
+\n#elif defined(EMISSION_COLOR)\n
+  color += uEmission;
+\n#elif defined(EMISSION_TEXCOLOR)\n
+  color += sRGBLin(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb * uEmission;
 \n#endif\n
 }
 )
