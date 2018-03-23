@@ -133,7 +133,7 @@ uniform float     uOcclusionStrength;
 #include "shadows.glsl"
 #include "lights.glsl"
 #include "constants.glsl"
-#include "../lib/funcs/sRGBLin.glsl"
+#include "../lib/funcs/colorspace.glsl"
 
 GK_STRINGIFY(
 void
@@ -159,11 +159,11 @@ applyOcclusion(inout vec3 color) {
 void
 applyEmission(inout vec3 color) {
 \n#ifdef EMISSION_TEX\n
-  color += sRGBLin(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb;
+  color += toLinear(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb;
 \n#elif defined(EMISSION_COLOR)\n
   color += uEmission;
 \n#elif defined(EMISSION_TEXCOLOR)\n
-  color += sRGBLin(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb * uEmission;
+  color += toLinear(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb * uEmission;
 \n#endif\n
 }
 )

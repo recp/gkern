@@ -44,7 +44,7 @@ void main() {
   roughSq = rough * rough;
 
 \n#ifdef ALBEDO_TEX\n
-  vec4 albedo = sRGBLin(texture(uAlbedoTex, ALBEDO_TEXCOORD)) * uAlbedo;
+  vec4 albedo = toLinear(texture(uAlbedoTex, ALBEDO_TEXCOORD)) * uAlbedo;
 \n#else\n
   vec4 albedo = uAlbedo;
 \n#endif\n
@@ -78,6 +78,6 @@ void main() {
   applyOcclusion(color);
   applyEmission(color);
 
-  write(vec4(pow(color, vec3(1.0 / 2.2)), albedo.a));
+  write(vec4(toSRGB(color), albedo.a));
 }
 )
