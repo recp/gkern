@@ -23,6 +23,12 @@ Currently this library only renders using OpenGL, but in the future other apis l
 - Configurable shadowmaps: Yes you can select which technique to use! More techniques may be supportted by time
    - Basic/Simple Shadow Maps
    - Cascaded Shadow Maps (PSSM)
+- Order Independent Transparency
+   - Weighted, Blended OIT
+   - Some other techniques aill also be supported natively
+- PBR materials
+   - Metallic-Roughness Workflow
+   - Specular-Glossiness Workflow
 - ... 
 - and some built-in helpers for many common tasks and more by fetures time...
  
