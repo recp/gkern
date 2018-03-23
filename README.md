@@ -35,8 +35,8 @@ Currently this library only renders using OpenGL, but in the future other apis l
 
 # Todo
 - [ ] Order objects before rendering
-- [ ] PBR
-- [ ] Transparency
+- [x] PBR
+- [x] Transparency
 - [ ] Occlusion Culling
 - [ ] Level of Detail for mesh
 - [ ] Multithread rendering
