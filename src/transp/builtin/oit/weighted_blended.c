@@ -53,14 +53,14 @@ gkTranspWeightedBlendedInit(GkScene * __restrict scene) {
   transp->base.type  = GK_TRANSP_WEIGHTED_BLENDED;
 
   /* opaque pass */
-  transp->opaquePass = opaquePass = gkAllocPass();
+  transp->opaquePass = opaquePass = gkAllocPass(gkContextOf(scene));
   gkBindOutput(scene, opaquePass->output);
 
   gkAddDepthTarget(scene, opaquePass);
   gkAddRenderTarget(scene, opaquePass, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
 
   /* transparency pass */
-  transp->transpPass = transpPass = gkAllocPass();
+  transp->transpPass = transpPass = gkAllocPass(gkContextOf(scene));
   gkBindOutput(scene, transpPass->output);
 
   /* use opaque's depth */

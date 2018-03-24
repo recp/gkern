@@ -17,7 +17,7 @@ gkAddDepthTarget(GkScene *scene, GkPass *pass) {
   GkOutput *output;
 
   if (!(output = pass->output))
-    pass->output = output = gkAllocOutput();
+    pass->output = output = gkAllocOutput(gkContextOf(scene));
 
   if (output->depth != 0)
     return;
@@ -42,7 +42,7 @@ gkAddDepthTexTarget(GkScene *scene, GkPass *pass, GkSize size) {
   GkOutput *output, *currentOutput;
 
   if (!(output = pass->output))
-    pass->output = output = gkAllocOutput();
+    pass->output = output = gkAllocOutput(gkContextOf(scene));
 
   if (output->depth != 0)
     return;
@@ -91,7 +91,7 @@ gkAddDepthCubeTexTarget(GkScene *scene, GkPass *pass, float size) {
   int       i;
 
   if (!(output = pass->output))
-    pass->output = output = gkAllocOutput();
+    pass->output = output = gkAllocOutput(gkContextOf(scene));
 
   if (output->depth != 0)
     return;
@@ -134,7 +134,7 @@ gkAddDepthTexArrayTarget(GkScene *scene, GkPass *pass, GLsizei len) {
   GkOutput *output, *currentOutput;
 
   if (!(output = pass->output))
-    pass->output = output = gkAllocOutput();
+    pass->output = output = gkAllocOutput(gkContextOf(scene));
 
   if (output->depth != 0)
     return;

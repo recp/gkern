@@ -104,9 +104,12 @@ gkApplyOutputState(GkContext   * __restrict ctx,
   cst         = ctx->currState;
   outputState = (GkOutputState *)st;
 
-  if (cst->output->renderOutput != outputState->renderOutput) {
-    cst->output->renderOutput = outputState->renderOutput;
-    glBindFramebuffer(GL_FRAMEBUFFER, outputState->renderOutput->fbo);
+  if (cst->output->output != outputState->output) {
+    cst->output->output = outputState->output;
+    if (outputState->output)
+      glBindFramebuffer(GL_FRAMEBUFFER, outputState->output->fbo);
+    else
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
   ctx->currState->output = outputState;

@@ -27,11 +27,22 @@ gkDefaultRenderOut(void) {
 
 GK_EXPORT
 GkOutput*
-gkAllocOutput(void) {
+gkAllocOutput(GkContext * __restrict ctx) {
   GkOutput *output;
 
   output = calloc(1, sizeof(*output));
   glGenFramebuffers(1, &output->fbo);
+
+  /*
+  gkPushState(ctx);
+  gkBindOutputFor(ctx, output);
+  */
+
+  /* output options, flags here */
+
+  /*
+  gkPopState(ctx);
+  */
 
   return output;
 }
@@ -41,7 +52,7 @@ GkOutput*
 gkCurrentOutput(GkContext * __restrict ctx) {
   GkOutput *output;
 
-  if ((output = ctx->currState->output->renderOutput))
+  if ((output = ctx->currState->output->output))
     return output;
 
   return gkDefaultRenderOut();
@@ -49,18 +60,21 @@ gkCurrentOutput(GkContext * __restrict ctx) {
 
 GK_EXPORT
 void
-gkBindOutput(GkScene  *scene,
-              GkOutput *output) {
+gkBindOutputFor(GkContext * __restrict ctx, GkOutput *output) {
   GkOutputState *state;
-  GkContext     *ctx;
 
-  ctx   = gkContextOf(scene);
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_OUTPUT);
-  if (ctx->currState->output->renderOutput == output)
+  if (ctx->currState->output->output == output)
     return;
 
-  state->renderOutput = output;
+  state->output = output;
   glBindFramebuffer(GL_FRAMEBUFFER, output->fbo);
+}
+
+GK_EXPORT
+void
+gkBindOutput(GkScene *scene, GkOutput *output) {
+  gkBindOutputFor(gkContextOf(scene), output);
 }
 
 GK_EXPORT
@@ -71,9 +85,9 @@ gkBindDefaultOutput(GkScene *scene) {
 
   ctx   = gkContextOf(scene);
   state = gkGetOrCreatState(ctx, GK_GPUSTATE_OUTPUT);
-  if (ctx->currState->output->renderOutput == NULL)
+  if (ctx->currState->output->output == NULL)
     return;
 
-  state->renderOutput = NULL;
+  state->output = NULL;
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

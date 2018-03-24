@@ -51,7 +51,7 @@ GkGPUStates gk__defstate = {
 
   .output = &(GkOutputState){
     GK__STATE_BASE(GK_GPUSTATE_OUTPUT),
-    .renderOutput = NULL
+    .output = NULL
   },
 
   .tex       = NULL,

@@ -87,7 +87,7 @@ gkAddRenderTargetRBEx(GkScene *scene,
   int32_t        i;
 
   if (!(output = pass->output))
-    pass->output = output = gkAllocOutput();
+    pass->output = output = gkAllocOutput(gkContextOf(scene));
 
   /* TODO:
    GLint maxAttach = 0;
@@ -167,7 +167,7 @@ gkAddRenderTargetEx(GkScene *scene,
   int32_t        i;
 
   if (!(output = pass->output))
-    pass->output = output = gkAllocOutput();
+    pass->output = output = gkAllocOutput(gkContextOf(scene));
 
   /* TODO:
    GLint maxAttach = 0;

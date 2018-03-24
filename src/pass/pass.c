@@ -19,11 +19,11 @@
 
 GK_EXPORT
 GkPass*
-gkAllocPass(void) {
+gkAllocPass(GkContext * __restrict ctx) {
   GkPass *pass;
 
   pass         = calloc(1, sizeof(*pass));
-  pass->output = gkAllocOutput();
+  pass->output = gkAllocOutput(ctx);
 
   return pass;
 }

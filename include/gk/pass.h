@@ -100,16 +100,20 @@ gkBindPass(struct GkScene * __restrict scene,
 
 GK_EXPORT
 GkPass*
-gkAllocPass(void);
+gkAllocPass(struct GkContext * __restrict ctx);
 
 GK_EXPORT
 GkOutput*
-gkAllocOutput(void);
+gkAllocOutput(struct GkContext * __restrict ctx);
 
 GK_EXPORT
 void
 gkBindOutput(struct GkScene *scene,
-              GkOutput       *output);
+             GkOutput       *output);
+
+GK_EXPORT
+void
+gkBindOutputFor(struct GkContext * __restrict ctx, GkOutput *output);
 
 GK_EXPORT
 void

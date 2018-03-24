@@ -29,7 +29,7 @@ gkSetupShadowMapCSM(GkScene * __restrict scene,
   pass = calloc(1, sizeof(*pass));
 
   pass->prog        = gkBuiltinProg(GK_BUILTIN_PROG_SHADOWMAP);
-  pass->output      = gkAllocOutput();
+  pass->output      = gkAllocOutput(gkContextOf(scene));
   pass->noMaterials = true;
   pass->noLights    = true;
   sm->pass          = pass;
