@@ -36,7 +36,7 @@ GkGPUStates gk__defstate = {
 
   .face = &(GkFaceState){
     GK__STATE_BASE(GK_GPUSTATE_CULLFACE),
-    .cull      = true,
+    .cull      = false,
     .face      = GL_BACK,
     .frontFace = GL_CCW
   },

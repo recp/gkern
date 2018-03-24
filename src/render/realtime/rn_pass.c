@@ -39,8 +39,10 @@ gkRenderPass(GkScene    * __restrict scene,
 
   gkUseProgram(ctx, prog);
 
-  if (!pass->noMaterials)
+  if (!pass->noMaterials) {
     gkUniformMaterial(ctx, prog, material);
+    gkToggleDoubleSided(ctx, material->doubleSided);
+  }
 
   gkUniformTransform(prog, trans, scene->camera);
 

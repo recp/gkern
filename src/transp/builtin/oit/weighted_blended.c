@@ -112,7 +112,6 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
 
   /* opaque pass */
   gkEnableDepthTest(ctx);
-  gkEnableCullFace(ctx); /* TODO: add option for this */
 
   gkBindOutput(scene, transp->opaquePass->output);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

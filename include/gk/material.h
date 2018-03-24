@@ -117,6 +117,7 @@ typedef struct GkMaterial {
   GkTechnique   *technique;
   FListItem     *boundTextures;
   float          indexOfRefraction;
+  bool           doubleSided;
   uint8_t        isvalid;
   uint8_t        enabled;
 } GkMaterial;

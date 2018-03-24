@@ -34,7 +34,7 @@ void main() {
   vec3  specular;
 
   a      = getLight(L);
-  lightc = light.color.rgb * a * 5;
+  lightc = light.color.rgb * a;
   gloss  = uGloss;
 
 \n#ifdef SPECGLOSS_TEX\n

@@ -37,6 +37,17 @@ gkDisableCullFace(GkContext * __restrict ctx) {
 
 GK_EXPORT
 void
+gkToggleDoubleSided(GkContext * __restrict ctx, bool doubleSided) {
+  if (!doubleSided) {
+    gkEnableCullFace(ctx);
+    return;
+  }
+
+  gkDisableCullFace(ctx);
+}
+
+GK_EXPORT
+void
 gkCullFace(GkContext * __restrict ctx, GLenum face) {
   GkFaceState *state;
 
