@@ -157,6 +157,17 @@ applyOcclusion(inout vec3 color) {
 }
 
 void
+applyEmission(inout vec4 color) {
+\n#ifdef EMISSION_TEX\n
+  color += toLinear(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb;
+\n#elif defined(EMISSION_COLOR)\n
+  color += uEmission;
+\n#elif defined(EMISSION_TEXCOLOR)\n
+  color += toLinear(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb * uEmission;
+\n#endif\n
+}
+
+void
 applyEmission(inout vec3 color) {
 \n#ifdef EMISSION_TEX\n
   color += toLinear(texture(uEmissionTex, EMISSION_TEXCOORD)).rgb;
