@@ -35,13 +35,11 @@ gkGetOrCreatState(GkContext * __restrict ctx,
     state = item->data;
     if (state->type == type)
       return state;
+
     item = item->next;
   }
 
-  if (type != GK_GPUSTATE_TEXTURE)
-    return gkCreatState(ctx, sti, type);
-
-  return NULL;
+  return gkCreatState(ctx, sti, type);
 }
 
 _gk_hide
@@ -51,6 +49,7 @@ gkGetOrCreatStatei(GkContext * __restrict ctx,
                    GkGPUStateType         type) {
   GkStatesItem *sti;
   FListItem    *item;
+  GkStateBase  *st;
 
   sti = flist_last(ctx->states);
   if (!sti) {
@@ -64,20 +63,17 @@ gkGetOrCreatStatei(GkContext * __restrict ctx,
 
     state = item->data;
     if (state->type == type
-        && state->index == index)
+        && state->index == index
+        && state->indexed)
       return state;
+
     item = item->next;
   }
 
-  if (type != GK_GPUSTATE_TEXTURE) {
-    GkStateBase *st;
+  st = gkCreatState(ctx, sti, type);
+  st->indexed = true;
 
-    st = gkCreatState(ctx, sti, type);
-    st->indexed = true;
-    return st;
-  }
-
-  return NULL;
+  return st;
 }
 
 _gk_hide
