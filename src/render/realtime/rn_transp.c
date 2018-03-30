@@ -72,6 +72,9 @@ gkIsTransparent(GkScene    * __restrict scene,
 
       return opacity < 1.0f;
     }
+    case GK_OPAQUE_MASK: {
+      return false;
+    }
 
     default: return true;
   }

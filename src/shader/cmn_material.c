@@ -166,10 +166,11 @@ gkShaderNameFor(GkScene     * __restrict scene,
         pname += sprintf(pname, "_trsp");
         break;
     }
-
-    if (mat->technique->transparent->opaque == GK_OPAQUE_MASK)
-      pname += sprintf(pname, "_trsp_msk");
   }
+
+  if (mat->technique->transparent
+      && mat->technique->transparent->opaque == GK_OPAQUE_MASK)
+    pname += sprintf(pname, "_msk");
 
   /* TODO: transparent, reflectivity */
   return nameBuff - pname;
@@ -324,10 +325,11 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
       default:
         break;
     }
-
-    if (mat->technique->transparent->opaque == GK_OPAQUE_MASK)
-      SH_VF("ALPHAMASK_CUTOFF")
   }
+
+  if (mat->technique->transparent
+      && mat->technique->transparent->opaque == GK_OPAQUE_MASK)
+    SH_VF("ALPHAMASK_CUTOFF")
 }
 
 GkShader*
