@@ -20,10 +20,13 @@ struct GkPrimitive;
 struct GkPrimInst;
 
 typedef enum GkOpaque {
-  GK_OPAQUE_A_ONE    = 0, /* Default */
-  GK_OPAQUE_A_ZERO   = 1,
-  GK_OPAQUE_RGB_ONE  = 2,
-  GK_OPAQUE_RGB_ZERO = 3,
+  GK_OPAQUE_OPAQUE   = 0, /* Default */
+  GK_OPAQUE_A_ONE    = 1, /* Default */
+  GK_OPAQUE_A_ZERO   = 2,
+  GK_OPAQUE_RGB_ONE  = 3,
+  GK_OPAQUE_RGB_ZERO = 4,
+  GK_OPAQUE_BLEND    = 5,
+  GK_OPAQUE_MASK     = 6,
   GK_OPAQUE_DEFAULT  = GK_OPAQUE_A_ONE
 } GkOpaque;
 
