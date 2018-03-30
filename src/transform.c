@@ -62,6 +62,9 @@ gkAllocTransform(GkScene * __restrict scene) {
     trans->ftrc = slotCount;
   }
 
+  glm_mat4_copy(GLM_MAT4_IDENTITY, trans->pub.local);
+  trans->pub.flags |= GK_TRANSF_LOCAL_ISVALID;
+
   return &trans->pub;
 }
 

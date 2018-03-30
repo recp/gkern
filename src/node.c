@@ -223,7 +223,7 @@ gkPrepareView(GkScene * __restrict scene,
   camItem   = sceneImpl->transfCacheSlots->first;
   tr        = node->trans;
 
-  if (!(node->flags & GK_NODEF_HAVE_TRANSFORM))
+  if (!(tr->flags & GK_TRANSF_CALC_VIEW))
     return;
 
   finalComputed = false;
