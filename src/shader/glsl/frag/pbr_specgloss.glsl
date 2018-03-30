@@ -33,7 +33,12 @@ void main() {
   vec3  L, H, N, F, f0, F0, Cdiff, Fspec, Fdiff, lightc, color;
   vec3  specular;
 
-  a      = getLight(L);
+  a = getLight(L);
+
+\n#ifdef TRANSP\n
+  lightAttn = a;
+\n#endif\n
+
   lightc = light.color.rgb * a;
   gloss  = uGloss;
 

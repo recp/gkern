@@ -28,7 +28,12 @@ void main() {
   float G, D, a, metal, rough, roughSq, NdV, NdL, NdH, LdH, VdH;
   vec3  L, H, N, F, f0, F0, Cdiff, Fspec, Fdiff, lightc, color;
 
-  a      = getLight(L);
+  a = getLight(L);
+
+\n#ifdef TRANSP\n
+  lightAttn = a;
+\n#endif\n
+
   lightc = light.color.rgb * a;
   metal  = uMetalRough.x;
   rough  = uMetalRough.y;
