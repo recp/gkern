@@ -212,6 +212,9 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
     
     loc = gkUniformLoc(prog, "uTransparency");
     glUniform1f(loc, transp->amount);
+
+    if (transp->opaque == GK_OPAQUE_MASK)
+      gkUniform1f(prog, "uAlphaCutoff", transp->cutoff);
   }
   
   if (techn->reflective) {

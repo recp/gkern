@@ -127,6 +127,10 @@ uniform float     uNormalScale;
 uniform sampler2D uOcclusionTex;
 uniform float     uOcclusionStrength;
 \n#endif\n
+
+\n#ifdef ALPHAMASK_CUTOFF\n
+uniform float uAlphaCutoff;
+\n#endif\n
 )
 
 #include "transp.glsl"
@@ -138,6 +142,11 @@ uniform float     uOcclusionStrength;
 GK_STRINGIFY(
 void
 write(vec4 clr) {
+\n#ifdef ALPHAMASK_CUTOFF\n
+  if (clr.a < uAlphaCutoff)
+    discard;
+\n#endif\n
+
 \n#ifdef TRANSP\n
 \n#ifdef TRANSP_WBL\n
   transpWrite(clamp(clr, 0.0, 1.0));
