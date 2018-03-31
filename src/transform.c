@@ -135,6 +135,14 @@ gkTransformCombine(GkTransform * __restrict trans) {
           glm_mat4_mul(mat, tmp, mat);
           break;
         }
+        case GK_TRANS_QUAT: {
+          GkQuaternion *quat;
+
+          quat = (GkQuaternion *)ti;
+          glm_quat_mat4(quat->value, tmp);
+          glm_mat4_mul(mat, tmp, mat);
+          break;
+        }
         case GK_TRANS_SCALE: {
           GkScale *scale;
           scale = (GkScale *)ti;

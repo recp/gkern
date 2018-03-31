@@ -35,7 +35,8 @@ typedef enum GkTransformType {
   GK_TRANS_ROTATE    = 3,
   GK_TRANS_SCALE     = 4,
   GK_TRANS_SKEW      = 5,
-  GK_TRANS_TRANSLATE = 6
+  GK_TRANS_TRANSLATE = 6,
+  GK_TRANS_QUAT      = 7
 } GkTransformType;
 
 typedef struct GkTransformItem {
@@ -79,6 +80,11 @@ typedef struct GkTranslate {
   GkTransformItem base;
   vec3            value;
 } GkTranslate;
+
+typedef struct GkQuaternion {
+  GkTransformItem base;
+  vec4            value;
+} GkQuaternion;
 
 typedef struct GkSkew {
   GkTransformItem base;
