@@ -93,8 +93,12 @@ gkRenderScene(GkScene * scene) {
     gkPrepareScene(scene);
 
   /* no camera, create default one! */
-  if (!scene->camera)
-    gkSetCamera(scene, gkMakeCameraForScene(scene));
+  if (!scene->camera) {
+    GkCamera *cam;
+    cam = gkMakeCameraForScene(scene);
+    gkSetCamera(scene, cam);
+    gkCacheTransformsFor(scene, cam);
+  }
 
   gkBindOutput(scene, scene->finalOutput);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
