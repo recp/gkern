@@ -9,7 +9,7 @@
 #include "../include/gk/scene.h"
 #include "../include/gk/node.h"
 #include "../include/gk/opt.h"
-
+#include "bbox/scene_bbox.h"
 #include <ds/hash.h>
 #include <string.h>
 
@@ -107,8 +107,8 @@ gkPrepareNode(GkScene * __restrict scene,
   if (parentNode && (node->flags & GK_NODEF_HAVE_TRANSFORM))
     glm_mul(parentNode->trans->world, tr->local, tr->world);
 
-  if (node->bbox)
-    gkTransformAABB(tr, node->bbox);
+  /* TODO: */
+  /* gkTransformAABB(tr, node->bbox); */
 
   if (node->model) {
     GkModelInst *modelInst;
@@ -138,6 +138,8 @@ gkPrepareNode(GkScene * __restrict scene,
         glm_aabb_transform(prims[i].prim->bbox,
                            tr->world,
                            prims[i].bbox);
+
+        gkUpdateSceneAABB(scene, prims[i].bbox);
         prims[i].trans = tr;
       }
 

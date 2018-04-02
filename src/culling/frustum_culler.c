@@ -6,11 +6,15 @@
  */
 
 #include "frustum_culler.h"
+
+#include "../types/impl_scene.h"
+#include "../render/realtime/rn_transp.h"
+
+#include "../bbox/scene_bbox.h"
+
 #include <math.h>
 #include <string.h>
 #include <ds/forward-list-sep.h>
-#include "../types/impl_scene.h"
-#include "../render/realtime/rn_transp.h"
 
 /*
  Cull AAB ref:
@@ -22,27 +26,6 @@ extern uint32_t gk_nodesPerPage;
 
 #define rnListSizeInit(x) (sizeof(*x) + sizeof(void *) * 1024)
 #define rnListSize(x)     (sizeof(*x) + sizeof(void *) * x->size)
-
-GK_INLINE
-bool
-gkAABBInFrustum(GkBBox *bbox, GkPlane planes[6]) {
-  vec3  *box;
-  float *p, dp;
-  int    i;
-
-  box = bbox->world;
-  for (i = 0; i < 6; i++) {
-    p  = planes[i];
-    dp = p[0] * box[p[0] > 0.0f][0]
-       + p[1] * box[p[1] > 0.0f][1]
-       + p[2] * box[p[2] > 0.0f][2];
-
-    if (dp < -p[3])
-      return false;
-  }
-
-  return true;
-}
 
 bool
 gkPrimIsInFrustum(GkScene     * __restrict scene,
@@ -121,6 +104,8 @@ gkCullFrustum(GkScene  * __restrict scene,
 
               rl[isTransp]->items[rl[isTransp]->count] = primInst;
               rl[isTransp]->count++;
+
+              gkUpdateSceneAABB(scene, primInst->bbox);
             }
           }
         }
@@ -197,8 +182,7 @@ gkBoxInFrustum(GkFrustum * __restrict frustum,
   vec3          t[2];
   size_t        i, j, c;
 
-  glm_vec_broadcast(FLT_MAX,  t[0]);
-  glm_vec_broadcast(-FLT_MAX, t[1]);
+  glm_aabb_invalidate(t);
 
   rl[0] = frustum->opaque;
   rl[1] = frustum->transp;

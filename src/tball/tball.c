@@ -28,7 +28,7 @@ void
 gk_tball_attach(GkTrackball * __restrict tball,
                 GkScene     * __restrict scene,
                 GkNode      * __restrict node,
-                GkBBox      * __restrict bbox) {
+                GkBBox                   bbox) {
   GkTransform *trans;
   assert(tball && scene && bbox && "invalid params!");
 
@@ -39,9 +39,6 @@ gk_tball_attach(GkTrackball * __restrict tball,
   trans = scene->trans;
   if (!trans) {
     trans = gkAllocTransform(scene);
-
-    glm_mat4_copy(GLM_MAT4_IDENTITY, trans->local);
-    glm_mat4_copy(GLM_MAT4_IDENTITY, trans->world);
     scene->trans = trans;
   }
 
@@ -72,7 +69,7 @@ gk_tall_vec(GkTrackball * __restrict tball,
                tball->nodeTrans->local,
                m);
 
-  glm_vec_center(tball->bbox->world[0], tball->bbox->world[1], center);
+  glm_vec_center(tball->bbox[0], tball->bbox[1], center);
 
   vrc = tball->scene->vrect;
   c   = gk_project2d(vrc, m, center);

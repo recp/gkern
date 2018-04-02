@@ -13,6 +13,7 @@
 #include "../../../include/gk/pass.h"
 #include "../../default/def_light.h"
 #include "../../../include/gk/gpu_state.h"
+#include "../../bbox/scene_bbox.h"
 #include "rn_prim.h"
 
 static
@@ -62,10 +63,8 @@ gkPrepareScene(GkScene * __restrict scene) {
     }
   }
 
-  if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID)) {
+  if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID))
     gkApplyTransform(scene, scene->rootNode);
-    gkTransformAABB(scene->trans, scene->bbox);
-  }
 
   scene->flags |= GK_SCENEF_PREPARED;
 }
@@ -88,6 +87,8 @@ gkRenderScene(GkScene * scene) {
   scene->flags &= ~GK_SCENEF_RENDERED;
   scene->flags |= GK_SCENEF_RENDERING;
 
+  glm_aabb_invalidate(scene->bbox);
+
   if (!GK_FLG(scene->flags, GK_SCENEF_PREPARED))
     gkPrepareScene(scene);
 
@@ -95,10 +96,8 @@ gkRenderScene(GkScene * scene) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   /* todo: use frustum culler here */
-  if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID)) {
+  if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID))
     gkApplyTransform(scene, scene->rootNode);
-    gkTransformAABB(scene->trans, scene->bbox);
-  }
 
   if ((scene->camera->flags & GK_UPDT_VIEW))
     gkApplyView(scene, scene->rootNode);
@@ -111,8 +110,7 @@ gkRenderScene(GkScene * scene) {
 
   sceneImpl->rp(scene);
 
-  if ((scene->flags & GK_SCENEF_DRAW_BBOX)
-      && scene->bbox)
+  if ((scene->flags & GK_SCENEF_DRAW_BBOX))
     gkDrawBBox(scene,
                scene->bbox,
                scene->rootNode->trans->world);

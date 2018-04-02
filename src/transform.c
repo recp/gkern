@@ -22,6 +22,9 @@ gkCacheTransformsFor(GkScene  * __restrict scene,
   GkCameraImpl *camImpl;
   FList        *transfCacheSlots;
 
+  if (!cam)
+    return;
+
   sceneImpl        = (GkSceneImpl *)scene;
   camImpl          = (GkCameraImpl *)cam;
   transfCacheSlots = sceneImpl->transfCacheSlots;
@@ -63,6 +66,8 @@ gkAllocTransform(GkScene * __restrict scene) {
   }
 
   glm_mat4_copy(GLM_MAT4_IDENTITY, trans->pub.local);
+  glm_mat4_copy(GLM_MAT4_IDENTITY, trans->pub.world);
+
   trans->pub.flags |= GK_TRANSF_LOCAL_ISVALID;
 
   return &trans->pub;

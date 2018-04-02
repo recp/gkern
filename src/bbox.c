@@ -12,6 +12,6 @@
 
 void
 gkTransformAABB(GkTransform * __restrict trans,
-                GkBBox      * __restrict bbox) {
-  glm_aabb_transform(bbox->local, trans->world, bbox->world);
+                GkBBox                   bbox[2]) {
+  glm_aabb_transform(bbox[0], trans->world, bbox[1]);
 }

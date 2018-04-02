@@ -13,29 +13,10 @@
 
 struct GkTransform;
 
-struct GkBBoxVec {
-  vec3  min;
-  vec3  max;
-};
-
-union GkBBoxU {
-  vec3             arr[2];
-  struct GkBBoxVec vec;
-};
-
-typedef struct GkBBox {
-  vec3 local[2];
-  vec3 world[2];
-} GkBBox;
-
-#define boxMin world.vec.min
-#define boxMax world.vec.max
-
-#define bboxMin bbox->world.vec.min
-#define bboxMax bbox->world.vec.max
+typedef  vec3  GkBBox[2];
 
 void
 gkTransformAABB(struct GkTransform * __restrict trans,
-                GkBBox             * __restrict bbox);
+                GkBBox                          bbox[2]);
 
 #endif /* gk_bbox_h */

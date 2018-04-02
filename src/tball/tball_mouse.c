@@ -62,7 +62,7 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
         glm_quat_normalize(q);
 
         /* rotate around center */
-        glm_vec_center(tball->bbox->world[0], tball->bbox->world[1], center);
+        glm_vec_center(tball->bbox[0], tball->bbox[1], center);
         glm_vec_sub(center,
                     tball->node->trans->local[3],
                     tran);

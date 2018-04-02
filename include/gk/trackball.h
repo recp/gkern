@@ -31,7 +31,7 @@ typedef struct GkTrackball {
   void                  *data;
   struct GkScene        *scene;
   struct GkNode         *node;
-  GkBBox                *bbox;      /* attached node's bounding box  */
+  vec3                  *bbox;      /* attached node's bounding box  */
   GkTransform           *nodeTrans; /* attached node's transform     */
   GkMouseEvent           mouse;
   GkMouseEventWithStruct mouse2;
@@ -50,7 +50,7 @@ void
 gk_tball_attach(GkTrackball * __restrict tball,
                 GkScene     * __restrict scene,
                 GkNode      * __restrict node,
-                GkBBox      * __restrict bbox);
+                GkBBox                   bbox);
 
 void
 gk_tball_free(GkTrackball *tball);

@@ -25,7 +25,6 @@ struct GkPrimInst;
 struct GkNode;
 struct GkProgram;
 struct GkLightRef;
-struct GkBBox;
 
 typedef void (*GkRenderPrimFunc)(struct GkScene    *scene,
                                  struct GkPrimInst *primInst);
@@ -54,8 +53,8 @@ typedef struct GkScene {
   GkTransform       *trans;  /* free camera */
   struct GkNode     *rootNode;
   struct GkLightRef *lights;
-  struct GkBBox     *bbox;
   struct GkOutput   *finalOutput; /* set NULL for default FBO (screen) */
+  GkBBox             bbox;
   GkRenderPrimFunc   renderPrimFunc;
   GkRect             vrect;
   uint32_t           lightCount;

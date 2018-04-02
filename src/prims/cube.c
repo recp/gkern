@@ -71,7 +71,7 @@ gkInitCube() {
 
 void
 gkDrawBBox(GkScene * __restrict scene,
-           GkBBox  * __restrict bbox,
+           GkBBox               bbox,
            mat4                 world) {
   GkProgram  *prog;
   vec3        size, center;
@@ -88,8 +88,8 @@ gkDrawBBox(GkScene * __restrict scene,
   else
     glBindVertexArray(gk__cube_vao);
 
-  glm_vec_sub(bbox->world[1], bbox->world[0], size);
-  glm_vec_center(bbox->world[1], bbox->world[0], center);
+  glm_vec_sub(bbox[1], bbox[0], size);
+  glm_vec_center(bbox[1], bbox[0], center);
 
   glm_translate(tran, center);
   glm_scale(tran, size);

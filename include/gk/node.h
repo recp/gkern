@@ -31,7 +31,7 @@ typedef enum GkNodeFlags {
 typedef struct GkNode {
   GkNodeFlags    flags;
 
-  GkBBox        *bbox;
+  GkBBox         bbox;
   GkTransform   *trans;
 
   GkModelInst   *model;
