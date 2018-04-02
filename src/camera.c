@@ -32,6 +32,9 @@ gkSetCamera(struct GkScene * __restrict scene,
             GkCamera       * __restrict camera) {
   GkLight *light;
 
+  if (!camera)
+    return;
+
   scene->camera = camera;
   scene->camera->flags = 0;
 

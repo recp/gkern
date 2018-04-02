@@ -72,6 +72,9 @@ gkMakeInstance(GkModel *model) {
 
 void
 gkReshape(GkScene *scene, GkRect rect) {
+  if (!scene->camera)
+    return;
+
   gkResizeCamera(scene->camera, rect.size.w / rect.size.h);
 
   scene->flags         |= GK_SCENEF_RENDER;
