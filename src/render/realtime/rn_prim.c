@@ -8,6 +8,7 @@
 #include "../../common.h"
 #include "rn_prim.h"
 #include "rn_material.h"
+#include "../../../include/gk/prims/cube.h"
 
 void
 gkRenderPrim(GkScene     * __restrict scene,
@@ -30,4 +31,9 @@ gkRenderPrimInst(GkScene    * __restrict scene,
   
   glBindVertexArray(prim->vao);
   gkApplyMaterial(scene, primInst);
+
+  if ((scene->flags & GK_SCENEF_DRAW_PRIM_BBOX))
+    gkDrawBBox(scene,
+               primInst->bbox,
+               primInst->trans->world);
 }

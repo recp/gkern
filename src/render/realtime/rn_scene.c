@@ -27,6 +27,11 @@ gkDefRenderFunc(GkScene * scene) {
 
   frustum = &scene->camera->frustum;
 
+  if ((scene->flags & GK_SCENEF_DRAW_BBOX))
+    gkDrawBBox(scene,
+               scene->bbox,
+               scene->rootNode->trans->world);
+
   gkRenderPrims(scene, frustum->opaque);
   gkRenderPrims(scene, frustum->transp);
 }
@@ -117,11 +122,6 @@ gkRenderScene(GkScene * scene) {
   scene->camera->flags &= ~GK_UPDT_VIEWPROJ;
 
   sceneImpl->rp(scene);
-
-  if ((scene->flags & GK_SCENEF_DRAW_BBOX))
-    gkDrawBBox(scene,
-               scene->bbox,
-               scene->rootNode->trans->world);
 
   scene->flags &= ~GK_SCENEF_UPDT_LIGHTS;
   scene->flags &= ~GK_SCENEF_NEEDS_RENDER;

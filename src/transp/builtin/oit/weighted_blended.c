@@ -6,6 +6,7 @@
  */
 
 #include "../../../../include/gk/pass.h"
+#include "../../../../include/gk/prims/cube.h"
 #include "../../../common.h"
 #include "../../../render/realtime/rn_prim.h"
 #include "../../../render/realtime/rn_texture.h"
@@ -117,6 +118,11 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gkDepthFunc(ctx, GL_LESS);
   gkDisableBlend(ctx);
+
+  if ((scene->flags & GK_SCENEF_DRAW_BBOX))
+    gkDrawBBox(scene,
+               scene->bbox,
+               scene->rootNode->trans->world);
 
   light      = (GkLight *)sceneImpl->pub.lights;
   firstLight = light;

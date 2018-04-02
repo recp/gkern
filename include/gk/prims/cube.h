@@ -14,9 +14,9 @@
 struct GkScene;
 
 void
-gkDrawBBox(GkScene * __restrict scene,
-           GkBBox               bbox,
-           mat4                 world);
+gkDrawBBox(struct GkScene * __restrict scene,
+           GkBBox                      bbox,
+           mat4                        world);
 
 void
 gkInitCube(void);
