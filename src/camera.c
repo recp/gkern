@@ -151,11 +151,17 @@ gkCameraViewUpdated(GkCamera * __restrict cam) {
 void
 gkZoom(GkScene * __restrict scene,
        float distance) {
-  GkCamera *cam;
-  vec3      dir;
+  GkCamera     *cam;
+  GkCameraImpl *camImpl;
+  vec3          dir;
 
   if (!(cam = scene->camera) || distance == 0.0f)
     return;
+
+  camImpl = (GkCameraImpl *)cam;
+
+  if (isinf(distance) || isnan(distance))
+    distance = camImpl->lastZoomDist * copysignf(1.0f, distance);
 
   glm_vec_scale_as(cam->world[2], -distance, dir);
   glm_vec_add(cam->world[3], dir, cam->world[3]);
@@ -164,6 +170,8 @@ gkZoom(GkScene * __restrict scene,
 
   scene->camera->flags |= GK_UPDT_VIEW;
   scene->flags |= GK_SCENEF_RENDER;
+
+  camImpl->lastZoomDist = fabsf(distance);
 }
 
 void

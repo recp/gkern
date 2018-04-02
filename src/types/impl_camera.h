@@ -15,6 +15,7 @@
 typedef struct GkCameraImpl {
   GkCamera  pub;
   uint32_t  transfSlot;
+  float     lastZoomDist;
 } GkCameraImpl;
 
 #endif /* impl_camera_h */
