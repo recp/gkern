@@ -44,15 +44,15 @@ typedef struct GkTrackball {
 } GkTrackball;
 
 GkTrackball*
-gk_tball_new(void);
+gkTrackballAlloc(void);
 
 void
-gk_tball_attach(GkTrackball * __restrict tball,
-                GkScene     * __restrict scene,
-                GkNode      * __restrict node,
-                GkBBox                   bbox);
+gkTrackballAttach(GkTrackball * __restrict tball,
+                  GkScene     * __restrict scene,
+                  GkNode      * __restrict node,
+                  GkBBox                   bbox);
 
 void
-gk_tball_free(GkTrackball *tball);
+gkTrackballFree(GkTrackball *tball);
 
 #endif /* gk_trackball_h */

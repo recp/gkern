@@ -12,13 +12,13 @@
 #include "../../include/gk/trackball.h"
 
 void
-gk_tball_mouse_ws(GkMouseEventStruct *event);
+gkTrackballMouseWs(GkMouseEventStruct *event);
 
 void
-gk_tball_mouse(void         *sender,
-               GkScene      *scene,
-               GkMouseButton button,
-               GkMouseState  state,
-               GkPoint       point);
+gkTrackballMouse(void         *sender,
+                 GkScene      *scene,
+                 GkMouseButton button,
+                 GkMouseState  state,
+                 GkPoint       point);
 
 #endif /* gk_tball_mouse_h */

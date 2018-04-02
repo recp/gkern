@@ -12,12 +12,12 @@
 #include "tball_mouse.h"
 
 void
-gk_tball_mouse(void         *sender,
+gkTrackballMouse(void         *sender,
                GkScene      *scene,
                GkMouseButton button,
                GkMouseState  state,
                GkPoint       point) {
-  gk_tball_mouse_ws(&(GkMouseEventStruct) {
+  gkTrackballMouseWs(&(GkMouseEventStruct) {
     sender,
     scene,
     button,
@@ -27,7 +27,7 @@ gk_tball_mouse(void         *sender,
 }
 
 void
-gk_tball_mouse_ws(GkMouseEventStruct *event) {
+gkTrackballMouseWs(GkMouseEventStruct *event) {
   GkTrackball *tball;
   GkScene     *scene;
 
@@ -51,8 +51,8 @@ gk_tball_mouse_ws(GkMouseEventStruct *event) {
         versor q;
         float  angle;
 
-        gk_tall_vec(tball, tball->start, from);
-        gk_tall_vec(tball, event->point, to);
+        gkTrackballVec(tball, tball->start, from);
+        gkTrackballVec(tball, event->point, to);
         glm_vec_cross(from, to, axis);
 
         angle = acosf(fminf(1.0f, glm_vec_dot(from, to))) * tball->velocity;

@@ -13,22 +13,22 @@
 #include <string.h>
 
 GkTrackball*
-gk_tball_new() {
+gkTrackballAlloc() {
   GkTrackball *tball;
 
   tball = calloc(1, sizeof(*tball));
   tball->enabled  = true;
-  tball->mouse    = gk_tball_mouse;
-  tball->mouse2   = gk_tball_mouse_ws;
+  tball->mouse    = gkTrackballMouse;
+  tball->mouse2   = gkTrackballMouseWs;
 
   return tball;
 }
 
 void
-gk_tball_attach(GkTrackball * __restrict tball,
-                GkScene     * __restrict scene,
-                GkNode      * __restrict node,
-                GkBBox                   bbox) {
+gkTrackballAttach(GkTrackball * __restrict tball,
+                  GkScene     * __restrict scene,
+                  GkNode      * __restrict node,
+                  GkBBox                   bbox) {
   GkTransform *trans;
   assert(tball && scene && bbox && "invalid params!");
 
@@ -51,12 +51,12 @@ gk_tball_attach(GkTrackball * __restrict tball,
 }
 
 void
-gk_tball_free(GkTrackball *tball) {
+gkTrackballFree(GkTrackball *tball) {
   free(tball);
 }
 
 void
-gk_tall_vec(GkTrackball * __restrict tball,
+gkTrackballVec(GkTrackball * __restrict tball,
             GkPoint p,
             vec3    vec) {
   mat4    m;

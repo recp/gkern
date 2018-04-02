@@ -13,7 +13,7 @@
 #include "../../include/gk/geom-types.h"
 
 void
-gk_tall_vec(GkTrackball * __restrict tball,
+gkTrackballVec(GkTrackball * __restrict tball,
             GkPoint p,
             vec3    vec);
 
