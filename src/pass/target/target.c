@@ -59,8 +59,8 @@ gkAddRenderTarget(GkScene *scene,
                              pass,
                              internalformat,
                              format,
-                             scene->vrect.size.w * scene->backingScale,
-                             scene->vrect.size.h * scene->backingScale,
+                             scene->viewport[2] * scene->backingScale,
+                             scene->viewport[3] * scene->backingScale,
                              type);
 }
 
@@ -71,8 +71,8 @@ gkAddRenderTargetRB(struct GkScene *scene,
   return gkAddRenderTargetRBEx(scene,
                                pass,
                                scene->internalFormat,
-                               scene->vrect.size.w * scene->backingScale,
-                               scene->vrect.size.h * scene->backingScale);
+                               scene->viewport[2] * scene->backingScale,
+                               scene->viewport[3] * scene->backingScale);
 }
 
 GLuint

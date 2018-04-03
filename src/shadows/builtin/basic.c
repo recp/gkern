@@ -41,13 +41,13 @@ gkSetupBasicShadowMap(GkScene * __restrict scene,
 
   if (light->type != GK_LIGHT_TYPE_POINT) {
     /* TODO: optimize it */
-    sm->size.w = scene->vrect.size.w * scene->backingScale;
-    sm->size.h = scene->vrect.size.h * scene->backingScale;
+    sm->size.w = scene->viewport[2] * scene->backingScale;
+    sm->size.h = scene->viewport[3] * scene->backingScale;
 
     gkAddDepthTexTarget(scene, pass, sm->size);
   } else {
     /* TODO: optimize it */
-    sm->size.w = scene->vrect.size.w * scene->backingScale;
+    sm->size.w = scene->viewport[2] * scene->backingScale;
     sm->size.h = sm->size.w;
 
     gkAddDepthCubeTexTarget(scene, pass, sm->size.w);
@@ -188,6 +188,6 @@ gkRenderBasicShadowMap(GkScene * __restrict scene,
 
   glViewport(0,
              0,
-             scene->vrect.size.w * scene->backingScale,
-             scene->vrect.size.h * scene->backingScale);
+             scene->viewport[2] * scene->backingScale,
+             scene->viewport[3] * scene->backingScale);
 }

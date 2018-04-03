@@ -37,8 +37,8 @@ gkBlit(GkScene  * __restrict scene,
        int32_t               colorIndex) {
   float w, h;
 
-  w = scene->vrect.size.w * scene->backingScale;
-  h = scene->vrect.size.h * scene->backingScale;
+  w = scene->viewport[2] * scene->backingScale;
+  h = scene->viewport[3] * scene->backingScale;
 
   glBindFramebuffer(GL_READ_FRAMEBUFFER, src->fbo);
   glReadBuffer(GL_COLOR_ATTACHMENT0 + colorIndex);

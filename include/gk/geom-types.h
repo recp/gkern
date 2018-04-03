@@ -48,6 +48,16 @@ gkRectCGRect(CGRect rect) {
   r.size.h   = rect.size.height;
   return r;
 }
+
+CG_INLINE
+void
+gkViewportCGRect(CGRect rect, vec4 viewport) {
+  viewport[0] = rect.origin.x;
+  viewport[1] = rect.origin.y;
+  viewport[2] = rect.size.width;
+  viewport[3] = rect.size.height;
+}
+
 #endif
 
 GkPoint

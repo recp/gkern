@@ -82,7 +82,10 @@ gkReshape(GkScene *scene, GkRect rect) {
 
   gkCameraProjUpdated(scene->camera);
 
-  scene->vrect = rect;
+  scene->viewport[0] = rect.origin.x;
+  scene->viewport[1] = rect.origin.y;
+  scene->viewport[2] = rect.size.w;
+  scene->viewport[3] = rect.size.h;
 }
 
 GK_EXPORT

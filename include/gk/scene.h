@@ -57,7 +57,7 @@ typedef struct GkScene {
   struct GkOutput   *finalOutput; /* set NULL for default FBO (screen) */
   GkBBox             bbox;
   GkRenderPrimFunc   renderPrimFunc;
-  GkRect             vrect;
+  vec4               viewport;
   uint32_t           lightCount;
   uint32_t           lastLightIndex;
   GkSceneFlags       flags;

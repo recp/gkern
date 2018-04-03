@@ -27,8 +27,8 @@ gkAddDepthTarget(GkScene *scene, GkPass *pass) {
 
   glRenderbufferStorage(GL_RENDERBUFFER,
                         GL_DEPTH_COMPONENT24,
-                        scene->vrect.size.w * scene->backingScale,
-                        scene->vrect.size.h * scene->backingScale);
+                        scene->viewport[2] * scene->backingScale,
+                        scene->viewport[3] * scene->backingScale);
 
   glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                             GL_DEPTH_ATTACHMENT,
@@ -149,8 +149,8 @@ gkAddDepthTexArrayTarget(GkScene *scene, GkPass *pass, GLsizei len) {
   glTexImage3D(GL_TEXTURE_2D_ARRAY,
                0,
                GL_DEPTH_COMPONENT24, /* todo: add option for this */
-               scene->vrect.size.w * scene->backingScale,
-               scene->vrect.size.h * scene->backingScale,
+               scene->viewport[2] * scene->backingScale,
+               scene->viewport[3] * scene->backingScale,
                len,
                0,
                GL_DEPTH_COMPONENT,
