@@ -30,6 +30,7 @@ gkTrackballAttach(GkTrackball * __restrict tball,
                   GkNode      * __restrict node,
                   GkBBox                   bbox) {
   GkTransform *trans;
+
   assert(tball && scene && bbox && "invalid params!");
 
   tball->scene    = scene;
@@ -59,23 +60,20 @@ void
 gkTrackballVec(GkTrackball * __restrict tball,
             GkPoint p,
             vec3    vec) {
+  GkScene *scene;
   mat4    m;
-  vec3    center;
-  GkPoint c;
-  GkRect  vrc;
+  vec3    center, c;
   float   x, y, z, d;
 
-  glm_mat4_mul(tball->scene->camera->viewProj,
-               tball->nodeTrans->local,
-               m);
+  scene = tball->scene;
 
+  glm_mat4_mul(scene->camera->viewProj, tball->nodeTrans->local, m);
   glm_vec_center(tball->bbox[0], tball->bbox[1], center);
 
-  vrc = tball->scene->vrect;
-  c   = gk_project2d(vrc, m, center);
+  glm_project(center, m, scene->viewport, c);
 
-  x = (p.x - c.x) / vrc.size.w;
-  y = (p.y - c.y) / vrc.size.h;
+  x = (p.x - c[0]) / scene->viewport[2];
+  y = (p.y - c[1]) / scene->viewport[3];
   d = x * x + y * y;
 
   if (d <= 0.5f)
