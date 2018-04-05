@@ -7,7 +7,7 @@
 
 #include "../common.h"
 #include "tball.h"
-#include "tball_mouse.h"
+#include "mouse.h"
 #include "../../include/gk/transform.h"
 #include "../default/transform.h"
 #include <string.h>

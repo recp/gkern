@@ -9,14 +9,14 @@
 #include "../../include/gk/gk.h"
 #include "../../include/gk/trackball.h"
 #include "tball.h"
-#include "tball_mouse.h"
+#include "mouse.h"
 
 void
 gkTrackballMouse(void         *sender,
-               GkScene      *scene,
-               GkMouseButton button,
-               GkMouseState  state,
-               GkPoint       point) {
+                 GkScene      *scene,
+                 GkMouseButton button,
+                 GkMouseState  state,
+                 GkPoint       point) {
   gkTrackballMouseWs(&(GkMouseEventStruct) {
     sender,
     scene,
