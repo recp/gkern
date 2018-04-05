@@ -14,7 +14,7 @@
 
 void
 gkTrackballVec(GkTrackball * __restrict tball,
-            GkPoint p,
-            vec3    vec);
+               GkPoint p,
+               vec3    vec);
 
 #endif /* gk_tball_h */
