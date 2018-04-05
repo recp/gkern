@@ -77,7 +77,7 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
         glm_mat4_mul(tball->trans,
                      scene->trans->local,
                      scene->trans->world);
-        gkApplyTransform(scene, tball->node);
+        tball->scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
         scene->flags |= GK_SCENEF_RENDER;
       }
       break;
@@ -85,7 +85,7 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
       glm_mat4_mul(tball->trans,
                    scene->trans->local,
                    scene->trans->local);
-      gkApplyTransform(scene, tball->node);
+      tball->scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
       scene->flags |= GK_SCENEF_RENDER;
 
       if (tball->cb)
