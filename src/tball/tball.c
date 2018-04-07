@@ -62,15 +62,13 @@ gkTrackballVec(GkTrackball * __restrict tball,
                vec3    vec) {
   GkScene *scene;
   mat4    m;
-  vec3    center, c;
+  vec3    c;
   float   x, y, z, d;
 
   scene = tball->scene;
 
   glm_mat4_mul(scene->camera->viewProj, tball->nodeTrans->local, m);
-  glm_vec_center(tball->bbox[0], tball->bbox[1], center);
-
-  glm_project(center, m, scene->viewport, c);
+  glm_project(tball->center, m, scene->viewport, c);
 
   x = (p.x - c[0]) / scene->viewport[2];
   y = (p.y - c[1]) / scene->viewport[3];

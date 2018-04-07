@@ -43,40 +43,38 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
 
       if (tball->cb)
         tball->cb(tball, GK_TRACKBALL_EVENT_BEGIN);
+
+      glm_vec_center(tball->bbox[0], tball->bbox[1], tball->center);
+      glm_vec_inv_to(tball->center, tball->centerInv);
+
+      gkTrackballVec(tball, tball->start, tball->from);
+
       break;
     case GK_MOUSE_MOVE:
       if (tball->moving == true) {
-        mat4   rot = GLM_MAT4_IDENTITY_INIT;
-        vec3   axis, from, to, tran, center;
+        vec3   axis, to;
         versor q;
         float  angle;
 
-        gkTrackballVec(tball, tball->start, from);
         gkTrackballVec(tball, event->point, to);
-        glm_vec_cross(from, to, axis);
+        glm_vec_cross(tball->from, to, axis);
 
-        angle = acosf(fminf(1.0f, glm_vec_dot(from, to))) * tball->velocity;
+        angle = glm_vec_angle(tball->from, to);
 
         glm_vec_rotate_m4(scene->camera->world, axis, axis);
         glm_quatv(q, angle, axis);
         glm_quat_normalize(q);
 
         /* rotate around center */
-        glm_vec_center(tball->bbox[0], tball->bbox[1], center);
-        glm_vec_sub(center,
-                    tball->node->trans->local[3],
-                    tran);
-
-        glm_quat_mat4(q, tball->trans);
-        glm_translate(rot, tran);
-        glm_mat4_mul(rot, tball->trans, tball->trans);
-
-        glm_vec_flipsign(tran);
-        glm_translate(tball->trans, tran);
+        glm_mat4_identity(tball->trans);
+        glm_vec_copy(tball->center, tball->trans[3]);
+        glm_mat4_mulq(tball->trans, q, tball->trans);
+        glm_translate(tball->trans, tball->centerInv);
 
         glm_mat4_mul(tball->trans,
                      scene->trans->local,
                      scene->trans->world);
+
         tball->scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
         scene->flags |= GK_SCENEF_RENDER;
       }
