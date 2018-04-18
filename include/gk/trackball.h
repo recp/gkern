@@ -37,6 +37,8 @@ typedef struct GkTrackball {
   GkMouseEventWithStruct mouse2;
   GkTrackballEventCb     cb;
   GkPoint                start;
+  vec3                   from;
+  vec3                   center;
   mat4                   trans;
   bool                   enabled;
   bool                   moving;

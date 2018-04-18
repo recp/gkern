@@ -45,16 +45,13 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
         tball->cb(tball, GK_TRACKBALL_EVENT_BEGIN);
 
       glm_vec_center(tball->bbox[0], tball->bbox[1], tball->center);
-      glm_vec_inv_to(tball->center, tball->centerInv);
-
       gkTrackballVec(tball, tball->start, tball->from);
 
       break;
     case GK_MOUSE_MOVE:
       if (tball->moving == true) {
-        vec3   axis, to;
-        versor q;
-        float  angle;
+        vec3  axis, to;
+        float angle;
 
         gkTrackballVec(tball, event->point, to);
         glm_vec_cross(tball->from, to, axis);
@@ -62,14 +59,7 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
         angle = glm_vec_angle(tball->from, to) * tball->velocity;
 
         glm_vec_rotate_m4(scene->camera->world, axis, axis);
-        glm_quatv(q, angle, axis);
-        glm_quat_normalize(q);
-
-        /* rotate around center */
-        glm_mat4_identity(tball->trans);
-        glm_vec_copy(tball->center, tball->trans[3]);
-        glm_mat4_mulq(tball->trans, q, tball->trans);
-        glm_translate(tball->trans, tball->centerInv);
+        glm_rotate_atm(tball->trans, tball->center, angle, axis);
 
         glm_mat4_mul(tball->trans,
                      scene->trans->local,
