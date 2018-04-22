@@ -39,25 +39,25 @@
 #define GK_FLG(FLAGS, FLAG) ((FLAGS & FLAG) == FLAG)
 
 #ifdef __cplusplus
-#define GK_MAKE_C_ENUM(ENM)                                                    \
-static inline ENM operator|=(ENM& a, ENM b) {                                         \
-  return (a = static_cast<ENM>(static_cast<int>(a) | static_cast<int>(b)));    \
-}                                                                              \
-                                                                               \
-static inline ENM operator&=(ENM& a, ENM b) {                                         \
-  return (a = static_cast<ENM>(static_cast<int>(a) & static_cast<int>(b)));    \
-}                                                                              \
-                                                                               \
-static inline ENM operator~(ENM a) {                                                  \
-  return static_cast<ENM>(~static_cast<int>(a));                               \
-}                                                                              \
-                                                                               \
-static inline ENM operator|(ENM a, ENM b) {                                           \
-  return static_cast<ENM>(static_cast<int>(a) | static_cast<int>(b));          \
-}                                                                              \
-                                                                               \
-static inline ENM operator&(ENM a, ENM b) {                                           \
-  return static_cast<ENM>(static_cast<int>(a) & static_cast<int>(b));          \
+#define GK_MAKE_C_ENUM(ENM)                                                   \
+static inline ENM operator|=(ENM& a, ENM b) {                                 \
+  return (a = static_cast<ENM>(static_cast<int>(a) | static_cast<int>(b)));   \
+}                                                                             \
+                                                                              \
+static inline ENM operator&=(ENM& a, ENM b) {                                 \
+  return (a = static_cast<ENM>(static_cast<int>(a) & static_cast<int>(b)));   \
+}                                                                             \
+                                                                              \
+static inline ENM operator~(ENM a) {                                          \
+  return static_cast<ENM>(~static_cast<int>(a));                              \
+}                                                                             \
+                                                                              \
+static inline ENM operator|(ENM a, ENM b) {                                   \
+  return static_cast<ENM>(static_cast<int>(a) | static_cast<int>(b));         \
+}                                                                             \
+                                                                              \
+static inline ENM operator&(ENM a, ENM b) {                                   \
+  return static_cast<ENM>(static_cast<int>(a) & static_cast<int>(b));         \
 }
 
 #else
@@ -66,6 +66,10 @@ static inline ENM operator&(ENM a, ENM b) {                                     
 
 #include <stdint.h>
 #include <stdbool.h>
+
+#ifdef DEBUG
+# include <assert.h>
+#endif
 
 #ifdef __APPLE__
 #  include <OpenGL/gl3.h>
