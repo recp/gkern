@@ -32,6 +32,7 @@ typedef struct GkSceneImpl {
   GkRenderPathFn     lightIterFunc;
   GkRenderPathType   rpath;
   int32_t            internalFormat;
+  size_t             centercount;
   float              backingScale;
   bool               transpPass;
 } GkSceneImpl;

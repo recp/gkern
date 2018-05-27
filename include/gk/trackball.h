@@ -38,7 +38,7 @@ typedef struct GkTrackball {
   GkTrackballEventCb     cb;
   GkPoint                start;
   vec3                   from;
-  vec3                   center;
+  float                 *center;
   mat4                   trans;
   bool                   enabled;
   bool                   moving;
@@ -52,7 +52,7 @@ void
 gkTrackballAttach(GkTrackball * __restrict tball,
                   GkScene     * __restrict scene,
                   GkNode      * __restrict node,
-                  GkBBox                   bbox);
+                  vec3                     pivot);
 
 void
 gkTrackballFree(GkTrackball *tball);

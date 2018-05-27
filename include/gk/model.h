@@ -72,6 +72,7 @@ typedef struct GkModel {
   GkGLEvents      *events;
   GkModelInstList *instances; /* TODO: */
   GkBBox           bbox;   /* local */
+  vec3             center;
   uint32_t         flags;
   uint32_t         primc;
   GkPrimitive      prims[];
@@ -84,6 +85,8 @@ typedef struct GkModelInst {
   GkMaterial         *material; /* instances may use different materials */
   GkMaterial         *activeMaterial;
   GkBBox              bbox;
+  vec3                center;
+  bool                addedToScene;
   uint64_t            flags;
   int32_t             primc;
   GkPrimInst          prims[];

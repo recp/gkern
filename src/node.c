@@ -92,6 +92,7 @@ gkPrepareNode(GkScene * __restrict scene,
   FListItem    *camItem;
   GkTransform  *tr;
   GkLight      *light;
+  int32_t       modelCount;
   bool          finalComputed;
 
   sceneImpl = (GkSceneImpl *)scene;
@@ -110,8 +111,14 @@ gkPrepareNode(GkScene * __restrict scene,
   /* TODO: */
   /* gkTransformAABB(tr, node->bbox); */
 
+  modelCount = 0;
+
   if (node->model) {
     GkModelInst *modelInst;
+
+    glm_vec_scale(scene->center,
+                  sceneImpl->centercount,
+                  scene->center);
 
     while (camItem) {
       camImpl = camItem->data;
@@ -124,6 +131,7 @@ gkPrepareNode(GkScene * __restrict scene,
 
     do {
       GkPrimInst *prims;
+      vec3        modelCenter;
       int32_t     i, primc;
 
       modelInst->trans = tr;
@@ -134,6 +142,8 @@ gkPrepareNode(GkScene * __restrict scene,
       prims = modelInst->prims;
       primc = modelInst->primc;
 
+      glm_vec_zero(modelCenter);
+
       for (i = 0; i < primc; i++) {
         glm_aabb_transform(prims[i].prim->bbox,
                            tr->world,
@@ -143,8 +153,26 @@ gkPrepareNode(GkScene * __restrict scene,
         prims[i].trans = tr;
       }
 
+      glm_mat4_mulv3(tr->world,
+                     modelInst->model->center,
+                     1.0f,
+                     modelInst->center);
+
+      if (modelInst->addedToScene) {
+        glm_vec_sub(scene->center, modelInst->center, scene->center);
+      } else {
+        modelInst->addedToScene = true;
+        sceneImpl->centercount++;
+      }
+
+      glm_vec_add(scene->center, modelInst->center, scene->center);
+
       modelInst = modelInst->next;
     } while (modelInst);
+
+    glm_vec_divs(scene->center,
+                 sceneImpl->centercount,
+                 scene->center);
   }
 
   if ((light = node->light)) {
