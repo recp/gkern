@@ -92,7 +92,6 @@ gkPrepareNode(GkScene * __restrict scene,
   FListItem    *camItem;
   GkTransform  *tr;
   GkLight      *light;
-  int32_t       modelCount;
   bool          finalComputed;
 
   sceneImpl = (GkSceneImpl *)scene;
@@ -110,8 +109,6 @@ gkPrepareNode(GkScene * __restrict scene,
 
   /* TODO: */
   /* gkTransformAABB(tr, node->bbox); */
-
-  modelCount = 0;
 
   if (node->model) {
     GkModelInst *modelInst;

@@ -28,14 +28,14 @@ void
 gkTrackballAttach(GkTrackball * __restrict tball,
                   GkScene     * __restrict scene,
                   GkNode      * __restrict node,
-                  GkBBox                   bbox) {
+                  vec3                     pivot) {
   GkTransform *trans;
 
-  assert(tball && scene && bbox && "invalid params!");
+  assert(tball && scene && "invalid params!");
 
   tball->scene    = scene;
-  tball->bbox     = bbox;
   tball->velocity = 2.5f;
+  tball->center   = pivot;
 
   trans = scene->trans;
   if (!trans) {

@@ -30,12 +30,14 @@ void
 gkTrackballMouseWs(GkMouseEventStruct *event) {
   GkTrackball *tball;
   GkScene     *scene;
+  GkSceneImpl *sceneImpl;
 
   tball = event->sender;
   if (event->button != GK_MOUSE_LEFT)
     return;
 
-  scene = tball->scene;
+  scene     = tball->scene;
+  sceneImpl = (GkSceneImpl *)scene;
   switch (event->state) {
     case GK_MOUSE_DOWN:
       tball->start  = event->point;
@@ -44,7 +46,6 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
       if (tball->cb)
         tball->cb(tball, GK_TRACKBALL_EVENT_BEGIN);
 
-      glm_vec_center(tball->bbox[0], tball->bbox[1], tball->center);
       gkTrackballVec(tball, tball->start, tball->from);
 
       break;
