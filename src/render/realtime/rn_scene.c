@@ -16,6 +16,8 @@
 #include "../../bbox/scene_bbox.h"
 #include "rn_prim.h"
 
+#include <tm/tm.h>
+
 static
 void
 gkDefRenderFunc(GkScene * scene) ;
@@ -77,9 +79,9 @@ gkPrepareScene(GkScene * __restrict scene) {
 void
 gkRenderScene(GkScene * scene) {
   GkSceneImpl *sceneImpl;
-  double       start, end;
+  tm_interval  start, end;
 
-  start = gkGetTime();
+  start = tm_time();
 
   if (!scene
       || ((scene->flags & GK_SCENEF_ONCE)
@@ -128,7 +130,7 @@ gkRenderScene(GkScene * scene) {
   scene->flags &= ~GK_SCENEF_RENDERING;
   scene->flags |= GK_SCENEF_RENDERED;
 
-  end = gkGetTime();
+  end = tm_time();
 
   scene->fpsApprx = 1.0 / (end - start);
 }
