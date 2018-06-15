@@ -10,9 +10,11 @@
 
 #include "../../include/gk/scene.h"
 #include "../../include/gk/node.h"
+#include "../../include/gk/animation.h"
 #include "impl_node.h"
 
 #include <ds/forward-list.h>
+#include <tm/tm.h>
 
 typedef struct GkSceneImpl {
   GkScene            pub;
@@ -26,6 +28,7 @@ typedef struct GkSceneImpl {
 
   GkNodePage        *nodePages;
   GkNodePage        *lastPage;
+  FListItem         *anims;
 
   GkRenderPathFn     rp;
   GkRenderPathFn     renderFunc;

@@ -65,6 +65,8 @@ typedef struct GkScene {
   float              backingScale;
   float              fpsApprx;
   vec3               center;
+  double             startTime;
+  double             endTime;
 } GkScene;
 
 GK_INLINE

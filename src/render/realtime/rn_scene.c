@@ -79,9 +79,9 @@ gkPrepareScene(GkScene * __restrict scene) {
 void
 gkRenderScene(GkScene * scene) {
   GkSceneImpl *sceneImpl;
-  tm_interval  start, end;
 
-  start = tm_time();
+  sceneImpl = (GkSceneImpl *)scene;
+  scene->startTime = tm_time();
 
   if (!scene
       || ((scene->flags & GK_SCENEF_ONCE)
@@ -130,9 +130,9 @@ gkRenderScene(GkScene * scene) {
   scene->flags &= ~GK_SCENEF_RENDERING;
   scene->flags |= GK_SCENEF_RENDERED;
 
-  end = tm_time();
+  scene->endTime = tm_time();
 
-  scene->fpsApprx = 1.0 / (end - start);
+  scene->fpsApprx = 1.0 / (scene->endTime - scene->startTime);
 }
 
 GK_EXPORT
