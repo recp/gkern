@@ -11,11 +11,13 @@ void
 gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest) {
   switch (to->type) {
     case GKT_FLOAT:
-      dest->s32.floatValue = glm_lerp(0, to->s32.floatValue, t);
+      dest->s32.floatValue = glm_lerp(from->s32.floatValue,
+                                      to->s32.floatValue,
+                                      t);
       break;
     case GKT_FLOAT3:
       dest->val = realloc(dest->val, sizeof(vec3));
-      glm_vec_lerp(GLM_VEC3_ZERO, to->val, t, dest->val);
+      glm_vec_lerp(from->val, to->val, t, dest->val);
       break;
     default:
       break;
@@ -45,7 +47,7 @@ gkValueCopy(GkValue *src, GkValue *dest) {
 GK_EXPORT
 void
 gkValueSub(GkValue *a, GkValue *b, GkValue *dest) {
-  if (!b || !b->val) {
+  if (!b || (b->type != GKT_FLOAT && !b->val)) {
     gkValueCopy(a, dest);
     return;
   }

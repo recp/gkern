@@ -10,6 +10,8 @@
 #include "../include/gk/node.h"
 #include "../include/gk/opt.h"
 #include "bbox/scene_bbox.h"
+#include "anim/animatable.h"
+
 #include <ds/hash.h>
 #include <string.h>
 
@@ -56,6 +58,8 @@ nw:
 
   node = &np->nodes[0];
   node->flags |= GK_NODEF_NODE;
+
+  node->anim = gkAnimatable(node);
 
   return node;
 }

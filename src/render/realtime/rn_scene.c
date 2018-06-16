@@ -15,6 +15,7 @@
 #include "../../../include/gk/gpu_state.h"
 #include "../../bbox/scene_bbox.h"
 #include "rn_prim.h"
+#include "rn_anim.h"
 
 #include <tm/tm.h>
 
@@ -86,13 +87,16 @@ gkRenderScene(GkScene * scene) {
   if (!scene
       || ((scene->flags & GK_SCENEF_ONCE)
           && !(scene->flags & GK_SCENEF_NEEDS_RENDER)
-          && !(scene->camera->flags & GK_UPDT_VIEWPROJ))
+          && !(scene->camera->flags & GK_UPDT_VIEWPROJ)
+          && !sceneImpl->anims)
       || scene->flags & GK_SCENEF_RENDERING)
   return;
 
-  sceneImpl     = (GkSceneImpl *)scene;
   scene->flags &= ~GK_SCENEF_RENDERED;
   scene->flags |= GK_SCENEF_RENDERING;
+
+  /* run animations */
+  gkRunAnim(sceneImpl);
 
   glm_aabb_invalidate(scene->bbox);
 

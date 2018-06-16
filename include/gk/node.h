@@ -22,6 +22,7 @@ extern "C" {
 #include <cglm/cglm.h>
 
 struct GkScene;
+struct GkAnimatable;
 
 typedef enum GkNodeFlags {
   GK_NODEF_NODE           = 1,
@@ -29,18 +30,18 @@ typedef enum GkNodeFlags {
 } GkNodeFlags;
 
 typedef struct GkNode {
-  GkNodeFlags    flags;
+  struct GkAnimatable  *anim;
+  GkNodeFlags           flags;
 
-  GkBBox         bbox;
-  GkTransform   *trans;
+  GkTransform          *trans;
 
-  GkModelInst   *model;
-  GkLight       *light;
-  GkCamera      *camera;
+  GkModelInst          *model;
+  GkLight              *light;
+  GkCamera             *camera;
 
-  struct GkNode *parent;
-  struct GkNode *next;
-  struct GkNode *chld;
+  struct GkNode        *parent;
+  struct GkNode        *next;
+  struct GkNode        *chld;
 } GkNode;
 
 GkNode*
