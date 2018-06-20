@@ -30,13 +30,6 @@ typedef bool    (*GkAnimFunc)(struct GkAnimation *anim,
                               GkValue            *to,
                               GkValue            *delta);
 
-typedef enum GkTimingMode {
-  GK_TIMING_LINEAR     = 0,
-  GK_TIMING_EASE_IN    = 1,
-  GK_TIMING_EASE_OUT   = 2,
-  GK_TIMING_EASE_INOUT = 3
-} GkTimingMode;
-
 typedef struct GkAnimation {
   GkScene     *scene;
   GkNode      *node;
@@ -44,24 +37,25 @@ typedef struct GkAnimation {
   GkValue     *to;
   GkValue     *delta;
   void        *data;
-  GkAnimFunc   cb;
-  GkTimingFunc timingFunc;
+  GkAnimFunc   fnAnimator;
+  GkTimingFunc fnTiming;
   size_t       dataSize;
   double       duration;
   double       beginTime;
-  bool         autoReverse;
   bool         isReverse;
-  bool         freeOnCompleted;
-  uint32_t     repeatCount;
-  uint32_t     playedCount;
-  GkTimingMode timingMode;
+  bool         autoReverse;
+  bool         autoFree;
+  uint32_t     nRepeat;
+  uint32_t     nPlayed;
 } GkAnimation;
 
+/* TODO: */
 GK_EXPORT
 GkAnimation*
-gkBasicAnimation(GkValue *from,
-                 GkValue *to,
-                 double   duration);
+gkBasicAnimation(const char *path,
+                 GkValue    *from,
+                 GkValue    *to,
+                 double      duration);
 
 GK_EXPORT
 GkAnimation*
@@ -69,6 +63,7 @@ gkRotateAnimation(float  to,
                   vec3   pivot,
                   vec3   axis,
                   double duration);
+
 
 GK_EXPORT
 GkAnimation*

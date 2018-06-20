@@ -26,6 +26,7 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
   time  = sceneImpl->pub.startTime;
   v.val = vd.val = NULL;
 
+
   do {
     anim = animItem->data;
 
@@ -35,13 +36,13 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
 
     /* remove animation */
     if (anim->beginTime > time
-        || anim->repeatCount <= anim->playedCount) {
+        || anim->nRepeat <= anim->nPlayed) {
       continue;
     }
 
     endTime = anim->beginTime + anim->duration;
     t       = glm_percentc(anim->beginTime, endTime, time);
-    ease    = anim->timingFunc ? anim->timingFunc(t) : t;
+    ease    = anim->fnTiming ? anim->fnTiming(t) : t;
 
     if (!anim->isReverse) {
       gkValueLerp(anim->from, anim->to, ease, &v);
@@ -52,22 +53,22 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
     gkValueSub(&v, anim->delta, &vd);
     gkValueCopy(&v, anim->delta);
 
-    anim->cb(anim, &v, &vd);
+    anim->fnAnimator(anim, &v, &vd);
 
     if (t == 1.0f) {
       if (!anim->autoReverse) {
-        anim->playedCount++;
+        anim->nPlayed++;
       } else {
         if (anim->isReverse)
-          anim->playedCount++;
+          anim->nPlayed++;
 
-        if (anim->playedCount < anim->repeatCount)
+        if (anim->nPlayed < anim->nRepeat)
           anim->beginTime = time;
 
         anim->isReverse = !anim->isReverse;
       }
 
-      if (anim->repeatCount == UINT_MAX)
+      if (anim->nRepeat == UINT_MAX)
         anim->beginTime = time;
     }
   } while ((animItem = animItem->next));

@@ -85,17 +85,17 @@ gkRotateAnimation(float  to,
   glm_vec_copy(pivot, data[0]);
   glm_vec_copy(axis,  data[1]);
 
-  anim->duration    = duration;
-  anim->to          = gkValueFromFloat(to);
-  anim->delta       = calloc(1, sizeof(*anim->delta));
-  anim->data        = data;
-  anim->from        = gkValueFromFloat(0.0f);
-  anim->repeatCount = 1;
+  anim->duration = duration;
+  anim->to       = gkValueFromFloat(to);
+  anim->delta    = calloc(1, sizeof(*anim->delta));
+  anim->data     = data;
+  anim->from     = gkValueFromFloat(0.0f);
+  anim->nRepeat  = 1;
 
   if (glm_vec_eqv(pivot, GK_PIVOT_CENTER)) {
-    anim->cb = gkBuiltinRotationAnimCenter;
+    anim->fnAnimator = gkBuiltinRotationAnimCenter;
   } else {
-    anim->cb = gkBuiltinRotationAnim;
+    anim->fnAnimator = gkBuiltinRotationAnim;
   }
 
   return anim;
@@ -109,12 +109,12 @@ gkScaleAnimation(vec3   to,
 
   anim = calloc(1, sizeof(*anim));
 
-  anim->duration    = duration;
-  anim->to          = gkValueFromVec3(to);
-  anim->delta       = calloc(1, sizeof(*anim->delta));
-  anim->cb          = gkBuiltinScaleAnim;
-  anim->from        = gkValueFromVec3(GLM_VEC3_ONE);
-  anim->repeatCount = 1;
+  anim->duration   = duration;
+  anim->to         = gkValueFromVec3(to);
+  anim->delta      = calloc(1, sizeof(*anim->delta));
+  anim->fnAnimator = gkBuiltinScaleAnim;
+  anim->from       = gkValueFromVec3(GLM_VEC3_ONE);
+  anim->nRepeat    = 1;
 
   return anim;
 }
@@ -130,10 +130,10 @@ gkTranslateAnimation(vec3   to,
   anim->duration    = duration;
   anim->to          = gkValueFromVec3(to);
   anim->delta       = calloc(1, sizeof(*anim->delta));
-  anim->cb          = gkBuiltinTranslateAnim;
+  anim->fnAnimator  = gkBuiltinTranslateAnim;
   anim->autoReverse = true;
   anim->from        = gkValueFromVec3(GLM_VEC3_ZERO);
-  anim->repeatCount = 1;
+  anim->nRepeat     = 1;
 
   return anim;
 }
