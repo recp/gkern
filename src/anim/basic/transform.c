@@ -131,7 +131,6 @@ gkTranslateAnimation(vec3   to,
   anim->to          = gkValueFromVec3(to);
   anim->delta       = calloc(1, sizeof(*anim->delta));
   anim->fnAnimator  = gkBuiltinTranslateAnim;
-  anim->autoReverse = true;
   anim->from        = gkValueFromVec3(GLM_VEC3_ZERO);
   anim->nRepeat     = 1;
 
