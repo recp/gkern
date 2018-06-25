@@ -5,9 +5,10 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "rn_anim.h"
+#include "rn_animator.h"
 #include "../../../include/gk/gk.h"
 #include "../../../include/gk/animation.h"
+#include "../../../include/gk/animation-keyframe.h"
 
 #include <tm/tm.h>
 #include <limits.h>
@@ -25,7 +26,6 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
 
   time  = sceneImpl->pub.startTime;
   v.val = vd.val = NULL;
-
 
   do {
     anim = animItem->data;

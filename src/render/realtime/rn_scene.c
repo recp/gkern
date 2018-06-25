@@ -15,7 +15,7 @@
 #include "../../../include/gk/gpu_state.h"
 #include "../../bbox/scene_bbox.h"
 #include "rn_prim.h"
-#include "rn_anim.h"
+#include "rn_animator.h"
 
 #include <tm/tm.h>
 
