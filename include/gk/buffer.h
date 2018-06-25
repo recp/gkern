@@ -10,15 +10,14 @@
 
 #include "common.h"
 
-typedef struct GkBuffer {
-  struct GkBuffer *prev;
-  struct GkBuffer *next;
-
-  GLuint           vbo;
-  GLsizei          size;
-  GLenum           usage;
-  GLenum           type;
-  GLenum           target;
-} GkBuffer;
+typedef struct GkGPUBuffer {
+  struct GkGPUBuffer *prev;
+  struct GkGPUBuffer *next;
+  GLuint              vbo;
+  GLsizei             size;
+  GLenum              usage;
+  GLenum              type;
+  GLenum              target;
+} GkGPUBuffer;
 
 #endif /* buffer_h */

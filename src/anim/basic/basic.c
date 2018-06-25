@@ -10,7 +10,6 @@
 #include "../../../include/gk/animation.h"
 #include <tm/tm.h>
 
-
 GK_EXPORT
 GkAnimation*
 gkBasicAnimation(const char *path,

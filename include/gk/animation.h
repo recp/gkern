@@ -64,7 +64,6 @@ gkRotateAnimation(float  to,
                   vec3   axis,
                   double duration);
 
-
 GK_EXPORT
 GkAnimation*
 gkScaleAnimation(vec3 to, double duration);

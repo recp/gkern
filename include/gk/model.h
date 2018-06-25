@@ -43,7 +43,7 @@ typedef struct GkPrimitive {
   struct GkPrimitive *next;
   GkMaterial         *material;
   GkMaterial         *activeMaterial;
-  GkBuffer           *bufs;
+  GkGPUBuffer        *bufs;
   struct FListItem   *inputs;
   GkBBox              bbox; /* local */
   GLuint              flags;

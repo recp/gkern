@@ -41,7 +41,7 @@ _gk_hide
 void
 gkPrimInitTexQuad() {
   GkPrimitive *prim;
-  GkBuffer    *buff;
+  GkGPUBuffer *buff;
   uint32_t     vPOSITION, vTEXCOORD;
 
   if (gk__texquad)
