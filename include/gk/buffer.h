@@ -20,4 +20,9 @@ typedef struct GkGPUBuffer {
   GLenum              target;
 } GkGPUBuffer;
 
+typedef struct GkBuffer {
+  void  *data;
+  size_t len;
+} GkBuffer;
+
 #endif /* buffer_h */

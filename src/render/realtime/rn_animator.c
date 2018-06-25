@@ -44,10 +44,30 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
     t       = glm_percentc(anim->beginTime, endTime, time);
     ease    = anim->fnTiming ? anim->fnTiming(t) : t;
 
-    if (!anim->isReverse) {
-      gkValueLerp(anim->from, anim->to, ease, &v);
+    if (anim->isKeyFrame) {
+      GkKeyFrameAnimation *kfa;
+
+      kfa = (GkKeyFrameAnimation *)anim;
+
+      if (!anim->isReverse) {
+        gkInterpolate(0,
+                      ease,
+                      anim->from,
+                      anim->to,
+                      &v);
+      } else {
+        gkInterpolate(0,
+                      ease,
+                      anim->to,
+                      anim->from,
+                      &v);
+      }
     } else {
-      gkValueLerp(anim->to, anim->from, ease, &v);
+      if (!anim->isReverse) {
+        gkValueLerp(anim->from, anim->to, ease, &v);
+      } else {
+        gkValueLerp(anim->to, anim->from, ease, &v);
+      }
     }
 
     gkValueSub(&v, anim->delta, &vd);

@@ -30,6 +30,18 @@ typedef bool    (*GkAnimFunc)(struct GkAnimation *anim,
                               GkValue            *to,
                               GkValue            *delta);
 
+typedef enum GkInterpolationType {
+  GK_INTERPOLATION_UNKNOWN  = 0,
+  GK_INTERPOLATION_LINEAR   = 1,
+  GK_INTERPOLATION_BEZIER   = 2,
+  GK_INTERPOLATION_CARDINAL = 3,
+  GK_INTERPOLATION_HERMITE  = 4,
+  GK_INTERPOLATION_BSPLINE  = 5,
+  GK_INTERPOLATION_STEP     = 6,
+
+  GK_INTERPOLATION_MAXLEN   = 255
+} GkInterpolationType;
+
 typedef struct GkAnimation {
   GkScene     *scene;
   GkNode      *node;
@@ -43,6 +55,7 @@ typedef struct GkAnimation {
   double       duration;
   double       beginTime;
   bool         isReverse;
+  bool         isKeyFrame;
   bool         autoReverse;
   bool         autoFree;
   uint32_t     nRepeat;
@@ -81,6 +94,13 @@ gkAddAnimation(struct GkScene *scene,
 GK_EXPORT
 void
 gkRemoveAnimation(GkNode *node, GkAnimation *anim);
+
+void
+gkInterpolate(GkInterpolationType type,
+              float               t,
+              GkValue            *from,
+              GkValue            *to,
+              GkValue            *dest);
 
 #ifdef __cplusplus
 }
