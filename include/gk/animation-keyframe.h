@@ -30,7 +30,7 @@ typedef enum GkSamplerBehavior {
 typedef struct GkAnimSampler {
   GkBuffer         *input;
   GkBuffer         *output;
-  GkBuffer         *interpolation;
+  GkBuffer         *interp;
   GkBuffer         *inTangent;
   GkBuffer         *outTangent;
   GkSamplerBehavior preBehavior;

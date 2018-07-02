@@ -12,24 +12,24 @@
 #include <tm/tm.h>
 
 void
-gkInterpolate(GkInterpolationType type,
+gkInterpolate(GkInterpType type,
               float               t,
               GkValue            *from,
               GkValue            *to,
               GkValue            *dest) {
   switch (type) {
-    case GK_INTERPOLATION_LINEAR:
+    case GK_INTERP_LINEAR:
       gkValueLerp(from, to, t, dest);
       break;
-    case GK_INTERPOLATION_STEP:
+    case GK_INTERP_STEP:
       break;
-    case GK_INTERPOLATION_BEZIER:
+    case GK_INTERP_BEZIER:
       break;
-    case GK_INTERPOLATION_CARDINAL:
+    case GK_INTERP_CARDINAL:
       break;
-    case GK_INTERPOLATION_HERMITE:
+    case GK_INTERP_HERMITE:
       break;
-    case GK_INTERPOLATION_BSPLINE:
+    case GK_INTERP_BSPLINE:
       break;
     default: break;
   }

@@ -30,17 +30,19 @@ typedef bool    (*GkAnimFunc)(struct GkAnimation *anim,
                               GkValue            *to,
                               GkValue            *delta);
 
-typedef enum GkInterpolationType {
-  GK_INTERPOLATION_UNKNOWN  = 0,
-  GK_INTERPOLATION_LINEAR   = 1,
-  GK_INTERPOLATION_BEZIER   = 2,
-  GK_INTERPOLATION_CARDINAL = 3,
-  GK_INTERPOLATION_HERMITE  = 4,
-  GK_INTERPOLATION_BSPLINE  = 5,
-  GK_INTERPOLATION_STEP     = 6,
 
-  GK_INTERPOLATION_MAXLEN   = 255
-} GkInterpolationType;
+
+typedef enum GkInterpType {
+  GK_INTERP_UNKNOWN  = 0,
+  GK_INTERP_LINEAR   = 1,
+  GK_INTERP_BEZIER   = 2,
+  GK_INTERP_CARDINAL = 3,
+  GK_INTERP_HERMITE  = 4,
+  GK_INTERP_BSPLINE  = 5,
+  GK_INTERP_STEP     = 6,
+
+  GK_INTERP_MAXLEN   = 255
+} GkInterpType;
 
 typedef struct GkAnimation {
   GkScene     *scene;
@@ -96,7 +98,7 @@ void
 gkRemoveAnimation(GkNode *node, GkAnimation *anim);
 
 void
-gkInterpolate(GkInterpolationType type,
+gkInterpolate(GkInterpType type,
               float               t,
               GkValue            *from,
               GkValue            *to,
