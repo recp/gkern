@@ -21,9 +21,12 @@ gkAddAnimation(GkScene     *scene,
   GkSceneImpl *sceneImpl;
 
   sceneImpl   = (GkSceneImpl *)scene;
-  anim->node  = node;
   anim->scene = scene;
 
-  flist_insert(node->anim->animations, anim);
+  if (node) {
+    anim->node = node;
+    flist_insert(node->anim->animations, anim);
+  }
+
   flist_sp_insert(&sceneImpl->anims, anim);
 }
