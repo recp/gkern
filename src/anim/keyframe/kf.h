@@ -13,3 +13,10 @@ bool
 gkBuiltinKFAnim(GkAnimation *anim,
                 GkValue     *to,
                 GkValue     *delta);
+GK_EXPORT
+void
+gkPrepChannel(GkChannel *channel);
+
+GK_EXPORT
+void
+gkPrepChannelKey(GkChannel *ch);
