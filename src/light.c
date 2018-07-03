@@ -121,6 +121,7 @@ gkUniformLights(struct GkScene * __restrict scene,
                 GkProgram      * __restrict prog) {
   GkSceneImpl *sceneImpl;
   GkLight     *light;
+  mat4         identity = GLM_MAT4_IDENTITY_INIT;
 
   sceneImpl = (GkSceneImpl *)scene;
   light     = (GkLight *)sceneImpl->pub.lights;
@@ -137,9 +138,10 @@ gkUniformLights(struct GkScene * __restrict scene,
         GkFinalTransform *ftr;
 
         node = light->node;
-        ftr  = gkFinalTransform(node->trans, scene->camera);
-
-        gkUniformLight(scene, light, prog, ftr->mv);
+        if ((ftr = gkFinalTransform(node->trans, scene->camera)))
+          gkUniformLight(scene, light, prog, ftr->mv);
+        else
+          gkUniformLight(scene, light, prog, identity);
       } else {
         gkUniformLight(scene, light, prog, GLM_MAT4_IDENTITY);
       }

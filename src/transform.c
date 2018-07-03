@@ -277,8 +277,10 @@ gkCalcFinalTransf(GkScene     * __restrict scene,
   if (camImpl->transfSlot == (1 << 30))
     return;
 
-  if (!(ftr = gkFinalTransform(tr, cam)))
-    ftr = gkSetFinalTransform(scene, tr, cam);
+  if (!(ftr = gkFinalTransform(tr, cam))) {
+    if (!(ftr = gkSetFinalTransform(scene, tr, cam)))
+      return;
+  }
 
   glm_mat4_mul(cam->view, tr->world, ftr->mv);
   glm_mat4_mul(cam->proj, ftr->mv,   ftr->mvp);
@@ -306,8 +308,10 @@ gkCalcViewTransf(GkScene     * __restrict scene,
   if (camImpl->transfSlot == (1 << 30))
     return;
 
-  if (!(ftr = gkFinalTransform(tr, cam)))
-    ftr = gkSetFinalTransform(scene, tr, cam);
+  if (!(ftr = gkFinalTransform(tr, cam))) {
+    if (!(ftr = gkSetFinalTransform(scene, tr, cam)))
+      return;
+  }
 
   glm_mat4_mul(cam->view, tr->world, ftr->mv);
 
