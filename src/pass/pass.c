@@ -84,6 +84,9 @@ gkBindPass(GkScene * __restrict scene,
 
     if (pass->clear->clearDepth)
       bit |= GL_DEPTH_BUFFER_BIT;
+
+    if (bit)
+      glClear(bit);
   }
 
   if (pass->depthTest) {
