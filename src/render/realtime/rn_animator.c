@@ -52,8 +52,8 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
       float               *input;
       uint32_t             kfindex;
 
-      kfa     = (GkKeyFrameAnimation *)anim;
-      ch = kfa->channel;
+      kfa = (GkKeyFrameAnimation *)anim;
+      ch  = kfa->channel;
 
       if (ch) {
         while (ch) {

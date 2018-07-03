@@ -11,6 +11,7 @@
 #include "kf.h"
 #include <tm/tm.h>
 
+GK_EXPORT
 void
 gkInterpolateChannel(GkChannel * __restrict ch,
                      float                  t,
@@ -44,15 +45,15 @@ gkInterpolateChannel(GkChannel * __restrict ch,
 _gk_hide
 bool
 gkBuiltinKFAnim(GkAnimation *anim,
-                GkChannel   *channel,
+                GkChannel   *ch,
                 GkValue     *to,
                 GkValue     *delta) {
-  switch (channel->targetType) {
+  switch (ch->targetType) {
     case GKT_FLOAT: {
       float *target;
 
-      target  = channel->target;
-      *target = delta->s32.floatValue;
+      target  = ch->target;
+      *target = to->s32.floatValue;
 
       break;
     }
@@ -60,13 +61,13 @@ gkBuiltinKFAnim(GkAnimation *anim,
       break;
   }
 
-  if (channel->isTransform) {
+  if (ch->isTransform) {
     GkNode      *node;
     GkTransform *tr;
 
-    node = channel->node;
+    node = ch->node;
 
-    if (channel->isLocalTransform && (tr = node->trans))
+    if (ch->isLocalTransform && (tr = node->trans))
       tr->flags &= ~GK_TRANSF_LOCAL_ISVALID;
 
     gkApplyTransform(anim->scene, node);
@@ -79,23 +80,27 @@ GK_EXPORT
 void
 gkPrepChannel(GkChannel *ch) {
   if (!ch->isPrepared) {
-    GkBuffer *output;
-    output = ch->sampler->output;
+    GkBuffer *outp;
+    char     *data;
+
+    outp = ch->sampler->output;
+    data   = outp->data;
 
     switch (ch->targetType) {
       case GKT_FLOAT: {
         gkInitValueAsFloat(&ch->outerv[0], *(float *)ch->target);
-        if (output->len > 0)
+
+        if (outp->len > 0)
           gkInitValueAsFloat(&ch->outerv[1],
-                             *(float *)output->data - 1);
+                             *(float *)(data + outp->len - sizeof(float)));
         break;
       }
       case GKT_FLOAT3: {
         gkInitValueAsVec3(&ch->outerv[0], ch->target);
 
-        if (output->len > 2)
+        if (outp->len > 2)
           gkInitValueAsVec3(&ch->outerv[1],
-                            output->data + output->len - 3);
+                            (float *)(data + outp->len - sizeof(vec3)));
         break;
       }
       default: break;
@@ -106,6 +111,8 @@ gkPrepChannel(GkChannel *ch) {
     = ch->keyv[0].type
     = ch->outerv[1].type
     = ch->outerv[0].type;
+
+  ch->isPrepared = true;
 }
 
 GK_EXPORT
@@ -137,10 +144,7 @@ gkPrepChannelKey(GkChannel *ch) {
     }
   }
 
-  ch->keyv[0].type
-  = ch->keyv[0].type
-  = ch->outerv[1].type
-  = ch->outerv[0].type;
+  ch->isPreparedKey = true;
 }
 
 GK_EXPORT
@@ -148,7 +152,7 @@ GkKeyFrameAnimation*
 gkKeyFrameAnimation(void) {
   GkKeyFrameAnimation *kfa;
 
-  kfa = calloc(1, sizeof(*kfa));
+  kfa                    = calloc(1, sizeof(*kfa));
   kfa->base.fnKFAnimator = gkBuiltinKFAnim;
   kfa->base.delta        = calloc(1, sizeof(*kfa->base.delta));
   kfa->base.nRepeat      = 1;

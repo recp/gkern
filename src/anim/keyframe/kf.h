@@ -16,7 +16,7 @@ gkBuiltinKFAnim(GkAnimation *anim,
                 GkValue     *delta);
 GK_EXPORT
 void
-gkPrepChannel(GkChannel *channel);
+gkPrepChannel(GkChannel *ch);
 
 GK_EXPORT
 void
