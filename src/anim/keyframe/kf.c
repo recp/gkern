@@ -12,16 +12,22 @@
 #include <tm/tm.h>
 
 void
-gkInterpolate(GkInterpType type,
-              float               t,
-              GkValue            *from,
-              GkValue            *to,
-              GkValue            *dest) {
-  switch (type) {
+gkInterpolateChannel(GkChannel * __restrict ch,
+                     float                  t,
+                     bool                   isReverse,
+                     GkValue   * __restrict dest) {
+  switch (ch->lastInterp) {
     case GK_INTERP_LINEAR:
-      gkValueLerp(from, to, t, dest);
+      gkValueLerp(&ch->outerv[isReverse],
+                  &ch->outerv[!isReverse],
+                  t,
+                  dest);
       break;
     case GK_INTERP_STEP:
+      gkValueLerp(&ch->outerv[isReverse],
+                  &ch->outerv[!isReverse],
+                  t,
+                  dest);
       break;
     case GK_INTERP_BEZIER:
       break;
@@ -38,8 +44,33 @@ gkInterpolate(GkInterpType type,
 _gk_hide
 bool
 gkBuiltinKFAnim(GkAnimation *anim,
+                GkChannel   *channel,
                 GkValue     *to,
                 GkValue     *delta) {
+  switch (channel->targetType) {
+    case GKT_FLOAT: {
+      float *target;
+
+      target  = channel->target;
+      *target = delta->s32.floatValue;
+
+      break;
+    }
+    default:
+      break;
+  }
+
+  if (channel->isTransform) {
+    GkNode      *node;
+    GkTransform *tr;
+
+    node = channel->node;
+
+    if (channel->isLocalTransform && (tr = node->trans))
+      tr->flags &= ~GK_TRANSF_LOCAL_ISVALID;
+
+    gkApplyTransform(anim->scene, node);
+  }
 
   return false;
 }

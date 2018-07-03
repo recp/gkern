@@ -17,6 +17,7 @@ extern "C" {
 struct GkAnimation;
 struct GkScene;
 struct GkNode;
+struct GkChannel;
 
 #define GK_INHERIT FLT_MIN
 
@@ -30,6 +31,10 @@ typedef bool    (*GkAnimFunc)(struct GkAnimation *anim,
                               GkValue            *to,
                               GkValue            *delta);
 
+typedef bool    (*GkKFAnimFunc)(struct GkAnimation *anim,
+                                struct GkChannel   *channel,
+                                GkValue            *to,
+                                GkValue            *delta);
 
 
 typedef enum GkInterpType {
@@ -52,6 +57,7 @@ typedef struct GkAnimation {
   GkValue     *delta;
   void        *data;
   GkAnimFunc   fnAnimator;
+  GkKFAnimFunc fnKFAnimator;
   GkTimingFunc fnTiming;
   size_t       dataSize;
   double       duration;
@@ -97,12 +103,12 @@ GK_EXPORT
 void
 gkRemoveAnimation(GkNode *node, GkAnimation *anim);
 
+GK_EXPORT
 void
-gkInterpolate(GkInterpType type,
-              float               t,
-              GkValue            *from,
-              GkValue            *to,
-              GkValue            *dest);
+gkInterpolateChannel(struct GkChannel * __restrict ch,
+                     float                         t,
+                     bool                          isReverse,
+                     GkValue          * __restrict dest);
 
 #ifdef __cplusplus
 }

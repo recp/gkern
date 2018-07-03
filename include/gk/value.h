@@ -45,6 +45,14 @@ gkValueFromVec3(vec3 v);
 
 GK_EXPORT
 void
+gkInitValueAsFloat(GkValue *val, float fval);
+
+GK_EXPORT
+void
+gkInitValueAsVec3(GkValue *val, vec3 v);
+
+GK_EXPORT
+void
 gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest);
 
 GK_EXPORT

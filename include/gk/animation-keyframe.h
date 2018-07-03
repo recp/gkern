@@ -38,15 +38,25 @@ typedef struct GkAnimSampler {
 } GkAnimSampler;
 
 typedef struct GkChannel {
+  struct GkChannel *next;
   GkAnimSampler    *sampler;
-  const char       *target;
-  struct AkChannel *next;
+  GkNode           *node; /* Required if target is Node transform */
+  void             *target;
+  GkType            targetType;
+  GkInterpType      lastInterp;
+  GkValue           outerv[2];
+  GkValue           keyv[2];
+  GkValue           delta;
+  bool              isTransform:1;
+  bool              isLocalTransform:1;
+  bool              isPrepared:1;
+  bool              isPreparedKey:1;
 } GkChannel;
 
 typedef struct GkKeyFrameAnimation {
-  GkAnimation    base;
-  GkAnimSampler *sampler;
-  GkChannel     *channel;
+  GkAnimation  base;
+  GkChannel   *channel;
+  uint32_t     kfindex;
 } GkKeyFrameAnimation;
 
 typedef struct GkAnimationClip {

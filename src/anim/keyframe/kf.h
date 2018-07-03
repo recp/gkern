@@ -11,6 +11,7 @@
 _gk_hide
 bool
 gkBuiltinKFAnim(GkAnimation *anim,
+                GkChannel   *channel,
                 GkValue     *to,
                 GkValue     *delta);
 GK_EXPORT
