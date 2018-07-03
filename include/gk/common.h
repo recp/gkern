@@ -23,12 +23,14 @@
 #  define GK_INLINE __forceinline
 #  define likely(x)   x
 #  define unlikely(x) x
+#  define GK_NONNULL
 #else
 #  define GK_EXPORT   __attribute__((visibility("default")))
 #  define _gk_hide    __attribute__((visibility("hidden")))
 #  define GK_INLINE inline __attribute((always_inline))
 #  define likely(x)      __builtin_expect(!!(x), 1)
 #  define unlikely(x)    __builtin_expect(!!(x), 0)
+#  define GK_NONNULL     __attribute__((nonnull))
 #endif
 
 #define GK_ARRAY_LEN(ARR) (sizeof(ARR) / sizeof(ARR[0]))
