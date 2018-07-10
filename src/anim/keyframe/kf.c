@@ -38,10 +38,10 @@ gkInterpolateChannel(GkChannel * __restrict ch,
 
 _gk_hide
 bool
-gkBuiltinKeyFrmAnim(GkAnimation *anim,
-                    GkChannel   *ch,
-                    GkValue     *to,
-                    GkValue     *delta) {
+gkBuiltinKeyAnim(GkAnimation *anim,
+                 GkChannel   *ch,
+                 GkValue     *to,
+                 GkValue     *delta) {
   switch (ch->targetType) {
     case GKT_FLOAT: {
       float *target;
@@ -49,6 +49,10 @@ gkBuiltinKeyFrmAnim(GkAnimation *anim,
       target  = ch->target;
       *target = to->s32.floatValue;
 
+      break;
+    }
+    case GKT_FLOAT3: {
+      glm_vec_copy(to->val, ch->target);
       break;
     }
     default: break;

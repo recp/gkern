@@ -10,10 +10,10 @@
 
 _gk_hide
 bool
-gkBuiltinKeyFrmAnim(GkAnimation *anim,
-                    GkChannel   *channel,
-                    GkValue     *to,
-                    GkValue     *delta);
+gkBuiltinKeyAnim(GkAnimation *anim,
+                 GkChannel   *channel,
+                 GkValue     *to,
+                 GkValue     *delta);
 
 void
 gkRunKFAnim(GkKeyFrameAnimation *kfa, float ease);

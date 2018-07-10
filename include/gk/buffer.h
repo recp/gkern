@@ -23,6 +23,8 @@ typedef struct GkGPUBuffer {
 typedef struct GkBuffer {
   void  *data;
   size_t len;
+  size_t count;
+  size_t stride;
 } GkBuffer;
 
 #endif /* buffer_h */

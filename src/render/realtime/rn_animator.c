@@ -77,10 +77,10 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
             gkPrepChannel(anim, ch);
 
             if (!isReverse) {
-              ch->keyIndex = 1;
+              ch->keyIndex   = 1;
               ch->keyEndTime = ch->beginTimeRef + inp[1];
             } else {
-              ch->keyIndex = inpLen - 2;
+              ch->keyIndex   = inpLen - 2;
               ch->keyEndTime = ch->beginTimeRef + ch->duration - inp[inpLen - 2];
             }
 
