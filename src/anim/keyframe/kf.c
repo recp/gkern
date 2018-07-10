@@ -24,8 +24,71 @@ gkInterpolateChannel(GkChannel * __restrict ch,
     case GK_INTERP_STEP:
       gkValueCopy(&ch->kv[t < 1.0f && isReverse], dest);
       break;
-    case GK_INTERP_BEZIER:
+    case GK_INTERP_BEZIER: {
+      /*
+       BEZIER:
+         B(s) = P0*(1 - s)^3 + 3*C0*s*(1 - s)^2 + 3*C1*s^2*(1 - s)+ P1*s^3
+       */
+      GkBuffer *otn, *itn;
+      uint32_t  keyIndex;
+
+      itn      = ch->sampler->inTangent;
+      otn      = ch->sampler->outTangent;
+      keyIndex = ch->keyIndex - 1;
+
+      switch (ch->targetType) {
+        case GKT_FLOAT: {
+          float Bs, s, ss, tt, p0, p1, c0, c1, *otnv, *itnv;
+
+          otnv = otn->data;
+          itnv = itn->data;
+          p0   = ch->kv[isReverse].s32.floatValue;
+          p1   = ch->kv[!isReverse].s32.floatValue;
+          s    = 1.0f - t;
+          ss   = s * s;
+          tt   = t * t;
+          c0   = otnv[keyIndex];
+          c1   = itnv[keyIndex];
+
+          Bs = p0 * ss * s
+                  + 3.0f * c0 * t * ss
+                  + 3.0f * c1 * tt * s
+                  + p1 * tt * t;
+
+          gkInitValueAsFloat(dest, Bs);
+          break;
+        }
+        case GKT_FLOAT3: {
+          vec3  Bs, tmp0, tmp1, tmp2;
+          float s, ss, tt, *p0, *p1, *c0, *c1, *otnv, *itnv;
+
+          otnv = otn->data;
+          itnv = itn->data;
+          p0   = ch->kv[isReverse].val;
+          p1   = ch->kv[!isReverse].val;
+          s    = 1.0f - t;
+          ss   = s * s;
+          tt   = t * t;
+          c0   = otnv + keyIndex * 3;
+          c1   = itnv + keyIndex * 3;
+
+          glm_vec_scale(p0, ss * s, Bs);
+          glm_vec_scale(c0, 3.0f * t * ss, tmp0);
+          glm_vec_scale(c1, 3.0f * tt * s, tmp1);
+          glm_vec_scale(p1, tt * t, tmp2);
+
+          glm_vec_add(Bs, tmp0, Bs);
+          glm_vec_add(Bs, tmp1, Bs);
+          glm_vec_add(Bs, tmp2, Bs);
+
+          gkInitValueAsVec3(dest, Bs);
+          break;
+        }
+        default:
+          break;
+      }
       break;
+    }
     case GK_INTERP_HERMITE:
       break;
     case GK_INTERP_CARDINAL:
@@ -124,18 +187,18 @@ GK_EXPORT
 void
 gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch) {
   GkBuffer *output, *input;
-  uint32_t  keyIndex, prevKeyIndex;
+  uint32_t  index, prevIndex;
   int       isReverse;
 
   output    = ch->sampler->output;
   input     = ch->sampler->input;
-  keyIndex  = ch->keyIndex;
+  index     = ch->keyIndex;
   isReverse = anim->base.isReverse;
 
   if (!anim->base.isReverse)
-    prevKeyIndex = GLM_MAX(1, keyIndex) - 1;
+    prevIndex = GLM_MAX(1, index) - 1;
   else
-    prevKeyIndex = GLM_MIN((uint32_t)input->count - 2, keyIndex) + 1;
+    prevIndex = GLM_MIN((uint32_t)input->count - 2, index) + 1;
 
   switch (ch->targetType) {
     case GKT_FLOAT: {
@@ -143,8 +206,8 @@ gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch) {
 
       target = output->data;
 
-      gkInitValueAsFloat(&ch->kv[isReverse],  target[prevKeyIndex]);
-      gkInitValueAsFloat(&ch->kv[!isReverse], target[keyIndex]);
+      gkInitValueAsFloat(&ch->kv[isReverse],  target[prevIndex]);
+      gkInitValueAsFloat(&ch->kv[!isReverse], target[index]);
 
       break;
     }
@@ -153,8 +216,8 @@ gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch) {
 
       target = output->data;
 
-      gkInitValueAsVec3(&ch->kv[isReverse],  target + 3 * prevKeyIndex);
-      gkInitValueAsVec3(&ch->kv[!isReverse], target + 3 * keyIndex);
+      gkInitValueAsVec3(&ch->kv[isReverse],  target + 3 * prevIndex);
+      gkInitValueAsVec3(&ch->kv[!isReverse], target + 3 * index);
 
       break;
     }
@@ -170,7 +233,7 @@ gkKeyFrameAnimation(void) {
   GkKeyFrameAnimation *kfa;
 
   kfa                    = calloc(1, sizeof(*kfa));
-  kfa->base.fnKfAnimator = gkBuiltinKeyFrmAnim;
+  kfa->base.fnKfAnimator = gkBuiltinKeyAnim;
   kfa->base.delta        = calloc(1, sizeof(*kfa->base.delta));
   kfa->base.nRepeat      = 1;
   kfa->base.isKeyFrame   = true;
