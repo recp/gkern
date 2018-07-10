@@ -57,7 +57,7 @@ typedef struct GkAnimation {
   GkValue     *delta;
   void        *data;
   GkAnimFunc   fnAnimator;
-  GkKFAnimFunc fnKFAnimator;
+  GkKFAnimFunc fnKfAnimator;
   GkTimingFunc fnTiming;
   size_t       dataSize;
   double       duration;

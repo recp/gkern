@@ -19,16 +19,10 @@ gkInterpolateChannel(GkChannel * __restrict ch,
                      GkValue   * __restrict dest) {
   switch (ch->lastInterp) {
     case GK_INTERP_LINEAR:
-      gkValueLerp(&ch->outerv[isReverse],
-                  &ch->outerv[!isReverse],
-                  t,
-                  dest);
+      gkValueLerp(&ch->kv[isReverse], &ch->kv[!isReverse], t, dest);
       break;
     case GK_INTERP_STEP:
-      gkValueLerp(&ch->outerv[isReverse],
-                  &ch->outerv[!isReverse],
-                  t,
-                  dest);
+      gkValueCopy(&ch->kv[t < 1.0f && isReverse], dest);
       break;
     case GK_INTERP_BEZIER:
       break;
@@ -44,10 +38,10 @@ gkInterpolateChannel(GkChannel * __restrict ch,
 
 _gk_hide
 bool
-gkBuiltinKFAnim(GkAnimation *anim,
-                GkChannel   *ch,
-                GkValue     *to,
-                GkValue     *delta) {
+gkBuiltinKeyFrmAnim(GkAnimation *anim,
+                    GkChannel   *ch,
+                    GkValue     *to,
+                    GkValue     *delta) {
   switch (ch->targetType) {
     case GKT_FLOAT: {
       float *target;
@@ -57,8 +51,7 @@ gkBuiltinKFAnim(GkAnimation *anim,
 
       break;
     }
-    default:
-      break;
+    default: break;
   }
 
   if (ch->isTransform) {
@@ -78,70 +71,89 @@ gkBuiltinKFAnim(GkAnimation *anim,
 
 GK_EXPORT
 void
-gkPrepChannel(GkChannel *ch) {
+gkPrepChannel(GkAnimation *anim, GkChannel *ch) {
   if (!ch->isPrepared) {
     GkBuffer *outp;
     char     *data;
+    size_t    oLen;
+    int       isReverse;
 
-    outp = ch->sampler->output;
-    data   = outp->data;
+    outp      = ch->sampler->output;
+    data      = outp->data;
+    oLen      = outp->len;
+    isReverse = anim->isReverse;
+
+    ch->beginTimeRef = ch->beginTime + anim->beginTime;
+    ch->endTimeRef   = ch->endTime   + anim->beginTime;
+    ch->keyStartTime = ch->keyEndTime = ch->beginTimeRef;
 
     switch (ch->targetType) {
       case GKT_FLOAT: {
-        gkInitValueAsFloat(&ch->outerv[0], *(float *)ch->target);
+        gkInitValueAsFloat(&ch->ov[isReverse], *(float *)ch->target);
 
         if (outp->len > 0)
-          gkInitValueAsFloat(&ch->outerv[1],
-                             *(float *)(data + outp->len - sizeof(float)));
+          gkInitValueAsFloat(&ch->ov[!isReverse],
+                             *(float *)(data + oLen - sizeof(float)));
         break;
       }
       case GKT_FLOAT3: {
-        gkInitValueAsVec3(&ch->outerv[0], ch->target);
+        gkInitValueAsVec3(&ch->ov[isReverse], ch->target);
 
         if (outp->len > 2)
-          gkInitValueAsVec3(&ch->outerv[1],
-                            (float *)(data + outp->len - sizeof(vec3)));
+          gkInitValueAsVec3(&ch->ov[!isReverse],
+                            (float *)(data + oLen - sizeof(vec3)));
         break;
       }
       default: break;
     }
   }
 
-  ch->keyv[0].type
-    = ch->keyv[0].type
-    = ch->outerv[1].type
-    = ch->outerv[0].type;
+  ch->kv[0].type
+    = ch->kv[0].type
+    = ch->ov[1].type
+    = ch->ov[0].type;
 
   ch->isPrepared = true;
 }
 
 GK_EXPORT
 void
-gkPrepChannelKey(GkChannel *ch) {
+gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch) {
   GkBuffer *output;
+  uint32_t  keyIndex, prevKeyIndex;
+  int       isReverse;
 
-  output = ch->sampler->output;
+  output    = ch->sampler->output;
+  keyIndex  = ch->keyIndex;
+  isReverse = anim->base.isReverse;
 
-  if (!ch->isPreparedKey) {
-    switch (ch->targetType) {
-      case GKT_FLOAT: {
-        float *target;
+  if (!anim->base.isReverse)
+    prevKeyIndex = GLM_MAX(1, keyIndex) - 1;
+  else
+    prevKeyIndex = GLM_MAX(0, keyIndex) + 1;
 
-        target = output->data;
-        gkInitValueAsFloat(&ch->keyv[0], *target);
+  switch (ch->targetType) {
+    case GKT_FLOAT: {
+      float *target;
 
-        break;
-      }
-      case GKT_FLOAT3: {
-        float *target;
+      target = output->data;
 
-        target = output->data;
-        gkInitValueAsVec3(&ch->keyv[0], target);
+      gkInitValueAsFloat(&ch->kv[isReverse], target[prevKeyIndex]);
+      gkInitValueAsFloat(&ch->kv[!isReverse], target[keyIndex]);
 
-        break;
-      }
-      default: break;
+      break;
     }
+    case GKT_FLOAT3: {
+      float *target;
+
+      target = output->data;
+
+      gkInitValueAsVec3(&ch->kv[isReverse],  target + 3 * prevKeyIndex);
+      gkInitValueAsVec3(&ch->kv[!isReverse], target + 3 * keyIndex);
+
+      break;
+    }
+    default: break;
   }
 
   ch->isPreparedKey = true;
@@ -153,10 +165,11 @@ gkKeyFrameAnimation(void) {
   GkKeyFrameAnimation *kfa;
 
   kfa                    = calloc(1, sizeof(*kfa));
-  kfa->base.fnKFAnimator = gkBuiltinKFAnim;
+  kfa->base.fnKfAnimator = gkBuiltinKeyFrmAnim;
   kfa->base.delta        = calloc(1, sizeof(*kfa->base.delta));
   kfa->base.nRepeat      = 1;
   kfa->base.isKeyFrame   = true;
+  kfa->base.autoReverse  = false;
 
   return kfa;
 }

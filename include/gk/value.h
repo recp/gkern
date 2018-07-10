@@ -19,16 +19,16 @@ typedef enum GkValueType {
   GK_VALUE_FLOAT3 = 1
 } GkValueType;
 
-typedef union GkSimpleValue32 {
+typedef union GkValue32 {
   int32_t intValue;
   float   floatValue;
-} GkSimpleValue32;
+} GkValue32;
 
 typedef struct GkValue {
-  void           *val;
-  size_t          valsz;
-  GkType          type;
-  GkSimpleValue32 s32;
+  void     *val;
+  size_t    valsz;
+  GkType    type;
+  GkValue32 s32;
 } GkValue;
 
 GK_EXPORT
@@ -54,6 +54,10 @@ gkInitValueAsVec3(GkValue *val, vec3 v);
 GK_EXPORT
 void
 gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest);
+
+GK_EXPORT
+void
+gkValueStep(GkValue *edge, GkValue *x, GkValue *dest);
 
 GK_EXPORT
 void

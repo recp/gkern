@@ -28,6 +28,25 @@ gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest) {
 
 GK_EXPORT
 void
+gkValueStep(GkValue *edge, GkValue *x, GkValue *dest) {
+  switch (x->type) {
+    case GKT_FLOAT:
+      dest->s32.floatValue = glm_step(edge->s32.floatValue,
+                                      x->s32.floatValue);
+      break;
+    case GKT_FLOAT3:
+      dest->val = realloc(dest->val, sizeof(vec3));
+      glm_vec_step(edge->val, x->val, dest->val);
+      break;
+    default:
+      break;
+  }
+
+  dest->type = x->type;
+}
+
+GK_EXPORT
+void
 gkValueCopy(GkValue *src, GkValue *dest) {
   switch (src->type) {
     case GKT_FLOAT:

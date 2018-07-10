@@ -19,8 +19,10 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
   FListItem   *animItem;
   GkAnimation *anim;
   GkValue      v, vd;
-  tm_interval  time, endTime, keyEndTime;
+  tm_interval  time, endTime;
   float        t, ease;
+  uint32_t     finished, finishReq;
+  bool         isReverse;
 
   if (!(animItem = sceneImpl->anims))
     return;
@@ -29,7 +31,9 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
   v.val = vd.val = NULL;
 
   do {
-    anim = animItem->data;
+    finished  = 0;
+    anim      = animItem->data;
+    isReverse = anim->isReverse;
 
     /* 0 means that animation must start with scene rendering */
     if (anim->beginTime == 0)
@@ -41,56 +45,137 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
       continue;
     }
 
-    endTime = anim->beginTime + anim->duration;
-    t       = glm_percentc(anim->beginTime, endTime, time);
-    ease    = anim->fnTiming ? anim->fnTiming(t) : t;
-
     if (anim->isKeyFrame) {
       GkKeyFrameAnimation *kfa;
       GkChannel           *ch;
       GkAnimSampler       *sampler;
-      float               *input;
-      uint32_t             kfindex;
+      float               *inp;
+      uint32_t             inpLen;
 
       kfa = (GkKeyFrameAnimation *)anim;
       ch  = kfa->channel;
 
+      finishReq = kfa->channelCount;
+
       if (ch) {
         while (ch) {
-          char        *interpi;
-          GkInterpType interp;
+          char    *interpi;
+          uint32_t keyIndex;
 
-          sampler    = ch->sampler;
-          input      = sampler->input->data;
-          kfindex    = GLM_MIN((uint32_t)sampler->input->len - 1, kfa->kfindex);
-          keyEndTime = anim->beginTime + input[kfa->kfindex];
+          sampler  = ch->sampler;
+          inp      = sampler->input->data;
+          inpLen   = (uint32_t)sampler->input->count;
+          keyIndex = ch->keyIndex;
 
-          interpi    = sampler->interp->data;
-          interp     = interpi[kfindex];
+          if (inpLen < 2)
+            goto nxt;
 
-          if (kfindex == 0 && !ch->isPrepared)
-            gkPrepChannel(ch);
+          interpi = sampler->interp->data;
 
-          /* switch to next point */
-          if (!ch->isPreparedKey)
-            gkPrepChannelKey(ch);
+          /* first time to run channel */
+          if (!ch->isPrepared) {
+            gkPrepChannel(anim, ch);
 
-          ch->lastInterp = interp;
-          gkInterpolateChannel(ch, ease, anim->isReverse, &v);
+            if (!isReverse) {
+              ch->keyIndex = 1;
+              ch->keyEndTime = ch->beginTimeRef + inp[1];
+            } else {
+              ch->keyIndex = inpLen - 2;
+              ch->keyEndTime = ch->beginTimeRef + ch->duration - inp[inpLen - 2];
+            }
 
-          gkValueSub(&v, &ch->delta, &vd);
-          gkValueCopy(&v, &ch->delta);
+            gkPrepChannelKey(kfa, ch);
 
-          anim->fnKFAnimator(anim, ch, &v, &vd);
+            /* move object to first location */
+            anim->fnKfAnimator(anim, ch, &ch->ov[0], NULL);
+            goto nxt;
+          }
 
-          /* TODO: do this after animation of single keyframe completed */
-          /* kfa->kfindex++; */
+          if (ch->beginTimeRef > time)
+            goto nxt;
 
+          /* finished */
+          if (ch->endTimeRef < time) {
+            ch->isPreparedKey = ch->isPrepared = false;
+            anim->beginTime   = time;
+
+            if (anim->autoReverse) {
+              if (isReverse)
+                ch->keyIndex = 0;
+              else
+                ch->keyIndex = inpLen - 1;
+            } else {
+              ch->keyIndex = 0;
+            }
+
+            finished++;
+            goto nxt;
+          }
+
+          finished = false;
+
+          /* switch to next input */
+          while (ch->keyEndTime < time) {
+            if (!isReverse) {
+              keyIndex++;
+              if (keyIndex >= inpLen)
+                goto nxt;
+            } else {
+              if (keyIndex == 0)
+                goto nxt;
+              keyIndex--;
+            }
+
+            ch->keyStartTime  = ch->keyEndTime;
+
+            if (!isReverse) {
+              ch->keyEndTime = ch->beginTimeRef + inp[keyIndex];
+
+            } else {
+              ch->keyEndTime = ch->beginTimeRef + ch->duration - inp[keyIndex];
+            }
+
+            ch->isPreparedKey = false;
+            ch->keyIndex      = keyIndex;
+          }
+
+          /* clamp index */
+          if (!isReverse)
+            keyIndex = GLM_MIN(inpLen - 1, keyIndex);
+          else
+            keyIndex = GLM_MAX(0, keyIndex);
+
+          if (!ch->isPreparedKey) {
+            gkPrepChannelKey(kfa, ch);
+          }
+
+          t = glm_percentc(ch->keyStartTime, ch->keyEndTime, time);
+
+          if (!isReverse)
+            ch->lastInterp = interpi[GLM_MAX(1, keyIndex) - 1];
+          else
+            ch->lastInterp = interpi[GLM_MIN(inpLen - 2, keyIndex)];
+
+          gkInterpolateChannel(ch, t, isReverse, &v);
+
+          if (ch->computeDelta) {
+            gkValueSub(&v, &ch->delta, &vd);
+            gkValueCopy(&v, &ch->delta);
+          }
+
+          anim->fnKfAnimator(anim, ch, &v, &vd);
+
+        nxt:
           ch = ch->next;
         }
       }
     } else {
-      if (!anim->isReverse) {
+      finishReq = 1;
+      endTime   = anim->beginTime + anim->duration;
+      t         = glm_percentc(anim->beginTime, endTime, time);
+      ease      = anim->fnTiming ? anim->fnTiming(t) : t;
+
+      if (!isReverse) {
         gkValueLerp(anim->from, anim->to, ease, &v);
       } else {
         gkValueLerp(anim->to, anim->from, ease, &v);
@@ -100,13 +185,15 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
       gkValueCopy(&v, anim->delta);
 
       anim->fnAnimator(anim, &v, &vd);
+
+      finished = t == 1.0f;
     }
 
-    if (t == 1.0f) {
+    if (finished == finishReq) {
       if (!anim->autoReverse) {
         anim->nPlayed++;
       } else {
-        if (anim->isReverse)
+        if (isReverse)
           anim->nPlayed++;
 
         if (anim->nPlayed < anim->nRepeat)
@@ -118,5 +205,6 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
       if (anim->nRepeat == UINT_MAX)
         anim->beginTime = time;
     }
+
   } while ((animItem = animItem->next));
 }

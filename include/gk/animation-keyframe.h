@@ -44,19 +44,28 @@ typedef struct GkChannel {
   void             *target;
   GkType            targetType;
   GkInterpType      lastInterp;
-  GkValue           outerv[2];
-  GkValue           keyv[2];
+  uint32_t          keyIndex;
+  GkValue           ov[2];
+  GkValue           kv[2];
   GkValue           delta;
+  double            beginTimeRef;
+  double            endTimeRef;
+  double            beginTime;
+  double            endTime;
+  double            duration;
+  double            keyStartTime;
+  double            keyEndTime;
   bool              isTransform:1;
   bool              isLocalTransform:1;
   bool              isPrepared:1;
   bool              isPreparedKey:1;
+  bool              computeDelta:1;
 } GkChannel;
 
 typedef struct GkKeyFrameAnimation {
   GkAnimation  base;
   GkChannel   *channel;
-  uint32_t     kfindex;
+  uint32_t     channelCount;
 } GkKeyFrameAnimation;
 
 typedef struct GkAnimationClip {

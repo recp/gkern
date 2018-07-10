@@ -10,14 +10,18 @@
 
 _gk_hide
 bool
-gkBuiltinKFAnim(GkAnimation *anim,
-                GkChannel   *channel,
-                GkValue     *to,
-                GkValue     *delta);
-GK_EXPORT
+gkBuiltinKeyFrmAnim(GkAnimation *anim,
+                    GkChannel   *channel,
+                    GkValue     *to,
+                    GkValue     *delta);
+
 void
-gkPrepChannel(GkChannel *ch);
+gkRunKFAnim(GkKeyFrameAnimation *kfa, float ease);
 
 GK_EXPORT
 void
-gkPrepChannelKey(GkChannel *ch);
+gkPrepChannel(GkAnimation *anim, GkChannel *ch);
+
+GK_EXPORT
+void
+gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch);
