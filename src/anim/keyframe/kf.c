@@ -26,9 +26,9 @@ gkInterpolateChannel(GkChannel * __restrict ch,
       break;
     case GK_INTERP_BEZIER:
       break;
-    case GK_INTERP_CARDINAL:
-      break;
     case GK_INTERP_HERMITE:
+      break;
+    case GK_INTERP_CARDINAL:
       break;
     case GK_INTERP_BSPLINE:
       break;
@@ -109,9 +109,9 @@ gkPrepChannel(GkAnimation *anim, GkChannel *ch) {
   }
 
   ch->kv[0].type
-    = ch->kv[0].type
-    = ch->ov[1].type
-    = ch->ov[0].type;
+    = ch->kv[1].type
+    = ch->ov[0].type
+    = ch->ov[1].type;
 
   ch->isPrepared = true;
 }
@@ -119,18 +119,19 @@ gkPrepChannel(GkAnimation *anim, GkChannel *ch) {
 GK_EXPORT
 void
 gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch) {
-  GkBuffer *output;
+  GkBuffer *output, *input;
   uint32_t  keyIndex, prevKeyIndex;
   int       isReverse;
 
   output    = ch->sampler->output;
+  input     = ch->sampler->input;
   keyIndex  = ch->keyIndex;
   isReverse = anim->base.isReverse;
 
   if (!anim->base.isReverse)
     prevKeyIndex = GLM_MAX(1, keyIndex) - 1;
   else
-    prevKeyIndex = GLM_MAX(0, keyIndex) + 1;
+    prevKeyIndex = GLM_MIN((uint32_t)input->count - 2, keyIndex) + 1;
 
   switch (ch->targetType) {
     case GKT_FLOAT: {
@@ -138,7 +139,7 @@ gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch) {
 
       target = output->data;
 
-      gkInitValueAsFloat(&ch->kv[isReverse], target[prevKeyIndex]);
+      gkInitValueAsFloat(&ch->kv[isReverse],  target[prevKeyIndex]);
       gkInitValueAsFloat(&ch->kv[!isReverse], target[keyIndex]);
 
       break;
