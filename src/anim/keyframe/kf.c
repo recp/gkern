@@ -25,10 +25,6 @@ gkInterpolateChannel(GkChannel * __restrict ch,
       gkValueCopy(&ch->kv[t < 1.0f && isReverse], dest);
       break;
     case GK_INTERP_BEZIER: {
-      /*
-       BEZIER:
-         B(s) = P0*(1 - s)^3 + 3*C0*s*(1 - s)^2 + 3*C1*s^2*(1 - s)+ P1*s^3
-       */
       GkBuffer *otn, *itn;
       uint32_t  keyIndex;
 
@@ -89,8 +85,65 @@ gkInterpolateChannel(GkChannel * __restrict ch,
       }
       break;
     }
-    case GK_INTERP_HERMITE:
+    case GK_INTERP_HERMITE: {
+      GkBuffer *otn, *itn;
+      uint32_t  keyIndex;
+
+      itn      = ch->sampler->inTangent;
+      otn      = ch->sampler->outTangent;
+      keyIndex = ch->keyIndex - 1;
+
+      switch (ch->targetType) {
+        case GKT_FLOAT: {
+          float Hs, tt, ttt, p0, p1, t0, t1, *otnv, *itnv;
+
+          otnv = otn->data;
+          itnv = itn->data;
+          p0   = ch->kv[isReverse].s32.floatValue;
+          p1   = ch->kv[!isReverse].s32.floatValue;
+          tt   = t * t;
+          ttt  = tt * t;
+          t0   = otnv[keyIndex];
+          t1   = itnv[keyIndex];
+
+          Hs = p0 * (2.0f * ttt - 3.0f * tt + 1)
+                + t0 * (ttt - 2.0f * tt + t)
+                + p1 * (3.0f * tt - 2.0f * ttt)
+                - t1 * (ttt - tt);
+
+          gkInitValueAsFloat(dest, Hs);
+          break;
+        }
+        case GKT_FLOAT3: {
+          vec3  Hs, tmp0, tmp1, tmp2;
+          float tt, ttt, *p0, *p1, *t0, *t1, *otnv, *itnv;
+
+          otnv = otn->data;
+          itnv = itn->data;
+          p0   = ch->kv[isReverse].val;
+          p1   = ch->kv[!isReverse].val;
+          tt   = t * t;
+          ttt  = tt * t;
+          t0   = otnv + keyIndex * 3;
+          t1   = itnv + keyIndex * 3;
+
+          glm_vec_scale(p0, 2.0f * ttt - 3.0f * tt + 1, Hs);
+          glm_vec_scale(t0, ttt - 2.0f * tt + t, tmp0);
+          glm_vec_scale(p1, 3.0f * tt - 2.0f * ttt, tmp1);
+          glm_vec_scale(t1, ttt - tt, tmp2);
+
+          glm_vec_add(Hs, tmp0, Hs);
+          glm_vec_add(Hs, tmp1, Hs);
+          glm_vec_add(Hs, tmp2, Hs);
+
+          gkInitValueAsVec3(dest, Hs);
+          break;
+        }
+        default:
+          break;
+      }
       break;
+    }
     case GK_INTERP_CARDINAL:
       break;
     case GK_INTERP_BSPLINE:
