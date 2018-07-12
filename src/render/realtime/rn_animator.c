@@ -156,7 +156,7 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
           else
             ch->lastInterp = interpi[GLM_MIN(inpLen - 2, keyIndex)];
 
-          gkInterpolateChannel(ch, t, isReverse, &v);
+          gkInterpolateChannel(ch, time, t, isReverse, &v);
 
           if (ch->computeDelta) {
             gkValueSub(&v, &ch->delta, &vd);

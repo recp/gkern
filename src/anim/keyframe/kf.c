@@ -11,12 +11,64 @@
 #include "kf.h"
 #include <tm/tm.h>
 
+#define DECASTEL_EPS   1e-9
+#define DECASTEL_MAX   32
+#define DECASTEL_SMALL 1e-20
+
+GK_EXPORT
+float
+gkDeCasteljau(float t, float p0, float c0, float c1, float p1) {
+  double u, v, a, b, c, d, e, f;
+  int    i;
+
+  if (t - p0 < DECASTEL_SMALL)
+    return 0.0;
+
+  if (p1 - t < DECASTEL_SMALL)
+    return 1.0;
+
+  u  = 0.0f;
+  v  = 1.0f;
+
+  for (i = 0; i < DECASTEL_MAX; i++) {
+    /* de Casteljau Subdivision */
+    a  = (p0 + c0) * 0.5f;
+    b  = (c0 + c1) * 0.5f;
+    c  = (c1 + p1) * 0.5f;
+    d  = (a  + b)  * 0.5f;
+    e  = (b  + c)  * 0.5f;
+    f  = (d  + e)  * 0.5f; /* this one is on the curve! */
+
+    /* The curve point is close enough to our wanted t */
+    if (fabs(f - t) < DECASTEL_EPS)
+      return glm_clamp_zo((u  + v) * 0.5f);
+
+    /* dichotomy */
+    if (f < t) {
+      p0 = f;
+      c0 = e;
+      c1 = c;
+      u  = (u  + v)  * 0.5f;
+    } else {
+      c0 = a;
+      c1 = d;
+      p1 = f;
+      v  = (u  + v)  * 0.5f;
+    }
+  }
+
+  return glm_clamp_zo((u  + v)  * 0.5f);
+}
+
 GK_EXPORT
 void
 gkInterpolateChannel(GkChannel * __restrict ch,
+                     double                 time,
                      float                  t,
                      bool                   isReverse,
                      GkValue   * __restrict dest) {
+  float *otnv, *itnv;
+
   switch (ch->lastInterp) {
     case GK_INTERP_LINEAR:
       gkValueLerp(&ch->kv[isReverse], &ch->kv[!isReverse], t, dest);
@@ -34,49 +86,32 @@ gkInterpolateChannel(GkChannel * __restrict ch,
 
       switch (ch->targetType) {
         case GKT_FLOAT: {
-          float Bs, s, ss, tt, p0, p1, c0, c1, *otnv, *itnv;
+          float Bs, p0, p1, c0, c1;
 
           otnv = otn->data;
           itnv = itn->data;
           p0   = ch->kv[isReverse].s32.floatValue;
           p1   = ch->kv[!isReverse].s32.floatValue;
-          s    = 1.0f - t;
-          ss   = s * s;
-          tt   = t * t;
-          c0   = otnv[keyIndex];
-          c1   = itnv[keyIndex];
+          c0   = otnv[keyIndex * 2 + 1];
+          c1   = itnv[keyIndex * 2 + 1];
 
-          Bs = p0 * ss * s
-                  + 3.0f * c0 * t * ss
-                  + 3.0f * c1 * tt * s
-                  + p1 * tt * t;
-
+          /* TODO use gkDeCasteljau ? */
+          Bs = glm_bezier_cubic(t, p0, c0, c1, p1);
           gkInitValueAsFloat(dest, Bs);
           break;
         }
         case GKT_FLOAT3: {
-          vec3  Bs, tmp0, tmp1, tmp2;
-          float s, ss, tt, *p0, *p1, *c0, *c1, *otnv, *itnv;
+          vec3  Bs;
+          float *p0, *p1, *c0, *c1;
 
           otnv = otn->data;
           itnv = itn->data;
           p0   = ch->kv[isReverse].val;
           p1   = ch->kv[!isReverse].val;
-          s    = 1.0f - t;
-          ss   = s * s;
-          tt   = t * t;
-          c0   = otnv + keyIndex * 3;
-          c1   = itnv + keyIndex * 3;
+          c0   = otnv + keyIndex * 3 + 1;
+          c1   = itnv + keyIndex * 3 + 1;
 
-          glm_vec_scale(p0, ss * s, Bs);
-          glm_vec_scale(c0, 3.0f * t * ss, tmp0);
-          glm_vec_scale(c1, 3.0f * tt * s, tmp1);
-          glm_vec_scale(p1, tt * t, tmp2);
-
-          glm_vec_add(Bs, tmp0, Bs);
-          glm_vec_add(Bs, tmp1, Bs);
-          glm_vec_add(Bs, tmp2, Bs);
-
+          glm_bezier_cubicv3(t, p0, c0, c1, p1, Bs);
           gkInitValueAsVec3(dest, Bs);
           break;
         }
@@ -95,47 +130,31 @@ gkInterpolateChannel(GkChannel * __restrict ch,
 
       switch (ch->targetType) {
         case GKT_FLOAT: {
-          float Hs, tt, ttt, p0, p1, t0, t1, *otnv, *itnv;
+          float Hs, p0, p1, t0, t1;
 
           otnv = otn->data;
           itnv = itn->data;
           p0   = ch->kv[isReverse].s32.floatValue;
           p1   = ch->kv[!isReverse].s32.floatValue;
-          tt   = t * t;
-          ttt  = tt * t;
-          t0   = otnv[keyIndex];
-          t1   = itnv[keyIndex];
+          t0   = otnv[keyIndex * 2 + 1];
+          t1   = itnv[keyIndex * 2 + 1];
 
-          Hs = p0 * (2.0f * ttt - 3.0f * tt + 1)
-                + t0 * (ttt - 2.0f * tt + t)
-                + p1 * (3.0f * tt - 2.0f * ttt)
-                - t1 * (ttt - tt);
-
+          Hs = glm_hermite_cubic(t, p0, t0, t1, p1);
           gkInitValueAsFloat(dest, Hs);
           break;
         }
         case GKT_FLOAT3: {
-          vec3  Hs, tmp0, tmp1, tmp2;
-          float tt, ttt, *p0, *p1, *t0, *t1, *otnv, *itnv;
+          vec3  Hs;
+          float *p0, *p1, *t0, *t1;
 
           otnv = otn->data;
           itnv = itn->data;
           p0   = ch->kv[isReverse].val;
           p1   = ch->kv[!isReverse].val;
-          tt   = t * t;
-          ttt  = tt * t;
-          t0   = otnv + keyIndex * 3;
-          t1   = itnv + keyIndex * 3;
+          t0   = otnv + keyIndex * 3 + 1;
+          t1   = itnv + keyIndex * 3 + 1;
 
-          glm_vec_scale(p0, 2.0f * ttt - 3.0f * tt + 1, Hs);
-          glm_vec_scale(t0, ttt - 2.0f * tt + t, tmp0);
-          glm_vec_scale(p1, 3.0f * tt - 2.0f * ttt, tmp1);
-          glm_vec_scale(t1, ttt - tt, tmp2);
-
-          glm_vec_add(Hs, tmp0, Hs);
-          glm_vec_add(Hs, tmp1, Hs);
-          glm_vec_add(Hs, tmp2, Hs);
-
+          glm_hermite_cubicv3(t, p0, t0, t1, p1, Hs);
           gkInitValueAsVec3(dest, Hs);
           break;
         }
@@ -144,9 +163,9 @@ gkInterpolateChannel(GkChannel * __restrict ch,
       }
       break;
     }
-    case GK_INTERP_CARDINAL:
-      break;
     case GK_INTERP_BSPLINE:
+      break;
+    case GK_INTERP_CARDINAL:
       break;
     default: break;
   }
