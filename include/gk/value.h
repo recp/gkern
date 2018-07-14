@@ -53,6 +53,10 @@ gkInitValueAsVec3(GkValue *val, vec3 v);
 
 GK_EXPORT
 void
+gkInitValueAsVec4(GkValue *val, vec4 v);
+
+GK_EXPORT
+void
 gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest);
 
 GK_EXPORT
@@ -66,6 +70,10 @@ gkValueCopy(GkValue *src, GkValue *dest);
 GK_EXPORT
 void
 gkValueSub(GkValue *a, GkValue *b, GkValue *dest);
+
+GK_EXPORT
+void
+gkValueMul(GkValue *a, GkValue *b, GkValue *dest);
 
 GK_EXPORT
 void

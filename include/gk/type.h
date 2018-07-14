@@ -20,7 +20,8 @@ typedef enum GkType {
   GKT_UINT8   = 6,
   GKT_FLOAT   = 7,
   GKT_DOUBLE  = 8,
-  GKT_FLOAT3  = 9
+  GKT_FLOAT3  = 9,
+  GKT_FLOAT4  = 10
 } GkType;
 
 #endif /* type_h */

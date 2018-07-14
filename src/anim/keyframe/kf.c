@@ -21,6 +21,13 @@ gkDeCasteljau(float t, float p0, float c0, float c1, float p1) {
   double u, v, a, b, c, d, e, f;
   int    i;
 
+  /*
+   References:
+   [0] https://forums.khronos.org/showthread.php/10264-Animations-in-1-4-1-release-notes-revision-A/page2?highlight=bezier
+   [1] https://forums.khronos.org/showthread.php/10644-Animation-Bezier-interpolation
+   [2] https://forums.khronos.org/showthread.php/10387-2D-Tangents-in-Bezier-Splines?p=34164&viewfull=1#post34164
+   */
+
   if (t - p0 < DECASTEL_SMALL)
     return 0.0;
 
@@ -71,7 +78,16 @@ gkInterpolateChannel(GkChannel * __restrict ch,
 
   switch (ch->lastInterp) {
     case GK_INTERP_LINEAR:
-      gkValueLerp(&ch->kv[isReverse], &ch->kv[!isReverse], t, dest);
+      if (ch->property == GK_TARGET_QUAT) {
+        vec4 rot;
+        glm_quat_slerp(ch->kv[isReverse].val,
+                       ch->kv[!isReverse].val,
+                       t,
+                       rot);
+        gkInitValueAsVec4(dest, rot);
+      } else {
+        gkValueLerp(&ch->kv[isReverse], &ch->kv[!isReverse], t, dest);
+      }
       break;
     case GK_INTERP_STEP:
       gkValueCopy(&ch->kv[t < 1.0f && isReverse], dest);
@@ -190,6 +206,10 @@ gkBuiltinKeyAnim(GkAnimation *anim,
       glm_vec_copy(to->val, ch->target);
       break;
     }
+    case GKT_FLOAT4: {
+      glm_vec4_ucopy(to->val, ch->target);
+      break;
+    }
     default: break;
   }
 
@@ -243,6 +263,14 @@ gkPrepChannel(GkAnimation *anim, GkChannel *ch) {
                             (float *)(data + oLen - sizeof(vec3)));
         break;
       }
+      case GKT_FLOAT4: {
+        gkInitValueAsVec4(&ch->ov[isReverse], ch->target);
+
+        if (outp->len > 2)
+          gkInitValueAsVec4(&ch->ov[!isReverse],
+                            (float *)(data + oLen - sizeof(vec4)));
+        break;
+      }
       default: break;
     }
   }
@@ -291,6 +319,15 @@ gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch) {
       gkInitValueAsVec3(&ch->kv[isReverse],  target + 3 * prevIndex);
       gkInitValueAsVec3(&ch->kv[!isReverse], target + 3 * index);
 
+      break;
+    }
+    case GKT_FLOAT4: {
+      float *target;
+
+      target = output->data;
+
+      gkInitValueAsVec4(&ch->kv[isReverse],  target + 4 * prevIndex);
+      gkInitValueAsVec4(&ch->kv[!isReverse], target + 4 * index);
       break;
     }
     default: break;

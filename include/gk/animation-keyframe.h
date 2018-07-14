@@ -18,6 +18,20 @@ struct GkAnimation;
 struct GkScene;
 struct GkNode;
 
+  typedef enum GkTargetPropertyType {
+    GK_TARGET_UNKNOWN  = 0,
+    GK_TARGET_X        = 1,
+    GK_TARGET_Y        = 2,
+    GK_TARGET_Z        = 3,
+    GK_TARGET_XY       = 4,
+    GK_TARGET_XYZ      = 5,
+    GK_TARGET_ANGLE    = 6,
+    GK_TARGET_POSITION = 7,
+    GK_TARGET_SCALE    = 8,
+    GK_TARGET_ROTATE   = 9,
+    GK_TARGET_QUAT     = 10
+  } GkTargetPropertyType;
+
 typedef enum GkSamplerBehavior {
   GK_SAMPLER_UNDEFINED      = 0,
   GK_SAMPLER_CONSTANT       = 1,
@@ -35,6 +49,7 @@ typedef struct GkAnimSampler {
   GkBuffer         *outTangent;
   GkSamplerBehavior preBehavior;
   GkSamplerBehavior postBehavior;
+  GkInterpType      uniInterp;
 } GkAnimSampler;
 
 typedef struct GkChannel {
@@ -43,6 +58,7 @@ typedef struct GkChannel {
   GkNode           *node; /* Required if target is Node transform */
   void             *target;
   GkType            targetType;
+  GkTargetPropertyType property;
   GkInterpType      lastInterp;
   uint32_t          keyIndex;
   GkValue           ov[2];

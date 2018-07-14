@@ -70,7 +70,8 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
           if (inpLen < 2)
             goto nxt;
 
-          interpi = sampler->interp->data;
+          if (sampler->uniInterp == GK_INTERP_UNKNOWN)
+            interpi = sampler->interp->data;
 
           /* first time to run channel */
           if (!ch->isPrepared) {
@@ -151,10 +152,14 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
 
           t = glm_percentc(ch->keyStartTime, ch->keyEndTime, time);
 
-          if (!isReverse)
-            ch->lastInterp = interpi[GLM_MAX(1, keyIndex) - 1];
-          else
-            ch->lastInterp = interpi[GLM_MIN(inpLen - 2, keyIndex)];
+          if (sampler->uniInterp == GK_INTERP_UNKNOWN) {
+            if (!isReverse)
+              ch->lastInterp = interpi[GLM_MAX(1, keyIndex) - 1];
+            else
+              ch->lastInterp = interpi[GLM_MIN(inpLen - 2, keyIndex)];
+          } else {
+            ch->lastInterp = sampler->uniInterp;
+          }
 
           gkInterpolateChannel(ch, time, t, isReverse, &v);
 

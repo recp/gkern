@@ -106,6 +106,7 @@ gkRemoveAnimation(GkNode *node, GkAnimation *anim);
 GK_EXPORT
 void
 gkInterpolateChannel(struct GkChannel * __restrict ch,
+                     double                        time,
                      float                         t,
                      bool                          isReverse,
                      GkValue          * __restrict dest);

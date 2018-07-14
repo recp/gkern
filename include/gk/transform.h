@@ -83,7 +83,7 @@ typedef struct GkTranslate {
 
 typedef struct GkQuaternion {
   GkTransformItem base;
-  vec4            value;
+  versor          value;
 } GkQuaternion;
 
 typedef struct GkSkew {

@@ -95,13 +95,12 @@ gkRenderScene(GkScene * scene) {
   scene->flags &= ~GK_SCENEF_RENDERED;
   scene->flags |= GK_SCENEF_RENDERING;
 
-  /* run animations */
-  gkRunAnim(sceneImpl);
-
   glm_aabb_invalidate(scene->bbox);
-
   if (!GK_FLG(scene->flags, GK_SCENEF_PREPARED))
     gkPrepareScene(scene);
+
+  /* run animations */
+  gkRunAnim(sceneImpl);
 
   /* no camera, create default one! */
   if (!scene->camera) {
