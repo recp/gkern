@@ -61,10 +61,6 @@ gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest);
 
 GK_EXPORT
 void
-gkValueStep(GkValue *edge, GkValue *x, GkValue *dest);
-
-GK_EXPORT
-void
 gkValueCopy(GkValue *src, GkValue *dest);
 
 GK_EXPORT
