@@ -57,10 +57,10 @@ gkMakeCameraForScene(GkScene *scene) {
   aspectRatio = scene->viewport[2] / scene->viewport[3];
   glm_vec_center(scene->bbox[0], scene->bbox[1], target);
 
-  glm_vec_sub(scene->bbox[1], target, eye);
-  dist = glm_vec_distance(target, eye);
-
   if (!gkSceneIs2D(scene)) {
+    glm_vec_sub(scene->bbox[1], target, eye);
+    dist = glm_vec_distance(target, eye);
+
     glm_vec_sub(scene->bbox[1], target, eye);
     dist = glm_vec_distance(target, eye);
 
