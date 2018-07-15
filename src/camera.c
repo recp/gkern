@@ -60,11 +60,35 @@ gkMakeCameraForScene(GkScene *scene) {
   glm_vec_sub(scene->bbox[1], target, eye);
   dist = glm_vec_distance(target, eye);
 
-  glm_vec_scale(eye, 2.5f, eye); // TODO: read this as option
-  glm_vec_add(target, eye, eye);
+  if (!gkSceneIs2D(scene)) {
+    glm_vec_sub(scene->bbox[1], target, eye);
+    dist = glm_vec_distance(target, eye);
 
-  far = glm_vec_distance(eye, scene->bbox[0]) + dist;
-  glm_perspective(M_PI_4, aspectRatio, dist * 0.01, far, proj);
+    glm_vec_scale(eye, 2.5f, eye); // TODO: read this as option
+    glm_vec_add(target, eye, eye);
+
+    far = glm_vec_distance(eye, scene->bbox[0]) + dist;
+  } else {
+    far  = glm_aabb_size(scene->bbox);
+    dist = 0.01f;
+
+    glm_vec_copy(target, eye);
+
+    if (glm_eq(eye[0], 0.0f))
+      eye[0] += far;
+    if (glm_eq(eye[1], 0.0f))
+      eye[1] += far;
+    if (glm_eq(eye[2], 0.0f))
+      eye[2] += far;
+
+    far *= 2;
+  }
+
+  glm_perspective(M_PI_4,
+                  aspectRatio,
+                  glm_max(dist * 0.01, 0.01),
+                  far,
+                  proj);
 
   glm_lookat(eye, target, GLM_YUP, view); // TODO: up axis
 

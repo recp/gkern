@@ -109,6 +109,10 @@ void
 gkRemoveTransformCacheFor(GkScene  * __restrict scene,
                           GkCamera * __restrict cam);
 
+GK_EXPORT
+bool
+gkSceneIs2D(GkScene *scene);
+
 #ifdef __cplusplus
 }
 #endif
