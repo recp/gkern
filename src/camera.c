@@ -61,9 +61,6 @@ gkMakeCameraForScene(GkScene *scene) {
     glm_vec_sub(scene->bbox[1], target, eye);
     dist = glm_vec_distance(target, eye);
 
-    glm_vec_sub(scene->bbox[1], target, eye);
-    dist = glm_vec_distance(target, eye);
-
     glm_vec_scale(eye, 2.5f, eye); // TODO: read this as option
     glm_vec_add(target, eye, eye);
 
