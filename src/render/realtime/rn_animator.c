@@ -59,7 +59,6 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
 
       if (ch) {
         while (ch) {
-          char    *interpi;
           uint32_t keyIndex;
 
           sampler  = ch->sampler;
@@ -69,9 +68,6 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
 
           if (inpLen < 2)
             goto nxt;
-
-          if (sampler->uniInterp == GK_INTERP_UNKNOWN)
-            interpi = sampler->interp->data;
 
           /* first time to run channel */
           if (!ch->isPrepared) {
@@ -153,6 +149,9 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
           t = glm_percentc(ch->keyStartTime, ch->keyEndTime, time);
 
           if (sampler->uniInterp == GK_INTERP_UNKNOWN) {
+            char *interpi;
+
+            interpi = sampler->interp->data;
             if (!isReverse)
               ch->lastInterp = interpi[GLM_MAX(1, keyIndex) - 1];
             else
