@@ -40,6 +40,12 @@ in vec3 NORMAL;
 \n#if TEX_COUNT > 4\n  TEX_OUT_DEF(4)  \n#endif\n
 \n#if TEX_COUNT > 5\n  TEX_OUT_DEF(5)  \n#endif\n
 
+\n#ifdef BONES_COUNT\n
+uniform mat4 uBones[BONES_COUNT];
+in ivec4     BONES;
+in vec4      BONEWEIGHTS;
+\n#endif\n
+
 out vec3 vPos;
 out vec3 vNormal;
 out vec3 vEye;
@@ -52,22 +58,35 @@ out vec3 vPosWS;
 \n#endif\n
 
 void main() {
-  vec4 pos4 = vec4(POSITION, 1.0);
+  vec4 pos4 = vec4(POSITION, 1.0), norm4;
   vPos      = vec3(MV * pos4);
   vEye      = normalize(-vPos);
+  norm4     = vec4(NORMAL, 0.0);
+
+\n#ifdef BONES_COUNT\n
+  mat4 boneTrans;
+
+  boneTrans = uBones[BONES[0]] * BONEWEIGHTS[0];
+            + uBones[BONES[1]] * BONEWEIGHTS[1];
+            + uBones[BONES[2]] * BONEWEIGHTS[2];
+            + uBones[BONES[3]] * BONEWEIGHTS[3];
+
+  pos4  = boneTrans * pos4;
+  norm4 = boneTrans * norm4;
+\n#endif\n
 
 \n#ifdef POS_WS\n
-  vPosWS    = vec3(M  * pos4);
+  vPosWS = vec3(M  * pos4);
 \n#endif\n
 
 \n#ifdef POS_MS\n
-  vPosMS    = pos4;
+  vPosMS = pos4;
 \n#endif\n
 
   if (NMU == 1)
-    vNormal = normalize(vec3(NM * vec4(NORMAL, 0.0)));
+    vNormal = normalize(vec3(NM * norm4));
   else
-    vNormal = normalize(vec3(MV * vec4(NORMAL, 0.0)));
+    vNormal = normalize(vec3(MV * norm4));
 
   gl_Position = MVP * pos4;
 

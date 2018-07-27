@@ -330,6 +330,8 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
   if (mat->technique->transparent
       && mat->technique->transparent->opaque == GK_OPAQUE_MASK)
     SH_VF("ALPHAMASK_CUTOFF")
+
+//  SH_V_ARG("BONES_COUNT %d", 10);
 }
 
 GkShader*
