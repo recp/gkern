@@ -59,11 +59,11 @@ gkProgramIsValid(GLuint progId) {
   return linkStatus == GL_TRUE;
 }
 
-GkProgram*
+GkPipeline*
 gkMakeProgram(GkShader *shaders,
-              void (*beforeLinking)(GkProgram *prog, void *data),
+              void (*beforeLinking)(GkPipeline *prog, void *data),
               void *userData) {
-  static GkProgram *prog;
+  static GkPipeline *prog;
   GLuint progId;
 
   prog = calloc(1, sizeof(*prog));
@@ -98,9 +98,9 @@ gkMakeProgram(GkShader *shaders,
   return prog;
 }
 
-GkProgram*
+GkPipeline*
 gkDefaultProgram() {
-  GkProgram *prog;
+  GkPipeline *prog;
   GLuint     progId;
   GLuint     vert, frag;
 
@@ -147,11 +147,11 @@ gkCurrentProgram() {
   return prog;
 }
 
-GkProgram*
+GkPipeline*
 gkGetOrCreatProg(char      *name,
-                 GkProgram *(creatCb)(char *name, void *userData),
+                 GkPipeline *(creatCb)(char *name, void *userData),
                  void      *userData) {
-  GkProgram *prog;
+  GkPipeline *prog;
   if ((prog = rb_find(gk_progs, (void *)name)))
     return prog;
 
@@ -166,7 +166,7 @@ gkGetOrCreatProg(char      *name,
 GK_EXPORT
 void
 gkUseProgram(GkContext *ctx,
-             GkProgram *prog) {
+             GkPipeline *prog) {
   if (ctx->currState->prog == prog)
     return;
 

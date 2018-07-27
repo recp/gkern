@@ -29,7 +29,7 @@ struct GkShader;
 struct GkScene;
 struct GkContext;
 
-typedef struct GkProgram {
+typedef struct GkPipeline {
   FListItem         *vertex;
   HTable            *uniforms;
   struct GkShader   *shaders;
@@ -43,7 +43,7 @@ typedef struct GkProgram {
   GLint              nmui;
   bool               updtLights;
   bool               updtMaterials;
-} GkProgram;
+} GkPipeline;
 
 void
 gkProgramLogInfo(GLuint progId, FILE * __restrict file);
@@ -51,12 +51,12 @@ gkProgramLogInfo(GLuint progId, FILE * __restrict file);
 bool
 gkProgramIsValid(GLuint progId);
 
-GkProgram*
+GkPipeline*
 gkMakeProgram(GkShader *shaders,
-              void (*beforeLinking)(GkProgram *prog, void *data),
+              void (*beforeLinking)(GkPipeline *prog, void *data),
               void *userData);
 
-GkProgram*
+GkPipeline*
 gkDefaultProgram(void);
 
 GLint
@@ -65,11 +65,11 @@ gkCurrentProgram(void);
 GK_EXPORT
 void
 gkUseProgram(struct GkContext *ctx,
-             GkProgram        *prog);
+             GkPipeline        *prog);
 
-GkProgram*
+GkPipeline*
 gkGetOrCreatProg(char      *name,
-                 GkProgram *(creatCb)(char *name, void *userData),
+                 GkPipeline *(creatCb)(char *name, void *userData),
                  void      *userData);
 
 #ifdef __cplusplus

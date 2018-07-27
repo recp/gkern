@@ -13,7 +13,7 @@
 #include <cglm/cglm.h>
 
 struct GkScene;
-struct GkProgram;
+struct GkPipeline;
 struct GkCamera;
 
 typedef enum GkTransformFlags {

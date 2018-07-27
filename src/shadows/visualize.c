@@ -20,7 +20,7 @@ gkRenderShadowMapTo(GkScene  * __restrict scene,
   GkSceneImpl *sceneImpl;
   GkShadowMap *sm;
   GkCamera    *cam;
-  GkProgram   *depthProg;
+  GkPipeline   *depthProg;
   int32_t      texUnit;
   float        near, far;
 

@@ -63,7 +63,7 @@ gk__fillAttribs(GkMaterial  * __restrict mat,
                 GkTechnique * __restrict techn);
 
 static
-GkProgram*
+GkPipeline*
 gk_creatProgForCmnMat(char *name, void *userData);
 
 size_t
@@ -406,7 +406,7 @@ gkShadersFor(GkScene     * __restrict scene,
   return vert;
 }
 
-GkProgram*
+GkPipeline*
 gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
                           GkLight     * __restrict light,
                           GkPrimitive * __restrict prim,
@@ -426,7 +426,7 @@ gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
 
 static
 void
-gk__beforeLinking(GkProgram *prog, void *data) {
+gk__beforeLinking(GkPipeline *prog, void *data) {
   GkPrimitive   *prim;
   FListItem     *inpi;
   GkVertexInput *inp;
@@ -446,7 +446,7 @@ gk__beforeLinking(GkProgram *prog, void *data) {
 }
 
 static
-GkProgram*
+GkPipeline*
 gk_creatProgForCmnMat(char *name, void *userData) {
   GkShader    *shaders;
   GkScene     *scene;

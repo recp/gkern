@@ -206,7 +206,7 @@ gk_project2d(GkRect rect, mat4 mvp, vec3 v) {
 }
 
 void
-gkUniformTransform(struct GkProgram * __restrict prog,
+gkUniformTransform(struct GkPipeline * __restrict prog,
                    GkTransform      * __restrict trans,
                    GkCamera         * __restrict cam) {
   GkFinalTransform *ftr;

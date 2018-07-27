@@ -15,7 +15,7 @@
 static RBTree *gk_shaders;
 
 static
-GkProgram*
+GkPipeline*
 gk_creatProgByName(char *name, void *userData);
 
 GkShader*
@@ -32,7 +32,7 @@ gkShaderSetName(GkShader *shader, const char *name) {
   rb_insert(gk_shaders, (void *)name, shader);
 }
 
-GkProgram*
+GkPipeline*
 gkGetOrCreatProgByName(const char   *commonName,
                        const char   *shaderSources[],
                        GLenum        shaderTypes[],
@@ -51,12 +51,12 @@ gkGetOrCreatProgByName(const char   *commonName,
 }
 
 static
-GkProgram*
+GkPipeline*
 gk_creatProgByName(char *name, void *userData) {
   void        **paramStructure;
   const char  **shaderSources;
   GLenum       *shaderTypes;
-  GkProgram    *prog;
+  GkPipeline    *prog;
   GkShader     *last_shader;
   GLuint        progId;
   GkShaderFlags flags;

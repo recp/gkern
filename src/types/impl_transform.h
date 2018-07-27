@@ -30,7 +30,7 @@ typedef struct GkTransformImpl {
 } GkTransformImpl;
 
 void
-gkUniformTransform(struct GkProgram * __restrict prog,
+gkUniformTransform(struct GkPipeline * __restrict prog,
                    GkTransform      * __restrict trans,
                    struct GkCamera  * __restrict cam);
 

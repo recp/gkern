@@ -11,7 +11,7 @@
 
 GK_EXPORT
 GLint
-gkUniformLoc(GkProgram *prog, const char *name) {
+gkUniformLoc(GkPipeline *prog, const char *name) {
   void *found;
   GLint loc;
 
@@ -30,7 +30,7 @@ gkUniformLoc(GkProgram *prog, const char *name) {
 }
 
 GLint
-gkUniformLocBuff(GkProgram * __restrict prog,
+gkUniformLocBuff(GkPipeline * __restrict prog,
                  char      * __restrict name,
                  char      * __restrict buf) {
   char  *pBuf;

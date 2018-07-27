@@ -73,7 +73,7 @@ void
 gkDrawBBox(GkScene * __restrict scene,
            GkBBox               bbox,
            mat4                 world) {
-  GkProgram  *prog;
+  GkPipeline  *prog;
   vec3        size, center;
   mat4        tran = GLM_MAT4_IDENTITY_INIT;
   GLuint      currentProg;

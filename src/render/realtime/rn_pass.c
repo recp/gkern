@@ -22,7 +22,7 @@ gkRenderPass(GkScene    * __restrict scene,
              GkPrimInst * __restrict primInst,
              GkPass     * __restrict pass) {
   GkContext   *ctx;
-  GkProgram   *prog;
+  GkPipeline   *prog;
   GkSceneImpl *sceneImpl;
   GkTransform *trans;
   GkPrimitive *prim;

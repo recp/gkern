@@ -14,7 +14,7 @@ void
 gkRenderShadowMap(GkScene     * __restrict scene,
                   GkShadowMap * __restrict sm,
                   GkPrimInst  * __restrict primInst,
-                  GkProgram   * __restrict prog,
+                  GkPipeline   * __restrict prog,
                   int                      split) {
   mat4         mvp;
   vec4        *world;

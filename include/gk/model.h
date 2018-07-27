@@ -67,7 +67,7 @@ typedef enum GkModelFlags {
 } GkModelFlags;
 
 typedef struct GkModel {
-  GkProgram       *prog;
+  GkPipeline       *prog;
   GkMaterial      *material;
   GkGLEvents      *events;
   GkModelInstList *instances; /* TODO: */

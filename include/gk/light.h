@@ -14,7 +14,7 @@
 
 struct GkScene;
 struct GkNode;
-struct GkProgram;
+struct GkPipeline;
 struct GkColorOrTex;
 struct GkCamera;
 struct GkTransform;
@@ -80,23 +80,23 @@ typedef struct GkSpotLight {
 
 void
 gkUniformLights(struct GkScene   * __restrict scene,
-                struct GkProgram * __restrict prog);
+                struct GkPipeline * __restrict prog);
 
 void
 gkUniformLight(struct GkScene   * __restrict scene,
                GkLight          * __restrict light,
-               struct GkProgram * __restrict prog,
+               struct GkPipeline * __restrict prog,
                mat4                          transView);
 
 void
 gkUniformSingleLight(struct GkScene   * __restrict scene,
                      GkLight          * __restrict light,
-                     struct GkProgram * __restrict prog);
+                     struct GkPipeline * __restrict prog);
 
 void
 gkApplyTransformToLight(struct GkScene   * __restrict scene,
                         GkLight          * __restrict light,
-                        struct GkProgram * __restrict prog);
+                        struct GkPipeline * __restrict prog);
 
 void
 gkShadowMatrix(struct GkScene *scene,

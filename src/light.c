@@ -15,7 +15,7 @@
 void
 gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light,
-               GkProgram      * __restrict prog,
+               GkPipeline      * __restrict prog,
                mat4                        transView) {
   GkSceneImpl *sceneImpl;
   vec4         amb, dir;
@@ -118,7 +118,7 @@ gkUniformLight(struct GkScene * __restrict scene,
 
 void
 gkUniformLights(struct GkScene * __restrict scene,
-                GkProgram      * __restrict prog) {
+                GkPipeline      * __restrict prog) {
   GkSceneImpl *sceneImpl;
   GkLight     *light;
   mat4         identity = GLM_MAT4_IDENTITY_INIT;

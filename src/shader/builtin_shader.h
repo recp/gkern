@@ -20,7 +20,7 @@ typedef enum GkBuiltinProg {
   GK_BUILTIN_PROG_WEIGBL_COMPOS = 4
 } GkBuiltinProg;
 
-GkProgram*
+GkPipeline*
 gkBuiltinProg(GkBuiltinProg progtype);
 
 #endif /* builtin_shader_h */

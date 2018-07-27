@@ -94,7 +94,7 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   GkTranspWeightedBlended *transp;
   GkPass                  *tpass;
   GkFrustum               *frustum;
-  GkProgram               *composProg;
+  GkPipeline               *composProg;
   GkLight                 *light, *firstLight;
 
   ctx        = gkContextOf(scene);

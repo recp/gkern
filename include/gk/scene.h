@@ -23,7 +23,7 @@ struct GkMaterial;
 struct GkModelInst;
 struct GkPrimInst;
 struct GkNode;
-struct GkProgram;
+struct GkPipeline;
 struct GkLightRef;
 
 typedef void (*GkRenderPrimFunc)(struct GkScene    *scene,

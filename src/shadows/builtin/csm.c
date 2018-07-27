@@ -62,7 +62,7 @@ gkRenderShadowMapCSM(GkScene * __restrict scene,
   mat4             view, proj;
   vec4            *corners;
   GkContext       *ctx;
-  GkProgram       *prog;
+  GkPipeline       *prog;
   GkSceneImpl     *sceneImpl;
   GkShadowMap     *sm;
   GkFrustum       *frustum, subFrustum;

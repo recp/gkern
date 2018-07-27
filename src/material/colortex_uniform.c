@@ -15,7 +15,7 @@
 void
 gkUniformColor(GkColor   * __restrict color,
                char      * __restrict name,
-               GkProgram * __restrict prog) {
+               GkPipeline * __restrict prog) {
   glUniform4fv(gkUniformLoc(prog, name), 1, color->vec);
 }
 
@@ -23,7 +23,7 @@ void
 gkUniformColorBuff(GkColor   * __restrict color,
                    char      * __restrict buf,
                    char      * __restrict name,
-                   GkProgram * __restrict prog) {
+                   GkPipeline * __restrict prog) {
   glUniform4fv(gkUniformLocBuff(prog, name, buf), 1, color->vec);
 }
 
@@ -32,7 +32,7 @@ gkUniformTex(GkContext  * __restrict ctx,
              GkMaterial * __restrict mat,
              GkTexture  * __restrict tex,
              char       * __restrict name,
-             GkProgram  * __restrict prog) {
+             GkPipeline  * __restrict prog) {
   char        uniformNameBuff[32];
   const char *uniformName;
 
@@ -61,7 +61,7 @@ gkUniformColorDesc(GkContext    * __restrict ctx,
                    GkMaterial   * __restrict mat,
                    GkColorDesc * __restrict crtx,
                    char         * __restrict name,
-                   GkProgram    * __restrict prog) {
+                   GkPipeline    * __restrict prog) {
   GkColorMethod method;
 
   method = crtx->method;
@@ -87,7 +87,7 @@ gkUniformColorDescBuff(GkContext   * __restrict ctx,
                        GkColorDesc * __restrict crtx,
                        char        * __restrict buf,
                        char        * __restrict name,
-                       GkProgram   * __restrict prog) {
+                       GkPipeline   * __restrict prog) {
   GkColorMethod method;
   
   method = crtx->method;

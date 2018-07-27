@@ -24,7 +24,7 @@ void
 gkRenderPrimForLight(GkScene     * __restrict scene,
                      GkTransform * __restrict trans,
                      GkPrimitive * __restrict prim,
-                     GkProgram   * __restrict prog) {
+                     GkPipeline   * __restrict prog) {
   GkLight     *light;
   GkSceneImpl *sceneImpl;
 
@@ -90,7 +90,7 @@ gkRenderPrimForLight(GkScene     * __restrict scene,
 void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
                      GkPrimitive * __restrict prim,
-                     GkProgram   * __restrict prog) {
+                     GkPipeline   * __restrict prog) {
   GkSceneImpl *sceneImpl;
   GkLight     *firstLight, *light;
 
@@ -129,7 +129,7 @@ gkRenderPrimPerLight(GkScene     * __restrict scene,
 void
 gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
                            GkPrimitive * __restrict prim,
-                           GkProgram   * __restrict prog) {
+                           GkPipeline   * __restrict prog) {
   GkSceneImpl *sceneImpl;
   GkLight     *firstLight, *light;
 

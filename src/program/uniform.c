@@ -11,7 +11,7 @@
 
 GK_EXPORT
 void
-gkUniform1i(GkProgram  * __restrict prog,
+gkUniform1i(GkPipeline  * __restrict prog,
             const char * __restrict name,
             GLint                   val) {
   glUniform1i(gkUniformLoc(prog, name), val);
@@ -19,7 +19,7 @@ gkUniform1i(GkProgram  * __restrict prog,
 
 GK_EXPORT
 void
-gkUniform1ui(GkProgram  * __restrict prog,
+gkUniform1ui(GkPipeline  * __restrict prog,
              const char * __restrict name,
              GLuint                  val) {
   glUniform1ui(gkUniformLoc(prog, name), val);
@@ -27,7 +27,7 @@ gkUniform1ui(GkProgram  * __restrict prog,
 
 GK_EXPORT
 void
-gkUniform1f(GkProgram  * __restrict prog,
+gkUniform1f(GkPipeline  * __restrict prog,
             const char * __restrict name,
             float                   val) {
   glUniform1f(gkUniformLoc(prog, name), val);
@@ -35,7 +35,7 @@ gkUniform1f(GkProgram  * __restrict prog,
 
 GK_EXPORT
 void
-gkUniform2f(GkProgram  * __restrict prog,
+gkUniform2f(GkPipeline  * __restrict prog,
             const char * __restrict name,
             float                   val[2]) {
   glUniform2f(gkUniformLoc(prog, name), val[0], val[1]);

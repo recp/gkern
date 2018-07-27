@@ -35,7 +35,7 @@ gkGetOrCreatPass(GkScene     *scene,
                  GkPrimitive *prim,
                  GkMaterial  *mat) {
   GkPass    *pass;
-  GkProgram *prog;
+  GkPipeline *prog;
 
   if ((prog = gkGetOrCreatProgForCmnMat(scene, light, prim, mat))) {
     pass = calloc(1, sizeof(*pass));

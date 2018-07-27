@@ -16,7 +16,7 @@ void
 gkRenderShadowMap(GkScene     * __restrict scene,
                   GkShadowMap * __restrict sm,
                   GkPrimInst  * __restrict primInst,
-                  GkProgram   * __restrict prog,
+                  GkPipeline   * __restrict prog,
                   int                      split);
 
 #endif /* src_shad_render_h */

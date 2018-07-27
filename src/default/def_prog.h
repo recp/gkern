@@ -10,7 +10,7 @@
 
 #include "../../include/gk/gk.h"
 
-GkProgram*
+GkPipeline*
 gk_prog_cube(void);
 
 #endif /* gk_def_prog_h */

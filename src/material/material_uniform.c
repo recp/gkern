@@ -19,7 +19,7 @@
 
 void
 gkUniformMaterialStruct(struct GkContext  * __restrict ctx,
-                        struct GkProgram  * __restrict prog,
+                        struct GkPipeline  * __restrict prog,
                         struct GkMaterial * __restrict mat) {
   GkTechnique *techn;
   char         buf[256];
@@ -110,7 +110,7 @@ gkUniformMaterialStruct(struct GkContext  * __restrict ctx,
 
 void
 gkUniformMaterial(struct GkContext  * __restrict ctx,
-                  struct GkProgram  * __restrict prog,
+                  struct GkPipeline  * __restrict prog,
                   struct GkMaterial * __restrict mat) {
   GkTechnique *techn;
   GLint        loc;

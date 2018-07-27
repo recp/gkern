@@ -25,15 +25,15 @@ gkMakeVertexInput(const char *name, GkType type, int32_t len);
 
 GK_EXPORT
 int32_t
-gkAddVertexInput(GkProgram *prog, GkVertexInput *input);
+gkAddVertexInput(GkPipeline *prog, GkVertexInput *input);
 
 GK_EXPORT
 void
-gkRemoveVertexInput(GkProgram *prog, GkVertexInput *input);
+gkRemoveVertexInput(GkPipeline *prog, GkVertexInput *input);
 
 GK_EXPORT
 int32_t
-gkIndexOfVertexInput(GkProgram *prog, GkVertexInput *input);
+gkIndexOfVertexInput(GkPipeline *prog, GkVertexInput *input);
 
 GK_EXPORT
 const char*

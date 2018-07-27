@@ -10,29 +10,29 @@
 
 #include "common.h"
 
-struct GkProgram;
+struct GkPipeline;
 
 GK_EXPORT
 void
-gkUniform1i(struct GkProgram * __restrict prog,
+gkUniform1i(struct GkPipeline * __restrict prog,
             const char       * __restrict name,
             GLint                         val);
 
 GK_EXPORT
 void
-gkUniform1ui(struct GkProgram * __restrict prog,
+gkUniform1ui(struct GkPipeline * __restrict prog,
              const char       * __restrict name,
              GLuint                        val);
 
 GK_EXPORT
 void
-gkUniform1f(struct GkProgram  * __restrict prog,
+gkUniform1f(struct GkPipeline  * __restrict prog,
             const char        * __restrict name,
             float                          val);
 
 GK_EXPORT
 void
-gkUniform2f(struct GkProgram  * __restrict prog,
+gkUniform2f(struct GkPipeline  * __restrict prog,
             const char        * __restrict name,
             float                          val[2]);
 

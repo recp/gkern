@@ -9,7 +9,7 @@
 #include "builtin_shader.h"
 #include "shader.h"
 
-GkProgram*
+GkPipeline*
 gkBuiltinProg(GkBuiltinProg progtype) {
   switch (progtype) {
     case GK_BUILTIN_PROG_RTT: {

@@ -11,7 +11,7 @@
 #include "common.h"
 
 struct RBTree;
-struct GkProgram;
+struct GkPipeline;
 struct FList;
 struct GkGPUStates;
 struct FList;

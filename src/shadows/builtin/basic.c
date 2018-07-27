@@ -71,7 +71,7 @@ void
 gkRenderBasicShadowMap(GkScene * __restrict scene,
                        GkLight * __restrict light) {
   GkContext   *ctx;
-  GkProgram   *prog;
+  GkPipeline   *prog;
   GkSceneImpl *sceneImpl;
   GkShadowMap *sm;
   GkFrustum   *frustum, subFrustum;

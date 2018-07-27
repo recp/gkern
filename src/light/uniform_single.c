@@ -15,7 +15,7 @@
 void
 gkApplyTransformToLight(struct GkScene * __restrict scene,
                         GkLight        * __restrict light,
-                        GkProgram      * __restrict prog) {
+                        GkPipeline      * __restrict prog) {
   mat4  mv;
   vec4  dir;
   char  buf[32];
@@ -66,7 +66,7 @@ gkApplyTransformToLight(struct GkScene * __restrict scene,
 void
 gkUniformSingleLight(struct GkScene * __restrict scene,
                      GkLight        * __restrict light,
-                     GkProgram      * __restrict prog) {
+                     GkPipeline      * __restrict prog) {
   mat4  mv;
   vec4  dir;
   char  buf[32];

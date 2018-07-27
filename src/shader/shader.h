@@ -22,7 +22,7 @@ typedef enum GkShaderFlags {
                          | GK_SHADER_FLAG_NMU
 } GkShaderFlags;
 
-GkProgram*
+GkPipeline*
 gkGetOrCreatProgByName(const char   *commonName,
                        const char   *shaderSources[],
                        GLenum        shaderTypes[],

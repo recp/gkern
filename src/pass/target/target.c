@@ -33,7 +33,7 @@ void
 gkBindRenderTargetTo(GkScene    *scene,
                      GkPass     *pass,
                      int32_t     targetIndex,
-                     GkProgram  *prog,
+                     GkPipeline  *prog,
                      int32_t     texUnit,
                      const char *uniformName) {
   GkContext     *ctx;

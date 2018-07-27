@@ -180,7 +180,7 @@ GK_EXPORT
 void
 gkBindDepthTexTo(GkScene    *scene,
                  GkPass     *pass,
-                 GkProgram  *prog,
+                 GkPipeline  *prog,
                  int32_t     texUnit,
                  const char  *uniformName) {
   gkBindTextureTo(gkContextOf(scene),
@@ -196,7 +196,7 @@ GK_EXPORT
 void
 gkBindDepthTexArrayTo(GkScene    *scene,
                       GkPass     *pass,
-                      GkProgram  *prog,
+                      GkPipeline  *prog,
                       int32_t     texUnit,
                       const char  *uniformName) {
   gkBindTextureTo(gkContextOf(scene),

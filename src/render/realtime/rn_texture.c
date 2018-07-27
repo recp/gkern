@@ -14,7 +14,7 @@
 
 void
 gkRenderTexture(GkScene * __restrict scene, GkPass * __restrict pass) {
-  GkProgram *prog;
+  GkPipeline *prog;
   GkContext *ctx;
 
   ctx  = gkContextOf(scene);

@@ -14,16 +14,16 @@ void
 gkRenderPrimForLight(GkScene     * __restrict scene,
                      GkTransform * __restrict trans,
                      GkPrimitive * __restrict prim,
-                     GkProgram   * __restrict prog);
+                     GkPipeline   * __restrict prog);
 
 void
 gkRenderPrimPerLight(GkScene     * __restrict scene,
                      GkPrimitive * __restrict prim,
-                     GkProgram   * __restrict prog);
+                     GkPipeline   * __restrict prog);
 
 void
 gkRenderTranspPrimPerLight(GkScene     * __restrict scene,
                            GkPrimitive * __restrict prim,
-                           GkProgram   * __restrict prog);
+                           GkPipeline   * __restrict prog);
 
 #endif /* render_light_h */

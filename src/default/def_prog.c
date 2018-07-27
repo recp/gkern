@@ -9,11 +9,11 @@
 #include "def_prog.h"
 #include "shader/def_shader.h"
 
-GkProgram * gk_def_prog_cube = NULL;
+GkPipeline * gk_def_prog_cube = NULL;
 
-GkProgram*
+GkPipeline*
 gk_prog_cube() {
-  GkProgram  *prog;
+  GkPipeline  *prog;
   GLuint      progId;
   GLuint      vert, frag;
 

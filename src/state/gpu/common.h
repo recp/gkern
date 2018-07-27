@@ -86,7 +86,7 @@ typedef struct GkGPUStates {
   GkFaceState      *face;
   GkFramebuffState *frame;
   HTable           *tex;
-  GkProgram        *prog;
+  GkPipeline        *prog;
   GLuint            activeTex;
 } GkGPUStates;
 

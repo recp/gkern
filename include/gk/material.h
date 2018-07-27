@@ -15,7 +15,7 @@
 struct GkPass;
 struct GkScene;
 struct GkModelInst;
-struct GkProgram;
+struct GkPipeline;
 struct GkPrimitive;
 struct GkPrimInst;
 
@@ -145,12 +145,12 @@ gkMaterialNewSpecGloss(void);
 
 void
 gkUniformMaterial(struct GkContext  * __restrict ctx,
-                  struct GkProgram  * __restrict prog,
+                  struct GkPipeline  * __restrict prog,
                   struct GkMaterial * __restrict material);
 
 void
 gkUniformMaterialStruct(struct GkContext  * __restrict ctx,
-                        struct GkProgram  * __restrict prog,
+                        struct GkPipeline  * __restrict prog,
                         struct GkMaterial * __restrict material);
 
 GkMaterial*

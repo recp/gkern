@@ -17,7 +17,7 @@ typedef struct GkTranspWeightedBlended {
   GkPass      *opaquePass;
   GkPass      *transpPass;
   GkPass      *composPass;
-  GkProgram   *composProg;
+  GkPipeline   *composProg;
 } GkTranspWeightedBlended;
 
 void
