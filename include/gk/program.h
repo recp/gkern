@@ -52,9 +52,9 @@ bool
 gkProgramIsValid(GLuint progId);
 
 GkPipeline*
-gkMakeProgram(GkShader *shaders,
-              void (*beforeLinking)(GkPipeline *prog, void *data),
-              void *userData);
+gkNewPipeline(GkShader *shaders,
+              void    (*beforeLink)(GkPipeline *prog, void *data),
+              void     *userData);
 
 GkPipeline*
 gkDefaultProgram(void);
@@ -65,12 +65,12 @@ gkCurrentProgram(void);
 GK_EXPORT
 void
 gkUseProgram(struct GkContext *ctx,
-             GkPipeline        *prog);
+             GkPipeline       *prog);
 
 GkPipeline*
-gkGetOrCreatProg(char      *name,
-                 GkPipeline *(creatCb)(char *name, void *userData),
-                 void      *userData);
+gkGetPipeline(char       *name,
+              GkPipeline *(creatCb)(char *name, void *userData),
+              void       *userData);
 
 #ifdef __cplusplus
 }

@@ -45,7 +45,7 @@ gkGetOrCreatProgByName(const char   *commonName,
   paramStructure[2] = (void *)&shaderCount;
   paramStructure[3] = (void *)&flags;
 
-  return gkGetOrCreatProg((char *)commonName,
+  return gkGetPipeline((char *)commonName,
                           gk_creatProgByName,
                           paramStructure);
 }

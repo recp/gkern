@@ -33,9 +33,9 @@ gkShadersFor(GkScene     * __restrict scene,
              GkMaterial  * __restrict mat);
 
 GkPipeline*
-gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
-                          GkLight     * __restrict light,
-                          GkPrimitive * __restrict prim,
-                          GkMaterial  * __restrict mat);
+gkGetPiplineForCmnMat(GkScene     * __restrict scene,
+                      GkLight     * __restrict light,
+                      GkPrimitive * __restrict prim,
+                      GkMaterial  * __restrict mat);
 
 #endif /* cmn_material_h */

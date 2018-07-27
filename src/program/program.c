@@ -60,8 +60,8 @@ gkProgramIsValid(GLuint progId) {
 }
 
 GkPipeline*
-gkMakeProgram(GkShader *shaders,
-              void (*beforeLinking)(GkPipeline *prog, void *data),
+gkNewPipeline(GkShader *shaders,
+              void (*beforeLink)(GkPipeline *prog, void *data),
               void *userData) {
   static GkPipeline *prog;
   GLuint progId;
@@ -71,8 +71,8 @@ gkMakeProgram(GkShader *shaders,
 
   gkAttachShaders(progId, shaders);
 
-  if (beforeLinking)
-    beforeLinking(prog, userData);
+  if (beforeLink)
+    beforeLink(prog, userData);
 
   glLinkProgram(progId);
 
@@ -148,14 +148,14 @@ gkCurrentProgram() {
 }
 
 GkPipeline*
-gkGetOrCreatProg(char      *name,
-                 GkPipeline *(creatCb)(char *name, void *userData),
-                 void      *userData) {
+gkGetPipeline(char       *name,
+              GkPipeline *(creatCb)(char *name, void *userData),
+              void       *userData) {
   GkPipeline *prog;
   if ((prog = rb_find(gk_progs, (void *)name)))
     return prog;
 
-  if ((prog = creatCb(name, userData))) {
+  if (creatCb && (prog = creatCb(name, userData))) {
     rb_insert(gk_progs, (void *)strdup(name), prog);
     return prog;
   }

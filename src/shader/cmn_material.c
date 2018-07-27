@@ -64,7 +64,7 @@ gk__fillAttribs(GkMaterial  * __restrict mat,
 
 static
 GkPipeline*
-gk_creatProgForCmnMat(char *name, void *userData);
+gk_creatPiplForCmnMat(char *name, void *userData);
 
 size_t
 gkShaderNameFor(GkScene     * __restrict scene,
@@ -407,10 +407,10 @@ gkShadersFor(GkScene     * __restrict scene,
 }
 
 GkPipeline*
-gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
-                          GkLight     * __restrict light,
-                          GkPrimitive * __restrict prim,
-                          GkMaterial  * __restrict mat) {
+gkGetPiplineForCmnMat(GkScene     * __restrict scene,
+                      GkLight     * __restrict light,
+                      GkPrimitive * __restrict prim,
+                      GkMaterial  * __restrict mat) {
   char  name[64];
   void *userData[4];
 
@@ -421,12 +421,12 @@ gkGetOrCreatProgForCmnMat(GkScene     * __restrict scene,
   userData[2] = prim;
   userData[3] = mat;
 
-  return gkGetOrCreatProg(name, gk_creatProgForCmnMat, userData);
+  return gkGetPipeline(name, gk_creatPiplForCmnMat, userData);
 }
 
 static
 void
-gk__beforeLinking(GkPipeline *prog, void *data) {
+gk__beforeLink(GkPipeline *pip, void *data) {
   GkPrimitive   *prim;
   FListItem     *inpi;
   GkVertexInput *inp;
@@ -438,7 +438,7 @@ gk__beforeLinking(GkPipeline *prog, void *data) {
   while (inpi) {
     inp = inpi->data;
 
-    glBindAttribLocation(prog->progId, index, inp->name);
+    glBindAttribLocation(pip->progId, index, inp->name);
 
     index++;
     inpi = inpi->next;
@@ -447,7 +447,7 @@ gk__beforeLinking(GkPipeline *prog, void *data) {
 
 static
 GkPipeline*
-gk_creatProgForCmnMat(char *name, void *userData) {
+gk_creatPiplForCmnMat(char *name, void *userData) {
   GkShader    *shaders;
   GkScene     *scene;
   GkPrimitive *prim;
@@ -460,7 +460,7 @@ gk_creatProgForCmnMat(char *name, void *userData) {
   mat   = ((void **)userData)[3];
 
   if ((shaders = gkShadersFor(scene, light, prim, mat)))
-    return gkMakeProgram(shaders, gk__beforeLinking, prim);
+    return gkNewPipeline(shaders, gk__beforeLink, prim);
 
   return NULL;
 }
