@@ -13,6 +13,7 @@
 #include "../../../include/gk/pass.h"
 #include "../../default/def_light.h"
 #include "../../../include/gk/gpu_state.h"
+#include "../../../include/gk/clear.h"
 #include "../../bbox/scene_bbox.h"
 #include "rn_prim.h"
 #include "rn_animator.h"
@@ -82,6 +83,7 @@ gkRenderScene(GkScene * scene) {
   GkSceneImpl *sceneImpl;
 
   sceneImpl = (GkSceneImpl *)scene;
+
   scene->startTime = tm_time();
 
   if (!scene
@@ -111,7 +113,13 @@ gkRenderScene(GkScene * scene) {
   }
 
   gkBindOutput(scene, scene->finalOutput);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  if (!sceneImpl->clearPipeline) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  } else {
+    gkClearEffect(scene, sceneImpl->clearPipeline);
+    glClear(GL_DEPTH_BUFFER_BIT);
+  }
 
   /* todo: use frustum culler here */
   if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID))
