@@ -29,9 +29,9 @@ Currently this library only renders using OpenGL, but in the future other apis l
 - PBR materials
    - Metallic-Roughness Workflow
    - Specular-Glossiness Workflow
+- Simple animations
 - ... 
 - and some built-in helpers for many common tasks and more by fetures time...
- 
 
 # Todo
 - [ ] Order objects before rendering
@@ -42,7 +42,25 @@ Currently this library only renders using OpenGL, but in the future other apis l
 - [ ] Multithread rendering
 - [ ] Instanced Rendering
 - [ ] Animations
+  - [x] Autoreserve animations
+  - [x] Play count...
+  - [x] Simple Animations
+  - [ ] Keyframe animations
+    - [x] Animate float/vec3/vec4
+    - [ ] Interpolations
+       - [x] STEP
+       - [x] LINEAR
+       - [ ] CUBIC BEZIER SPLINE
+       - [ ] CUBIC HERMITE SPLINE
+       - [ ] B-SPLINE
+       - [ ] CARDINAL SPLINE
+  - [ ] Skeletal animations (working on this)
+  - [ ] Morph animations
 - [ ] ... 
+ 
+# Screenshots
+
+![](DamagedHelmet_gltf.jpg)
 
 # Build 
 todo
