@@ -111,4 +111,8 @@ gkBindTexture(GkContext * __restrict ctx,
               uint32_t               target,
               uint32_t               texid);
 
+GK_EXPORT
+void
+gkBindPrimitive(GkPrimitive * __restrict prim);
+
 #endif /* gpu_state_h */
