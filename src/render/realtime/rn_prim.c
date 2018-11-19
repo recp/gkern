@@ -28,7 +28,7 @@ gkRenderPrimInst(GkScene    * __restrict scene,
   GkPrimitive *prim;
   
   prim = primInst->prim;
-  
+
   glBindVertexArray(prim->vao);
   gkApplyMaterial(scene, primInst);
 

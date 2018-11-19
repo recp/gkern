@@ -17,7 +17,10 @@ typedef enum GkBuiltinProg {
   GK_BUILTIN_PROG_SHADOWMAP     = 3,
 
   /* weighted-blended transparency */
-  GK_BUILTIN_PROG_WEIGBL_COMPOS = 4
+  GK_BUILTIN_PROG_WEIGBL_COMPOS = 4,
+
+  /* Clear Effects */
+  GK_BUILTIN_PROG_CLR_GRAD_CIRC = 5
 } GkBuiltinProg;
 
 GkPipeline*

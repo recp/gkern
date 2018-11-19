@@ -89,6 +89,23 @@ gkBuiltinProg(GkBuiltinProg progtype) {
                                     2,
                                     GK_SHADER_FLAG_MVP);
     }
+    case GK_BUILTIN_PROG_CLR_GRAD_CIRC: {
+      const char *src[2];
+      GLenum      typ[2] = {
+        GL_VERTEX_SHADER,
+        GL_FRAGMENT_SHADER
+      };
+
+      src[0] =
+#include "glsl/vert/plain.glsl"
+      ;
+
+      src[1] =
+#include "glsl/frag/clr_grad_circ.glsl"
+      ;
+
+      return gkGetOrCreatProgByName("clr_grad_circ", src, typ, 2, 0);
+    }
     default:
       break;
   }

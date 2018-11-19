@@ -15,7 +15,7 @@
 void
 gkUniformLight(struct GkScene * __restrict scene,
                GkLight        * __restrict light,
-               GkPipeline      * __restrict prog,
+               GkPipeline     * __restrict prog,
                mat4                        transView) {
   GkSceneImpl *sceneImpl;
   vec4         amb, dir;
