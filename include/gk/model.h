@@ -15,6 +15,8 @@
 #include "transform.h"
 #include "buffer.h"
 
+#include <stdint.h>
+
 struct GkModel;
 struct GkModelInst;
 struct GkContext;
@@ -46,6 +48,7 @@ typedef struct GkPrimitive {
   GkGPUBuffer        *bufs;
   struct FListItem   *inputs;
   GkBBox              bbox; /* local */
+  uint32_t            lastInputIndex;
   GLuint              flags;
   GLuint              vao;
   GLsizei             bufc;
