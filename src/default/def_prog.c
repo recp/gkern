@@ -9,11 +9,12 @@
 #include "def_prog.h"
 #include "shader/def_shader.h"
 
-GkPipeline * gk_def_prog_cube = NULL;
+GkPipeline *gk_def_prog_cube     = NULL;
+GkPipeline *gk_def_prog_drawbone = NULL;
 
 GkPipeline*
 gk_prog_cube() {
-  GkPipeline  *prog;
+  GkPipeline *prog;
   GLuint      progId;
   GLuint      vert, frag;
 
@@ -47,6 +48,50 @@ gk_prog_cube() {
   prog->refc   = 1;
 
   gk_def_prog_cube = prog;
+
+  return prog;
+}
+
+GkPipeline*
+gk_prog_drawbone() {
+  GkPipeline *prog;
+  GLuint      progId;
+  GLuint      vert, frag;
+
+  if (gk_def_prog_drawbone)
+    return gk_def_prog_drawbone;
+
+  prog   = calloc(1, sizeof(*prog));
+  progId = glCreateProgram();
+
+  vert = gkShaderLoad(GL_VERTEX_SHADER,
+                      gk_def_shader_vert(GK_DEF_SHADER_DRAWBONE));
+  frag = gkShaderLoad(GL_FRAGMENT_SHADER,
+                      gk_def_shader_frag(GK_DEF_SHADER_DRAWBONE));
+
+  glAttachShader(progId, vert);
+  glAttachShader(progId, frag);
+  glLinkProgram(progId);
+
+#ifdef DEBUG
+  if (!gkProgramIsValid(progId)) {
+    gkProgramLogInfo(progId, stderr);
+    exit(-1);
+  }
+#endif
+
+  glDeleteShader(vert);
+  glDeleteShader(frag);
+
+  prog->mvpi   = -1;
+  prog->progId = progId;
+  prog->refc   = 1;
+
+  glUniformBlockBinding(prog->progId,
+                        glGetUniformBlockIndex(prog->progId, "JointBlock"),
+                        1);
+
+  gk_def_prog_drawbone = prog;
 
   return prog;
 }

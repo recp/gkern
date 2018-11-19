@@ -60,7 +60,6 @@ gkApplyMaterial(GkScene    * __restrict scene,
     goto apply;
   }
   
-  
   material = primInst->activeMaterial;
   prim     = primInst->prim;
 

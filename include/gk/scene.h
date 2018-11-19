@@ -42,7 +42,8 @@ typedef enum GkSceneFlags {
   GK_SCENEF_TRANSP         = 1 << 8,
   GK_SCENEF_SHADOWS        = 1 << 9,
   GK_SCENEF_PREPARED       = 1 << 10,
-  GK_SCENEF_DRAW_PRIM_BBOX = 1 << 11
+  GK_SCENEF_DRAW_PRIM_BBOX = 1 << 11,
+  GK_SCENEF_DRAW_BONES     = 1 << 12
 } GkSceneFlags;
 
 GK_MAKE_C_ENUM(GkSceneFlags)

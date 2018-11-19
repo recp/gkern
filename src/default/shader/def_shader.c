@@ -17,6 +17,11 @@ gk_def_shader_vert(GK_DEF_SHADER shader) {
 #include "gk_cube.vert"
       ;
       break;
+    case GK_DEF_SHADER_DRAWBONE:
+      return
+#include "gk_drawbone.vs"
+      ;
+      break;
     default:
       return
 #include "gk_default.vert"
@@ -30,6 +35,11 @@ gk_def_shader_frag(GK_DEF_SHADER shader) {
     case GK_DEF_SHADER_CUBE:
       return
 #include "gk_cube.frag"
+      ;
+      break;
+    case GK_DEF_SHADER_DRAWBONE:
+      return
+#include "gk_drawbone.fs"
       ;
       break;
     default:

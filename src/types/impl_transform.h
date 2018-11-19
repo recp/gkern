@@ -26,7 +26,7 @@ typedef struct GkTransformImpl {
   GkTransform        pub;
   uint32_t           refc;
   uint32_t           ftrc;
-  GkFinalTransform **ftr;  /* cached transform[s] and infos per camera */
+  GkFinalTransform **ftr;    /* cached transform[s] and infos per camera     */
 } GkTransformImpl;
 
 void

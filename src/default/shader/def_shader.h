@@ -11,8 +11,9 @@
 #include "../../../include/gk/gk.h"
 
 typedef enum GK_DEF_SHADER {
-  GK_DEF_SHADER_DEFAULT = 0,
-  GK_DEF_SHADER_CUBE    = 1
+  GK_DEF_SHADER_DEFAULT  = 0,
+  GK_DEF_SHADER_CUBE     = 1,
+  GK_DEF_SHADER_DRAWBONE = 2
 } GK_DEF_SHADER;
 
 const char*
