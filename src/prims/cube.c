@@ -22,10 +22,10 @@ GLfloat gk__verts_cube[] = {
 };
 
 GLushort gk__verts_cube_ind[] = {
-  0, 1, 2, 3,
-  4, 5, 6, 7,
-  0, 4, 1, 5,
-  2, 6, 3, 7
+   0, 1, 2, 3,
+   4, 5, 6, 7,
+   0, 4, 1, 5,
+   2, 6, 3, 7
 };
 
 GLuint gk__cube_vao = UINT_MAX;
@@ -45,38 +45,28 @@ gkInitCube() {
   glPolygonOffset(1, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, gk__cube_vbo[0]);
+  glEnableVertexAttribArray(vPOSITION);
+  glVertexAttribPointer(vPOSITION, 3, GL_FLOAT, GL_FALSE, 0, NULL);
   glBufferData(GL_ARRAY_BUFFER,
                sizeof(gk__verts_cube),
                gk__verts_cube,
                GL_STATIC_DRAW);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gk__cube_vbo[1]);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                sizeof(gk__verts_cube_ind),
                gk__verts_cube_ind,
                GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gk__cube_vbo[1]);
-
-  glBindBuffer(GL_ARRAY_BUFFER, gk__cube_vbo[0]);
-  glEnableVertexAttribArray(vPOSITION);
-  glVertexAttribPointer(vPOSITION,
-                        3,
-                        GL_FLOAT,
-                        GL_FALSE,
-                        0,
-                        NULL);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void
 gkDrawBBox(GkScene * __restrict scene,
            GkBBox               bbox,
            mat4                 world) {
-  GkPipeline  *prog;
-  vec3        size, center;
-  mat4        tran = GLM_MAT4_IDENTITY_INIT;
-  GLuint      currentProg;
+  GkPipeline *prog;
+  vec3       size, center;
+  mat4       tran = GLM_MAT4_IDENTITY_INIT;
+  GLuint     currentProg;
 
   prog        = gk_prog_cube();
   currentProg = gkCurrentProgram();
