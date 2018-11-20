@@ -10,10 +10,10 @@ GK_STRINGIFY(
 
 uniform mat4 MV;
 layout(std140) uniform JointBlock {
-  mat4 uBones[255];
+  mat4 uJoints[255];
 };
 
 void main() {
-  gl_Position = MV * uBones[gl_VertexID] * vec4(1.0, 0.0, 0.0, 1.0);
+  gl_Position = MV * uJoints[gl_VertexID] * vec4(1.0, 0.0, 0.0, 1.0);
 }
 )

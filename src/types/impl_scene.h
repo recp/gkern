@@ -30,6 +30,9 @@ typedef struct GkSceneImpl {
   GkNodePage        *lastPage;
   FListItem         *anims;
 
+  FListItem         *instSkins;
+  GkPipeline        *clearPipeline;
+
   GkRenderPathFn     rp;
   GkRenderPathFn     renderFunc;
   GkRenderPathFn     lightIterFunc;

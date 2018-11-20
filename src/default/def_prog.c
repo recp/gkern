@@ -89,7 +89,7 @@ gk_prog_drawbone() {
 
   glUniformBlockBinding(prog->progId,
                         glGetUniformBlockIndex(prog->progId, "JointBlock"),
-                        1);
+                        2);
 
   gk_def_prog_drawbone = prog;
 

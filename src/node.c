@@ -23,6 +23,10 @@ gkPrepareNode(GkScene * __restrict scene,
               GkNode  * __restrict parentNode,
               GkNode  * __restrict node);
 
+static
+void
+gkPrepInstSkin(GkScene * __restrict scene);
+
 GkNode*
 gkAllocNode(struct GkScene * __restrict scene) {
   GkNodePage  *np;
@@ -237,6 +241,9 @@ gkApplyTransform(GkScene * __restrict scene,
   }
 
 dn:; /* done */
+
+  /* TODO: optimize this */
+  gkPrepInstSkin(scene);
 }
 
 GK_INLINE
@@ -328,5 +335,54 @@ gkApplyView(struct GkScene * __restrict scene,
     }
 
     np = np->next;
+  }
+}
+
+/* TODO: optimize this */
+static
+void
+gkPrepInstSkin(GkScene * __restrict scene) {
+  GkSceneImpl      *sceneImpl;
+  FListItem        *item;
+  GkNode           *node;
+  GkControllerInst *ctlrInst;
+  GkModelInst      *modelInst;
+
+  GkSkin *skin;
+  GkNode *joint;
+  size_t  nJoints, i;
+
+  sceneImpl = (GkSceneImpl *)scene;
+  if ((item = sceneImpl->instSkins)) {
+    do {
+      node     = item->data;
+      ctlrInst = node->controller;
+
+      if (ctlrInst->ctlr && ctlrInst->ctlr->type == GK_CONTROLLER_SKIN) {
+        skin      = (GkSkin *)ctlrInst->ctlr;
+        nJoints   = skin->nJoints;
+        modelInst = skin->base.source;
+
+        if (!modelInst->joints) {
+          modelInst->joints = malloc(sizeof(mat4) * skin->nJoints);
+          glm_mat4_identity_array(modelInst->joints, skin->nJoints);
+        }
+
+        for (i = 0; i < nJoints; i++) {
+          if ((joint = ctlrInst->joints[i])) {
+            if (scene->flags & GK_SCENEF_DRAW_BONES) {
+              if (!modelInst->jointsToDraw)
+                modelInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
+
+              glm_mat4_copy(joint->trans->world, modelInst->jointsToDraw[i]);
+            }
+
+          }
+        }
+
+        /* TODO: optimize this */
+        gkUniformJoints(scene, modelInst);
+      }
+    } while ((item = item->next));
   }
 }

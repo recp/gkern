@@ -17,31 +17,36 @@ extern "C" {
 #include "model.h"
 #include "camera.h"
 #include "transform.h"
+#include "controller.h"
 
 #include <stdlib.h>
 #include <cglm/cglm.h>
 
 struct GkScene;
 struct GkAnimatable;
+struct GkControllerInst;
 
 typedef enum GkNodeFlags {
+  GK_NODEF_NONE           = 0,
   GK_NODEF_NODE           = 1,
-  GK_NODEF_HAVE_TRANSFORM = 2
+  GK_NODEF_HAVE_TRANSFORM = 2,
+  GK_NODEF_JOINT          = 3
 } GkNodeFlags;
 
 typedef struct GkNode {
-  struct GkAnimatable  *anim;
-  GkNodeFlags           flags;
+  struct GkNode        *parent;
+  struct GkNode        *next;
+  struct GkNode        *chld;
 
+  struct GkAnimatable  *anim;
   GkTransform          *trans;
 
   GkModelInst          *model;
   GkLight              *light;
   GkCamera             *camera;
+  GkControllerInst     *controller;
 
-  struct GkNode        *parent;
-  struct GkNode        *next;
-  struct GkNode        *chld;
+  GkNodeFlags           flags;
 } GkNode;
 
 GkNode*

@@ -35,6 +35,7 @@ gkContextFree(GkContext *ctx) {
 GkModelInst *
 gkMakeInstance(GkModel *model) {
   GkModelInst *inst, *prevInst;
+  GkGPUBuffer *uboJoints;
   int32_t      primc, i;
 
   primc    = model->primc;
@@ -59,13 +60,32 @@ gkMakeInstance(GkModel *model) {
            &model->prims[i].bbox,
            sizeof(model->prims[i].bbox));
 
-    inst->prims[i].material = model->prims[i].material;
-    inst->prims[i].prim     = &model->prims[i];
+    inst->prims[i].material  = model->prims[i].material;
+    inst->prims[i].prim      = &model->prims[i];
+    inst->prims[i].modelInst = inst;
 
 #ifdef DEBUG
     assert(!inst->prims[i].material);
 #endif
   }
+
+  /* create an UBO for joints to share joints between primitives */
+  uboJoints         = calloc(1, sizeof(*uboJoints));
+  uboJoints->size   = sizeof(mat4) * 255;  /* TODO: */
+  uboJoints->usage  = GL_DYNAMIC_DRAW;
+  uboJoints->type   = GL_FLOAT;
+  uboJoints->target = GL_UNIFORM_BUFFER;
+
+  glGenBuffers(1, &uboJoints->vbo);
+  glBindBuffer(uboJoints->target, uboJoints->vbo);
+  glBufferData(uboJoints->target,
+               uboJoints->size,
+               NULL,
+               uboJoints->usage);
+  glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboJoints->vbo, 0, uboJoints->size);
+  glBindBuffer(uboJoints->target, 0);
+
+  inst->uboJoints = uboJoints;
 
   return inst;
 }

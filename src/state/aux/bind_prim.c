@@ -11,5 +11,7 @@
 GK_EXPORT
 void
 gkBindPrimitive(GkPrimitive * __restrict prim) {
+  if (!prim)
+    return;
   glBindVertexArray(prim->vao);
 }

@@ -20,6 +20,7 @@
 struct GkModel;
 struct GkModelInst;
 struct GkContext;
+struct GkSkin;
 struct FListItem;
 
 typedef void (*gkOnDraw)(struct GkModel     * model,
@@ -57,11 +58,13 @@ typedef struct GkPrimitive {
 } GkPrimitive;
 
 typedef struct GkPrimInst {
-  GkPrimitive *prim;
-  GkMaterial  *material;
-  GkMaterial  *activeMaterial;
-  GkTransform *trans;
-  GkBBox       bbox;
+  GkPrimitive        *prim;
+  GkMaterial         *material;
+  GkMaterial         *activeMaterial;
+  GkTransform        *trans;
+  struct GkModelInst *modelInst;
+  GkBBox              bbox;
+  uint32_t            maxJoint;
 } GkPrimInst;
 
 typedef enum GkModelFlags {

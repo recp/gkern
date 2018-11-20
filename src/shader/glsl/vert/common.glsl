@@ -6,14 +6,14 @@
  */
 
 GK_STRINGIFY(
-uniform mat4 MVP; // Projection * View * Model matrix
-uniform mat4 MV;  // View * Model Matrix
-uniform mat4 NM;  // Normal matrix
-uniform int  NMU; // Use normal matrix
+uniform mat4 MVP; /* Projection * View * Model matrix */
+uniform mat4 MV;  /* View * Model Matrix              */
+uniform mat4 NM;  /* Normal matrix                    */
+uniform int  NMU; /* Use normal matrix                */
 \n#ifdef POS_WS\n
-uniform mat4 M;   // Model matrix
+uniform mat4 M;   /* Model matrix                     */
 \n#endif\n
-
+uniform mat4 M;
 \n#ifdef SHADOWMAP\n
 \n#ifndef SHAD_SPLIT\n
 uniform mat4 uShadMVP;
@@ -40,10 +40,13 @@ in vec3 NORMAL;
 \n#if TEX_COUNT > 4\n  TEX_OUT_DEF(4)  \n#endif\n
 \n#if TEX_COUNT > 5\n  TEX_OUT_DEF(5)  \n#endif\n
 
-\n#ifdef BONES_COUNT\n
-uniform mat4 uBones[BONES_COUNT];
-in ivec4     BONES;
-in vec4      BONEWEIGHTS;
+\n#ifdef JOINT_COUNT\n
+layout (std140) uniform JointBlock {
+  mat4 uJoints[JOINT_COUNT];
+};
+
+in ivec4 JOINTS;
+in vec4  JOINTWEIGHTS;
 \n#endif\n
 
 out vec3 vPos;
@@ -58,25 +61,27 @@ out vec3 vPosWS;
 \n#endif\n
 
 void main() {
-  vec4 pos4 = vec4(POSITION, 1.0), norm4;
+  vec4 pos4, norm4;
+
+  pos4      = vec4(POSITION, 1.0);
+  norm4     = vec4(NORMAL,   0.0);
   vPos      = vec3(MV * pos4);
   vEye      = normalize(-vPos);
-  norm4     = vec4(NORMAL, 0.0);
 
-\n#ifdef BONES_COUNT\n
-  mat4 boneTrans;
+\n#ifdef JOINT_COUNT\n
+  mat4 skinMat;
 
-  boneTrans = uBones[BONES[0]] * BONEWEIGHTS[0];
-            + uBones[BONES[1]] * BONEWEIGHTS[1];
-            + uBones[BONES[2]] * BONEWEIGHTS[2];
-            + uBones[BONES[3]] * BONEWEIGHTS[3];
+  skinMat = uJoints[JOINTS.x] * JOINTWEIGHTS.x
+          + uJoints[JOINTS.y] * JOINTWEIGHTS.y
+          + uJoints[JOINTS.z] * JOINTWEIGHTS.z
+          + uJoints[JOINTS.w] * JOINTWEIGHTS.w;
 
-  pos4  = boneTrans * pos4;
-  norm4 = boneTrans * norm4;
+  pos4  = skinMat * pos4;
+  norm4 = skinMat * norm4;
 \n#endif\n
 
 \n#ifdef POS_WS\n
-  vPosWS = vec3(M  * pos4);
+  vPosWS = vec3(M * pos4);
 \n#endif\n
 
 \n#ifdef POS_MS\n

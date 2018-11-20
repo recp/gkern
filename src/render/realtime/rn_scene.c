@@ -38,6 +38,9 @@ gkDefRenderFunc(GkScene * scene) {
 
   gkRenderPrims(scene, frustum->opaque);
   gkRenderPrims(scene, frustum->transp);
+
+  if ((scene->flags & GK_SCENEF_DRAW_BONES))
+    gkDrawBones(scene);
 }
 
 GK_EXPORT

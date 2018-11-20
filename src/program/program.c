@@ -95,6 +95,10 @@ gkNewPipeline(GkShader *shaders,
   prog->updtLights    = 1;
   prog->updtMaterials = 1;
 
+  glUniformBlockBinding(prog->progId,
+                        glGetUniformBlockIndex(prog->progId, "JointBlock"),
+                        1);
+
   return prog;
 }
 

@@ -183,4 +183,7 @@ gkTranspWeightedBlended(GkScene * __restrict scene) {
   gkPopState(ctx);
 
   gkRenderTexture(scene, transp->opaquePass);
+
+  if ((scene->flags & GK_SCENEF_DRAW_BONES))
+    gkDrawBones(scene);
 }
