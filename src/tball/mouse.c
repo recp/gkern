@@ -18,11 +18,7 @@ gkTrackballMouse(void         *sender,
                  GkMouseState  state,
                  GkPoint       point) {
   gkTrackballMouseWs(&(GkMouseEventStruct) {
-    sender,
-    scene,
-    button,
-    state,
-    point
+    sender, scene, button, state, point
   });
 }
 
@@ -30,12 +26,14 @@ void
 gkTrackballMouseWs(GkMouseEventStruct *event) {
   GkTrackball *tball;
   GkScene     *scene;
+  GkTransform *scnTrans;
 
   tball = event->sender;
   if (event->button != GK_MOUSE_LEFT)
     return;
 
-  scene = tball->scene;
+  scene    = tball->scene;
+  scnTrans = scene->trans;
 
   switch (event->state) {
     case GK_MOUSE_DOWN:
@@ -60,21 +58,17 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
 
         glm_vec_rotate_m4(scene->camera->world, axis, axis);
         glm_rotate_atm(tball->trans, tball->center, angle, axis);
+        glm_mat4_mul(tball->trans, scnTrans->local, scnTrans->world);
 
-        glm_mat4_mul(tball->trans,
-                     scene->trans->local,
-                     scene->trans->world);
-
-        tball->scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
-        scene->flags |= GK_SCENEF_RENDER;
+        scnTrans->flags &= ~GK_TRANSF_WORLD_ISVALID;
+        scene->flags    |=  GK_SCENEF_RENDER;
       }
       break;
     case GK_MOUSE_UP: {
-      glm_mat4_mul(tball->trans,
-                   scene->trans->local,
-                   scene->trans->local);
-      tball->scene->trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
-      scene->flags |= GK_SCENEF_RENDER;
+      glm_mat4_mul(tball->trans, scnTrans->local, scnTrans->local);
+
+      scnTrans->flags &= ~GK_TRANSF_WORLD_ISVALID;
+      scene->flags    |=  GK_SCENEF_RENDER;
 
       if (tball->cb)
         tball->cb(tball, GK_TRACKBALL_EVENT_END);

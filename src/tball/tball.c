@@ -58,8 +58,8 @@ gkTrackballFree(GkTrackball *tball) {
 
 void
 gkTrackballVec(GkTrackball * __restrict tball,
-               GkPoint p,
-               vec3    vec) {
+               GkPoint                  p,
+               vec3                     vec) {
   GkScene *scene;
   mat4    m;
   vec3    c;
