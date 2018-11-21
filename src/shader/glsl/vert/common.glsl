@@ -63,10 +63,10 @@ out vec3 vPosWS;
 void main() {
   vec4 pos4, norm4;
 
-  pos4      = vec4(POSITION, 1.0);
-  norm4     = vec4(NORMAL,   0.0);
-  vPos      = vec3(MV * pos4);
-  vEye      = normalize(-vPos);
+  pos4  = vec4(POSITION, 1.0);
+  norm4 = vec4(NORMAL,   0.0);
+  vPos  = vec3(MV * pos4);
+  vEye  = normalize(-vPos);
 
 \n#ifdef JOINT_COUNT\n
   mat4 skinMat;

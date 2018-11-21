@@ -73,7 +73,7 @@ typedef enum GkModelFlags {
 } GkModelFlags;
 
 typedef struct GkModel {
-  GkPipeline       *prog;
+  GkPipeline      *prog;
   GkMaterial      *material;
   GkGLEvents      *events;
   GkModelInstList *instances; /* TODO: */
@@ -90,6 +90,10 @@ typedef struct GkModelInst {
   GkTransform        *trans;    /* readonly: don't set this manually */
   GkMaterial         *material; /* instances may use different materials */
   GkMaterial         *activeMaterial;
+  mat4               *joints;
+  mat4               *jointsToDraw;
+  GkGPUBuffer        *uboJoints;
+  struct GkSkin      *skin;
   GkBBox              bbox;
   vec3                center;
   bool                addedToScene;
