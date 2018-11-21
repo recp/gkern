@@ -46,7 +46,7 @@ typedef struct GkPrimitive {
   struct GkPrimitive *next;
   GkMaterial         *material;
   GkMaterial         *activeMaterial;
-  GkGPUBuffer        *bufs;
+  GkGpuBuffer        *bufs;
   struct FListItem   *inputs;
   GkBBox              bbox; /* local */
   uint32_t            lastInputIndex;
@@ -92,7 +92,7 @@ typedef struct GkModelInst {
   GkMaterial         *activeMaterial;
   mat4               *joints;
   mat4               *jointsToDraw;
-  GkGPUBuffer        *uboJoints;
+  GkGpuBuffer        *uboJoints;
   struct GkSkin      *skin;
   GkBBox              bbox;
   vec3                center;

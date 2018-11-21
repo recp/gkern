@@ -30,7 +30,7 @@ GK_EXPORT
 void
 gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst) {
   GkPrimInst    *prim;
-  GkGPUBuffer   *gbuff;
+  GkGpuBuffer   *gbuff;
   size_t         i;
   uint32_t       primCount, maxJointCount, byteStride;
 
@@ -50,7 +50,7 @@ gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst) {
     glBindBuffer(gbuff->target, gbuff->vbo);
     glVertexAttribIPointer(prim->prim->lastInputIndex,
                           maxJointCount,
-                          GL_INT,
+                          GL_UNSIGNED_INT,
                           byteStride,
                           BUFFER_OFFSET(0));
 

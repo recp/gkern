@@ -35,7 +35,7 @@ gkContextFree(GkContext *ctx) {
 GkModelInst *
 gkMakeInstance(GkModel *model) {
   GkModelInst *inst, *prevInst;
-  GkGPUBuffer *uboJoints;
+  GkGpuBuffer *uboJoints;
   int32_t      primc, i;
 
   primc    = model->primc;
@@ -73,7 +73,6 @@ gkMakeInstance(GkModel *model) {
   uboJoints         = calloc(1, sizeof(*uboJoints));
   uboJoints->size   = sizeof(mat4) * 255;  /* TODO: */
   uboJoints->usage  = GL_DYNAMIC_DRAW;
-  uboJoints->type   = GL_FLOAT;
   uboJoints->target = GL_UNIFORM_BUFFER;
 
   glGenBuffers(1, &uboJoints->vbo);

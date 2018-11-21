@@ -41,7 +41,7 @@ _gk_hide
 void
 gkPrimInitTexQuad() {
   GkPrimitive *prim;
-  GkGPUBuffer *buff;
+  GkGpuBuffer *buff;
   uint32_t     vPOSITION, vTEXCOORD;
 
   if (gk__texquad)
@@ -49,11 +49,8 @@ gkPrimInitTexQuad() {
 
   gk__texquad = prim = calloc(1, sizeof(*prim));
 
-  buff         = calloc(1, sizeof(*buff));
-  buff->size   = sizeof(gk__verts_quad);
-  buff->target = GL_ARRAY_BUFFER;
-  buff->type   = GL_FLOAT;
-  buff->usage  = GL_STATIC_DRAW;
+  buff = gkGpuBufferNew(NULL, GK_ARRAY, sizeof(gk__verts_quad));
+  gkGpuBufferFeed(buff, GL_STATIC_DRAW, gk__verts_quad);
 
   prim->count  = 6;
   prim->flags  = GK_DRAW_ARRAYS;
@@ -67,17 +64,10 @@ gkPrimInitTexQuad() {
   glGenVertexArrays(1, &prim->vao);
   glBindVertexArray(prim->vao);
 
-  glGenBuffers(1, &buff->vbo);
-  glBindBuffer(buff->target, buff->vbo);
-  glBufferData(buff->target,
-               buff->size,
-               gk__verts_quad,
-               buff->usage);
-
   glEnableVertexAttribArray(vPOSITION);
   glVertexAttribPointer(vPOSITION,
                         2,
-                        buff->type,
+                        GL_FLOAT,
                         GL_FALSE,
                         4 * sizeof(GLfloat),
                         NULL);
@@ -85,7 +75,7 @@ gkPrimInitTexQuad() {
   glEnableVertexAttribArray(vTEXCOORD);
   glVertexAttribPointer(vTEXCOORD,
                         2,
-                        buff->type,
+                        GL_FLOAT,
                         GL_FALSE,
                         4 * sizeof(GLfloat),
                         (void*)(2 * sizeof(GLfloat)));
