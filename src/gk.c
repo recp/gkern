@@ -118,3 +118,17 @@ gkGetDepthForPoint(vec3 point) {
                GL_FLOAT,
                &point[2]);
 }
+
+GK_EXPORT
+void
+gkPrimAddBuffer(GkPrimitive * __restrict prim,
+                GkGpuBuffer * __restrict buff) {
+  prim->bufc++;
+
+  if (prim->bufs)
+    prim->bufs->prev = buff;
+
+  buff->next   = prim->bufs;
+  prim->bufs = buff;
+}
+

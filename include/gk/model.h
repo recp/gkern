@@ -114,4 +114,9 @@ gk_model_find(struct GkContext * __restrict ctx,
 GkModelInst*
 gkMakeInstance(GkModel *model);
 
+GK_EXPORT
+void
+gkPrimAddBuffer(GkPrimitive * __restrict prim,
+                GkGpuBuffer * __restrict buff);
+
 #endif /* gk_model_h */
