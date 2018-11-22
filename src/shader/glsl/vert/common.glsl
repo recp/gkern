@@ -45,7 +45,7 @@ layout (std140) uniform JointBlock {
   mat4 uJoints[JOINT_COUNT];
 };
 
-in ivec4 JOINTS;
+in uvec4 JOINTS;
 in vec4  JOINTWEIGHTS;
 \n#endif\n
 
@@ -76,8 +76,8 @@ void main() {
           + uJoints[JOINTS.z] * JOINTWEIGHTS.z
           + uJoints[JOINTS.w] * JOINTWEIGHTS.w;
 
-  pos4  = skinMat * pos4;
-  norm4 = skinMat * norm4;
+  pos4  = inverse(M) * skinMat * pos4;
+  norm4 = inverse(M) * skinMat * norm4;
 \n#endif\n
 
 \n#ifdef POS_WS\n

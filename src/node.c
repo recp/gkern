@@ -370,13 +370,18 @@ gkPrepInstSkin(GkScene * __restrict scene) {
 
         for (i = 0; i < nJoints; i++) {
           if ((joint = ctlrInst->joints[i])) {
+            glm_mat4_mulN((mat4 *[]){
+                &joint->trans->world,
+                &skin->bindPoses[i],
+                &skin->bindShapeMatrix
+              }, 3, modelInst->joints[i]);
+
             if (scene->flags & GK_SCENEF_DRAW_BONES) {
               if (!modelInst->jointsToDraw)
                 modelInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
 
               glm_mat4_copy(joint->trans->world, modelInst->jointsToDraw[i]);
             }
-
           }
         }
 
