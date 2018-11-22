@@ -30,14 +30,14 @@ gkAllocPass(GkContext * __restrict ctx) {
 
 GK_EXPORT
 GkPass*
-gkGetOrCreatPass(GkScene     *scene,
-                 GkLight     *light,
-                 GkPrimitive *prim,
-                 GkMaterial  *mat) {
+gkGetOrCreatPass(GkScene    *scene,
+                 GkLight    *light,
+                 GkPrimInst *primInst,
+                 GkMaterial *mat) {
   GkPass    *pass;
   GkPipeline *prog;
 
-  if ((prog = gkGetPiplineForCmnMat(scene, light, prim, mat))) {
+  if ((prog = gkGetPiplineForCmnMat(scene, light, primInst, mat))) {
     pass = calloc(1, sizeof(*pass));
     pass->prog = prog;
     return pass;

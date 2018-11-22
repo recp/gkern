@@ -14,14 +14,14 @@
 size_t
 gkShaderNameFor(GkScene     * __restrict scene,
                 GkLight     * __restrict light,
-                GkPrimitive * __restrict prim,
+                GkPrimInst  * __restrict primInst,
                 GkMaterial  * __restrict mat,
                 char        * __restrict nameBuff);
 
 void
 gkShaderFlagsFor(GkScene     * __restrict scene,
                  GkLight     * __restrict light,
-                 GkPrimitive * __restrict prim,
+                 GkPrimInst  * __restrict primInst,
                  GkMaterial  * __restrict mat,
                  char       ** __restrict vertFlags,
                  char       ** __restrict fragFlags);
@@ -29,13 +29,13 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 GkShader*
 gkShadersFor(GkScene     * __restrict scene,
              GkLight     * __restrict light,
-             GkPrimitive * __restrict prim,
+             GkPrimInst  * __restrict primInst,
              GkMaterial  * __restrict mat);
 
 GkPipeline*
-gkGetPiplineForCmnMat(GkScene     * __restrict scene,
-                      GkLight     * __restrict light,
-                      GkPrimitive * __restrict prim,
-                      GkMaterial  * __restrict mat);
+gkGetPiplineForCmnMat(GkScene    * __restrict scene,
+                      GkLight    * __restrict light,
+                      GkPrimInst * __restrict primInst,
+                      GkMaterial * __restrict mat);
 
 #endif /* cmn_material_h */

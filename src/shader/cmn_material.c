@@ -69,9 +69,10 @@ gk_creatPiplForCmnMat(char *name, void *userData);
 size_t
 gkShaderNameFor(GkScene     * __restrict scene,
                 GkLight     * __restrict light,
-                GkPrimitive * __restrict prim,
+                GkPrimInst  * __restrict primInst,
                 GkMaterial  * __restrict mat,
                 char        * __restrict nameBuff) {
+  GkPrimitive   *prim;
   GkTechnique   *techn;
   char          *pname;
   GkColorDesc  *attr[4];
@@ -79,6 +80,8 @@ gkShaderNameFor(GkScene     * __restrict scene,
   FListItem     *inpi;
   int32_t        i;
   char           prefix[] = "dsaert";
+
+  prim = primInst->prim;
 
   /*
    Shader Name: [TechniqueType]_[Inputs]_[Attribs]_[Extra...]
@@ -179,7 +182,7 @@ gkShaderNameFor(GkScene     * __restrict scene,
 void
 gkShaderFlagsFor(GkScene     * __restrict scene,
                  GkLight     * __restrict light,
-                 GkPrimitive * __restrict prim,
+                 GkPrimInst  * __restrict primInst,
                  GkMaterial  * __restrict mat,
                  char       ** __restrict vertFlags,
                  char       ** __restrict fragFlags) {
@@ -331,16 +334,20 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
       && mat->technique->transparent->opaque == GK_OPAQUE_MASK)
     SH_VF("ALPHAMASK_CUTOFF")
 
-//  SH_V_ARG("BONES_COUNT %d", 10);
+  if (primInst->modelInst->skin)
+    SH_V_ARG("JOINT_COUNT %d", 255);
 }
 
 GkShader*
 gkShadersFor(GkScene     * __restrict scene,
              GkLight     * __restrict light,
-             GkPrimitive * __restrict prim,
+             GkPrimInst  * __restrict primInst,
              GkMaterial  * __restrict mat) {
+  GkPrimitive *prim;
   GkShader    *vert, *frag;
   char        *fragSource[3], *vertSource[3];
+
+  prim = primInst->prim;
 
   /* TODO: create dynamic by platform */
   vertSource[0] = fragSource[0] = "\n#version 410 \n";
@@ -382,7 +389,7 @@ gkShadersFor(GkScene     * __restrict scene,
 
   gkShaderFlagsFor(scene,
                    light,
-                   prim,
+                   primInst,
                    mat,
                    &vertSource[1],
                    &fragSource[1]);
@@ -409,18 +416,18 @@ gkShadersFor(GkScene     * __restrict scene,
 }
 
 GkPipeline*
-gkGetPiplineForCmnMat(GkScene     * __restrict scene,
-                      GkLight     * __restrict light,
-                      GkPrimitive * __restrict prim,
-                      GkMaterial  * __restrict mat) {
+gkGetPiplineForCmnMat(GkScene    * __restrict scene,
+                      GkLight    * __restrict light,
+                      GkPrimInst * __restrict primInst,
+                      GkMaterial * __restrict mat) {
   char  name[64];
   void *userData[4];
 
-  (void)gkShaderNameFor(scene, light, prim, mat, name);
+  (void)gkShaderNameFor(scene, light, primInst, mat, name);
 
   userData[0] = scene;
   userData[1] = light;
-  userData[2] = prim;
+  userData[2] = primInst;
   userData[3] = mat;
 
   return gkGetPipeline(name, gk_creatPiplForCmnMat, userData);
@@ -429,14 +436,17 @@ gkGetPiplineForCmnMat(GkScene     * __restrict scene,
 static
 void
 gk__beforeLink(GkPipeline *pip, void *data) {
+  GkPrimInst    *primInst;
   GkPrimitive   *prim;
   FListItem     *inpi;
   GkVertexInput *inp;
   int32_t        index;
 
-  prim  = data;
-  index = 0;
-  inpi  = prim->inputs;
+  primInst = data;
+  prim     = primInst->prim;;
+  index    = 0;
+  inpi     = prim->inputs;
+
   while (inpi) {
     inp = inpi->data;
 
@@ -452,17 +462,17 @@ GkPipeline*
 gk_creatPiplForCmnMat(char *name, void *userData) {
   GkShader    *shaders;
   GkScene     *scene;
-  GkPrimitive *prim;
+  GkPrimInst  *primInst;
   GkLight     *light;
   GkMaterial  *mat;
 
-  scene = ((void **)userData)[0];
-  light = ((void **)userData)[1];
-  prim  = ((void **)userData)[2];
-  mat   = ((void **)userData)[3];
+  scene    = ((void **)userData)[0];
+  light    = ((void **)userData)[1];
+  primInst = ((void **)userData)[2];
+  mat      = ((void **)userData)[3];
 
-  if ((shaders = gkShadersFor(scene, light, prim, mat)))
-    return gkNewPipeline(shaders, gk__beforeLink, prim);
+  if ((shaders = gkShadersFor(scene, light, primInst, mat)))
+    return gkNewPipeline(shaders, gk__beforeLink, primInst);
 
   return NULL;
 }
