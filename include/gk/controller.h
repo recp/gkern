@@ -49,7 +49,7 @@ typedef struct GkSkin {
   GkBoneWeights **weights;       /* per primitive Client buffers */
   GkGpuBuffer   **gbuffs;        /* per primitive GPU buffers    */
   mat4            bindShapeMatrix;
-  uint32_t        nJoints;
+  size_t          nJoints;
   uint32_t        nPrims;
 } GkSkin;
 

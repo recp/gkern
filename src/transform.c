@@ -207,20 +207,21 @@ gk_project2d(GkRect rect, mat4 mvp, vec3 v) {
 
 void
 gkUniformTransform(struct GkPipeline * __restrict prog,
-                   GkTransform      * __restrict trans,
-                   GkCamera         * __restrict cam) {
+                   GkTransform       * __restrict trans,
+                   GkCamera          * __restrict cam) {
   GkFinalTransform *ftr;
   vec4             *pmvp, *pmv, *pnm;
   mat4              mvp, mv, nm;
   int               usenm;
-  int32_t           hasMVP, hasMV, hasNM;
+  int32_t           hasMVP, hasMV, hasNM, hasVP;
 
   hasMVP = prog->mvpi > -1;
   hasMV  = prog->mvi  > -1;
   hasNM  = prog->nmi  > -1;
+  hasVP  = prog->vpi  > -1;
 
   /* no need to uniform transform or invalid program configurations */
-  if (!(hasMVP | hasMV | hasNM))
+  if (!(hasMVP | hasMV | hasNM | hasVP))
     return;
 
   pmvp = pmv = pnm = NULL;
@@ -244,22 +245,35 @@ gkUniformTransform(struct GkPipeline * __restrict prog,
 
   /* Model View Matrix */
   if (hasMV) {
-    if (!ftr)
-      glm_mul(cam->view, trans->world, mv);
+    if (hasMVP) {
+      if (!ftr)
+        glm_mul(cam->view, trans->world, mv);
 
-    gkUniformMat4(prog->mvi, pmv);
+      gkUniformMat4(prog->mvi, pmv);
+    } else {
+      gkUniformMat4(prog->mvi, cam->view);
+    }
   }
+
+  /* Model View Matrix */
+  if (hasVP)
+    gkUniformMat4(prog->vpi, cam->viewProj);
 
   /* Normal Matrix */
   if (hasNM) {
     usenm = GK_FLG(trans->flags, GK_TRANSF_FMAT_NORMAT);
     if (usenm) {
-      if (!ftr) {
-        glm_mat4_inv(pmv, nm);
-        glm_mat4_transpose(nm);
-      }
+      if (hasMVP) {
+        if (!ftr) {
+          glm_mat4_inv(pmv, nm);
+          glm_mat4_transpose(nm);
+        }
 
-      gkUniformMat4(prog->nmi, pnm);
+        gkUniformMat4(prog->nmi, pnm);
+      } else {
+        glm_mat4_transpose_to(cam->world, nm);
+        gkUniformMat4(prog->nmi, nm);
+      }
     }
 
     glUniform1i(prog->nmui, usenm);

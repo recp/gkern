@@ -7,9 +7,10 @@
 
 GK_STRINGIFY(
 uniform mat4 MVP; /* Projection * View * Model matrix */
-uniform mat4 MV;  /* View * Model Matrix              */
+uniform mat4 MV;  /* View * Model matrix              */
 uniform mat4 NM;  /* Normal matrix                    */
 uniform int  NMU; /* Use normal matrix                */
+uniform mat4 VP;  /* Projection * View mtrix          */
 \n#ifdef POS_WS\n
 uniform mat4 M;   /* Model matrix                     */
 \n#endif\n
@@ -76,8 +77,8 @@ void main() {
           + uJoints[JOINTS.z] * JOINTWEIGHTS.z
           + uJoints[JOINTS.w] * JOINTWEIGHTS.w;
 
-  pos4  = inverse(M) * skinMat * pos4;
-  norm4 = inverse(M) * skinMat * norm4;
+  pos4  = skinMat * pos4;
+  norm4 = skinMat * norm4;
 \n#endif\n
 
 \n#ifdef POS_WS\n
@@ -93,7 +94,11 @@ void main() {
   else
     vNormal = normalize(vec3(MV * norm4));
 
+\n#ifdef JOINT_COUNT\n
+  gl_Position = VP * pos4;
+\n#else\n
   gl_Position = MVP * pos4;
+\n#endif\n
 
 \n#if TEX_COUNT > 0\n  TEX_OUT0    \n#endif\n
 \n#if TEX_COUNT > 1\n  TEX_OUT(1)  \n#endif\n

@@ -39,6 +39,7 @@ typedef struct GkPipeline {
   GLint              progId;
   GLint              mvpi;
   GLint              mvi;
+  GLint              vpi;
   GLint              nmi;
   GLint              nmui;
   bool               updtLights;

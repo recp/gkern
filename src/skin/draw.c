@@ -68,7 +68,7 @@ gkDrawBones(GkScene * __restrict scene) {
   else
     glBindVertexArray(gk__bone_vao);
 
-  gkUniformMat4(gkUniformLoc(prog, "MV"), scene->camera->viewProj);
+  gkUniformMat4(gkUniformLoc(prog, "VP"), scene->camera->viewProj);
   glBindBuffer(GL_UNIFORM_BUFFER, gk__bone_ubo);
 
   sceneImpl = (GkSceneImpl *)scene;
@@ -85,7 +85,7 @@ gkDrawBones(GkScene * __restrict scene) {
                         0,
                         sizeof(mat4) * skin->nJoints,
                         modelInst->jointsToDraw);
-        glDrawArrays(GL_LINE_STRIP, 0, skin->nJoints);
+        glDrawArrays(GL_LINE_STRIP, 0, (GLint)skin->nJoints);
       }
     } while ((item = item->next));
   }

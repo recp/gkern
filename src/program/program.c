@@ -91,6 +91,7 @@ gkNewPipeline(GkShader *shaders,
   prog->mvi  = glGetUniformLocation(progId, "MV");
   prog->nmi  = glGetUniformLocation(progId, "NM");
   prog->nmui = glGetUniformLocation(progId, "NMU");
+  prog->vpi  = glGetUniformLocation(progId, "VP");
   prog->refc = 1;
   prog->updtLights    = 1;
   prog->updtMaterials = 1;
@@ -136,6 +137,7 @@ gkDefaultProgram() {
   prog->mvi    = glGetUniformLocation(progId, "MV");
   prog->nmi    = glGetUniformLocation(progId, "NM");
   prog->nmui   = glGetUniformLocation(progId, "NMU");
+  prog->vpi    = glGetUniformLocation(progId, "VP");
   prog->progId = progId;
   prog->refc   = 1;
   prog->updtLights    = 1;

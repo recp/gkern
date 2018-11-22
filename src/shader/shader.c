@@ -107,7 +107,7 @@ gk_creatProgByName(char *name, void *userData) {
   }
 #endif
 
-  prog->mvpi = prog->mvi = prog->nmi = prog->nmui = -1;
+  prog->mvpi = prog->mvi = prog->nmi = prog->nmui = prog->vpi = -1;
 
   if (GK_FLG(flags, GK_SHADER_FLAG_MVP))
     prog->mvpi = glGetUniformLocation(progId, "MVP");
@@ -117,6 +117,8 @@ gk_creatProgByName(char *name, void *userData) {
     prog->nmi  = glGetUniformLocation(progId, "NM");
   if (GK_FLG(flags, GK_SHADER_FLAG_NMU))
     prog->nmui = glGetUniformLocation(progId, "NMU");
+  if (GK_FLG(flags, GK_SHADER_FLAG_VP))
+    prog->vpi  = glGetUniformLocation(progId, "VP");
 
   prog->progId        = progId;
   prog->refc          = 1;
