@@ -50,7 +50,7 @@ gkPrimInitTexQuad() {
   gk__texquad = prim = calloc(1, sizeof(*prim));
 
   buff = gkGpuBufferNew(NULL, GK_ARRAY, sizeof(gk__verts_quad));
-  gkGpuBufferFeed(buff, GL_STATIC_DRAW, gk__verts_quad);
+  gkGpuBufferFeed(buff, GK_STATIC_DRAW, gk__verts_quad);
 
   prim->count  = 6;
   prim->flags  = GK_DRAW_ARRAYS;

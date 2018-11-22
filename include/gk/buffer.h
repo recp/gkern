@@ -19,7 +19,7 @@ typedef enum GkEnumType {
   GK_STATIC_DRAW  = 4,
   GK_STATIC_READ  = 5,
   GK_DYNAMIC_DRAW = 6,
-  GK_DYNAMIC_RED  = 7
+  GK_DYNAMIC_READ = 7
 } GkEnumType;
 
 typedef struct GkGPUBuffer {
@@ -48,7 +48,7 @@ gkGpuBufferNew(struct GkContext * __restrict ctx,
 GK_EXPORT
 void
 gkGpuBufferFeed(GkGpuBuffer * __restrict gbuff,
-                GLenum                   usage,
+                GkEnumType               usage,
                 const void  * __restrict data);
 
 #endif /* buffer_h */
