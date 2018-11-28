@@ -47,7 +47,7 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
 
       break;
     case GK_MOUSE_MOVE:
-      if (tball->moving == true) {
+      if (tball->moving) {
         vec3  axis, to;
         float angle;
 
@@ -62,17 +62,22 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
 
         scnTrans->flags &= ~GK_TRANSF_WORLD_ISVALID;
         scene->flags    |=  GK_SCENEF_RENDER;
+        tball->moved     = true;
       }
       break;
     case GK_MOUSE_UP: {
-      glm_mat4_mul(tball->trans, scnTrans->local, scnTrans->local);
+      if (tball->moving && tball->moved) {
+        tball->moving = tball->moved = false;
 
-      scnTrans->flags &= ~GK_TRANSF_WORLD_ISVALID;
-      scene->flags    |=  GK_SCENEF_RENDER;
+        glm_mat4_mul(tball->trans, scnTrans->local, scnTrans->local);
 
-      if (tball->cb)
-        tball->cb(tball, GK_TRACKBALL_EVENT_END);
-      break;
+        scnTrans->flags &= ~GK_TRANSF_WORLD_ISVALID;
+        scene->flags    |=  GK_SCENEF_RENDER;
+
+        if (tball->cb)
+          tball->cb(tball, GK_TRACKBALL_EVENT_END);
+        break;
+      }
     }
   }
 }

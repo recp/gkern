@@ -21,6 +21,8 @@ gkTrackballAlloc() {
   tball->mouse    = gkTrackballMouse;
   tball->mouse2   = gkTrackballMouseWs;
 
+  glm_mat4_identity(tball->trans);
+
   return tball;
 }
 

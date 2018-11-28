@@ -40,9 +40,10 @@ typedef struct GkTrackball {
   vec3                   from;
   float                 *center;
   mat4                   trans;
+  float                  velocity;
   bool                   enabled;
   bool                   moving;
-  float                  velocity;
+  bool                   moved;
 } GkTrackball;
 
 GkTrackball*
