@@ -103,7 +103,7 @@ gkUniformLight(struct GkScene * __restrict scene,
   glUniform3fv(loc, 1, transView[3]);
 
   /* light/cone direction */
-  glm_vec_rotate_m4(transView,
+  glm_vec3_rotate_m4(transView,
                     light->dir,
                     dir);
 

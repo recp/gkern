@@ -39,7 +39,7 @@ gkSetCamera(struct GkScene * __restrict scene,
   scene->camera->flags = 0;
 
   if ((light = (GkLight *)scene->lights) && !light->node)
-    glm_vec_rotate_m4(camera->world,
+    glm_vec3_rotate_m4(camera->world,
                       light->defdir,
                       light->dir);
 }
@@ -55,21 +55,21 @@ gkMakeCameraForScene(GkScene *scene) {
     gkPrepareScene(scene);
 
   aspectRatio = scene->viewport[2] / scene->viewport[3];
-  glm_vec_center(scene->bbox[0], scene->bbox[1], target);
+  glm_vec3_center(scene->bbox[0], scene->bbox[1], target);
 
   if (!gkSceneIs2D(scene)) {
-    glm_vec_sub(scene->bbox[1], target, eye);
-    dist = glm_vec_distance(target, eye);
+    glm_vec3_sub(scene->bbox[1], target, eye);
+    dist = glm_vec3_distance(target, eye);
 
-    glm_vec_scale(eye, 2.5f, eye); // TODO: read this as option
-    glm_vec_add(target, eye, eye);
+    glm_vec3_scale(eye, 2.5f, eye); // TODO: read this as option
+    glm_vec3_add(target, eye, eye);
 
-    far = glm_vec_distance(eye, scene->bbox[0]) + dist;
+    far = glm_vec3_distance(eye, scene->bbox[0]) + dist;
   } else {
     far  = glm_aabb_size(scene->bbox);
     dist = 0.01f;
 
-    glm_vec_copy(target, eye);
+    glm_vec3_copy(target, eye);
 
     if (glm_eq(eye[0], 0.0f))
       eye[0] += far;
@@ -184,8 +184,8 @@ gkZoom(GkScene * __restrict scene,
   if (isinf(distance) || isnan(distance))
     distance = camImpl->lastZoomDist * copysignf(1.0f, distance);
 
-  glm_vec_scale_as(cam->world[2], -distance, dir);
-  glm_vec_add(cam->world[3], dir, cam->world[3]);
+  glm_vec3_scale_as(cam->world[2], -distance, dir);
+  glm_vec3_add(cam->world[3], dir, cam->world[3]);
 
   gkCameraViewUpdated(cam);
 

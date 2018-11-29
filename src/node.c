@@ -121,7 +121,7 @@ gkPrepareNode(GkScene * __restrict scene,
   if (node->model) {
     GkModelInst *modelInst;
 
-    glm_vec_scale(scene->center,
+    glm_vec3_scale(scene->center,
                   sceneImpl->centercount,
                   scene->center);
 
@@ -147,7 +147,7 @@ gkPrepareNode(GkScene * __restrict scene,
       prims = modelInst->prims;
       primc = modelInst->primc;
 
-      glm_vec_zero(modelCenter);
+      glm_vec3_zero(modelCenter);
 
       for (i = 0; i < primc; i++) {
         glm_aabb_transform(prims[i].prim->bbox,
@@ -164,18 +164,18 @@ gkPrepareNode(GkScene * __restrict scene,
                      modelInst->center);
 
       if (modelInst->addedToScene) {
-        glm_vec_sub(scene->center, modelInst->center, scene->center);
+        glm_vec3_sub(scene->center, modelInst->center, scene->center);
       } else {
         modelInst->addedToScene = true;
         sceneImpl->centercount++;
       }
 
-      glm_vec_add(scene->center, modelInst->center, scene->center);
+      glm_vec3_add(scene->center, modelInst->center, scene->center);
 
       modelInst = modelInst->next;
     } while (modelInst);
 
-    glm_vec_divs(scene->center,
+    glm_vec3_divs(scene->center,
                  sceneImpl->centercount,
                  scene->center);
   }
@@ -190,8 +190,8 @@ gkPrepareNode(GkScene * __restrict scene,
     }
 
     light->flags |= GK_LIGHTF_TRANSFORMED;
-    glm_vec_rotate_m4(tr->world, light->defdir, light->dir);
-    glm_vec_normalize(light->dir);
+    glm_vec3_rotate_m4(tr->world, light->defdir, light->dir);
+    glm_vec3_normalize(light->dir);
   }
 }
 
@@ -285,8 +285,8 @@ gkPrepareView(GkScene * __restrict scene,
     }
 
     light->flags |= GK_LIGHTF_TRANSFORMED;
-    glm_vec_rotate_m4(tr->world, light->defdir, light->dir);
-    glm_vec_normalize(light->dir);
+    glm_vec3_rotate_m4(tr->world, light->defdir, light->dir);
+    glm_vec3_normalize(light->dir);
   }
 }
 

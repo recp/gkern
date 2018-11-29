@@ -24,7 +24,7 @@ void
 gkInitValueAsVec3(GkValue *val, vec3 v) {
   val->type = GKT_FLOAT3;
   val->val  = realloc(val->val, sizeof(vec3));
-  glm_vec_copy(v, val->val);
+  glm_vec3_copy(v, val->val);
 }
 
 GK_EXPORT

@@ -13,5 +13,5 @@ void
 gk_moveOrigin(vec3 position,
               vec3 orig,
               vec3 out) {
-  glm_vec_sub(orig, position, out);
+  glm_vec3_sub(orig, position, out);
 }

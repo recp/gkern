@@ -52,11 +52,11 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
         float angle;
 
         gkTrackballVec(tball, event->point, to);
-        glm_vec_cross(tball->from, to, axis);
+        glm_vec3_cross(tball->from, to, axis);
 
-        angle = glm_vec_angle(tball->from, to) * tball->velocity;
+        angle = glm_vec3_angle(tball->from, to) * tball->velocity;
 
-        glm_vec_rotate_m4(scene->camera->world, axis, axis);
+        glm_vec3_rotate_m4(scene->camera->world, axis, axis);
         glm_rotate_atm(tball->trans, tball->center, angle, axis);
         glm_mat4_mul(tball->trans, scnTrans->local, scnTrans->world);
 

@@ -203,7 +203,7 @@ gkBuiltinKeyAnim(GkAnimation *anim,
       break;
     }
     case GKT_FLOAT3: {
-      glm_vec_copy(to->val, ch->target);
+      glm_vec3_copy(to->val, ch->target);
       break;
     }
     case GKT_FLOAT4: {

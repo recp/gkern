@@ -69,7 +69,7 @@ gkPrepareScene(GkScene * __restrict scene) {
     sceneImpl->pub.lights     = (GkLightRef *)light;
 
     if (scene->camera) {
-      glm_vec_rotate_m4(scene->camera->world,
+      glm_vec3_rotate_m4(scene->camera->world,
                         light->defdir,
                         light->dir);
     }

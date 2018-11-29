@@ -82,8 +82,8 @@ gkRotateAnimation(float  to,
   anim = calloc(1, sizeof(*anim));
   data = malloc(sizeof(vec3) * 2);
 
-  glm_vec_copy(pivot, data[0]);
-  glm_vec_copy(axis,  data[1]);
+  glm_vec3_copy(pivot, data[0]);
+  glm_vec3_copy(axis,  data[1]);
 
   anim->duration = duration;
   anim->to       = gkValueFromFloat(to);
@@ -92,7 +92,7 @@ gkRotateAnimation(float  to,
   anim->from     = gkValueFromFloat(0.0f);
   anim->nRepeat  = 1;
 
-  if (glm_vec_eqv(pivot, GK_PIVOT_CENTER)) {
+  if (glm_vec3_eqv(pivot, GK_PIVOT_CENTER)) {
     anim->fnAnimator = gkBuiltinRotationAnimCenter;
   } else {
     anim->fnAnimator = gkBuiltinRotationAnim;

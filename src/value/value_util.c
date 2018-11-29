@@ -17,7 +17,7 @@ gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest) {
       break;
     case GKT_FLOAT3:
       dest->val = realloc(dest->val, sizeof(vec3));
-      glm_vec_lerp(from->val, to->val, t, dest->val);
+      glm_vec3_lerp(from->val, to->val, t, dest->val);
       break;
     case GKT_FLOAT4:
       dest->val = realloc(dest->val, sizeof(vec4));
@@ -39,7 +39,7 @@ gkValueCopy(GkValue *src, GkValue *dest) {
       break;
     case GKT_FLOAT3:
       dest->val = realloc(dest->val, sizeof(vec3));
-      glm_vec_copy(src->val, dest->val);
+      glm_vec3_copy(src->val, dest->val);
       break;
     case GKT_FLOAT4:
       dest->val = realloc(dest->val, sizeof(vec4));
@@ -66,7 +66,7 @@ gkValueSub(GkValue *a, GkValue *b, GkValue *dest) {
       break;
     case GKT_FLOAT3:
       dest->val = realloc(dest->val, sizeof(vec3));
-      glm_vec_sub(a->val, b->val, dest->val);
+      glm_vec3_sub(a->val, b->val, dest->val);
       break;
     case GKT_FLOAT4:
       dest->val = realloc(dest->val, sizeof(vec4));
@@ -93,7 +93,7 @@ gkValueMul(GkValue *a, GkValue *b, GkValue *dest) {
       break;
     case GKT_FLOAT3:
       dest->val = realloc(dest->val, sizeof(vec3));
-      glm_vec_mul(a->val, b->val, dest->val);
+      glm_vec3_mul(a->val, b->val, dest->val);
       break;
     case GKT_FLOAT4:
       dest->val = realloc(dest->val, sizeof(vec4));

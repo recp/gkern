@@ -85,5 +85,5 @@ gkTrackballVec(GkTrackball * __restrict tball,
   vec[1] = y;
   vec[2] = z;
 
-  glm_vec_normalize(vec);
+  glm_vec3_normalize(vec);
 }
