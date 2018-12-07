@@ -35,6 +35,9 @@ gkTrackballMouseWs(GkMouseEventStruct *event) {
   scene    = tball->scene;
   scnTrans = scene->trans;
 
+  if (!scene->camera)
+    return;
+
   switch (event->state) {
     case GK_MOUSE_DOWN:
       tball->start  = event->point;
