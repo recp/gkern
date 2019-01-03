@@ -343,11 +343,8 @@ gkShadersFor(GkScene     * __restrict scene,
              GkLight     * __restrict light,
              GkPrimInst  * __restrict primInst,
              GkMaterial  * __restrict mat) {
-  GkPrimitive *prim;
-  GkShader    *vert, *frag;
-  char        *fragSource[3], *vertSource[3];
-
-  prim = primInst->prim;
+  GkShader *vert, *frag;
+  char     *fragSource[3], *vertSource[3];
 
   /* TODO: create dynamic by platform */
   vertSource[0] = fragSource[0] = "\n#version 410 \n";

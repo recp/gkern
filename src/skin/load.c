@@ -67,9 +67,9 @@ gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst) {
     prim->prim->lastInputIndex++;
 
     flist_sp_append(&prim->prim->inputs,
-                    gkMakeVertexInput("JOINTS", GL_INT, 0));
+                    gkMakeVertexInput("JOINTS", GL_UNSIGNED_INT, 0));
     flist_sp_append(&prim->prim->inputs,
-                    gkMakeVertexInput("JOINTWEIGHTS", GL_FLOAT, 0));
+                    gkMakeVertexInput("WEIGHTS", GL_FLOAT, 0));
   }
 
   modelInst->skin = skin;

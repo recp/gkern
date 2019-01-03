@@ -57,18 +57,18 @@ void main() {
   Cdiff = lerp(albedo.rgb * (1.0 - cDielectricSpecular.r), cBlack, metal);
   F0    = lerp(cDielectricSpecular, albedo.rgb, metal);
 
-  N     =  normal();
-  H     =  normalize(L + vEye);
-  NdV   =  clamp(dot(N, vEye), 0.001, 1.0);
-  NdL   =  clamp(dot(N, L),    0.001, 1.0);
-  NdH   =  clamp(dot(N, H),    0.0,   1.0);
-  LdH   =  clamp(dot(L, H),    0.0,   1.0);
-  VdH   =  clamp(dot(vEye, H), 0.0,   1.0);
+  N     = normal();
+  H     = normalize(L + vEye);
+  NdV   = clamp(dot(N, vEye), 0.001, 1.0);
+  NdL   = clamp(dot(N, L),    0.001, 1.0);
+  NdH   = clamp(dot(N, H),    0.0,   1.0);
+  LdH   = clamp(dot(L, H),    0.0,   1.0);
+  VdH   = clamp(dot(vEye, H), 0.0,   1.0);
 
   /* Calculate the shading terms for the microfacet specular shading model */
-  F = surfaceRefl(F0, VdH);
-  G = geomOcclusion(NdL, NdV, roughSq);
-  D = microfacetDist(NdH, roughSq);
+  F     = surfaceRefl(F0, VdH);
+  G     = geomOcclusion(NdL, NdV, roughSq);
+  D     = microfacetDist(NdH, roughSq);
 
   /* Schlick BRDF */
   Fdiff = (1.0 - F) * calcDiffuse(Cdiff);

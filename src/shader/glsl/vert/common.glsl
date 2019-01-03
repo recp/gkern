@@ -47,7 +47,7 @@ layout (std140) uniform JointBlock {
 };
 
 in uvec4 JOINTS;
-in vec4  JOINTWEIGHTS;
+in vec4  WEIGHTS;
 \n#endif\n
 
 out vec3 vPos;
@@ -72,10 +72,10 @@ void main() {
 \n#ifdef JOINT_COUNT\n
   mat4 skinMat;
 
-  skinMat = uJoints[JOINTS.x] * JOINTWEIGHTS.x
-          + uJoints[JOINTS.y] * JOINTWEIGHTS.y
-          + uJoints[JOINTS.z] * JOINTWEIGHTS.z
-          + uJoints[JOINTS.w] * JOINTWEIGHTS.w;
+  skinMat = uJoints[JOINTS.x] * WEIGHTS.x
+          + uJoints[JOINTS.y] * WEIGHTS.y
+          + uJoints[JOINTS.z] * WEIGHTS.z
+          + uJoints[JOINTS.w] * WEIGHTS.w;
 
   pos4  = skinMat * pos4;
   norm4 = skinMat * norm4;
