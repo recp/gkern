@@ -368,19 +368,38 @@ gkPrepInstSkin(GkScene * __restrict scene) {
           glm_mat4_identity_array(modelInst->joints, skin->nJoints);
         }
 
-        for (i = 0; i < nJoints; i++) {
-          if ((joint = ctlrInst->joints[i])) {
-            glm_mat4_mulN((mat4 *[]){
+        if (ctlrInst->joints) {
+          for (i = 0; i < nJoints; i++) {
+            if ((joint = ctlrInst->joints[i])) {
+              glm_mat4_mulN((mat4 *[]){
                 &joint->trans->world,
-                &skin->bindPoses[i],
+                &skin->invBindPoses[i],
                 &skin->bindShapeMatrix
               }, 3, modelInst->joints[i]);
 
-            if (scene->flags & GK_SCENEF_DRAW_BONES) {
-              if (!modelInst->jointsToDraw)
-                modelInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
+              if (scene->flags & GK_SCENEF_DRAW_BONES) {
+                if (!modelInst->jointsToDraw)
+                  modelInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
 
-              glm_mat4_copy(joint->trans->world, modelInst->jointsToDraw[i]);
+                glm_mat4_copy(joint->trans->world, modelInst->jointsToDraw[i]);
+              }
+            }
+          }
+        } else if (skin->joints) {
+          for (i = 0; i < nJoints; i++) {
+            if ((joint = skin->joints[i])) {
+              glm_mat4_mulN((mat4 *[]){
+                &joint->trans->world,
+                &skin->invBindPoses[i],
+                &skin->bindShapeMatrix
+              }, 2, modelInst->joints[i]);
+
+              if (scene->flags & GK_SCENEF_DRAW_BONES) {
+                if (!modelInst->jointsToDraw)
+                  modelInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
+
+                glm_mat4_copy(joint->trans->world, modelInst->jointsToDraw[i]);
+              }
             }
           }
         }

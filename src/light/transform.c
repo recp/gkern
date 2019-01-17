@@ -129,9 +129,8 @@ gkLightRotation(GkScene *scene,
   if ((trans = gkLightTransform(light)))
     glm_vec3_rotate_m4(trans->world, up, up);
 
-  glm_vec3_cross(fwd, up, right);
+  glm_vec3_crossn(fwd, up, right);
 
-  glm_vec3_normalize(right);
   glm_vec3_normalize(up);
   glm_vec3_normalize(fwd);
 }

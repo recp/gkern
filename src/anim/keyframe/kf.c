@@ -235,16 +235,19 @@ gkPrepChannel(GkAnimation *anim, GkChannel *ch) {
     GkBuffer *outp;
     char     *data;
     size_t    oLen;
+    double    beginTime;
     int       isReverse;
 
-    outp      = ch->sampler->output;
-    data      = outp->data;
-    oLen      = outp->len;
-    isReverse = anim->isReverse;
+    outp             = ch->sampler->output;
+    data             = outp->data;
+    oLen             = outp->len;
+    isReverse        = anim->isReverse;
+    beginTime        = anim->beginTime + ch->beginAt;
 
-    ch->beginTimeRef = ch->beginTime + anim->beginTime;
-    ch->endTimeRef   = ch->endTime   + anim->beginTime;
-    ch->keyStartTime = ch->keyEndTime = ch->beginTimeRef;
+    ch->beginTime    = beginTime;
+    ch->keyBeginTime = beginTime;
+    ch->keyEndTime   = beginTime;
+    ch->endTime      = anim->beginTime + ch->endAt;
 
     switch (ch->targetType) {
       case GKT_FLOAT: {

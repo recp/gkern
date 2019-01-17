@@ -53,29 +53,30 @@ typedef struct GkAnimSampler {
 } GkAnimSampler;
 
 typedef struct GkChannel {
-  struct GkChannel *next;
-  GkAnimSampler    *sampler;
-  GkNode           *node; /* Required if target is Node transform */
-  void             *target;
-  GkType            targetType;
+  struct GkChannel    *next;
+  GkAnimSampler       *sampler;
+  GkNode              *node;         /* required if target is node transform */
+  void                *target;
+  GkType               targetType;
   GkTargetPropertyType property;
-  GkInterpType      lastInterp;
-  uint32_t          keyIndex;
-  GkValue           ov[2];
-  GkValue           kv[2];
-  GkValue           delta;
-  double            beginTimeRef;
-  double            endTimeRef;
-  double            beginTime;
-  double            endTime;
-  double            duration;
-  double            keyStartTime;
-  double            keyEndTime;
-  bool              isTransform:1;
-  bool              isLocalTransform:1;
-  bool              isPrepared:1;
-  bool              isPreparedKey:1;
-  bool              computeDelta:1;
+  GkInterpType         lastInterp;
+  uint32_t             keyIndex;
+  GkValue              ov[2];
+  GkValue              kv[2];
+  GkValue              delta;
+  double               beginAt;       /* start time on timeline (relative)   */
+  double               endAt;         /* start time on timeline (relative)   */
+  double               beginTime;     /* start time for channel              */
+  double               endTime;       /* end time for channel                */
+  double               keyBeginTime;  /* start time for single key           */
+  double               keyEndTime;    /* end time for  single key            */
+  double               duration;
+  bool                 isTransform:1;
+  bool                 isLocalTransform:1;
+  bool                 isPrepared:1;
+  bool                 isPreparedKey:1;
+  bool                 isFinished:1;
+  bool                 computeDelta:1;
 } GkChannel;
 
 typedef struct GkKeyFrameAnimation {

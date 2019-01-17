@@ -44,10 +44,10 @@ typedef struct GkBoneWeights {
 
 typedef struct GkSkin {
   GkController    base;
-  mat4           *bindPoses;
+  mat4           *invBindPoses;    /* inv joint matrices           */
   struct GkNode **joints;
-  GkBoneWeights **weights;       /* per primitive Client buffers */
-  GkGpuBuffer   **gbuffs;        /* per primitive GPU buffers    */
+  GkBoneWeights **weights;         /* per primitive Client buffers */
+  GkGpuBuffer   **gbuffs;          /* per primitive GPU buffers    */
   mat4            bindShapeMatrix;
   size_t          nJoints;
   uint32_t        nPrims;

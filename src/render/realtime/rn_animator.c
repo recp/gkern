@@ -40,10 +40,8 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
       anim->beginTime = time;
 
     /* remove animation */
-    if (anim->beginTime > time
-        || anim->nRepeat <= anim->nPlayed) {
+    if (anim->beginTime > time || anim->nRepeat <= anim->nPlayed)
       continue;
-    }
 
     if (anim->isKeyFrame) {
       GkKeyFrameAnimation *kfa;
@@ -52,13 +50,14 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
       float               *inp;
       uint32_t             inpLen;
 
-      kfa = (GkKeyFrameAnimation *)anim;
-      ch  = kfa->channel;
+      kfa      = (GkKeyFrameAnimation *)anim;
+      ch       = kfa->channel;
+      finished = 0;
 
       finishReq = kfa->channelCount;
 
       if (ch) {
-        while (ch) {
+        do {
           uint32_t keyIndex;
 
           sampler  = ch->sampler;
@@ -75,78 +74,73 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
 
             if (!isReverse) {
               ch->keyIndex   = 1;
-              ch->keyEndTime = ch->beginTimeRef + inp[1];
+              ch->keyEndTime = anim->beginTime + inp[1];
             } else {
               ch->keyIndex   = inpLen - 2;
-              ch->keyEndTime = ch->beginTimeRef + ch->duration - inp[inpLen - 2];
+              ch->keyEndTime = anim->beginTime + ch->duration - inp[inpLen - 2];
             }
-
-            gkPrepChannelKey(kfa, ch);
 
             /* move object to first location */
             anim->fnKfAnimator(anim, ch, &ch->ov[0], NULL);
             goto nxt;
           }
 
-          if (ch->beginTimeRef > time)
+          /* it is not started yet. */
+          if (ch->beginTime > time)
             goto nxt;
 
-          /* finished */
-          if (ch->endTimeRef < time) {
-            ch->isPreparedKey = ch->isPrepared = false;
-            anim->beginTime   = time;
+          assert(ch->endTime >= ch->keyEndTime);
 
-            if (anim->autoReverse) {
-              if (isReverse)
-                ch->keyIndex = 0;
-              else
-                ch->keyIndex = inpLen - 1;
-            } else {
-              ch->keyIndex = 0;
-            }
-
+          /* channel key is finished (all keys), reverse animation if needed */
+          if (ch->endTime < time) {
+            ch->isFinished = true;
             finished++;
             goto nxt;
           }
 
-          finished = false;
-
-          /* switch to next input */
+          /* key is finished, switch to next key */
           while (ch->keyEndTime < time) {
             if (!isReverse) {
               keyIndex++;
-              if (keyIndex >= inpLen)
+              /* channel is finished */
+              if (keyIndex >= inpLen) {
+                ch->isPreparedKey = ch->isPrepared = false;
                 goto nxt;
+              }
             } else {
-              if (keyIndex == 0)
+              /* channel is finished */
+              if (keyIndex == 0) {
+                ch->isPreparedKey = ch->isPrepared = false;
                 goto nxt;
+              }
               keyIndex--;
             }
 
-            ch->keyStartTime  = ch->keyEndTime;
+            /* shift key */
+            ch->keyBeginTime = ch->keyEndTime;
 
             if (!isReverse) {
-              ch->keyEndTime = ch->beginTimeRef + inp[keyIndex];
-
+              ch->keyEndTime = anim->beginTime + inp[keyIndex];
             } else {
-              ch->keyEndTime = ch->beginTimeRef + ch->duration - inp[keyIndex];
+              ch->keyEndTime = anim->beginTime + ch->duration - inp[keyIndex];
             }
 
+            /* invalidate key */
             ch->isPreparedKey = false;
-            ch->keyIndex      = keyIndex;
-          }
+          } /* while */
 
-          /* clamp index */
+          /* clamp key index */
           if (!isReverse)
             keyIndex = GLM_MIN(inpLen - 1, keyIndex);
           else
             keyIndex = GLM_MAX(0, keyIndex);
 
-          if (!ch->isPreparedKey) {
-            gkPrepChannelKey(kfa, ch);
-          }
+          ch->keyIndex = keyIndex;
 
-          t = glm_percentc(ch->keyStartTime, ch->keyEndTime, time);
+          if (!ch->isPreparedKey)
+            gkPrepChannelKey(kfa, ch);
+
+          t = glm_percentc(ch->keyBeginTime, ch->keyEndTime, time);
 
           if (sampler->uniInterp == GK_INTERP_UNKNOWN) {
             char *interpi;
@@ -170,7 +164,20 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
           anim->fnKfAnimator(anim, ch, &v, &vd);
 
         nxt:
-          ch = ch->next;
+          while ((ch = ch->next) && ch->isFinished) {
+            finished++;
+          }
+        } while (ch);
+
+        /* invalidate all channels */
+        if (finished == finishReq) {
+          ch = kfa->channel;
+          while (ch) {
+            ch->isFinished    = false;
+            ch->isPreparedKey = false;
+            ch->isPrepared    = false;
+            ch = ch->next;
+          }
         }
       }
     } else {
