@@ -64,18 +64,19 @@ typedef struct GkChannel {
   GkValue              ov[2];
   GkValue              kv[2];
   GkValue              delta;
-  double               beginAt;       /* start time on timeline (relative)   */
-  double               endAt;         /* start time on timeline (relative)   */
-  double               beginTime;     /* start time for channel              */
-  double               endTime;       /* end time for channel                */
-  double               keyBeginTime;  /* start time for single key           */
-  double               keyEndTime;    /* end time for  single key            */
+  double               beginAt;         /* start time on timeline (relative) */
+  double               endAt;           /* start time on timeline (relative) */
+  double               beginTime;       /* start time for channel            */
+  double               endTime;         /* end time for channel              */
+  double               keyBeginTime;    /* start time for single key         */
+  double               keyEndTime;      /* end time for  single key          */
   double               duration;
+  double               keyPercent;
   bool                 isTransform:1;
   bool                 isLocalTransform:1;
   bool                 isPrepared:1;
   bool                 isPreparedKey:1;
-  bool                 isFinished:1;
+  bool                 isFinished:1;    /* all keys are finished             */
   bool                 computeDelta:1;
 } GkChannel;
 

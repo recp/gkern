@@ -89,12 +89,20 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
           if (ch->beginTime > time)
             goto nxt;
 
+#ifdef DEBUG
           assert(ch->endTime >= ch->keyEndTime);
-
+#endif
           /* channel key is finished (all keys), reverse animation if needed */
           if (ch->endTime < time) {
             ch->isFinished = true;
             finished++;
+
+            /* make sure that animation is finished */
+            if (ch->keyPercent < 1.0f) {
+              anim->fnKfAnimator(anim, ch, &ch->ov[0], NULL);
+              ch->keyPercent = 1.0f;
+            }
+
             goto nxt;
           }
 
@@ -140,7 +148,9 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
           if (!ch->isPreparedKey)
             gkPrepChannelKey(kfa, ch);
 
-          t = glm_percentc(ch->keyBeginTime, ch->keyEndTime, time);
+          ch->keyPercent = t = glm_percentc(ch->keyBeginTime,
+                                            ch->keyEndTime,
+                                            time);
 
           if (sampler->uniInterp == GK_INTERP_UNKNOWN) {
             char *interpi;
