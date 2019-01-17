@@ -30,6 +30,7 @@ Currently this library only renders using OpenGL, but in the future other apis l
    - Metallic-Roughness Workflow
    - Specular-Glossiness Workflow
 - Simple animations
+- Skeletal animations
 - ... 
 - and some built-in helpers for many common tasks and more by fetures time...
 
@@ -54,7 +55,7 @@ Currently this library only renders using OpenGL, but in the future other apis l
        - [ ] CUBIC HERMITE SPLINE
        - [ ] B-SPLINE
        - [ ] CARDINAL SPLINE
-  - [ ] Skeletal animations (working on this)
+  - [x] Skeletal animations (working on this)
   - [ ] Morph animations
 - [ ] ... 
  
