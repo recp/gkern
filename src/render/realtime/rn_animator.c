@@ -217,13 +217,11 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
         if (isReverse)
           anim->nPlayed++;
 
-        if (anim->nPlayed < anim->nRepeat)
-          anim->beginTime = time;
-
         anim->isReverse = !anim->isReverse;
       }
 
-      if (anim->nRepeat == UINT_MAX)
+      if (anim->nPlayed < anim->nRepeat
+          || anim->nRepeat == UINT_MAX)
         anim->beginTime = time;
     }
 
