@@ -87,6 +87,9 @@ void
 gkCameraViewUpdated(GkCamera * __restrict cam);
 
 void
+gkCameraWorldUpdated(GkCamera * __restrict cam);
+
+void
 gkZoom(struct GkScene * __restrict scene,
        float distance);
 

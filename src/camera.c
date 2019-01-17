@@ -164,6 +164,13 @@ gkCameraProjUpdated(GkCamera * __restrict cam) {
 
 void
 gkCameraViewUpdated(GkCamera * __restrict cam) {
+  glm_mat4_inv(cam->view,  cam->world);
+  glm_mat4_mul(cam->proj,  cam->view, cam->viewProj);
+  gkPrepareCameraProp(cam);
+}
+
+void
+gkCameraWorldUpdated(GkCamera * __restrict cam) {
   glm_mat4_inv(cam->world, cam->view);
   glm_mat4_mul(cam->proj,  cam->view, cam->viewProj);
   gkPrepareCameraProp(cam);
@@ -187,10 +194,11 @@ gkZoom(GkScene * __restrict scene,
   glm_vec3_scale_as(cam->world[2], -distance, dir);
   glm_vec3_add(cam->world[3], dir, cam->world[3]);
 
-  gkCameraViewUpdated(cam);
+  glm_persp_move_far(cam->proj, -distance);
+  gkCameraWorldUpdated(cam);
 
   scene->camera->flags |= GK_UPDT_VIEW;
-  scene->flags |= GK_SCENEF_RENDER;
+  scene->flags         |= GK_SCENEF_RENDER;
 
   camImpl->lastZoomDist = fabsf(distance);
 }
