@@ -44,6 +44,14 @@ GkValue*
 gkValueFromVec3(vec3 v);
 
 GK_EXPORT
+GkValue*
+gkValueFromVec4(vec4 v);
+
+GK_EXPORT
+GkValue*
+gkValueFromMat4(mat4 m);
+
+GK_EXPORT
 void
 gkInitValueAsFloat(GkValue *val, float fval);
 
@@ -54,6 +62,10 @@ gkInitValueAsVec3(GkValue *val, vec3 v);
 GK_EXPORT
 void
 gkInitValueAsVec4(GkValue *val, vec4 v);
+
+GK_EXPORT
+void
+gkInitValueAsMat4(GkValue *val, mat4 m);
 
 GK_EXPORT
 void

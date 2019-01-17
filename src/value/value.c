@@ -36,6 +36,22 @@ gkInitValueAsVec4(GkValue *val, vec4 v) {
 }
 
 GK_EXPORT
+void
+gkInitValueAsMat3(GkValue *val, mat3 m) {
+  val->type = GKT_FLOAT3x3;
+  val->val  = realloc(val->val, sizeof(mat3));
+  glm_mat3_copy(m, val->val);
+}
+
+GK_EXPORT
+void
+gkInitValueAsMat4(GkValue *val, mat4 m) {
+  val->type = GKT_FLOAT4x4;
+  val->val  = realloc(val->val, sizeof(mat4));
+  glm_mat4_ucopy(m, val->val);
+}
+
+GK_EXPORT
 GkValue*
 gkValueFromFloat(float fval) {
   GkValue *val;
@@ -55,6 +71,32 @@ gkValueFromVec3(vec3 v) {
   val->val = NULL;
 
   gkInitValueAsVec3(val, v);
+
+  return val;
+}
+
+GK_EXPORT
+GkValue*
+gkValueFromVec4(vec4 v) {
+  GkValue *val;
+
+  val      = malloc(sizeof(*val));
+  val->val = NULL;
+
+  gkInitValueAsVec4(val, v);
+
+  return val;
+}
+
+GK_EXPORT
+GkValue*
+gkValueFromMat4(mat4 m) {
+  GkValue *val;
+
+  val      = malloc(sizeof(*val));
+  val->val = NULL;
+
+  gkInitValueAsMat4(val, m);
 
   return val;
 }
