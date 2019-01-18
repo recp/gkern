@@ -50,7 +50,7 @@ gkIsTransparent(GkScene    * __restrict scene,
       opacity = 1.0f - tech->transparent->amount;
 
       if (color)
-        return (glm_luminance(color->vec) * opacity) > 0.0f;
+        return (color->rgba.A * opacity) > 0.0f;
 
       return opacity < 1.0f;
     }
