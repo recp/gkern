@@ -35,6 +35,7 @@ Currently this library only renders using OpenGL, but in the future other apis l
 - and some built-in helpers for many common tasks and more by fetures time...
 
 # Todo
+- [ ] Real-Time Path Tracing
 - [ ] Order objects before rendering
 - [x] PBR
 - [x] Transparency
