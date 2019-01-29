@@ -14,11 +14,6 @@ extern "C" {
 #include "type.h"
 #include <stdint.h>
 
-typedef enum GkValueType {
-  GK_VALUE_FLOAT  = 0,
-  GK_VALUE_FLOAT3 = 1
-} GkValueType;
-
 typedef union GkValue32 {
   int32_t intValue;
   float   floatValue;
@@ -26,9 +21,12 @@ typedef union GkValue32 {
 
 typedef struct GkValue {
   void     *val;
-  size_t    valsz;
+  size_t    itemSize;
+  size_t    rowCount;
+  size_t    colCount;
   GkType    type;
   GkValue32 s32;
+  bool      initialized;
 } GkValue;
 
 GK_EXPORT
@@ -50,6 +48,14 @@ gkValueFromVec4(vec4 v);
 GK_EXPORT
 GkValue*
 gkValueFromMat4(mat4 m);
+
+GK_EXPORT
+void
+gkInitValue(GkValue * __restrict val,
+            GkType               type,
+            size_t               rowc,
+            size_t               colc,
+            size_t               itemsz);
 
 GK_EXPORT
 void

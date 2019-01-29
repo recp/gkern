@@ -17,7 +17,7 @@
 
 GK_EXPORT
 float
-gkDeCasteljau(float t, float p0, float c0, float c1, float p1) {
+gkDeCasteljau(float prm, float p0, float c0, float c1, float p1) {
   double u, v, a, b, c, d, e, f;
   int    i;
 
@@ -26,12 +26,13 @@ gkDeCasteljau(float t, float p0, float c0, float c1, float p1) {
    [0] https://forums.khronos.org/showthread.php/10264-Animations-in-1-4-1-release-notes-revision-A/page2?highlight=bezier
    [1] https://forums.khronos.org/showthread.php/10644-Animation-Bezier-interpolation
    [2] https://forums.khronos.org/showthread.php/10387-2D-Tangents-in-Bezier-Splines?p=34164&viewfull=1#post34164
+   [3] https://forums.khronos.org/showthread.php/10651-Animation-TCB-Spline-Interpolation-in-COLLADA?highlight=bezier
    */
 
-  if (t - p0 < DECASTEL_SMALL)
+  if (prm - p0 < DECASTEL_SMALL)
     return 0.0;
 
-  if (p1 - t < DECASTEL_SMALL)
+  if (p1 - prm < DECASTEL_SMALL)
     return 1.0;
 
   u  = 0.0f;
@@ -47,11 +48,11 @@ gkDeCasteljau(float t, float p0, float c0, float c1, float p1) {
     f  = (d  + e)  * 0.5f; /* this one is on the curve! */
 
     /* The curve point is close enough to our wanted t */
-    if (fabs(f - t) < DECASTEL_EPS)
+    if (fabs(f - prm) < DECASTEL_EPS)
       return glm_clamp_zo((u  + v) * 0.5f);
 
     /* dichotomy */
-    if (f < t) {
+    if (f < prm) {
       p0 = f;
       c0 = e;
       c1 = c;
@@ -64,76 +65,74 @@ gkDeCasteljau(float t, float p0, float c0, float c1, float p1) {
     }
   }
 
-  return glm_clamp_zo((u  + v)  * 0.5f);
+  return glm_clamp_zo((u  + v) * 0.5f);
 }
 
 GK_EXPORT
 void
-gkInterpolateChannel(GkChannel * __restrict ch,
-                     double                 time,
-                     float                  t,
-                     bool                   isReverse,
-                     GkValue   * __restrict dest) {
-  float *otnv, *itnv;
+gkInterpolateChannel(GkAnimation * __restrict anim,
+                     GkChannel   * __restrict ch,
+                     double                   time,
+                     float                    t,
+                     bool                     isReverse) {
+  GkValue *curr;
+  GkValue *p0Val;
+  float   *otnv, *itnv;
+  uint32_t prevIndex, index;
+  size_t   itemc;
+
+  curr  = &ch->curr;
+  p0Val = &ch->kv[isReverse];
+  index = ch->keyIndex;
+
+  if (!isReverse)
+    prevIndex = GLM_MAX(1, index) - 1;
+  else
+    prevIndex = GLM_MIN((uint32_t)ch->sampler->input->count - 2, index) + 1;
+
+  itemc = p0Val->rowCount;
+  if (!ch->currValuePrepared) {
+    gkInitValue(curr, GKT_FLOAT, itemc, 1, sizeof(float));
+    ch->currValuePrepared = true;
+  }
 
   switch (ch->lastInterp) {
     case GK_INTERP_LINEAR:
       if (ch->property == GK_TARGET_QUAT) {
         vec4 rot;
-        glm_quat_slerp(ch->kv[isReverse].val,
-                       ch->kv[!isReverse].val,
-                       t,
-                       rot);
-        gkInitValueAsVec4(dest, rot);
+        glm_quat_slerp(ch->kv[isReverse].val, ch->kv[!isReverse].val, t, rot);
+        gkInitValueAsVec4(curr, rot);
       } else {
-        gkValueLerp(&ch->kv[isReverse], &ch->kv[!isReverse], t, dest);
+        gkValueLerp(&ch->kv[isReverse], &ch->kv[!isReverse], t, curr);
       }
       break;
     case GK_INTERP_STEP:
-      gkValueCopy(&ch->kv[t < 1.0f && isReverse], dest);
+      gkValueCopy(&ch->kv[t < 1.0f && isReverse], curr);
       break;
     case GK_INTERP_BEZIER: {
       GkBuffer *otn, *itn;
-      uint32_t  keyIndex;
+      float    *p0, *p1, *c0, *c1, *Bs, T0, s, keyBeginAt, keyEndAt;
+      uint32_t  i, j;
 
-      itn      = ch->sampler->inTangent;
-      otn      = ch->sampler->outTangent;
-      keyIndex = ch->keyIndex - 1;
+      itn        = ch->sampler->inTangent;
+      otn        = ch->sampler->outTangent;
+      otnv       = otn->data;
+      itnv       = itn->data;
+      p0         = p0Val->val;
+      p1         = ch->kv[!isReverse].val;
+      c0         = otnv + index * ch->sampler->inTangentStride;
+      c1         = itnv + index * ch->sampler->outTangentStride;
+      T0         = time - anim->beginTime;
+      keyBeginAt = ch->keyBeginTime - anim->beginTime;
+      keyEndAt   = ch->keyEndTime   - anim->beginTime;
+      Bs         = &curr->s32.floatValue;
 
-      switch (ch->targetType) {
-        case GKT_FLOAT: {
-          float Bs, p0, p1, c0, c1;
-
-          otnv = otn->data;
-          itnv = itn->data;
-          p0   = ch->kv[isReverse].s32.floatValue;
-          p1   = ch->kv[!isReverse].s32.floatValue;
-          c0   = otnv[keyIndex * 2 + 1];
-          c1   = itnv[keyIndex * 2 + 1];
-
-          /* TODO use gkDeCasteljau ? */
-          Bs = glm_bezier_cubic(t, p0, c0, c1, p1);
-          gkInitValueAsFloat(dest, Bs);
-          break;
-        }
-        case GKT_FLOAT3: {
-          vec3  Bs;
-          float *p0, *p1, *c0, *c1;
-
-          otnv = otn->data;
-          itnv = itn->data;
-          p0   = ch->kv[isReverse].val;
-          p1   = ch->kv[!isReverse].val;
-          c0   = otnv + keyIndex * 3 + 1;
-          c1   = itnv + keyIndex * 3 + 1;
-
-          glm_bezier_cubicv3(t, p0, c0, c1, p1, Bs);
-          gkInitValueAsVec3(dest, Bs);
-          break;
-        }
-        default:
-          break;
+      for (i = 0; i < itemc; i++) {
+        j     = i * 2;
+        s     = glm_bezier_solve(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
+        Bs[i] = glm_bezier(s, p0[i], c0[j + 1], c1[j + 1], p1[i]);
       }
+
       break;
     }
     case GK_INTERP_HERMITE: {
@@ -156,7 +155,7 @@ gkInterpolateChannel(GkChannel * __restrict ch,
           t1   = itnv[keyIndex * 2 + 1];
 
           Hs = glm_hermite_cubic(t, p0, t0, t1, p1);
-          gkInitValueAsFloat(dest, Hs);
+          gkInitValueAsFloat(curr, Hs);
           break;
         }
         case GKT_FLOAT3: {
@@ -170,8 +169,8 @@ gkInterpolateChannel(GkChannel * __restrict ch,
           t0   = otnv + keyIndex * 3 + 1;
           t1   = itnv + keyIndex * 3 + 1;
 
-          glm_hermite_cubicv3(t, p0, t0, t1, p1, Hs);
-          gkInitValueAsVec3(dest, Hs);
+//          glm_hermite_cubicv3(t, p0, t0, t1, p1, Hs);
+          gkInitValueAsVec3(curr, Hs);
           break;
         }
         default:

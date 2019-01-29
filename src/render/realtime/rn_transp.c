@@ -24,6 +24,7 @@ gkIsTransparent(GkScene    * __restrict scene,
                 GkMaterial * __restrict mat) {
   GkColor     *color;
   GkTechnique *tech;
+  float        opacity;
 
   if (!(scene->flags & GK_SCENEF_TRANSP)
       || !(tech = mat->technique)
@@ -37,8 +38,7 @@ gkIsTransparent(GkScene    * __restrict scene,
 
   switch (tech->transparent->opaque) {
     case GK_OPAQUE_A_ONE: {
-      float opacity;
-      opacity =  tech->transparent->amount;
+      opacity = tech->transparent->amount;
 
       if (color)
         return (color->rgba.A * opacity) < 1.0f;
@@ -46,7 +46,6 @@ gkIsTransparent(GkScene    * __restrict scene,
       return opacity < 1.0f;
     }
     case GK_OPAQUE_A_ZERO: {
-      float opacity;
       opacity = 1.0f - tech->transparent->amount;
 
       if (color)
@@ -55,7 +54,6 @@ gkIsTransparent(GkScene    * __restrict scene,
       return opacity < 1.0f;
     }
     case GK_OPAQUE_RGB_ONE: {
-      float opacity;
       opacity = tech->transparent->amount;
 
       if (color)
@@ -64,7 +62,6 @@ gkIsTransparent(GkScene    * __restrict scene,
       return opacity < 1.0f;
     }
     case GK_OPAQUE_RGB_ZERO: {
-      float opacity;
       opacity = 1.0f - tech->transparent->amount;
 
       if (color)

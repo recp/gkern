@@ -18,7 +18,7 @@ void
 gkRunAnim(GkSceneImpl *sceneImpl) {
   FListItem   *animItem;
   GkAnimation *anim;
-  GkValue      v, vd;
+  GkValue      vd;
   tm_interval  time, endTime;
   float        t, ease;
   uint32_t     finished, finishReq;
@@ -27,8 +27,8 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
   if (!(animItem = sceneImpl->anims))
     return;
 
-  time  = sceneImpl->pub.startTime;
-  v.val = vd.val = NULL;
+  time   = sceneImpl->pub.startTime;
+  vd.val = NULL;
 
   do {
     finished  = 0;
@@ -164,14 +164,14 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
             ch->lastInterp = sampler->uniInterp;
           }
 
-          gkInterpolateChannel(ch, time, t, isReverse, &v);
+          gkInterpolateChannel(anim, ch, time, t, isReverse);
 
           if (ch->computeDelta) {
-            gkValueSub(&v, &ch->delta, &vd);
-            gkValueCopy(&v, &ch->delta);
+            gkValueSub(&ch->curr, &ch->delta, &vd);
+            gkValueCopy(&ch->curr, &ch->delta);
           }
 
-          anim->fnKfAnimator(anim, ch, &v, &vd);
+          anim->fnKfAnimator(anim, ch, &ch->curr, &vd);
 
         nxt:
           while ((ch = ch->next) && ch->isFinished) {
@@ -197,15 +197,15 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
       ease      = anim->fnTiming ? anim->fnTiming(t) : t;
 
       if (!isReverse) {
-        gkValueLerp(anim->from, anim->to, ease, &v);
+        gkValueLerp(anim->from, anim->to, ease, &anim->curr);
       } else {
-        gkValueLerp(anim->to, anim->from, ease, &v);
+        gkValueLerp(anim->to, anim->from, ease, &anim->curr);
       }
 
-      gkValueSub(&v, anim->delta, &vd);
-      gkValueCopy(&v, anim->delta);
+      gkValueSub(&anim->curr, anim->delta, &vd);
+      gkValueCopy(&anim->curr, anim->delta);
 
-      anim->fnAnimator(anim, &v, &vd);
+      anim->fnAnimator(anim, &anim->curr, &vd);
 
       finished = t == 1.0f;
     }

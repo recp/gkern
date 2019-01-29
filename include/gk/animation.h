@@ -56,6 +56,7 @@ typedef struct GkAnimation {
   GkValue     *to;
   GkValue     *delta;
   void        *data;
+  GkValue      curr;
   GkAnimFunc   fnAnimator;
   GkKFAnimFunc fnKfAnimator;
   GkTimingFunc fnTiming;
@@ -105,11 +106,11 @@ gkRemoveAnimation(GkNode *node, GkAnimation *anim);
 
 GK_EXPORT
 void
-gkInterpolateChannel(struct GkChannel * __restrict ch,
-                     double                        time,
-                     float                         t,
-                     bool                          isReverse,
-                     GkValue          * __restrict dest);
+gkInterpolateChannel(struct GkAnimation * __restrict anim,
+                     struct GkChannel   * __restrict ch,
+                     double                          time,
+                     float                           t,
+                     bool                            isReverse);
 
 #ifdef __cplusplus
 }

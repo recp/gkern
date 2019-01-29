@@ -18,19 +18,19 @@ struct GkAnimation;
 struct GkScene;
 struct GkNode;
 
-  typedef enum GkTargetPropertyType {
-    GK_TARGET_UNKNOWN  = 0,
-    GK_TARGET_X        = 1,
-    GK_TARGET_Y        = 2,
-    GK_TARGET_Z        = 3,
-    GK_TARGET_XY       = 4,
-    GK_TARGET_XYZ      = 5,
-    GK_TARGET_ANGLE    = 6,
-    GK_TARGET_POSITION = 7,
-    GK_TARGET_SCALE    = 8,
-    GK_TARGET_ROTATE   = 9,
-    GK_TARGET_QUAT     = 10
-  } GkTargetPropertyType;
+typedef enum GkTargetPropertyType {
+  GK_TARGET_UNKNOWN  = 0,
+  GK_TARGET_X        = 1,
+  GK_TARGET_Y        = 2,
+  GK_TARGET_Z        = 3,
+  GK_TARGET_XY       = 4,
+  GK_TARGET_XYZ      = 5,
+  GK_TARGET_ANGLE    = 6,
+  GK_TARGET_POSITION = 7,
+  GK_TARGET_SCALE    = 8,
+  GK_TARGET_ROTATE   = 9,
+  GK_TARGET_QUAT     = 10
+} GkTargetPropertyType;
 
 typedef enum GkSamplerBehavior {
   GK_SAMPLER_UNDEFINED      = 0,
@@ -50,6 +50,8 @@ typedef struct GkAnimSampler {
   GkSamplerBehavior preBehavior;
   GkSamplerBehavior postBehavior;
   GkInterpType      uniInterp;
+  uint32_t          inTangentStride;
+  uint32_t          outTangentStride;
 } GkAnimSampler;
 
 typedef struct GkChannel {
@@ -64,6 +66,7 @@ typedef struct GkChannel {
   GkValue              ov[2];
   GkValue              kv[2];
   GkValue              delta;
+  GkValue              curr;
   double               beginAt;         /* start time on timeline (relative) */
   double               endAt;           /* start time on timeline (relative) */
   double               beginTime;       /* start time for channel            */
@@ -78,6 +81,7 @@ typedef struct GkChannel {
   bool                 isPreparedKey:1;
   bool                 isFinished:1;    /* all keys are finished             */
   bool                 computeDelta:1;
+  bool                 currValuePrepared:1;
 } GkChannel;
 
 typedef struct GkKeyFrameAnimation {
