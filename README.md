@@ -52,7 +52,7 @@ Currently this library only renders using OpenGL, but in the future other apis l
     - [ ] Interpolations
        - [x] STEP
        - [x] LINEAR
-       - [ ] CUBIC BEZIER SPLINE
+       - [x] CUBIC BEZIER SPLINE
        - [ ] CUBIC HERMITE SPLINE
        - [ ] B-SPLINE
        - [ ] CARDINAL SPLINE
