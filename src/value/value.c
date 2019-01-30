@@ -23,7 +23,12 @@ gkInitValue(GkValue * __restrict val,
   val->itemSize = itemsz;
   val->colCount = GLM_MAX(colc, 1);
   val->rowCount = GLM_MAX(rowc, 1);
-  val->val      = malloc(itemsz * val->colCount * val->rowCount);
+
+  if (rowc > 1 || colc > 1) {
+    val->val = malloc(itemsz * val->colCount * val->rowCount);
+  } else {
+    val->val = &val->s32;
+  }
 }
 
 GK_EXPORT

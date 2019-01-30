@@ -128,7 +128,7 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
       T0         = time - anim->beginTime;
       keyBeginAt = ch->keyBeginTime - anim->beginTime;
       keyEndAt   = ch->keyEndTime   - anim->beginTime;
-      Bs         = &curr->s32.floatValue;
+      Bs         = curr->val;
 
       switch (ch->lastInterp) {
         case GK_INTERP_BEZIER: {
