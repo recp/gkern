@@ -31,7 +31,6 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
   vd.val = NULL;
 
   do {
-    finished  = 0;
     anim      = animItem->data;
     isReverse = anim->isReverse;
 

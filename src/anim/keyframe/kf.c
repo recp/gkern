@@ -109,7 +109,10 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
     case GK_INTERP_STEP:
       gkValueCopy(&ch->kv[t < 1.0f && isReverse], curr);
       break;
-    case GK_INTERP_BEZIER: {
+    case GK_INTERP_BEZIER:
+    case GK_INTERP_HERMITE:
+    case GK_INTERP_BSPLINE:
+    case GK_INTERP_CARDINAL: {
       GkBuffer *otn, *itn;
       float    *p0, *p1, *c0, *c1, *Bs, T0, s, keyBeginAt, keyEndAt;
       uint32_t  i, j;
@@ -127,61 +130,27 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
       keyEndAt   = ch->keyEndTime   - anim->beginTime;
       Bs         = &curr->s32.floatValue;
 
-      for (i = 0; i < itemc; i++) {
-        j     = i * 2;
-        s     = glm_bezier_solve(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
-        Bs[i] = glm_bezier(s, p0[i], c0[j + 1], c1[j + 1], p1[i]);
+      switch (ch->lastInterp) {
+        case GK_INTERP_BEZIER: {
+          for (i = 0; i < itemc; i++) {
+            j     = i * 2;
+            s     = glm_bezier_solve(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
+            Bs[i] = glm_bezier(s, p0[i], c0[j + 1], c1[j + 1], p1[i]);
+          }
+          break;
+        }
+        case GK_INTERP_HERMITE: {
+          for (i = 0; i < itemc; i++) {
+            j     = i * 2;
+            s     = glm_bezier_solve(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
+            Bs[i] = glm_hermite(s, p0[i], c0[j + 1], c1[j + 1], p1[i]);
+          }
+        }
+        default: break;
       }
 
       break;
     }
-    case GK_INTERP_HERMITE: {
-      GkBuffer *otn, *itn;
-      uint32_t  keyIndex;
-
-      itn      = ch->sampler->inTangent;
-      otn      = ch->sampler->outTangent;
-      keyIndex = ch->keyIndex - 1;
-
-      switch (ch->targetType) {
-        case GKT_FLOAT: {
-          float Hs, p0, p1, t0, t1;
-
-          otnv = otn->data;
-          itnv = itn->data;
-          p0   = ch->kv[isReverse].s32.floatValue;
-          p1   = ch->kv[!isReverse].s32.floatValue;
-          t0   = otnv[keyIndex * 2 + 1];
-          t1   = itnv[keyIndex * 2 + 1];
-
-          Hs = glm_hermite_cubic(t, p0, t0, t1, p1);
-          gkInitValueAsFloat(curr, Hs);
-          break;
-        }
-        case GKT_FLOAT3: {
-          vec3  Hs;
-          float *p0, *p1, *t0, *t1;
-
-          otnv = otn->data;
-          itnv = itn->data;
-          p0   = ch->kv[isReverse].val;
-          p1   = ch->kv[!isReverse].val;
-          t0   = otnv + keyIndex * 3 + 1;
-          t1   = itnv + keyIndex * 3 + 1;
-
-//          glm_hermite_cubicv3(t, p0, t0, t1, p1, Hs);
-          gkInitValueAsVec3(curr, Hs);
-          break;
-        }
-        default:
-          break;
-      }
-      break;
-    }
-    case GK_INTERP_BSPLINE:
-      break;
-    case GK_INTERP_CARDINAL:
-      break;
     default: break;
   }
 }
