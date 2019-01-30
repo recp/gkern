@@ -11,63 +11,6 @@
 #include "kf.h"
 #include <tm/tm.h>
 
-#define DECASTEL_EPS   1e-9
-#define DECASTEL_MAX   32
-#define DECASTEL_SMALL 1e-20
-
-GK_EXPORT
-float
-gkDeCasteljau(float prm, float p0, float c0, float c1, float p1) {
-  double u, v, a, b, c, d, e, f;
-  int    i;
-
-  /*
-   References:
-   [0] https://forums.khronos.org/showthread.php/10264-Animations-in-1-4-1-release-notes-revision-A/page2?highlight=bezier
-   [1] https://forums.khronos.org/showthread.php/10644-Animation-Bezier-interpolation
-   [2] https://forums.khronos.org/showthread.php/10387-2D-Tangents-in-Bezier-Splines?p=34164&viewfull=1#post34164
-   [3] https://forums.khronos.org/showthread.php/10651-Animation-TCB-Spline-Interpolation-in-COLLADA?highlight=bezier
-   */
-
-  if (prm - p0 < DECASTEL_SMALL)
-    return 0.0;
-
-  if (p1 - prm < DECASTEL_SMALL)
-    return 1.0;
-
-  u  = 0.0f;
-  v  = 1.0f;
-
-  for (i = 0; i < DECASTEL_MAX; i++) {
-    /* de Casteljau Subdivision */
-    a  = (p0 + c0) * 0.5f;
-    b  = (c0 + c1) * 0.5f;
-    c  = (c1 + p1) * 0.5f;
-    d  = (a  + b)  * 0.5f;
-    e  = (b  + c)  * 0.5f;
-    f  = (d  + e)  * 0.5f; /* this one is on the curve! */
-
-    /* The curve point is close enough to our wanted t */
-    if (fabs(f - prm) < DECASTEL_EPS)
-      return glm_clamp_zo((u  + v) * 0.5f);
-
-    /* dichotomy */
-    if (f < prm) {
-      p0 = f;
-      c0 = e;
-      c1 = c;
-      u  = (u  + v)  * 0.5f;
-    } else {
-      c0 = a;
-      c1 = d;
-      p1 = f;
-      v  = (u  + v)  * 0.5f;
-    }
-  }
-
-  return glm_clamp_zo((u  + v) * 0.5f);
-}
-
 GK_EXPORT
 void
 gkInterpolateChannel(GkAnimation * __restrict anim,
