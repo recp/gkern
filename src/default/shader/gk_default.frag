@@ -16,7 +16,7 @@ struct ColorOrTex {
   vec4 color;
 };
 
-\n#define AmbientlLight    0x00000001u \n
+\n#define AmbientLight     0x00000001u \n
 \n#define DirectionalLight 0x00000002u \n
 \n#define PointLight       0x00000003u \n
 \n#define SpotLight        0x00000004u \n

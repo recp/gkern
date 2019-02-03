@@ -56,6 +56,10 @@ getLight(inout vec3 L) {
     case DirectionalLight:
       a = directional(L);
       break;
+    case AmbientLight:
+      L = vec3(0);
+      a = 1.0;
+      break;
     default:
       a = 1.0;
   }
