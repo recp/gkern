@@ -21,8 +21,7 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
   GkValue *curr;
   GkValue *p0Val;
   float   *otnv, *itnv;
-  uint32_t prevIndex, index;
-  size_t   itemc;
+  uint32_t prevIndex, index, itemc;
 
   curr  = &ch->curr;
   p0Val = &ch->kv[isReverse];
@@ -58,7 +57,7 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
     case GK_INTERP_CARDINAL: {
       GkBuffer *otn, *itn;
       float    *p0, *p1, *c0, *c1, *Bs, T0, s, keyBeginAt, keyEndAt;
-      uint32_t  i, j;
+      uint32_t  i, j, its, ots;
 
       itn        = ch->sampler->inTangent;
       otn        = ch->sampler->outTangent;
@@ -66,8 +65,8 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
       itnv       = itn->data;
       p0         = p0Val->val;
       p1         = ch->kv[!isReverse].val;
-      c0         = otnv + index * ch->sampler->inTangentStride;
-      c1         = itnv + index * ch->sampler->outTangentStride;
+      c0         = otnv + (index - 1) * ch->sampler->outTangentStride;
+      c1         = itnv + (index - 1) * ch->sampler->inTangentStride;
       T0         = time - anim->beginTime;
       keyBeginAt = ch->keyBeginTime - anim->beginTime;
       keyEndAt   = ch->keyEndTime   - anim->beginTime;
@@ -77,7 +76,7 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
         case GK_INTERP_BEZIER: {
           for (i = 0; i < itemc; i++) {
             j     = i * 2;
-            s     = glm_bezier_solve(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
+            s     = glm_decasteljau(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
             Bs[i] = glm_bezier(s, p0[i], c0[j + 1], c1[j + 1], p1[i]);
           }
           break;
@@ -85,7 +84,7 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
         case GK_INTERP_HERMITE: {
           for (i = 0; i < itemc; i++) {
             j     = i * 2;
-            s     = glm_bezier_solve(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
+            s     = glm_decasteljau(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
             Bs[i] = glm_hermite(s, p0[i], c0[j + 1], c1[j + 1], p1[i]);
           }
         }
@@ -193,6 +192,9 @@ gkPrepChannel(GkAnimation *anim, GkChannel *ch) {
     = ch->kv[1].type
     = ch->ov[0].type
     = ch->ov[1].type;
+
+  /* fix 1D tangents */
+  gkGenTangentKeysIfNeeded(ch);
 
   ch->isPrepared = true;
 }

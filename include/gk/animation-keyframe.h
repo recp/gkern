@@ -82,6 +82,7 @@ typedef struct GkChannel {
   bool                 isFinished:1;    /* all keys are finished             */
   bool                 computeDelta:1;
   bool                 currValuePrepared:1;
+  bool                 tangentsKeyGenerated:1; /* fix 1D tangents */
 } GkChannel;
 
 typedef struct GkKeyFrameAnimation {
@@ -99,6 +100,18 @@ typedef struct GkAnimationClip {
 GK_EXPORT
 GkKeyFrameAnimation*
 gkKeyFrameAnimation(void);
+
+GK_EXPORT
+void
+gkGenOutTangentKeys(GkChannel * __restrict ch);
+
+GK_EXPORT
+void
+gkGenInTangentKeys(GkChannel * __restrict ch);
+
+GK_EXPORT
+void
+gkGenTangentKeysIfNeeded(GkChannel * __restrict ch);
 
 #ifdef __cplusplus
 }
