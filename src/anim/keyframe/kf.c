@@ -57,7 +57,7 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
     case GK_INTERP_CARDINAL: {
       GkBuffer *otn, *itn;
       float    *p0, *p1, *c0, *c1, *Bs, T0, s, keyBeginAt, keyEndAt;
-      uint32_t  i, j, its, ots;
+      uint32_t  i, j;
 
       itn        = ch->sampler->inTangent;
       otn        = ch->sampler->outTangent;
