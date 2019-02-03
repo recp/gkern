@@ -21,9 +21,9 @@ typedef union GkValue32 {
 
 typedef struct GkValue {
   void     *val;
-  size_t    itemSize;
-  size_t    rowCount;
-  size_t    colCount;
+  uint32_t  itemSize;
+  uint32_t  rowCount;
+  uint32_t  colCount;
   GkType    type;
   GkValue32 s32;
   bool      initialized;
@@ -53,9 +53,9 @@ GK_EXPORT
 void
 gkInitValue(GkValue * __restrict val,
             GkType               type,
-            size_t               rowc,
-            size_t               colc,
-            size_t               itemsz);
+            uint32_t             rowc,
+            uint32_t             colc,
+            uint32_t             itemsz);
 
 GK_EXPORT
 void
