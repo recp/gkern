@@ -27,8 +27,6 @@ gkGenInTangentKeys(GkChannel * __restrict ch) {
     j = i * 2;
     nw[j]     = inp[i] * 0.3333333333 + inp[i + 1] * 0.6666666667;
     nw[j + 1] = old[i];
-
-    printf("i old[i]: %f %f\n", old[i], glm_deg(old[i]));
   }
 
   free(old);
@@ -44,7 +42,7 @@ gkGenOutTangentKeys(GkChannel * __restrict ch) {
   size_t    count, i, j;
 
   otn   = ch->sampler->outTangent;
-inp   = ch->sampler->input->data;
+  inp   = ch->sampler->input->data;
   old   = otn->data;
   nw    = malloc(otn->len * 2);
   count = ch->sampler->input->len / sizeof(float);
@@ -53,8 +51,6 @@ inp   = ch->sampler->input->data;
     j = i * 2;
     nw[j]     = inp[i] * 0.6666666667 + inp[i + 1] * 0.3333333333;
     nw[j + 1] = old[i];
-
-    printf("old[i]: %f %f\n", old[i], glm_deg(old[i]));
   }
 
   free(old);
@@ -71,6 +67,9 @@ gkGenTangentKeysIfNeeded(GkChannel * __restrict ch) {
   its   = ch->sampler->inTangentStride;
   ots   = ch->sampler->outTangentStride;
 
+  if (its == 0 || itemc == 0)
+    return;
+
   /* 1D in tangents */
   if (its == itemc)
     gkGenInTangentKeys(ch);
@@ -81,37 +80,3 @@ gkGenTangentKeysIfNeeded(GkChannel * __restrict ch) {
 
   ch->tangentsKeyGenerated = true;
 }
-
-//GK_EXPORT
-//void
-//gkGenTangentKeysIfNeeded(GkAnimation * __restrict anim) {
-//  GkKeyFrameAnimation *kfa;
-//  GkChannel           *ch;
-//  uint32_t             its, ots, itemc, isReverse;
-//
-//  kfa       = (GkKeyFrameAnimation *)anim;
-//  ch        = kfa->channel;
-//  isReverse = anim->isReverse;
-//
-//  while (ch) {
-//    itemc = ch->kv[isReverse].rowCount;
-//    its   = ch->sampler->inTangentStride;
-//    ots   = ch->sampler->outTangentStride;
-//
-//    if (ch->tangentsKeyGenerated)
-//      goto nxt_ch;
-//
-//    /* 1D in tangents */
-//    if (its == itemc)
-//      gkGenInTangentKeys(ch);
-//
-//    /* 1D out tangents */
-//    if (ots == itemc)
-//      gkGenOutTangentKeys(ch);
-//
-//    ch->tangentsKeyGenerated = true;
-//
-//  nxt_ch:
-//    ch = ch->next;
-//  }
-//}

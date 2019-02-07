@@ -108,7 +108,8 @@ gkPrepChannel(GkAnimation *anim, GkChannel *ch) {
     = ch->ov[1].type;
 
   /* fix 1D tangents */
-  gkGenTangentKeysIfNeeded(ch);
+  if ((int)ch->lastInterp >= (int)GK_INTERP_BEZIER)
+    gkGenTangentKeysIfNeeded(ch);
 
   ch->isPrepared = true;
 }

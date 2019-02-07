@@ -17,6 +17,7 @@ GkColorDesc gkdef_clr_wht = { .val    = &gkdef_clr__wht,
                               .method = GK_COLOR_COLOR };
 
 GkTechnique gkdef_phong = {
+  .pass      = NULL,
   .type      = GK_MATERIAL_PHONG,
   .ambient   = NULL,
   .diffuse   = &gkdef_clr_wht,
@@ -25,6 +26,7 @@ GkTechnique gkdef_phong = {
 };
 
 GkTechnique gkdef_blinn = {
+  .pass      = NULL,
   .type      = GK_MATERIAL_BLINN,
   .ambient   = NULL,
   .diffuse   = &gkdef_clr_wht,
@@ -33,12 +35,14 @@ GkTechnique gkdef_blinn = {
 };
 
 GkTechnique gkdef_lambert = {
+  .pass    = NULL,
   .type    = GK_MATERIAL_LAMBERT,
   .ambient = NULL,
   .diffuse = &gkdef_clr_wht,
 };
 
 GkTechnique gkdef_constant = {
+  .pass = NULL,
   .type = GK_MATERIAL_CONSTANT
 };
 
