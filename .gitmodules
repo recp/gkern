@@ -1,6 +1,6 @@
-[submodule "lib/libds"]
-	path = lib/libds
-	url = https://github.com/recp/libds.git
 [submodule "lib/cmt"]
 	path = lib/cmt
 	url = https://github.com/recp/cmt.git
+[submodule "lib/ds"]
+	path = lib/ds
+	url = https://github.com/recp/ds.git
