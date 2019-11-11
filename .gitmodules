@@ -4,3 +4,9 @@
 [submodule "lib/ds"]
 	path = lib/ds
 	url = https://github.com/recp/ds.git
+[submodule "lib/tm"]
+	path = lib/tm
+	url = https://github.com/recp/tm.git
+[submodule "lib/cglm"]
+	path = lib/cglm
+	url = https://github.com/recp/cglm.git
