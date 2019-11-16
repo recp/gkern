@@ -63,10 +63,6 @@ gkMakeInstance(GkModel *model) {
     inst->prims[i].material  = model->prims[i].material;
     inst->prims[i].prim      = &model->prims[i];
     inst->prims[i].modelInst = inst;
-
-#ifdef DEBUG
-    assert(!inst->prims[i].material);
-#endif
   }
 
   /* create an UBO for joints to share joints between primitives */
