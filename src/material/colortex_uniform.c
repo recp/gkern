@@ -52,7 +52,7 @@ gkUniformTex(GkContext  * __restrict ctx,
     uniformName = uniformNameBuff;
   }
 
-  gkUniform1i(prog, uniformName, ctx->availTexUnit);
+  gkUniform1i(prog, uniformName, tex->boundUnit);
   ctx->availTexUnit++;
 }
 
