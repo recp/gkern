@@ -54,8 +54,10 @@ gkInitValueAsVec3(GkValue *val, vec3 v) {
 GK_EXPORT
 void
 gkInitValueAsVec4(GkValue *val, vec4 v) {
-  val->type = GKT_FLOAT4;
-  val->val  = realloc(val->val, sizeof(vec4));
+  val->type     = GKT_FLOAT4;
+  val->val      = realloc(val->val, sizeof(vec4));
+  val->rowCount = 4;
+  val->colCount = 1;
   glm_vec4_ucopy(v, val->val);
 }
 
