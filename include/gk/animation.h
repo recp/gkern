@@ -39,13 +39,13 @@ typedef bool    (*GkKFAnimFunc)(struct GkAnimation *anim,
 
 typedef enum GkInterpType {
   GK_INTERP_UNKNOWN  = 0,
-  GK_INTERP_STEP     = 1,
-  GK_INTERP_LINEAR   = 2,
+  GK_INTERP_LINEAR   = 1,
   
-  GK_INTERP_BEZIER   = 3,
-  GK_INTERP_CARDINAL = 4,
-  GK_INTERP_HERMITE  = 5,
-  GK_INTERP_BSPLINE  = 6,
+  GK_INTERP_BEZIER   = 2,
+  GK_INTERP_CARDINAL = 3,
+  GK_INTERP_HERMITE  = 4,
+  GK_INTERP_BSPLINE  = 5,
+  GK_INTERP_STEP     = 6,
 
   GK_INTERP_MAXLEN   = 255
 } GkInterpType;
