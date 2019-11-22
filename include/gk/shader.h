@@ -18,9 +18,9 @@ extern "C" {
 
 typedef struct GkShader {
   struct GkShader *next;
-  GLuint    shaderId;
-  GLuint    shaderType;
-  GLboolean isValid;
+  GLuint           shaderId;
+  GLuint           shaderType;
+  GLboolean        isValid;
 } GkShader;
 
 GLuint

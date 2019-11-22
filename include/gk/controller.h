@@ -69,7 +69,8 @@ gkAttachSkin(GkSkin * __restrict skin);
 
 GK_EXPORT
 void
-gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst);
+gkAttachSkinTo(GkSkin      * __restrict skin,
+               GkModelInst * __restrict modelInst);
 
 GK_EXPORT
 void
