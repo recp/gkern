@@ -52,23 +52,31 @@ gkApplyMaterial(GkScene    * __restrict scene,
   GkSceneImpl *sceneImpl;
   GkPass      *pass;
   GkMaterial  *material;
-  
+
   sceneImpl = (GkSceneImpl *)scene;
   if (sceneImpl->overridePass) {
     pass = sceneImpl->overridePass;
     goto apply;
   }
-  
+
   material = primInst->activeMaterial;
 
+  /*
   if (!(pass = material->technique->pass)
-      && !(material->technique->pass =
-           pass = gkGetOrCreatPass(scene,
-                                   sceneImpl->forLight,
-                                   primInst,
-                                   material)))
+       && !(material->technique->pass =
+            pass = gkGetOrCreatPass(scene,
+                                    sceneImpl->forLight,
+                                    primInst,
+                                    material)))
+  */
+
+  /* TODO: CACHE generated program */
+  if (!(pass = gkGetOrCreatPass(scene,
+                                sceneImpl->forLight,
+                                primInst,
+                                material)))
     return;
-  
+
 apply:
   while (pass) {
     gkRenderPass(scene, primInst, pass);
