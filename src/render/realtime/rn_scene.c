@@ -128,7 +128,7 @@ gkRenderScene(GkScene * scene) {
   if (!(scene->trans->flags & GK_TRANSF_WORLD_ISVALID))
     gkApplyTransform(scene, scene->rootNode);
 
-  if ((scene->camera->flags & GK_UPDT_VIEW))
+  if ((scene->camera->flags & GK_UPDT_VIEWPROJ))
     gkApplyView(scene, scene->rootNode);
 
   /* frustum culling */
