@@ -67,9 +67,6 @@ Currently this library only renders using OpenGL, but in the future other apis l
 # Build 
 todo
 
-# License
-MIT. check the LICENSE file
-
 # Notes
 - This library is still unshaped, wait this until AssetKit finished. 
 - After finished this AssetKit and library, I'll publish documentation and update README.
