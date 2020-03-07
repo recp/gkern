@@ -101,7 +101,7 @@ gkMakeCamera(mat4 proj, mat4 view) {
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->view);
   glm_mat4_mul(proj, view, cam->viewProj);
-  glm_mat4_inv_precise(view, cam->world);
+  glm_mat4_inv(view, cam->world);
 
   cam->flags = 0;
 
@@ -117,7 +117,7 @@ gkMakeCameraByWorld(mat4 proj, mat4 view) {
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->world);
   glm_mat4_mul(proj, view, cam->viewProj);
-  glm_mat4_inv_precise(view, cam->view);
+  glm_mat4_inv(view, cam->view);
 
   cam->flags = 0;
 
@@ -129,7 +129,7 @@ gkUpdateCamera(GkCamera *cam, mat4 proj, mat4 view) {
   glm_mat4_copy(proj, cam->proj);
   glm_mat4_copy(view, cam->view);
   glm_mat4_mul(proj, view, cam->viewProj);
-  glm_mat4_inv_precise(view, cam->world);
+  glm_mat4_inv(view, cam->world);
 
   cam->flags = 0;
 }
