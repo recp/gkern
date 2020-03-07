@@ -121,9 +121,7 @@ gkPrepareNode(GkScene * __restrict scene,
   if (node->model) {
     GkModelInst *modelInst;
 
-    glm_vec3_scale(scene->center,
-                  sceneImpl->centercount,
-                  scene->center);
+    glm_vec3_scale(scene->center, sceneImpl->centercount, scene->center);
 
     while (camItem) {
       camImpl = camItem->data;
@@ -140,9 +138,7 @@ gkPrepareNode(GkScene * __restrict scene,
       int32_t     i, primc;
 
       modelInst->trans = tr;
-      glm_aabb_transform(modelInst->model->bbox,
-                         tr->world,
-                         modelInst->bbox);
+      glm_aabb_transform(modelInst->model->bbox, tr->world, modelInst->bbox);
 
       prims = modelInst->prims;
       primc = modelInst->primc;
@@ -150,9 +146,7 @@ gkPrepareNode(GkScene * __restrict scene,
       glm_vec3_zero(modelCenter);
 
       for (i = 0; i < primc; i++) {
-        glm_aabb_transform(prims[i].prim->bbox,
-                           tr->world,
-                           prims[i].bbox);
+        glm_aabb_transform(prims[i].prim->bbox, tr->world, prims[i].bbox);
 
         gkUpdateSceneAABB(scene, prims[i].bbox);
         prims[i].trans = tr;
@@ -175,9 +169,7 @@ gkPrepareNode(GkScene * __restrict scene,
       modelInst = modelInst->next;
     } while (modelInst);
 
-    glm_vec3_divs(scene->center,
-                 sceneImpl->centercount,
-                 scene->center);
+    glm_vec3_divs(scene->center, sceneImpl->centercount, scene->center);
   }
 
   if ((light = node->light)) {
@@ -392,7 +384,7 @@ gkPrepInstSkin(GkScene * __restrict scene) {
                 &joint->trans->world,
                 &skin->invBindPoses[i],
                 &skin->bindShapeMatrix
-              }, 2, modelInst->joints[i]);
+              }, 3, modelInst->joints[i]);
 
               if (scene->flags & GK_SCENEF_DRAW_BONES) {
                 if (!modelInst->jointsToDraw)
