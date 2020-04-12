@@ -88,8 +88,12 @@ transpWrite(vec4 clr /* , vec4 transmit */) {
    w = clamp(clr.a * max(1e-2, 3e3 * dz * dz * dz), 1e-2, 3e2);
    */
 
-  if (lightAttn == 0.0)
-    w = 0.0;
+  if (lightAttn == 0.0) {
+    /* w = 0.0; */
+    revealage = 1.0;
+    accum     = vec4(0.0);
+    return;
+  }
 
   revealage = clr.a;
   accum     = vec4(clr.rgb * clr.a, clr.a) * w;
