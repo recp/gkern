@@ -267,8 +267,6 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
       break;
   }
 
-  SH_VF_ARG("TEX_COUNT %d", flg->texCount)
-
   /* shadow flags */
   if (GK_FLG(scene->flags, GK_SCENEF_SHADOWS)) {
     int shadSplit;
@@ -336,6 +334,8 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
   if (primInst->modelInst->skin)
     SH_V_ARG("JOINT_COUNT %d", 255);
+  
+  SH_VF_ARG("TEX_COUNT %d", flg->texCount)
 }
 
 GkShader*
