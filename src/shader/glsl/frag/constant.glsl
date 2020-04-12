@@ -15,6 +15,10 @@ void main() {
   float shadow = shadowCoef();
 \n#endif\n
 
+\n#ifdef TRANSP\n
+  lightAttn = 1.0;
+\n#endif\n
+  
   clr =
 \n#ifdef SHADOWMAP\n
   shadow * (
