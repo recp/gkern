@@ -47,6 +47,8 @@ typedef enum GkColorMethod {
 
 typedef struct GkColorDesc {
   void         *val;
+  GkColor      *color;
+  GkTexture    *tex;
   GkColorMethod method;
 } GkColorDesc;
 
@@ -116,6 +118,12 @@ typedef struct GkSpecGloss {
   float       gloss;
 } GkSpecGloss;
 
+typedef struct GkBindTexture {
+  struct GkBindTexture *next;
+  GkTexture            *texture;
+  const char           *coordInputName;
+} GkBindTexture;
+
 typedef struct GkMaterial {
   GkTechnique   *technique;
   FListItem     *boundTextures;
@@ -145,12 +153,12 @@ gkMaterialNewSpecGloss(void);
 
 void
 gkUniformMaterial(struct GkContext  * __restrict ctx,
-                  struct GkPipeline  * __restrict prog,
+                  struct GkPipeline * __restrict prog,
                   struct GkMaterial * __restrict material);
 
 void
 gkUniformMaterialStruct(struct GkContext  * __restrict ctx,
-                        struct GkPipeline  * __restrict prog,
+                        struct GkPipeline * __restrict prog,
                         struct GkMaterial * __restrict material);
 
 GkMaterial*

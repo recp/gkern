@@ -46,13 +46,15 @@ typedef struct GkFlagsStruct {
 
 static
 void
-gk__texFlag(GkTexture     * __restrict tex,
+gk__texFlag(GkPrimInst    * __restrict primInst,
+            GkTexture     * __restrict tex,
             char          * __restrict attrname,
             GkFlagsStruct * __restrict flags);
 
 static
 void
-gk__colorOrTexFlag(GkColorDesc   * __restrict attr,
+gk__colorOrTexFlag(GkPrimInst    * __restrict primInst,
+                   GkColorDesc   * __restrict attr,
                    char          * __restrict attrname,
                    GkFlagsStruct * __restrict flags);
 
@@ -219,17 +221,17 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
     if (!attr[i])
       continue;
 
-    gk__colorOrTexFlag(attr[i], attrname[i], flg);
+    gk__colorOrTexFlag(primInst, attr[i], attrname[i], flg);
   }
 
   /* Occlusion Map */
   if (tech->occlusion && tech->occlusion->tex) {
-    gk__texFlag(tech->occlusion->tex, "OCCLUSION", flg);
+    gk__texFlag(primInst, tech->occlusion->tex, "OCCLUSION", flg);
   }
 
   /* Normal Map */
   if (tech->normal && tech->normal->tex) {
-    gk__texFlag(tech->normal->tex, "NORMAL", flg);
+    gk__texFlag(primInst, tech->normal->tex, "NORMAL", flg);
   }
 
   /* TODO: reflectivity */
@@ -244,10 +246,10 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
       metalRough = (GkMetalRough *)tech;
       if (metalRough->albedoMap)
-        gk__texFlag(metalRough->albedoMap, "ALBEDO", flg);
+        gk__texFlag(primInst, metalRough->albedoMap, "ALBEDO", flg);
 
       if (metalRough->metalRoughMap)
-        gk__texFlag(metalRough->metalRoughMap, "METALROUGH", flg);
+        gk__texFlag(primInst, metalRough->metalRoughMap, "METALROUGH", flg);
 
       break;
     }
@@ -256,10 +258,10 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
 
       specGloss = (GkSpecGloss *)tech;
       if (specGloss->diffuseMap)
-        gk__texFlag(specGloss->diffuseMap, "DIFFUSE", flg);
+        gk__texFlag(primInst, specGloss->diffuseMap, "DIFFUSE", flg);
 
       if (specGloss->specGlossMap)
-        gk__texFlag(specGloss->specGlossMap, "SPECGLOSS", flg);
+        gk__texFlag(primInst, specGloss->specGlossMap, "SPECGLOSS", flg);
 
       break;
     }
@@ -295,7 +297,10 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
   /* transpareny flags */
   if (gkIsTransparent(scene, mat)) {
     if (mat->technique->transparent->color) {
-      gk__colorOrTexFlag(mat->technique->transparent->color, "TRANSP", flg);
+      gk__colorOrTexFlag(primInst,
+                         mat->technique->transparent->color,
+                         "TRANSP",
+                         flg);
     } else {
       SH_VF("TRANSP_NO_COLOR")
     }
@@ -476,18 +481,33 @@ gk_creatPiplForCmnMat(char *name, void *userData) {
 
 static
 void
-gk__texFlag(GkTexture     * __restrict tex,
+gk__texFlag(GkPrimInst    * __restrict primInst,
+            GkTexture     * __restrict tex,
             char          * __restrict attrname,
             GkFlagsStruct * __restrict flags) {
-  GkSampler  *sampler;
-  const char *coordInpName;
+  GkSampler     *sampler;
+  const char    *coordInpName;
+  GkBindTexture *bindtex;
 
   if (!tex)
     return;
 
   coordInpName = NULL;
-  if ((sampler = tex->sampler))
-    coordInpName = sampler->coordInputName;
+
+  if ((bindtex = primInst->bindTexture)
+      || (bindtex = primInst->prim->bindTexture)
+      || (bindtex = primInst->modelInst->bindTexture)
+      || (bindtex = primInst->modelInst->model->bindTexture)
+      || ((sampler = tex->sampler) && (bindtex = sampler->bindTexture))) {
+    while (bindtex) {
+      if (bindtex->texture == tex) {
+        coordInpName = bindtex->coordInputName;
+        break;;
+      }
+      bindtex = bindtex->next;
+    }
+  }
+
   if (!coordInpName)
     coordInpName = "TEXCOORD";
 
@@ -502,7 +522,8 @@ gk__texFlag(GkTexture     * __restrict tex,
 
 static
 void
-gk__colorOrTexFlag(GkColorDesc   * __restrict attr,
+gk__colorOrTexFlag(GkPrimInst    * __restrict primInst,
+                   GkColorDesc   * __restrict attr,
                    char          * __restrict attrname,
                    GkFlagsStruct * __restrict flags) {
   switch (attr->method) {
@@ -510,7 +531,7 @@ gk__colorOrTexFlag(GkColorDesc   * __restrict attr,
       flags->frag += sprintf(flags->frag, "\n#define %s_COLOR\n", attrname);
       break;
     case GK_COLOR_TEX:
-      gk__texFlag(attr->val, attrname, flags);
+      gk__texFlag(primInst, attr->val, attrname, flags);
       break;
     default: break;
   }

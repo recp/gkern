@@ -13,6 +13,8 @@
 #include "color.h"
 #include <stdbool.h>
 
+struct GkBindTexture;
+
 typedef enum GkWrapMode {
   GK_WRAP_MODE_WRAP        = 0,
   GK_WRAP_MODE_MIRROR      = 1,
@@ -39,21 +41,21 @@ typedef enum GkMipFilter {
 } GkMipFilter;
 
 typedef struct GkSampler {
-  const char     *uniformName;
-  const char     *coordInputName;
-  GkColor        *borderColor;
-  GkWrapMode      wrapS;
-  GkWrapMode      wrapT;
-  GkWrapMode      wrapP;
-
-  GkMinFilter     minfilter;
-  GkMagFilter     magfilter;
-  GkMipFilter     mipfilter;
-
-  unsigned long   maxAnisotropy;
-  unsigned long   mipMaxLevel;
-  unsigned long   mipMinLevel;
-  float           mipBias;
+  const char           *uniformName;
+  struct GkBindTexture *bindTexture;
+  GkColor              *borderColor;
+  GkWrapMode            wrapS;
+  GkWrapMode            wrapT;
+  GkWrapMode            wrapP;
+      
+  GkMinFilter           minfilter;
+  GkMagFilter           magfilter;
+  GkMipFilter           mipfilter;
+      
+  unsigned long         maxAnisotropy;
+  unsigned long         mipMaxLevel;
+  unsigned long         mipMinLevel;
+  float                 mipBias;
 } GkSampler;
 
 typedef struct GkTexture {

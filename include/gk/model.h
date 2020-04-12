@@ -45,6 +45,7 @@ typedef struct GkPrimitive {
   struct GkPrimitive *prev;
   struct GkPrimitive *next;
   GkMaterial         *material;
+  GkBindTexture      *bindTexture;
   GkMaterial         *activeMaterial;
   GkGpuBuffer        *bufs;
   struct FListItem   *inputs;
@@ -60,6 +61,7 @@ typedef struct GkPrimitive {
 typedef struct GkPrimInst {
   GkPrimitive        *prim;
   GkMaterial         *material;
+  GkBindTexture      *bindTexture;
   GkMaterial         *activeMaterial;
   GkTransform        *trans;
   struct GkModelInst *modelInst;
@@ -75,6 +77,7 @@ typedef enum GkModelFlags {
 typedef struct GkModel {
   GkPipeline      *prog;
   GkMaterial      *material;
+  GkBindTexture   *bindTexture;
   GkGLEvents      *events;
   GkModelInstList *instances; /* TODO: */
   GkBBox           bbox;   /* local */
@@ -89,6 +92,7 @@ typedef struct GkModelInst {
   GkModel            *model;
   GkTransform        *trans;    /* readonly: don't set this manually */
   GkMaterial         *material; /* instances may use different materials */
+  GkBindTexture      *bindTexture;
   GkMaterial         *activeMaterial;
   mat4               *joints;
   mat4               *jointsToDraw;
