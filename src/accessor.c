@@ -16,31 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef gk_accessor_h
-#define gk_accessor_h
-
 #include "common.h"
-
-typedef struct GkGPUAccessor {
-  struct GkGPUBuffer *buffer;
-
-  void               *min;
-  void               *max;
-
-  uint32_t            itemCount;
-  uint32_t            itemSize;
-  GkType              itemType;
-
-  uint32_t            byteOffset;
-  uint32_t            byteStride;
-  uint32_t            count;
-
-  uint32_t            gpuTarget;
-  bool                normalized;
-} GkGPUAccessor;
+#include "../include/gk/accessor.h"
 
 GK_EXPORT
 bool
-gkAccessorIsInteger(GkGPUAccessor * __restrict acc);
-
-#endif /* gk_accessor_h */
+gkAccessorIsInteger(GkGPUAccessor * __restrict acc) {
+  switch (acc->itemType) {
+    case GL_INT:
+    case GL_UNSIGNED_INT:
+    case GL_SHORT:
+    case GL_UNSIGNED_SHORT:
+    case GL_BYTE:
+    case GL_UNSIGNED_BYTE: return true;
+    default:
+      return false;
+  }
+}
