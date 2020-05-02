@@ -22,17 +22,22 @@
 #include "common.h"
 #include "program.h"
 #include "type.h"
+#include "accessor.h"
 
 typedef struct GkVertexInput {
+  struct GkVertexInput *next;
   const char           *name;
-  GkType                type;
-  int32_t               len;
+  GkGPUAccessor        *accessor;
   int32_t               refc;
 } GkVertexInput;
 
 GK_EXPORT
 GkVertexInput*
 gkMakeVertexInput(const char *name, GkType type, int32_t len);
+
+GK_EXPORT
+int
+gkVertexInputCmp(void *key1, void *key2);
 
 GK_EXPORT
 int32_t
@@ -53,5 +58,16 @@ gkShortNameOfVertexInput(const char *name);
 GK_EXPORT
 const char*
 gkSetShortNameOfVertexInput(const char *name, const char *shortName);
+
+GK_EXPORT
+void
+gk_bindInputTo(GkPrimitive   * __restrict prim,
+               GkVertexInput * __restrict inp);
+
+GK_EXPORT
+void
+gk_attachInputTo(GkPrimInst         * __restrict primInst,
+                 GkVertexAttachment * __restrict va,
+                 GkVertexInput      * __restrict inp);
 
 #endif /* gk_vertex_h */

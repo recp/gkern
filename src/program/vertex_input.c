@@ -26,13 +26,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-static
-int
-gkVertexInputCmp(void *key1, void *key2);
 
 RBTree *gk__vertexinp = NULL;
 
-static
+GK_EXPORT
 int
 gkVertexInputCmp(void *key1, void *key2) {
   GkVertexInput *a, *b;
@@ -41,14 +38,11 @@ gkVertexInputCmp(void *key1, void *key2) {
   a = key1;
   b = key2;
 
-  if ((cmpres = a->type - b->type) != 0)
-    return cmpres;
-
-  if ((cmpres = a->len - b->len) != 0)
-    return cmpres;
-
   if ((cmpres = strcmp(a->name, b->name)) != 0)
     return cmpres;
+
+  if (a->accessor != b->accessor)
+    return 1;
 
   return 0;
 }
@@ -60,8 +54,8 @@ gkMakeVertexInput(const char *name, GkType type, int32_t len) {
 
   vi = calloc(1, sizeof(*vi));
 
-  vi->type = type;
-  vi->len  = len;
+//  vi->type = type;
+//  vi->len  = len;
   vi->name = strdup(name);
 
   if ((found = rb_find(gk__vertexinp, vi))) {

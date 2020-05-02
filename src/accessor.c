@@ -22,7 +22,7 @@
 GK_EXPORT
 bool
 gkAccessorIsInteger(GkGPUAccessor * __restrict acc) {
-  switch (acc->itemType) {
+  switch ((int)acc->itemType) {
     case GL_INT:
     case GL_UNSIGNED_INT:
     case GL_SHORT:
