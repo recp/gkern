@@ -13,5 +13,17 @@ void
 gkBindPrimitive(GkPrimitive * __restrict prim) {
   if (!prim)
     return;
+
+  glBindVertexArray(prim->vao);
+}
+
+GK_EXPORT
+void
+gkBindPrimInst(GkPrimInst * __restrict primInst) {
+  GkPrimitive *prim;
+  
+  if (!primInst || !(prim = primInst->prim))
+    return;
+
   glBindVertexArray(prim->vao);
 }

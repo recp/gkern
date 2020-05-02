@@ -115,4 +115,8 @@ GK_EXPORT
 void
 gkBindPrimitive(GkPrimitive * __restrict prim);
 
+GK_EXPORT
+void
+gkBindPrimInst(GkPrimInst * __restrict primInst);
+
 #endif /* gpu_state_h */
