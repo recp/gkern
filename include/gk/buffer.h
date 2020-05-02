@@ -9,6 +9,7 @@
 #define buffer_h
 
 #include "common.h"
+#include "type.h"
 
 typedef enum GkEnumType {
   GK_NONE         = 0,
@@ -37,24 +38,6 @@ typedef struct GkBuffer {
   size_t count;
   size_t stride;
 } GkBuffer;
-
-typedef struct GkAccessor {
-  GkBuffer *buffer;
-
-  void     *min;
-  void     *max;
-
-  uint32_t  itemCount;
-  uint32_t  itemSize;
-  uint32_t  itemType;
-
-  uint32_t  byteOffset;
-  uint32_t  byteStride;
-  uint32_t  count;
-  
-  uint32_t  gpuTarget;
-  bool      normalized;
-} GkAccessor;
 
 GK_EXPORT
 GkGpuBuffer*
