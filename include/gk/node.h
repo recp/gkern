@@ -56,6 +56,7 @@ typedef struct GkNode {
   GkLight              *light;
   GkCamera             *camera;
   GkControllerInst     *controller;
+  GkInstanceMorph      *morpher;
 
   GkNodeFlags           flags;
 } GkNode;

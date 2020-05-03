@@ -27,12 +27,19 @@ struct GkScene;
 struct GkNode;
 struct GkChannel;
 struct GkPipeline;
+struct GkVertexInput;
 
 typedef enum GkControllerType {
   GK_CONTROLLER_UNKNOWN = 0,
   GK_CONTROLLER_SKIN    = 1,
   GK_CONTROLLER_MORPH   = 2
 } GkControllerType;
+
+typedef enum GkMorphMethod {
+  GK_MORPH_METHOD_NORMALIZED = 1,
+  GK_MORPH_METHOD_RELATIVE   = 2,
+  GK_MORPH_METHOD_ADDITIVE   = GK_MORPH_METHOD_RELATIVE
+} GkMorphMethod;
 
 typedef struct GkController {
   struct GkController *next;
@@ -64,9 +71,27 @@ typedef struct GkSkin {
   uint32_t        nPrims;
 } GkSkin;
 
+typedef struct GkMorphTarget {
+  struct GkMorphTarget *next;
+  struct GkVertexInput *inputs;
+  GkGpuBuffer          *bufs;
+  float                 weight;
+  uint32_t              nInputs;
+  uint32_t              bufc;
+} GkMorphTarget;
+
 typedef struct GkMorph {
-  void *targets;
+  GkMorphTarget *targets;
+  GkGpuBuffer   *buff; /* must be interleaved */
+  uint32_t       nTargets;
+  GkMorphMethod  method;
 } GkMorph;
+
+typedef struct GkInstanceMorph {
+  GkModel *baseGeometry;
+  GkMorph *morph;
+  float   *overrideWeights; /* override default weights or NULL */
+} GkInstanceMorph;
 
 typedef struct GkControllerInst {
   struct GkControllerInst *next;
@@ -97,5 +122,16 @@ gkMakeInstanceSkin(struct GkScene          * __restrict scene,
 GK_EXPORT
 void
 gkDrawBones(struct GkScene * __restrict scene);
+
+GK_EXPORT
+void
+gkAttachMorphTo(GkMorph     * __restrict morph,
+                GkModelInst * __restrict modelInst);
+
+GK_EXPORT
+void
+gkMakeInstanceMorph(struct GkScene         * __restrict scene,
+                    struct GkNode          * __restrict node,
+                    struct GkInstanceMorph * __restrict morphInst);
 
 #endif /* gk_controller_h */
