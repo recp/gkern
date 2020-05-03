@@ -79,20 +79,43 @@ static
 GkPipeline*
 gk_creatPiplForCmnMat(char *name, void *userData);
 
+static
+char*
+gk__updatename_va(char               * __restrict pname,
+                  GkVertexAttachment * __restrict va) {
+  GkVertexInputBind *inpi;
+  GkVertexInput     *inp;
+  const char        *shortName;
+  
+  inpi = va->firstInput;
+  while (inpi) {
+    inp = inpi->input;
+
+    shortName = gkShortNameOfVertexInput(inp->name);
+    if (!shortName)
+      shortName = inp->name;
+
+    pname += sprintf(pname, "%s", shortName);
+    
+    inpi = inpi->next;
+  }
+  
+  return pname;
+}
+
 size_t
 gkShaderNameFor(GkScene     * __restrict scene,
                 GkLight     * __restrict light,
                 GkPrimInst  * __restrict primInst,
                 GkMaterial  * __restrict mat,
                 char        * __restrict nameBuff) {
-  GkPrimitive   *prim;
-  GkTechnique   *techn;
-  char          *pname;
-  GkColorDesc  *attr[4];
-  GkVertexInput *inp;
-  FListItem     *inpi;
-  int32_t        i;
-  char           prefix[] = "dsaert";
+  GkPrimitive        *prim;
+  GkTechnique        *techn;
+  char               *pname;
+  GkColorDesc        *attr[4];
+  GkVertexAttachment *va;
+  int32_t             i;
+  char                prefix[] = "dsaert";
 
   prim = primInst->prim;
 
@@ -108,18 +131,13 @@ gkShaderNameFor(GkScene     * __restrict scene,
   pname += sprintf(pname, "%d_", techn->type);
 
   /* primitive inputs */
-  inpi = prim->inputs;
-  while (inpi) {
-    inp = inpi->data;
-    const char *shortName;
-
-    shortName = gkShortNameOfVertexInput(inp->name);
-    if (!shortName)
-      shortName = inp->name;
-
-    pname += sprintf(pname, "%s", shortName);
-
-    inpi = inpi->next;
+  va = &prim->vertex;
+  pname = gk__updatename_va(pname, va);
+  
+  if ((va = primInst->vertexAttachments)) {
+    do {
+      pname = gk__updatename_va(pname, va);
+    } while ((va = va->next));
   }
 
   /* Occlusion Map */
@@ -351,6 +369,9 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
   if (primInst->modelInst->skin)
     SH_V_ARG("JOINT_COUNT %d", 255);
   
+  if (primInst->hasMorph)
+    SH_VF("USE_MORPHING")
+  
   SH_VF_ARG("TEX_COUNT %d", flg->texCount)
 }
 
@@ -448,25 +469,38 @@ gkGetPiplineForCmnMat(GkScene    * __restrict scene,
 
 static
 void
+gk__bindVertAttachment(GkPipeline         * __restrict pip,
+                       GkVertexAttachment * __restrict va) {
+  GkVertexInputBind *inpi;
+  GkVertexInput     *inp;
+  
+  inpi = va->firstInput;
+  while (inpi) {
+    inp = inpi->input;
+
+    glBindAttribLocation(pip->progId, inpi->attribLocation, inp->name);
+    
+    inpi = inpi->next;
+  }
+}
+
+static
+void
 gk__beforeLink(GkPipeline *pip, void *data) {
-  GkPrimInst    *primInst;
-  GkPrimitive   *prim;
-  FListItem     *inpi;
-  GkVertexInput *inp;
-  int32_t        index;
+  GkPrimInst         *primInst;
+  GkPrimitive        *prim;
+  GkVertexAttachment *va;
 
   primInst = data;
-  prim     = primInst->prim;;
-  index    = 0;
-  inpi     = prim->inputs;
+  prim     = primInst->prim;
+  va       = &prim->vertex;
 
-  while (inpi) {
-    inp = inpi->data;
-
-    glBindAttribLocation(pip->progId, index, inp->name);
-
-    index++;
-    inpi = inpi->next;
+  gk__bindVertAttachment(pip, va);
+  
+  if ((va = primInst->vertexAttachments)) {
+    do {
+      gk__bindVertAttachment(pip, va);
+    } while ((va = va->next));
   }
 }
 

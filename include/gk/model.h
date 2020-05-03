@@ -52,32 +52,57 @@ typedef struct GkModelInstList {
   uint64_t            instanceCount;
 } GkModelInstList;
 
+typedef struct GkVertexInputBind {
+  struct GkVertexInputBind *next;
+  struct GkVertexInput     *input;
+  int32_t                   attribLocation;
+  bool                      enabled;
+} GkVertexInputBind;
+
+typedef enum GkVertexAttachmentSemantic {
+  GK_VERT_ATTACH_UNKNOWN = 0,
+  GK_VERT_ATTACH_SKIN    = 1,
+  GK_VERT_ATTACH_MORPH   = 2
+} GkVertexAttachmentSemantic;
+
+typedef struct GkVertexAttachment {
+  struct GkVertexAttachment *next;
+  GkVertexInputBind         *firstInput;
+  GkVertexInputBind         *lastInput;
+  uint32_t                   nInputs;
+  GkVertexAttachmentSemantic semantic;
+} GkVertexAttachment;
+
 typedef struct GkPrimitive {
-  struct GkPrimitive *prev;
-  struct GkPrimitive *next;
-  GkMaterial         *material;
-  GkBindTexture      *bindTexture;
-  GkMaterial         *activeMaterial;
-  GkGpuBuffer        *bufs;
-  struct FListItem   *inputs;
-  GkBBox              bbox; /* local */
-  uint32_t            lastInputIndex;
-  GLuint              flags;
-  GLuint              vao;
-  GLsizei             bufc;
-  GLsizei             count;
-  GLenum              mode;
+  struct GkPrimitive  *prev;
+  struct GkPrimitive  *next;
+  GkMaterial          *material;
+  GkBindTexture       *bindTexture;
+  GkMaterial          *activeMaterial;
+  GkGpuBuffer         *bufs;
+  GkVertexAttachment   vertex;
+  GkBBox               bbox; /* local */
+  GLuint               flags;
+  GLuint               vao;
+  GLsizei              bufc;
+  GLsizei              count;
+  GLenum               mode;
+  bool                 invalidateVertex:1;
 } GkPrimitive;
 
 typedef struct GkPrimInst {
-  GkPrimitive        *prim;
-  GkMaterial         *material;
-  GkBindTexture      *bindTexture;
-  GkMaterial         *activeMaterial;
-  GkTransform        *trans;
-  struct GkModelInst *modelInst;
-  GkBBox              bbox;
-  uint32_t            maxJoint;
+  GkPrimitive         *prim;
+  GkMaterial          *material;
+  GkBindTexture       *bindTexture;
+  GkMaterial          *activeMaterial;
+  GkTransform         *trans;
+  struct GkModelInst  *modelInst;
+  GkVertexAttachment  *vertexAttachments;
+  GkBBox               bbox;
+  uint32_t             maxJoint;
+  bool                 hasMorph:1;
+  bool                 hasSkin:1;
+  bool                 invalidateVertex:1;
 } GkPrimInst;
 
 typedef enum GkModelFlags {

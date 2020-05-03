@@ -40,10 +40,13 @@ gkAttachSkin(GkSkin * __restrict skin) {
 GK_EXPORT
 void
 gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst) {
-  GkPrimInst    *prim;
-  GkGpuBuffer   *gbuff;
-  size_t         i;
-  uint32_t       primCount, maxJointCount, byteStride;
+  GkPrimInst         *prim;
+  GkGpuBuffer        *gbuff;
+  GkVertexAttachment *va, *va_last;
+  GkGPUAccessor      *gaccJOINTS, *gaccWEIGHTS;
+  GkVertexInput      *viJOINTS, *viWEIGHTS;
+  size_t              i;
+  uint32_t            primCount, maxJointCount, byteStride;
 
   primCount = skin->nPrims;
 
@@ -52,35 +55,44 @@ gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst) {
   byteStride    = maxJointCount * (sizeof(float) + sizeof(int));
 
   for (i = 0; i < primCount; i++) {
-    prim = &modelInst->prims[i];
+    prim                    = &modelInst->prims[i];
+    gbuff                   = skin->gbuffs[i];
+    va                      = calloc(1, sizeof(*va));
+    va->semantic            = GK_VERT_ATTACH_SKIN;
+    
+    viJOINTS                = gkMakeVertexInput("JOINTS", GL_UNSIGNED_INT, 0);
+    gaccJOINTS              = calloc(1, sizeof(*gaccJOINTS));
+    gaccJOINTS->buffer      = gbuff;
+    gaccJOINTS->itemType    = GL_UNSIGNED_INT;
+    gaccJOINTS->byteStride  = byteStride;
+    gaccJOINTS->itemCount   = maxJointCount;
+    gaccJOINTS->gpuTarget   = gbuff->target;
+    viJOINTS->accessor      = gaccJOINTS;
+
+    viWEIGHTS               = gkMakeVertexInput("WEIGHTS", GL_FLOAT, 0);
+    gaccWEIGHTS             = calloc(1, sizeof(*gaccWEIGHTS));
+    gaccWEIGHTS->buffer     = gbuff;
+    gaccWEIGHTS->byteOffset = sizeof(int) * maxJointCount;
+    gaccWEIGHTS->itemType   = GL_FLOAT;
+    gaccWEIGHTS->byteStride = byteStride;
+    gaccWEIGHTS->itemCount  = maxJointCount;
+    gaccWEIGHTS->gpuTarget  = gbuff->target;
+    viWEIGHTS->accessor     = gaccWEIGHTS;
 
     gkBindPrimitive(prim->prim);
-
-    gbuff = skin->gbuffs[i];
-
     glBindBuffer(gbuff->target, gbuff->vbo);
-    glVertexAttribIPointer(prim->prim->lastInputIndex,
-                          maxJointCount,
-                          GL_UNSIGNED_INT,
-                          byteStride,
-                          BUFFER_OFFSET(0));
-
-    glEnableVertexAttribArray(prim->prim->lastInputIndex);
-    prim->prim->lastInputIndex++;
-
-    glVertexAttribPointer(prim->prim->lastInputIndex,
-                          maxJointCount,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          byteStride,
-                          BUFFER_OFFSET(sizeof(int) * maxJointCount));
-    glEnableVertexAttribArray(prim->prim->lastInputIndex);
-    prim->prim->lastInputIndex++;
-
-    flist_sp_append(&prim->prim->inputs,
-                    gkMakeVertexInput("JOINTS", GL_UNSIGNED_INT, 0));
-    flist_sp_append(&prim->prim->inputs,
-                    gkMakeVertexInput("WEIGHTS", GL_FLOAT, 0));
+    
+    gk_attachInputTo(prim, va, viJOINTS);
+    gk_attachInputTo(prim, va, viWEIGHTS);
+    
+    if ((va_last = prim->vertexAttachments)) {
+      while (va_last->next)
+        va_last = va_last->next;
+      
+      va_last->next = va;
+    } else {
+      prim->vertexAttachments = va;
+    }
   }
 
   modelInst->skin = skin;
