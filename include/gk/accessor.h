@@ -31,8 +31,8 @@ typedef struct GkGPUAccessor {
   uint32_t            itemSize;
   GkType              itemType;
 
-  uint32_t            byteOffset;
-  uint32_t            byteStride;
+  size_t              byteOffset;
+  size_t              byteStride;
   uint32_t            count;
 
   uint32_t            gpuTarget;
