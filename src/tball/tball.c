@@ -44,7 +44,9 @@ gkTrackballAttach(GkTrackball * __restrict tball,
                   vec3                     pivot) {
   GkTransform *trans;
 
+#ifdef DEBUG
   assert(tball && scene && "invalid params!");
+#endif
 
   tball->scene    = scene;
   tball->velocity = 2.5f;

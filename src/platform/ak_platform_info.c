@@ -35,12 +35,15 @@ gk_pl_fetchPLI(void);
 GLint
 gkPlatfomInfo(GkPlatformInfo pli) {
   if (gk_glcontext) {
+#ifdef DEBUG
     assert((uint32_t)pli < GK_ARRAY_LEN(gk_glcontextPLI));
+#endif
     return gk_glcontextPLI[pli];
   }
 
+#ifdef DEBUG
   assert((uint32_t)pli < GK_ARRAY_LEN(GK_PLI));
-
+#endif
   return GK_PLI[pli];
 }
 

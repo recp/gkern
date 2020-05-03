@@ -186,7 +186,10 @@ gkTexLoad(GkTexture * __restrict tex,
       break;
     }
     default:
+#ifdef DEBUG
     assert("unsupported image!");
+#endif
+      break;
   }
 
   glTexParameteri(GL_TEXTURE_2D,
