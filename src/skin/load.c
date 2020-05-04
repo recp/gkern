@@ -85,6 +85,8 @@ gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst) {
     gk_attachInputTo(prim, va, viJOINTS);
     gk_attachInputTo(prim, va, viWEIGHTS);
     
+    prim->hasSkin = true;
+
     if ((va_last = prim->vertexAttachments)) {
       while (va_last->next)
         va_last = va_last->next;

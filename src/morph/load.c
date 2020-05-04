@@ -71,6 +71,9 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
           continue;
         
         gk_attachInputTo(prim, va, vi);
+        
+        prim->hasMorph = true;
+
         vaIsUsed = true;
       } while ((vi = vi->next));
 
