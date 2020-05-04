@@ -36,38 +36,50 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
   GkVertexAttachment *va;
   GkVertexInput      *vi;
   RBTree             *inpMap;
-  size_t              i;
-  uint32_t            nTargets, nPrims, maxTargetCount;
+  size_t              i, j;
+  uint32_t            nPrims, maxTargetCount;
+  bool                vaIsUsed;
   
   /* currently allow only 4 target */
   maxTargetCount = 4;
-  nTargets       = morph->nTargets;
   target         = morph->targets;
   nPrims         = modelInst->primc;
   gbuff          = morph->buff;
   va             = calloc(1, sizeof(*va));
   inpMap         = rb_newtree(NULL, gkVertexInputCmp, NULL);
   va->semantic   = GK_VERT_ATTACH_MORPH;
+  vaIsUsed       = false;
 
   /* for each primitive */
-  for (i = 0; i < nPrims; i++) {
-    /* there is no attachment */
-    if ((vi = target->inputs))
-      continue;
+  for (i = j = 0; i < nPrims; i++) {
+    while (target) {
+      if (j++ >= maxTargetCount)
+        break;
 
-    prim = &modelInst->prims[i];
-    gkBindPrimInst(prim);
-  
-    /* bind interleaved morph buffer */
-    glBindBuffer(gbuff->target, gbuff->vbo);
-
-    do {
-      if ((rb_find(inpMap, vi)))
+      /* there is no attachment */
+      if (!(vi = target->inputs))
         continue;
 
-      gk_attachInputTo(prim, va, vi);
-    } while ((vi = vi->next));
+      prim = &modelInst->prims[i];
+      gkBindPrimInst(prim);
+
+      /* bind interleaved morph buffer */
+      glBindBuffer(gbuff->target, gbuff->vbo);
+
+      do {
+        if ((rb_find(inpMap, vi)))
+          continue;
+        
+        gk_attachInputTo(prim, va, vi);
+        vaIsUsed = true;
+      } while ((vi = vi->next));
+
+      target = target->next;
+    } /* while (target) */
   }
+  
+  if (!vaIsUsed)
+    free(va);
 
   modelInst->morpher = morph;
 }
