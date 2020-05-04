@@ -36,8 +36,7 @@ gkShaderByName(const char *name) {
 
 void
 gkShaderSetName(GkShader *shader, const char *name) {
-  void *found;
-  if ((found = rb_find(gk_shaders, (void *)name)))
+  if (rb_find(gk_shaders, (void *)name))
     rb_remove(gk_shaders, (void *)name);
 
   rb_insert(gk_shaders, (void *)name, shader);
