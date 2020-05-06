@@ -83,8 +83,6 @@ gk_attachInputTo(GkPrimInst         * __restrict primInst,
     if ((va_last = primInst->vertexAttachments)) {
       while (va_last->next)
         va_last = va_last->next;
-      
-      va_last->next = va;
     } else {
       va_last = &primInst->prim->vertex;
     }

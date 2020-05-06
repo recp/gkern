@@ -106,12 +106,13 @@ void
 gkPrepareNode(GkScene * __restrict scene,
               GkNode  * __restrict parentNode,
               GkNode  * __restrict node) {
-  GkSceneImpl  *sceneImpl;
-  GkCameraImpl *camImpl;
-  FListItem    *camItem;
-  GkTransform  *tr;
-  GkLight      *light;
-  bool          finalComputed;
+  GkSceneImpl     *sceneImpl;
+  GkCameraImpl    *camImpl;
+  FListItem       *camItem;
+  GkTransform     *tr;
+  GkLight         *light;
+  GkInstanceMorph *morper;
+  bool             finalComputed;
 
   sceneImpl = (GkSceneImpl *)scene;
   camItem   = sceneImpl->transfCacheSlots->first;
@@ -176,6 +177,10 @@ gkPrepareNode(GkScene * __restrict scene,
       }
 
       glm_vec3_add(scene->center, modelInst->center, scene->center);
+
+      if ((morper = node->morpher)) {
+        gkAttachMorphTo(morper->morph, modelInst);
+      }
 
       modelInst = modelInst->next;
     } while (modelInst);

@@ -33,7 +33,7 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
   GkMorphTarget      *target;
   GkPrimInst         *prim;
   GkGpuBuffer        *gbuff;
-  GkVertexAttachment *va;
+  GkVertexAttachment *va, *va_last;
   GkVertexInput      *vi;
   RBTree             *inpMap;
   size_t              i, j;
@@ -45,13 +45,19 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
   target         = morph->targets;
   nPrims         = modelInst->primc;
   gbuff          = morph->buff;
-  va             = calloc(1, sizeof(*va));
   inpMap         = rb_newtree(NULL, gkVertexInputCmp, NULL);
-  va->semantic   = GK_VERT_ATTACH_MORPH;
-  vaIsUsed       = false;
 
   /* for each primitive */
   for (i = j = 0; i < nPrims; i++) {
+    prim = &modelInst->prims[i];
+    if (prim->hasMorph)
+      continue;
+
+    gkBindPrimInst(prim);
+    
+    /* bind interleaved morph buffer */
+    glBindBuffer(gbuff->target, gbuff->vbo);
+    
     while (target) {
       if (j++ >= maxTargetCount)
         break;
@@ -60,12 +66,10 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
       if (!(vi = target->inputs))
         continue;
 
-      prim = &modelInst->prims[i];
-      gkBindPrimInst(prim);
-
-      /* bind interleaved morph buffer */
-      glBindBuffer(gbuff->target, gbuff->vbo);
-
+      va           = calloc(1, sizeof(*va));
+      va->semantic = GK_VERT_ATTACH_MORPH;
+      vaIsUsed     = false;
+      
       do {
         if ((rb_find(inpMap, vi)))
           continue;
@@ -76,13 +80,23 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
 
         vaIsUsed = true;
       } while ((vi = vi->next));
+      
+      if (vaIsUsed) {
+        if ((va_last = prim->vertexAttachments)) {
+          while (va_last->next)
+            va_last = va_last->next;
+          
+          va_last->next = va;
+        } else {
+          prim->vertexAttachments = va;
+        }
+      } else {
+        free(va);
+      }
 
       target = target->next;
     } /* while (target) */
   }
-  
-  if (!vaIsUsed)
-    free(va);
 
   modelInst->morpher = morph;
 }
