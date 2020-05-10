@@ -81,7 +81,7 @@ typedef struct GkMorphTarget {
 } GkMorphTarget;
 
 typedef enum GkMorphOrder {
-  GK_IORD_P1P2N1N1 = 0,
+  GK_IORD_P1P2N1N2 = 0,
   GK_IORD_P1N1P2N2 = 1
 } GkMorphOrder;
 

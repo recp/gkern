@@ -26,6 +26,8 @@
 #include "../program/uniform_cache.h"
 #include "../shader/builtin_shader.h"
 
+#include <string.h>
+
 GK_EXPORT
 void
 gkPrepMorph(GkMorph * __restrict morph) {
@@ -37,13 +39,16 @@ gkPrepMorph(GkMorph * __restrict morph) {
   if (morph->allInputs)
     return;
 
-  i              = cont = 0;
-  maxTargetCount = 4;
-  target         = morph->targets;
+  i                 = cont = 0;
+  maxTargetCount    = 4;
+  target            = morph->targets;
   
   targetInputs      = alloca(sizeof(void*) * maxTargetCount);
   targetInputCounts = alloca(sizeof(uint32_t) * maxTargetCount);
   
+  memset(targetInputs, 0, sizeof(void*) * maxTargetCount);
+  memset(targetInputCounts, 0, sizeof(uint32_t) * maxTargetCount);
+
   while (target) {
     if (maxTargetCount-- < 1)
       break;
@@ -61,7 +66,7 @@ gkPrepMorph(GkMorph * __restrict morph) {
   
   morph->allInputs = flist_new(NULL);
   
-  if (morph->order == GK_IORD_P1P2N1N1) {
+  if (morph->order == GK_IORD_P1P2N1N2) {
     while (cont > 0) {
       for (i = 0; i < maxTargetCount; i++) {
         if ((vi = targetInputs[i])) {
@@ -75,11 +80,12 @@ gkPrepMorph(GkMorph * __restrict morph) {
     }
   } else {
     for (i = 0; i < maxTargetCount; i++) {
-      vi = targetInputs[i];
-      do {
-        flist_append(morph->allInputs, vi);
-      } while ((vi = vi->next));
-    }
+      if ((vi = targetInputs[i])) {
+        do {
+          flist_append(morph->allInputs, vi);
+        } while ((vi = vi->next));
+      } /* if */
+    } /* for */
   }
 }
 
@@ -87,15 +93,12 @@ GK_EXPORT
 void
 gkAttachMorphTo(GkMorph     * __restrict morph,
                 GkModelInst * __restrict modelInst) {
-  GkMorphTarget      *target;
   GkPrimInst         *prim;
   GkGpuBuffer        *gbuff;
   GkVertexAttachment *va, *va_last;
-  RBTree             *inpMap;
   FListItem          *inputItem;
-  size_t              i, j;
-  uint32_t            nPrims, maxTargetCount;
-  bool                vaIsUsed;
+  size_t              i;
+  uint32_t            nPrims;
   
   if (!morph->allInputs)
     gkPrepMorph(morph);
@@ -104,14 +107,11 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
     return;
 
   /* currently allow only 4 target */
-  maxTargetCount = 4;
-  target         = morph->targets;
-  nPrims         = modelInst->primc;
-  gbuff          = morph->buff;
-  inpMap         = rb_newtree(NULL, gkVertexInputCmp, NULL);
+  nPrims = modelInst->primc;
+  gbuff  = morph->buff;
 
   /* for each primitive */
-  for (i = j = 0; i < nPrims; i++) {
+  for (i = 0; i < nPrims; i++) {
     prim = &modelInst->prims[i];
     if (prim->hasMorph)
       continue;
@@ -128,10 +128,8 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
     prim->hasMorph = true;
     va             = calloc(1, sizeof(*va));
     va->semantic   = GK_VERT_ATTACH_MORPH;
-    vaIsUsed       = false;
 
     do {
-      GkVertexInput *vi = inputItem->data;
       gk_attachInputTo(prim, va, inputItem->data);
     } while ((inputItem = inputItem->next));
     
