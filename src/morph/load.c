@@ -28,18 +28,81 @@
 
 GK_EXPORT
 void
+gkPrepMorph(GkMorph * __restrict morph) {
+  GkMorphTarget  *target;
+  GkVertexInput  *vi;
+  GkVertexInput **targetInputs;
+  int32_t        *targetInputCounts, maxTargetCount, i, cont;
+
+  if (morph->allInputs)
+    return;
+
+  i              = cont = 0;
+  maxTargetCount = 4;
+  target         = morph->targets;
+  
+  targetInputs      = alloca(sizeof(void*) * maxTargetCount);
+  targetInputCounts = alloca(sizeof(uint32_t) * maxTargetCount);
+  
+  while (target) {
+    if (maxTargetCount-- < 1)
+      break;
+
+    /* there is no attachment */
+    if (!(vi = target->inputs))
+      continue;
+    
+    targetInputs[i]        = vi;
+    targetInputCounts[i++] = target->nInputs;
+    cont++;
+
+    target = target->next;
+  } /* while (target) */
+  
+  morph->allInputs = flist_new(NULL);
+  
+  if (morph->order == GK_IORD_P1P2N1N1) {
+    while (cont > 0) {
+      for (i = 0; i < maxTargetCount; i++) {
+        if ((vi = targetInputs[i])) {
+          flist_append(morph->allInputs, vi);
+          targetInputs[i] = vi->next;
+
+          if (--targetInputCounts[i] < 1)
+            cont--;
+        }
+      }
+    }
+  } else {
+    for (i = 0; i < maxTargetCount; i++) {
+      vi = targetInputs[i];
+      do {
+        flist_append(morph->allInputs, vi);
+      } while ((vi = vi->next));
+    }
+  }
+}
+
+GK_EXPORT
+void
 gkAttachMorphTo(GkMorph     * __restrict morph,
                 GkModelInst * __restrict modelInst) {
   GkMorphTarget      *target;
   GkPrimInst         *prim;
   GkGpuBuffer        *gbuff;
   GkVertexAttachment *va, *va_last;
-  GkVertexInput      *vi;
   RBTree             *inpMap;
+  FListItem          *inputItem;
   size_t              i, j;
   uint32_t            nPrims, maxTargetCount;
   bool                vaIsUsed;
   
+  if (!morph->allInputs)
+    gkPrepMorph(morph);
+
+  if (!morph->allInputs || !morph->allInputs->first)
+    return;
+
   /* currently allow only 4 target */
   maxTargetCount = 4;
   target         = morph->targets;
@@ -58,47 +121,45 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
     /* bind interleaved morph buffer */
     glBindBuffer(gbuff->target, gbuff->vbo);
     
-    while (target) {
-      if (j++ >= maxTargetCount)
-        break;
+    /* there is no attachment */
+    if (!(inputItem = morph->allInputs->first))
+      continue;
 
-      /* there is no attachment */
-      if (!(vi = target->inputs))
-        continue;
+    prim->hasMorph = true;
+    va             = calloc(1, sizeof(*va));
+    va->semantic   = GK_VERT_ATTACH_MORPH;
+    vaIsUsed       = false;
 
-      va           = calloc(1, sizeof(*va));
-      va->semantic = GK_VERT_ATTACH_MORPH;
-      vaIsUsed     = false;
+    do {
+      GkVertexInput *vi = inputItem->data;
+      gk_attachInputTo(prim, va, inputItem->data);
+    } while ((inputItem = inputItem->next));
+    
+    if ((va_last = prim->vertexAttachments)) {
+      while (va_last->next)
+        va_last = va_last->next;
       
-      do {
-        if ((rb_find(inpMap, vi)))
-          continue;
-        
-        gk_attachInputTo(prim, va, vi);
-        
-        prim->hasMorph = true;
-
-        vaIsUsed = true;
-      } while ((vi = vi->next));
-      
-      if (vaIsUsed) {
-        if ((va_last = prim->vertexAttachments)) {
-          while (va_last->next)
-            va_last = va_last->next;
-          
-          va_last->next = va;
-        } else {
-          prim->vertexAttachments = va;
-        }
-      } else {
-        free(va);
-      }
-
-      target = target->next;
-    } /* while (target) */
+      va_last->next = va;
+    } else {
+      prim->vertexAttachments = va;
+    }
   }
 
   modelInst->morpher = morph;
+}
+
+GK_EXPORT
+void
+gkUniformTargetWeights(GkScene     * __restrict scene,
+                       GkModelInst * __restrict modelInst,
+                       float       * __restrict weights,
+                       uint32_t                 nWeights) {
+  glBindBuffer(GL_UNIFORM_BUFFER, modelInst->uboTargetWeights->vbo);
+  glBufferSubData(GL_UNIFORM_BUFFER,
+                  0,
+                  sizeof(*weights) * nWeights,
+                  weights);
+  glBindBuffer(modelInst->uboTargetWeights->target, 0);
 }
 
 GK_EXPORT

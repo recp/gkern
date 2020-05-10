@@ -80,11 +80,18 @@ typedef struct GkMorphTarget {
   uint32_t              bufc;
 } GkMorphTarget;
 
+typedef enum GkMorphOrder {
+  GK_IORD_P1P2N1N1 = 0,
+  GK_IORD_P1N1P2N2 = 1
+} GkMorphOrder;
+
 typedef struct GkMorph {
   GkMorphTarget *targets;
-  GkGpuBuffer   *buff; /* must be interleaved */
+  GkGpuBuffer   *buff;      /* must be interleaved */
+  struct FList  *allInputs; /* shader ready inputs, NULL to reset */
   uint32_t       nTargets;
   GkMorphMethod  method;
+  GkMorphOrder   order;
 } GkMorph;
 
 typedef struct GkInstanceMorph {
@@ -115,6 +122,13 @@ gkUniformJoints(struct GkScene     * __restrict scene,
 
 GK_EXPORT
 void
+gkUniformTargetWeights(struct GkScene     * __restrict scene,
+                       struct GkModelInst * __restrict modelInst,
+                       float              * __restrict weights,
+                       uint32_t                        nWeights);
+
+GK_EXPORT
+void
 gkMakeInstanceSkin(struct GkScene          * __restrict scene,
                    struct GkNode           * __restrict node,
                    struct GkControllerInst * __restrict ctlrInst);
@@ -122,6 +136,10 @@ gkMakeInstanceSkin(struct GkScene          * __restrict scene,
 GK_EXPORT
 void
 gkDrawBones(struct GkScene * __restrict scene);
+
+GK_EXPORT
+void
+gkPrepMorph(GkMorph * __restrict morph);
 
 GK_EXPORT
 void

@@ -80,6 +80,10 @@ void main() {
   vPos  = vec3(MV * pos4);
   vEye  = normalize(-vPos);
 
+\n#ifdef USE_MORPHING\n
+  pos4 += targetPosition();
+\n#endif\n
+
 \n#ifdef JOINT_COUNT\n
   mat4 skinMat;
 

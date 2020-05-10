@@ -31,6 +31,7 @@ typedef struct GkGPUAccessor {
   uint32_t            itemSize;
   GkType              itemType;
 
+  size_t              filledSize;
   size_t              byteOffset;
   size_t              byteStride;
   uint32_t            count;

@@ -46,7 +46,7 @@ gkContextFree(GkContext *ctx) {
 GkModelInst *
 gkMakeInstance(GkModel *model) {
   GkModelInst *inst, *prevInst;
-  GkGpuBuffer *uboJoints;
+  GkGpuBuffer *uboJoints, *uboTargetWeights;
   int32_t      primc, i;
 
   primc    = model->primc;
@@ -89,10 +89,33 @@ gkMakeInstance(GkModel *model) {
                NULL,
                uboJoints->usage);
   glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboJoints->vbo, 0, uboJoints->size);
-  glBindBuffer(uboJoints->target, 0);
 
   inst->uboJoints = uboJoints;
 
+  /* create an UBO for target weights to share weights between primitives */
+  uboTargetWeights         = calloc(1, sizeof(*uboTargetWeights));
+  uboTargetWeights->size   = sizeof(float) * 4 * 16;  /* TODO: */
+  uboTargetWeights->usage  = GL_DYNAMIC_DRAW;
+  uboTargetWeights->target = GL_UNIFORM_BUFFER;
+
+  glGenBuffers(1, &uboTargetWeights->vbo);
+  glBindBuffer(uboTargetWeights->target, uboTargetWeights->vbo);
+  glBufferData(uboTargetWeights->target,
+               uboTargetWeights->size,
+               NULL,
+               uboTargetWeights->usage);
+  glBindBufferBase(uboTargetWeights->target, 2, uboTargetWeights->vbo);
+
+//  glBindBufferRange(GL_UNIFORM_BUFFER,
+//                    2,
+//                    uboTargetWeights->vbo,
+//                    0,
+//                    uboTargetWeights->size);
+//  glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboTargetWeights->vbo);
+//  glBindBuffer(uboTargetWeights->target, 0);
+
+  inst->uboTargetWeights = uboTargetWeights;
+  
   return inst;
 }
 

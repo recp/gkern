@@ -369,8 +369,15 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
   if (primInst->modelInst->skin)
     SH_V_ARG("JOINT_COUNT %d", 255);
   
-  if (primInst->hasMorph)
+  if (primInst->hasMorph) {
     SH_VF("USE_MORPHING")
+    SH_VF("HAS_TARGET0_POSITION")
+    SH_VF("HAS_TARGET1_POSITION")
+//    SH_VF("HAS_TARGET2_POSITION")
+//    SH_VF("HAS_TARGET3_POSITION")
+    
+    SH_V_ARG("TARGET_COUNT %d", 2); /* TODO: */
+  }
   
   SH_VF_ARG("TEX_COUNT %d", flg->texCount)
 }
@@ -381,7 +388,7 @@ gkShadersFor(GkScene     * __restrict scene,
              GkPrimInst  * __restrict primInst,
              GkMaterial  * __restrict mat) {
   GkShader *vert, *frag;
-  char     *fragSource[3], *vertSource[3];
+  char     *fragSource[3], *vertSource[4];
 
   /* TODO: create dynamic by platform */
   vertSource[0] = fragSource[0] = "\n#version 410 \n";
@@ -432,11 +439,19 @@ gkShadersFor(GkScene     * __restrict scene,
   vert->isValid    = 1;
   vert->shaderType = GL_VERTEX_SHADER;
 
-  vertSource[2] =
+  if (primInst->hasMorph) {
+    vertSource[2] =
+#include "glsl/vert/target.glsl"
+    ;
+  } else {
+    vertSource[2] = "";
+  }
+  
+  vertSource[3] =
 #include "glsl/vert/common.glsl"
   ;
-
-  vert->shaderId = gkShaderLoadN(vert->shaderType, vertSource, 3);
+  
+  vert->shaderId = gkShaderLoadN(vert->shaderType, vertSource, 4);
 
   frag = calloc(1, sizeof(*frag));
   frag->isValid    = 1;

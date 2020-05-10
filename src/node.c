@@ -180,6 +180,7 @@ gkPrepareNode(GkScene * __restrict scene,
 
       if ((morper = node->morpher)) {
         gkAttachMorphTo(morper->morph, modelInst);
+        gkUniformTargetWeights(scene, modelInst, morper->overrideWeights, 2);
       }
 
       modelInst = modelInst->next;
