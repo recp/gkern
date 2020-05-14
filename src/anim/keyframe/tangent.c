@@ -72,21 +72,21 @@ gkGenOutTangentKeys(GkChannel * __restrict ch) {
 GK_EXPORT
 void
 gkGenTangentKeysIfNeeded(GkChannel * __restrict ch) {
-  uint32_t its, ots, itemc;
+  uint32_t its, ots, stride;
 
-  itemc = ch->kv[0].rowCount;
-  its   = ch->sampler->inTangentStride;
-  ots   = ch->sampler->outTangentStride;
+  stride = ch->stride;
+  its    = ch->sampler->inTangentStride;
+  ots    = ch->sampler->outTangentStride;
 
-  if (its == 0 || itemc == 0)
+  if (its == 0 || stride == 0)
     return;
 
   /* 1D in tangents */
-  if (its == itemc)
+  if (its == stride)
     gkGenInTangentKeys(ch);
 
   /* 1D out tangents */
-  if (ots == itemc)
+  if (ots == stride)
     gkGenOutTangentKeys(ch);
 
   ch->tangentsKeyGenerated = true;

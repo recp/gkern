@@ -103,7 +103,7 @@ gkValueSub(GkValue *a, GkValue *b, GkValue *dest);
 
 GK_EXPORT
 void
-gkValueMul(GkValue *a, GkValue *b, GkValue *dest);
+gkVectorSubf(float *a, float *b, float *dest, int count);
 
 GK_EXPORT
 void

@@ -91,7 +91,7 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
             }
 
             /* move object to first location */
-            anim->fnKfAnimator(anim, ch, &ch->ov[0], NULL);
+            gkChannelSetTargetTo(ch, &((GkFloatOrPointer){.p = ch->ov[0]}));
             goto nxt;
           }
 
@@ -109,7 +109,7 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
 
             /* make sure that animation is finished */
             if (ch->keyPercent < 1.0f) {
-              anim->fnKfAnimator(anim, ch, &ch->ov[0], NULL);
+              gkChannelSetTargetTo(ch, &((GkFloatOrPointer){.p = ch->ov[0]}));
               ch->keyPercent = 1.0f;
             }
 
@@ -176,13 +176,14 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
 
           gkInterpolateChannel(anim, ch, time, t, isReverse);
 
+          /*
           if (ch->computeDelta) {
             gkValueSub(&ch->curr, &ch->delta, &vd);
             gkValueCopy(&ch->curr, &ch->delta);
           }
 
           anim->fnKfAnimator(anim, ch, &ch->curr, &vd);
-
+          */
         nxt:
           while ((ch = ch->next) && ch->isFinished) {
             finished++;

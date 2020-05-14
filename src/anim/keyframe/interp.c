@@ -29,58 +29,53 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
                      double                   time,
                      float                    t,
                      bool                     isReverse) {
-  GkValue *curr;
-  GkValue *p0Val;
-  float   *otnv, *itnv;
-  uint32_t index, itemc;
+  float   *otnv, *itnv, *p0, *p1, *target;
+  uint32_t index, stride, i;
 
-  curr  = &ch->curr;
-  p0Val = &ch->kv[isReverse];
-  index = ch->keyIndex;
+  if (!ch->isPreparedKey)
+    gkPrepChannelKey((GkKeyFrameAnimation *)anim, ch);
 
-  itemc = p0Val->rowCount;
-  if (!ch->currValuePrepared) {
-    gkInitValue(curr, GKT_FLOAT, itemc, 1, sizeof(float));
-    ch->currValuePrepared = true;
-  }
+  p0     = ch->kv[isReverse];
+  p1     = ch->kv[!isReverse];
+  target = ch->target;
+  index  = ch->keyIndex;
+  stride = ch->stride;
 
   switch (ch->lastInterp) {
     case GK_INTERP_LINEAR:
       if (ch->property == GK_TARGET_QUAT) {
-        vec4 rot;
-        glm_quat_slerp(ch->kv[isReverse].val, ch->kv[!isReverse].val, t, rot);
-        gkInitValueAsVec4(curr, rot);
+        glm_quat_slerp(p0, p1, t, target);
       } else {
-        gkValueLerp(&ch->kv[isReverse], &ch->kv[!isReverse], t, curr);
+        for (i = 0; i < stride; i++)
+          target[i] = glm_lerp(p0[i], p1[i], t);
       }
       break;
     case GK_INTERP_STEP:
-      gkValueCopy(&ch->kv[t < 1.0f && isReverse], curr);
+      for (i = 0; i < stride; i++)
+        target[i] = *ch->kv[t < 1.0f && isReverse];
       break;
     case GK_INTERP_BEZIER:
     case GK_INTERP_HERMITE:
     case GK_INTERP_BSPLINE:
     case GK_INTERP_CARDINAL: {
       GkBuffer *otn, *itn;
-      float    *p0, *p1, *c0, *c1, *Bs, T0, s, keyBeginAt, keyEndAt;
-      uint32_t  i, j;
+      float    *c0, *c1, *Bs, T0, s, keyBeginAt, keyEndAt;
+      uint32_t  j;
 
       itn        = ch->sampler->inTangent;
       otn        = ch->sampler->outTangent;
       otnv       = otn->data;
       itnv       = itn->data;
-      p0         = p0Val->val;
-      p1         = ch->kv[!isReverse].val;
       c0         = otnv + (index - 1) * ch->sampler->outTangentStride;
       c1         = itnv + (index - 1) * ch->sampler->inTangentStride;
       T0         = time - anim->beginTime;
       keyBeginAt = ch->keyBeginTime - anim->beginTime;
       keyEndAt   = ch->keyEndTime   - anim->beginTime;
-      Bs         = curr->val;
+      Bs         = target;
 
       switch (ch->lastInterp) {
         case GK_INTERP_BEZIER: {
-          for (i = 0; i < itemc; i++) {
+          for (i = 0; i < stride; i++) {
             j     = i * 2;
             s     = glm_decasteljau(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
             Bs[i] = glm_bezier(s, p0[i], c0[j + 1], c1[j + 1], p1[i]);
@@ -88,7 +83,7 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
           break;
         }
         case GK_INTERP_HERMITE: {
-          for (i = 0; i < itemc; i++) {
+          for (i = 0; i < stride; i++) {
             j     = i * 2;
             s     = glm_decasteljau(T0, keyBeginAt, c0[j], c1[j], keyEndAt);
             Bs[i] = glm_hermite(s, p0[i], c0[j + 1], c1[j + 1], p1[i]);
@@ -100,5 +95,15 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
       break;
     }
     default: break;
+  }
+
+  if (ch->computeDelta)
+    gkVectorSubf(p0, p1, ch->delta.val, ch->stride);
+  
+  if (ch->isTransform && ch->node) {
+    if (ch->isLocalTransform && ch->node->trans)
+      ch->node->trans->flags &= ~GK_TRANSF_LOCAL_ISVALID;
+  
+    gkApplyTransform(anim->scene, ch->node);
   }
 }

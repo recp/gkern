@@ -44,7 +44,7 @@ typedef bool    (*GkAnimFunc)(struct GkAnimation *anim,
 
 typedef bool    (*GkKFAnimFunc)(struct GkAnimation *anim,
                                 struct GkChannel   *channel,
-                                GkValue            *to,
+                                float              *to,
                                 GkValue            *delta);
 
 
@@ -70,7 +70,7 @@ typedef struct GkAnimation {
   void        *data;
   GkValue      curr;
   GkAnimFunc   fnAnimator;
-  GkKFAnimFunc fnKfAnimator;
+  /* GkKFAnimFunc fnKfAnimator; */
   GkTimingFunc fnTiming;
   size_t       dataSize;
   double       duration;

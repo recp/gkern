@@ -63,6 +63,7 @@ typedef struct GkAnimSampler {
   GkInterpType      uniInterp;
   uint32_t          inTangentStride;
   uint32_t          outTangentStride;
+  uint32_t          outputStride;
 } GkAnimSampler;
 
 typedef struct GkChannel {
@@ -71,11 +72,12 @@ typedef struct GkChannel {
   GkNode              *node;         /* required if target is node transform */
   void                *target;
   GkType               targetType;
+  uint32_t             stride;
   GkTargetPropertyType property;
   GkInterpType         lastInterp;
   uint32_t             keyIndex;
-  GkValue              ov[2];
-  GkValue              kv[2];
+  float*               kv[2];
+  float*               ov[2];
   GkValue              delta;
   GkValue              curr;
   double               beginAt;         /* start time on timeline (relative) */

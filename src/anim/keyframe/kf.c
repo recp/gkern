@@ -47,24 +47,18 @@ gkBuiltinKeyAnim(GkAnimation *anim,
                  GkChannel   *ch,
                  GkValue     *to,
                  GkValue     *delta) {
-  switch (ch->targetType) {
-    case GKT_FLOAT: {
-      float *target;
+  float   *target, *tov;
+  uint32_t stride, i;
+    
+  stride = ch->stride;
+  target = ch->target;
 
-      target  = ch->target;
-      *target = to->s32.floatValue;
-
-      break;
-    }
-    case GKT_FLOAT3: {
-      glm_vec3_copy(to->val, ch->target);
-      break;
-    }
-    case GKT_FLOAT4: {
-      glm_vec4_ucopy(to->val, ch->target);
-      break;
-    }
-    default: break;
+  if (stride == 1) {
+    *target = to->s32.floatValue;
+  } else {
+    tov = to->val;
+    for (i = 0; i < stride; i++)
+      target[i] = tov[i];
   }
 
   if (ch->isTransform) {
@@ -87,55 +81,25 @@ void
 gkPrepChannel(GkAnimation *anim, GkChannel *ch) {
   if (!ch->isPrepared) {
     GkBuffer *outp;
-    char     *data;
-    size_t    oLen;
+    float    *target, *data;
     double    beginTime;
-    int       isReverse;
+    int       isReverse, stride;
 
     outp             = ch->sampler->output;
     data             = outp->data;
-    oLen             = outp->len;
     isReverse        = anim->isReverse;
     beginTime        = anim->beginTime + ch->beginAt;
+    stride           = ch->stride;
+    target           = ch->target;
 
     ch->beginTime    = beginTime;
     ch->keyBeginTime = beginTime;
     ch->keyEndTime   = beginTime;
     ch->endTime      = anim->beginTime + ch->endAt;
 
-    switch (ch->targetType) {
-      case GKT_FLOAT: {
-        gkInitValueAsFloat(&ch->ov[isReverse], *(float *)ch->target);
-
-        if (outp->len > 0)
-          gkInitValueAsFloat(&ch->ov[!isReverse],
-                             *(float *)(data + oLen - sizeof(float)));
-        break;
-      }
-      case GKT_FLOAT3: {
-        gkInitValueAsVec3(&ch->ov[isReverse], ch->target);
-
-        if (outp->len > 2)
-          gkInitValueAsVec3(&ch->ov[!isReverse],
-                            (float *)(data + oLen - sizeof(vec3)));
-        break;
-      }
-      case GKT_FLOAT4: {
-        gkInitValueAsVec4(&ch->ov[isReverse], ch->target);
-
-        if (outp->len > 2)
-          gkInitValueAsVec4(&ch->ov[!isReverse],
-                            (float *)(data + oLen - sizeof(vec4)));
-        break;
-      }
-      default: break;
-    }
+    ch->ov[isReverse]  = target;
+    ch->ov[!isReverse] = data + (outp->count - 1) * stride;
   }
-
-  ch->kv[0].type
-    = ch->kv[1].type
-    = ch->ov[0].type
-    = ch->ov[1].type;
 
   /* fix 1D tangents */
   if ((int)ch->lastInterp >= (int)GK_INTERP_BEZIER)
@@ -148,52 +112,25 @@ GK_EXPORT
 void
 gkPrepChannelKey(GkKeyFrameAnimation *anim, GkChannel *ch) {
   GkBuffer *output, *input;
+  float    *data;
   uint32_t  index, prevIndex;
-  int       isReverse;
+  int       isReverse, stride;
 
   output    = ch->sampler->output;
   input     = ch->sampler->input;
   index     = ch->keyIndex;
   isReverse = anim->base.isReverse;
+  stride    = ch->stride;
+  data      = output->data;
 
   if (!anim->base.isReverse)
     prevIndex = GLM_MAX(1, index) - 1;
   else
     prevIndex = GLM_MIN((uint32_t)input->count - 2, index) + 1;
 
-  switch (ch->targetType) {
-    case GKT_FLOAT: {
-      float *target;
-
-      target = output->data;
-
-      gkInitValueAsFloat(&ch->kv[isReverse],  target[prevIndex]);
-      gkInitValueAsFloat(&ch->kv[!isReverse], target[index]);
-
-      break;
-    }
-    case GKT_FLOAT3: {
-      float *target;
-
-      target = output->data;
-
-      gkInitValueAsVec3(&ch->kv[isReverse],  target + 3 * prevIndex);
-      gkInitValueAsVec3(&ch->kv[!isReverse], target + 3 * index);
-
-      break;
-    }
-    case GKT_FLOAT4: {
-      float *target;
-
-      target = output->data;
-
-      gkInitValueAsVec4(&ch->kv[isReverse],  target + 4 * prevIndex);
-      gkInitValueAsVec4(&ch->kv[!isReverse], target + 4 * index);
-      break;
-    }
-    default: break;
-  }
-
+  ch->kv[isReverse]  = data + stride * prevIndex;
+  ch->kv[!isReverse] = data + stride * index;
+  
   ch->isPreparedKey = true;
 }
 
@@ -203,7 +140,7 @@ gkKeyFrameAnimation(void) {
   GkKeyFrameAnimation *kfa;
 
   kfa                    = calloc(1, sizeof(*kfa));
-  kfa->base.fnKfAnimator = gkBuiltinKeyAnim;
+  /* kfa->base.fnKfAnimator = gkBuiltinKeyAnim; */
   kfa->base.delta        = calloc(1, sizeof(*kfa->base.delta));
   kfa->base.nRepeat      = 1;
   kfa->base.isKeyFrame   = true;

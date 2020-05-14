@@ -84,30 +84,9 @@ gkValueSub(GkValue *a, GkValue *b, GkValue *dest) {
 
 GK_EXPORT
 void
-gkValueMul(GkValue *a, GkValue *b, GkValue *dest) {
-  if (!b || (b->type != GKT_FLOAT && !b->val)) {
-    gkValueCopy(a, dest);
-    return;
-  }
-
-  if (!dest->val && a->type != GKT_FLOAT)
-    dest->val = malloc(a->itemSize * a->colCount * a->rowCount);
-
-  switch (a->type) {
-    case GKT_FLOAT:
-      dest->s32.floatValue = a->s32.floatValue * b->s32.floatValue;
-      break;
-    case GKT_FLOAT3:
-      glm_vec3_mul(a->val, b->val, dest->val);
-      break;
-    case GKT_FLOAT4:
-      glm_vec4_mul(a->val, b->val, dest->val);
-      break;
-    default:
-      break;
-  }
-
-  dest->type = a->type;
+gkVectorSubf(float *a, float *b, float *dest, int count) {
+  while (count-- > 0)
+    dest[count] = a[count] - b[count];
 }
 
 GK_EXPORT
