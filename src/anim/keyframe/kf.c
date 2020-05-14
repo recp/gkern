@@ -22,6 +22,25 @@
 #include "kf.h"
 #include <tm/tm.h>
 
+GK_EXPORT
+void
+gkChannelSetTargetTo(GkChannel        * __restrict ch,
+                     GkFloatOrPointer * __restrict to) {
+  float   *target, *tov;
+  uint32_t stride, i;
+
+  stride = ch->stride;
+  target = ch->target;
+
+  if (stride == 1) {
+    *target = to->s32;
+  } else {
+    tov = to->p;
+    for (i = 0; i < stride; i++)
+      target[i] = tov[i];
+  }
+}
+
 _gk_hide
 bool
 gkBuiltinKeyAnim(GkAnimation *anim,

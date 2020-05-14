@@ -31,6 +31,11 @@ gkRunKFAnim(GkKeyFrameAnimation *kfa, float ease);
 
 GK_EXPORT
 void
+gkChannelSetTargetTo(GkChannel        * __restrict ch,
+                     GkFloatOrPointer * __restrict to);
+
+GK_EXPORT
+void
 gkPrepChannel(GkAnimation *anim, GkChannel *ch);
 
 GK_EXPORT
