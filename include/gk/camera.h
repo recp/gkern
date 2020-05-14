@@ -33,6 +33,7 @@ struct GkModelInst;
 struct GkMaterial;
 struct GkPrimitive;
 struct GkPrimInst;
+struct FListItem;
 
 typedef enum GkCameraFlags {
   GK_CAMF_NONE     = 0,
@@ -50,12 +51,13 @@ typedef struct GkRenderList {
 } GkRenderList;
 
 typedef struct GkFrustum {
-  vec4          center;
-  GkPlane       planes[6]; /* left, right, bottom, top, near, far */
-  vec4          corners[8];
-
-  GkRenderList *opaque;
-  GkRenderList *transp;
+  vec4              center;
+  GkPlane           planes[6]; /* left, right, bottom, top, near, far */
+  vec4              corners[8];
+    
+  GkRenderList     *opaque;
+  GkRenderList     *transp;
+  struct FListItem *modelInsList;
 } GkFrustum;
 
 typedef struct GkCamera {

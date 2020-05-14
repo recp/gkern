@@ -63,6 +63,7 @@ typedef struct GkAnimSampler {
   GkInterpType      uniInterp;
   uint32_t          inTangentStride;
   uint32_t          outTangentStride;
+  uint32_t          inputStride;
   uint32_t          outputStride;
 } GkAnimSampler;
 
@@ -94,7 +95,6 @@ typedef struct GkChannel {
   bool                 isPreparedKey:1;
   bool                 isFinished:1;    /* all keys are finished             */
   bool                 computeDelta:1;
-  bool                 currValuePrepared:1;
   bool                 tangentsKeyGenerated:1; /* fix 1D tangents */
 } GkChannel;
 

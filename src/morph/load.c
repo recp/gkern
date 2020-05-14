@@ -142,8 +142,6 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
       prim->vertexAttachments = va;
     }
   }
-
-  modelInst->morpher = morph;
 }
 
 GK_EXPORT

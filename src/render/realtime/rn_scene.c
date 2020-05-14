@@ -35,6 +35,11 @@ static
 void
 gkDefRenderFunc(GkScene * scene) ;
 
+_gk_hide
+void
+gkPerModelInstTask(GkScene   * __restrict scene,
+                   FListItem * __restrict iter);
+
 static
 void
 gkDefRenderFunc(GkScene * scene) {
@@ -144,6 +149,9 @@ gkRenderScene(GkScene * scene) {
 
   /* frustum culling */
   gkCullFrustum(scene, scene->camera);
+  
+  /* this can be combined with CullFrustum but it easy to magane in this way */
+  gkPerModelInstTask(scene, scene->camera->frustum.modelInsList);
 
   scene->trans->flags  |= GK_TRANSF_WORLD_ISVALID;
   scene->camera->flags &= ~GK_UPDT_VIEWPROJ;
@@ -158,6 +166,28 @@ gkRenderScene(GkScene * scene) {
   scene->endTime = tm_time();
 
   scene->fpsApprx = 1.0 / (scene->endTime - scene->startTime);
+}
+
+_gk_hide
+void
+gkPerModelInstTask(GkScene   * __restrict scene,
+                   FListItem * __restrict iter) {
+  GkModelInst     *modelInst;
+  GkInstanceMorph *morpher;
+
+  while (iter) {
+    modelInst = iter->data;
+    
+    /* 1. Update Morph Weights */
+    if ((morpher = modelInst->morpher)) {
+      gkUniformTargetWeights(scene,
+                             modelInst,
+                             morpher->overrideWeights,
+                             morpher->overrideWeightsCount);
+    }
+    
+    iter = iter->next;
+  }
 }
 
 GK_EXPORT

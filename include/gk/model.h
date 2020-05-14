@@ -32,6 +32,8 @@ struct GkModel;
 struct GkModelInst;
 struct GkContext;
 struct GkSkin;
+struct GkMorph;
+struct GkInstanceMorph;
 struct FListItem;
 
 typedef void (*gkOnDraw)(struct GkModel     * model,
@@ -124,22 +126,24 @@ typedef struct GkModel {
 } GkModel;
 
 typedef struct GkModelInst {
-  struct GkModelInst *next;
-  GkModel            *model;
-  GkTransform        *trans;    /* readonly: don't set this manually */
-  GkMaterial         *material; /* instances may use different materials */
-  GkBindTexture      *bindTexture;
-  GkMaterial         *activeMaterial;
-  mat4               *joints;
-  mat4               *jointsToDraw;
-  GkGpuBuffer        *uboJoints;
-  struct GkSkin      *skin;
-  GkBBox              bbox;
-  vec3                center;
-  bool                addedToScene;
-  uint64_t            flags;
-  int32_t             primc;
-  GkPrimInst          prims[];
+  struct GkModelInst     *next;
+  GkModel                *model;
+  GkTransform            *trans;    /* readonly: don't set this manually */
+  GkMaterial             *material; /* instances may use different materials */
+  GkBindTexture          *bindTexture;
+  GkMaterial             *activeMaterial;
+  mat4                   *joints;
+  mat4                   *jointsToDraw;
+  GkGpuBuffer            *uboJoints;
+  GkGpuBuffer            *uboTargetWeights;
+  struct GkSkin          *skin;
+  struct GkInstanceMorph *morpher;
+  GkBBox                  bbox;
+  vec3                    center;
+  bool                    addedToScene;
+  uint64_t                flags;
+  int32_t                 primc;
+  GkPrimInst              prims[];
 } GkModelInst;
 
 void

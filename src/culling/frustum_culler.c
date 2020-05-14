@@ -63,6 +63,9 @@ gkCullFrustum(GkScene  * __restrict scene,
   frustum   = &cam->frustum;
   camPlanes = frustum->planes;
 
+  flist_sp_destroy(&frustum->modelInsList);
+  frustum->modelInsList = NULL;
+
   if (frustum->opaque)
     frustum->opaque->count = 0;
   else {
@@ -118,7 +121,9 @@ gkCullFrustum(GkScene  * __restrict scene,
 
               gkUpdateSceneAABB(scene, primInst->bbox);
             }
-          }
+          } /* for each prim */
+          
+          flist_sp_insert(&frustum->modelInsList, modelInst);
         }
 
         modelInst = modelInst->next;

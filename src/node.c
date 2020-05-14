@@ -111,7 +111,7 @@ gkPrepareNode(GkScene * __restrict scene,
   FListItem       *camItem;
   GkTransform     *tr;
   GkLight         *light;
-  GkInstanceMorph *morper;
+  GkInstanceMorph *morpher;
   bool             finalComputed;
 
   sceneImpl = (GkSceneImpl *)scene;
@@ -178,9 +178,10 @@ gkPrepareNode(GkScene * __restrict scene,
 
       glm_vec3_add(scene->center, modelInst->center, scene->center);
 
-      if ((morper = node->morpher)) {
-        gkAttachMorphTo(morper->morph, modelInst);
-        gkUniformTargetWeights(scene, modelInst, morper->overrideWeights, 2);
+      if ((morpher = node->morpher)
+          && modelInst->morpher != node->morpher) {
+        gkAttachMorphTo(morpher->morph, modelInst);
+        modelInst->morpher = node->morpher;
       }
 
       modelInst = modelInst->next;
