@@ -25,6 +25,11 @@ extern "C" {
 #include "type.h"
 #include <stdint.h>
 
+typedef union GkFloatOrPointer {
+  float  s32;
+  float *p;
+} GkFloatOrPointer;
+
 typedef union GkValue32 {
   int32_t intValue;
   float   floatValue;
