@@ -19,13 +19,6 @@
 #include "../../common.h"
 #include "../../../include/gk/animation.h"
 
-_gk_hide
-bool
-gkBuiltinKeyAnim(GkAnimation *anim,
-                 GkChannel   *channel,
-                 GkValue     *to,
-                 GkValue     *delta);
-
 void
 gkRunKFAnim(GkKeyFrameAnimation *kfa, float ease);
 

@@ -38,8 +38,8 @@ gkRunAnim(GkSceneImpl *sceneImpl) {
   if (!(animItem = sceneImpl->anims))
     return;
 
-  time   = sceneImpl->pub.startTime;
-  vd.val = NULL;
+  time     = sceneImpl->pub.startTime;
+  vd.val.p = NULL;
 
   do {
     anim      = animItem->data;

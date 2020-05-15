@@ -34,7 +34,7 @@ gkBuiltinRotationAnim(GkAnimation *anim,
 
   glm_rotate_at(node->trans->local,
                 data[0],
-                delta->s32.floatValue,
+                delta->val.floatValue,
                 data[1]);
 
   gkApplyTransform(anim->scene, node);
@@ -60,7 +60,7 @@ gkBuiltinTranslateAnim(GkAnimation *anim,
   GkNode *node;
 
   node = anim->node;
-  glm_translate(node->trans->local, delta->val);
+  glm_translate(node->trans->local, delta->val.p);
   gkApplyTransform(anim->scene, node);
 
   return false;
@@ -75,7 +75,7 @@ gkBuiltinScaleAnim(GkAnimation *anim,
   GkNode *node;
 
   node = anim->node;
-  glm_scale_make(node->trans->local, to->val);
+  glm_scale_make(node->trans->local, to->val.p);
   gkApplyTransform(anim->scene, node);
 
   return false;

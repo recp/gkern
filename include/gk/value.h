@@ -33,15 +33,15 @@ typedef union GkFloatOrPointer {
 typedef union GkValue32 {
   int32_t intValue;
   float   floatValue;
+  void   *p;
 } GkValue32;
 
 typedef struct GkValue {
-  void     *val;
   uint32_t  itemSize;
-  uint32_t  rowCount;
-  uint32_t  colCount;
+  uint32_t  rowc;
+  uint32_t  colc;
   GkType    type;
-  GkValue32 s32;
+  GkValue32 val;
   bool      initialized;
 } GkValue;
 
@@ -87,7 +87,15 @@ gkInitValueAsVec4(GkValue *val, vec4 v);
 
 GK_EXPORT
 void
+gkInitValueAsFloatArray(GkValue *val, float *v, int32_t count);
+
+GK_EXPORT
+void
 gkInitValueAsMat4(GkValue *val, mat4 m);
+
+GK_EXPORT
+void
+gkInitValueAsMat3(GkValue *val, mat3 m);
 
 GK_EXPORT
 void
@@ -103,7 +111,10 @@ gkValueSub(GkValue *a, GkValue *b, GkValue *dest);
 
 GK_EXPORT
 void
-gkVectorSubf(float *a, float *b, float *dest, int count);
+gkVectorSubf(float * __restrict a,
+             float * __restrict b,
+             float * __restrict dest,
+             int                count);
 
 GK_EXPORT
 void

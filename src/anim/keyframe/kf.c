@@ -41,41 +41,6 @@ gkChannelSetTargetTo(GkChannel        * __restrict ch,
   }
 }
 
-_gk_hide
-bool
-gkBuiltinKeyAnim(GkAnimation *anim,
-                 GkChannel   *ch,
-                 GkValue     *to,
-                 GkValue     *delta) {
-  float   *target, *tov;
-  uint32_t stride, i;
-    
-  stride = ch->stride;
-  target = ch->target;
-
-  if (stride == 1) {
-    *target = to->s32.floatValue;
-  } else {
-    tov = to->val;
-    for (i = 0; i < stride; i++)
-      target[i] = tov[i];
-  }
-
-  if (ch->isTransform) {
-    GkNode      *node;
-    GkTransform *tr;
-
-    node = ch->node;
-
-    if (ch->isLocalTransform && (tr = node->trans))
-      tr->flags &= ~GK_TRANSF_LOCAL_ISVALID;
-
-    gkApplyTransform(anim->scene, node);
-  }
-
-  return false;
-}
-
 GK_EXPORT
 void
 gkPrepChannel(GkAnimation *anim, GkChannel *ch) {

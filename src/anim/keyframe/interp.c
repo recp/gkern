@@ -98,7 +98,7 @@ gkInterpolateChannel(GkAnimation * __restrict anim,
   }
 
   if (ch->computeDelta)
-    gkVectorSubf(p0, p1, ch->delta.val, ch->stride);
+    gkVectorSubf(p0, p1, ch->delta.val.p, ch->stride);
   
   if (ch->isTransform && ch->node) {
     if (ch->isLocalTransform && ch->node->trans)

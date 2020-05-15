@@ -9,23 +9,23 @@
 GK_EXPORT
 void
 gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest) {
-  if (!from->val && from->type != GKT_FLOAT)
-    dest->val = malloc(from->itemSize * from->colCount * from->rowCount);
+  if (!dest->val.p && from->type != GKT_FLOAT)
+    dest->val.p = malloc(from->itemSize * from->colc * from->rowc);
 
-  switch (to->type) {
-    case GKT_FLOAT:
-      dest->s32.floatValue = glm_lerp(from->s32.floatValue,
-                                      to->s32.floatValue,
-                                      t);
-      break;
-    case GKT_FLOAT3:
-      glm_vec3_lerp(from->val, to->val, t, dest->val);
-      break;
-    case GKT_FLOAT4:
-      glm_vec4_lerp(from->val, to->val, t, dest->val);
-      break;
-    default:
-      break;
+  if (dest->rowc == 1) {
+    dest->val.floatValue = glm_lerp(from->val.floatValue,
+                                    to->val.floatValue,
+                                    t);
+  } else {
+    float *fv, *tv, *dv;
+    int    i;
+    
+    fv = from->val.p;
+    tv = to->val.p;
+    dv = dest->val.p;
+
+    for (i = 0; i < from->rowc; i++)
+      dv[i] = glm_lerp(fv[i], tv[i], t);
   }
 
   dest->type = to->type;
@@ -34,21 +34,20 @@ gkValueLerp(GkValue *from, GkValue *to, float t, GkValue *dest) {
 GK_EXPORT
 void
 gkValueCopy(GkValue *src, GkValue *dest) {
-  if (!dest->val && src->type != GKT_FLOAT)
-    dest->val = malloc(src->itemSize * src->colCount * src->rowCount);
+  if (!dest->val.p && src->type != GKT_FLOAT)
+    dest->val.p = malloc(src->itemSize * src->colc * src->rowc);
 
-  switch (src->type) {
-    case GKT_FLOAT:
-      dest->s32.floatValue = src->s32.floatValue;
-      break;
-    case GKT_FLOAT3:
-      glm_vec3_copy(src->val, dest->val);
-      break;
-    case GKT_FLOAT4:
-      glm_vec4_ucopy(src->val, dest->val);
-      break;
-    default:
-      break;
+  if (dest->rowc == 1) {
+    dest->val.floatValue =src->val.floatValue;
+  } else {
+    float *fv, *dv;
+    int    i;
+    
+    fv = src->val.p;
+    dv = dest->val.p;
+
+    for (i = 0; i < src->rowc; i++)
+      dv[i] = fv[i];
   }
 
   dest->type = src->type;
@@ -57,26 +56,26 @@ gkValueCopy(GkValue *src, GkValue *dest) {
 GK_EXPORT
 void
 gkValueSub(GkValue *a, GkValue *b, GkValue *dest) {
-  if (!b || (b->type != GKT_FLOAT && !b->val)) {
+  if (!b || (b->type != GKT_FLOAT && !b->val.p)) {
     gkValueCopy(a, dest);
     return;
   }
 
-  if (!dest->val && a->type != GKT_FLOAT)
-    dest->val = malloc(a->itemSize * a->colCount * a->rowCount);
+  if (!dest->val.p && a->type != GKT_FLOAT)
+    dest->val.p = malloc(a->itemSize * a->colc * a->rowc);
 
-  switch (a->type) {
-    case GKT_FLOAT:
-      dest->s32.floatValue = a->s32.floatValue - b->s32.floatValue;
-      break;
-    case GKT_FLOAT3:
-      glm_vec3_sub(a->val, b->val, dest->val);
-      break;
-    case GKT_FLOAT4:
-      glm_vec4_sub(a->val, b->val, dest->val);
-      break;
-    default:
-      break;
+  if (dest->rowc == 1) {
+    dest->val.floatValue = a->val.floatValue - b->val.floatValue;
+  } else {
+    float *av, *bv, *dv;
+    int    i;
+    
+    av = a->val.p;
+    bv = b->val.p;
+    dv = dest->val.p;
+
+    for (i = 0; i < a->rowc; i++)
+      dv[i] = av[i] - bv[i];
   }
 
   dest->type = a->type;
@@ -84,7 +83,10 @@ gkValueSub(GkValue *a, GkValue *b, GkValue *dest) {
 
 GK_EXPORT
 void
-gkVectorSubf(float *a, float *b, float *dest, int count) {
+gkVectorSubf(float * __restrict a,
+             float * __restrict b,
+             float * __restrict dest,
+             int                count) {
   while (count-- > 0)
     dest[count] = a[count] - b[count];
 }
@@ -92,8 +94,8 @@ gkVectorSubf(float *a, float *b, float *dest, int count) {
 GK_EXPORT
 void
 gkValueFree(GkValue *a) {
-  if (a->val)
-    free(a->val);
+  if (a->val.p)
+    free(a->val.p);
 
   free(a);
 }
