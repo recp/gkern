@@ -90,9 +90,11 @@ uniform vec4      uEmission;
 
 \n#ifdef AMBIENT_TEX\n
 uniform sampler2D uAmbientTex;
+uniform vec4      uIAmbient;
 \n#endif\n
 \n#if defined(AMBIENT_COLOR)\n
 uniform vec4      uAmbient;
+uniform vec4      uIAmbient;
 \n#endif\n
 
 \n#ifdef SPECULAR_TEX\n

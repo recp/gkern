@@ -44,9 +44,9 @@ void main() {
 \n#endif\n
 
 \n#ifdef AMBIENT_TEX\n
-  + texture(uAmbientTex, AMBIENT_TEXCOORD)
+  + texture(uAmbientTex, AMBIENT_TEXCOORD) * uIAmbient
 \n#elif defined(AMBIENT_COLOR)\n
-  + uAmbient
+  + uAmbient * uIAmbient
 \n#endif\n
 
 \n#ifdef SHADOWMAP\n
