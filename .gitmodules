@@ -1,12 +1,12 @@
-[submodule "lib/cmt"]
-	path = lib/cmt
-	url = https://github.com/recp/cmt.git
-[submodule "lib/ds"]
-	path = lib/ds
-	url = https://github.com/recp/ds.git
-[submodule "lib/tm"]
-	path = lib/tm
-	url = https://github.com/recp/tm.git
-[submodule "lib/cglm"]
-	path = lib/cglm
-	url = https://github.com/recp/cglm.git
+[submodule "deps/cglm"]
+	path = deps/cglm
+	url = https://github.com/recp/cglm
+[submodule "deps/cmt"]
+	path = deps/cmt
+	url = https://github.com/recp/cmt
+[submodule "deps/ds"]
+	path = deps/ds
+	url = https://github.com/recp/ds
+[submodule "deps/tm"]
+	path = deps/tm
+	url = https://github.com/recp/tm

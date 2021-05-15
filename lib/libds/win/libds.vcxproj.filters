@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{f46634e5-c098-41a0-afb3-45afb6a53593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ds">
+      <UniqueIdentifier>{496b3b53-1258-4efa-87b2-4280ea82f87e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\default">
+      <UniqueIdentifier>{dedec597-3ca0-4b0f-900f-a8c36e5c496f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{e6835f4f-a755-49af-b58e-ca68f451277e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\src">
+      <UniqueIdentifier>{b9f8b30a-6091-4fb0-96e2-52029459d024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sort">
+      <UniqueIdentifier>{bcfd119c-06c3-4c43-b005-4eb4b103513f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\ds\rb.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\allocator.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\common.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\util.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\default\default.h">
+      <Filter>src\default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\forward-list.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\hashtable.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\hash.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\hash-funcs.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\forward-list-common.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\forward-list-sep.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ds\sort.h">
+      <Filter>include\ds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\sort\sort_common.h">
+      <Filter>src\sort</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\rb.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\default\default.c">
+      <Filter>src\default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\util.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\forward_list.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hash_funcs.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hash_table.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\allocator.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\flist_separate.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\sort\sort.c">
+      <Filter>src\sort</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

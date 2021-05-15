@@ -1,0 +1,61 @@
+#******************************************************************************
+# Copyright (c), Recep Aslantas.                                              *
+#                                                                             *
+# MIT License (MIT), http://opensource.org/licenses/MIT                       *
+# Full license can be found in the LICENSE file                               *
+#                                                                             *
+#******************************************************************************
+
+ACLOCAL_AMFLAGS = -I m4
+
+AM_CFLAGS = -Wall \
+            -std=gnu99 \
+            -O3 \
+            -Wstrict-aliasing=2 \
+            -fstrict-aliasing \
+            -Wpedantic
+
+lib_LTLIBRARIES = libds.la
+libds_la_LDFLAGS = -no-undefined -version-info 0:1:0
+
+checkLDFLAGS = -L./.libs \
+               -lm \
+               -lds
+checkCFLAGS = -I./include
+
+check_PROGRAMS = test/tests
+TESTS = $(check_PROGRAMS)
+
+test_tests_LDFLAGS = $(checkLDFLAGS)
+test_tests_CFLAGS  = $(checkCFLAGS)
+
+dsdir=$(includedir)/ds
+ds_HEADERS = include/ds/rb.h \
+             include/ds/util.h \
+             include/ds/common.h \
+             include/ds/allocator.h \
+             include/ds/forward-list-common.h \
+             include/ds/forward-list.h \
+             include/ds/forward-list-sep.h \
+             include/ds/hash.h \
+             include/ds/hash-funcs.h \
+             include/ds/sort.h
+
+libds_la_SOURCES=\
+    src/default/default.c \
+    src/allocator.c \
+    src/util.c \
+    src/rb.c \
+    src/forward_list.c \
+    src/flist_separate.c \
+    src/hash_table.c \
+    src/hash_funcs.c \
+    src/sort/sort.c
+
+test_tests_SOURCES=\
+    test/runner.c \
+    test/src/test_common.c \
+    test/src/test_rb.c \
+    test/src/test_flist.c \
+    test/src/test_flist_sep.c \
+    test/src/test_htable.c
