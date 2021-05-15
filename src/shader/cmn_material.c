@@ -366,7 +366,7 @@ gkShaderFlagsFor(GkScene     * __restrict scene,
       && mat->technique->transparent->opaque == GK_OPAQUE_MASK)
     SH_VF("ALPHAMASK_CUTOFF")
 
-  if (primInst->modelInst->skin)
+  if (primInst->geomInst->skin)
     SH_V_ARG("JOINT_COUNT %d", 255);
   
   if (primInst->hasMorph) {
@@ -556,13 +556,13 @@ gk__texFlag(GkPrimInst    * __restrict primInst,
 
   if ((bindtex = primInst->bindTexture)
       || (bindtex = primInst->prim->bindTexture)
-      || (bindtex = primInst->modelInst->bindTexture)
-      || (bindtex = primInst->modelInst->model->bindTexture)
+      || (bindtex = primInst->geomInst->bindTexture)
+      || (bindtex = primInst->geomInst->geom->bindTexture)
       || ((sampler = tex->sampler) && (bindtex = sampler->bindTexture))) {
     while (bindtex) {
       if (bindtex->texture == tex) {
         coordInpName = bindtex->coordInputName;
-        break;;
+        break;
       }
       bindtex = bindtex->next;
     }

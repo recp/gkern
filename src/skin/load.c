@@ -31,7 +31,7 @@
 GK_EXPORT
 void
 gkAttachSkin(GkSkin * __restrict skin) {
-  GkModelInst *modelInst;
+  GkGeometryInst *modelInst;
   modelInst = skin->base.source;
 
   gkAttachSkinTo(skin, modelInst);
@@ -39,7 +39,7 @@ gkAttachSkin(GkSkin * __restrict skin) {
 
 GK_EXPORT
 void
-gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst) {
+gkAttachSkinTo(GkSkin * __restrict skin, GkGeometryInst * __restrict modelInst) {
   GkPrimInst         *prim;
   GkGpuBuffer        *gbuff;
   GkVertexAttachment *va, *va_last;
@@ -103,7 +103,7 @@ gkAttachSkinTo(GkSkin * __restrict skin, GkModelInst * __restrict modelInst) {
 GK_EXPORT
 void
 gkUniformJoints(GkScene     * __restrict scene,
-                GkModelInst * __restrict modelInst) {
+                GkGeometryInst * __restrict modelInst) {
   GkSkin *skin;
 
   skin = modelInst->skin;

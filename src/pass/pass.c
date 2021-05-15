@@ -17,7 +17,7 @@
  */
 
 #include "../common.h"
-#include "../../include/gk/model.h"
+#include "../../include/gk/geom.h"
 #include "../../include/gk/pass.h"
 #include "../../include/gk/shader.h"
 #include "../../include/gk/material.h"

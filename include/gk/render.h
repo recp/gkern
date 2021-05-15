@@ -28,20 +28,20 @@ struct GkLight;
 
 void
 gkPrepMaterial(GkScene     *scene,
-               GkModelInst *modelInst);
+               GkGeometryInst *modelInst);
 
 void
 gkPrepModel(GkScene     *scene,
-            GkModelInst *modelInst,
+            GkGeometryInst *modelInst,
             GkTransform *ptr);
 
 void
 gkRenderModel(GkScene     *scene,
-              GkModelInst *modelInst);
+              GkGeometryInst *modelInst);
 
 void
 gkRnModelNoMatOPass(GkScene     *scene,
-                    GkModelInst *modelInst);
+                    GkGeometryInst *modelInst);
 
 void
 gkPrepNode(GkScene     *scene,

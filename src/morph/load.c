@@ -91,8 +91,8 @@ gkPrepMorph(GkMorph * __restrict morph) {
 
 GK_EXPORT
 void
-gkAttachMorphTo(GkMorph     * __restrict morph,
-                GkModelInst * __restrict modelInst) {
+gkAttachMorphTo(GkMorph        * __restrict morph,
+                GkGeometryInst * __restrict geomInst) {
   GkPrimInst         *prim;
   GkGpuBuffer        *gbuff;
   GkVertexAttachment *va, *va_last;
@@ -107,12 +107,12 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
     return;
 
   /* currently allow only 4 target */
-  nPrims = modelInst->primc;
+  nPrims = geomInst->primc;
   gbuff  = morph->buff;
 
   /* for each primitive */
   for (i = 0; i < nPrims; i++) {
-    prim = &modelInst->prims[i];
+    prim = &geomInst->prims[i];
     if (prim->hasMorph)
       continue;
 
@@ -147,15 +147,15 @@ gkAttachMorphTo(GkMorph     * __restrict morph,
 GK_EXPORT
 void
 gkUniformTargetWeights(GkScene     * __restrict scene,
-                       GkModelInst * __restrict modelInst,
+                       GkGeometryInst * __restrict geomInst,
                        float       * __restrict weights,
                        uint32_t                 nWeights) {
-  glBindBuffer(GL_UNIFORM_BUFFER, modelInst->uboTargetWeights->vbo);
+  glBindBuffer(GL_UNIFORM_BUFFER, geomInst->uboTargetWeights->vbo);
   glBufferSubData(GL_UNIFORM_BUFFER,
                   0,
                   sizeof(*weights) * nWeights,
                   weights);
-  glBindBuffer(modelInst->uboTargetWeights->target, 0);
+  glBindBuffer(geomInst->uboTargetWeights->target, 0);
 }
 
 GK_EXPORT

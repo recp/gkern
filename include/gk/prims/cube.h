@@ -20,7 +20,7 @@
 #define gk_cube_h
 
 #include "../common.h"
-#include "../model.h"
+#include "../geom.h"
 
 struct GkScene;
 

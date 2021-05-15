@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef gk_model_h
-#define gk_model_h
+#ifndef gk_geometry_h
+#define gk_geometry_h
 
 #include "common.h"
 #include "program.h"
@@ -28,19 +28,19 @@
 
 #include <stdint.h>
 
-struct GkModel;
-struct GkModelInst;
+struct GkGeometry;
+struct GkGeometryInst;
 struct GkContext;
 struct GkSkin;
 struct GkMorph;
 struct GkInstanceMorph;
 struct FListItem;
 
-typedef void (*gkOnDraw)(struct GkModel     * model,
-                         struct GkModelInst * instance,
+typedef void (*gkOnDraw)(struct GkGeometry     * geom,
+                         struct GkGeometryInst * instance,
                          bool finished);
 
-typedef void (*gkOnClick)(struct GkModelInst * instance,
+typedef void (*gkOnClick)(struct GkGeometryInst * instance,
                           float x,
                           float y);
 
@@ -49,10 +49,10 @@ typedef struct GkGLEvents {
   gkOnClick onClick;
 } GkGLEvents;
 
-typedef struct GkModelInstList {
-  struct GkModelInst *instance;
+typedef struct GkGeometryInstList {
+  struct GkGeometryInst *instance;
   uint64_t            instanceCount;
-} GkModelInstList;
+} GkGeometryInstList;
 
 typedef struct GkVertexInputBind {
   struct GkVertexInputBind *next;
@@ -81,53 +81,55 @@ typedef struct GkPrimitive {
   GkMaterial          *material;
   GkBindTexture       *bindTexture;
   GkMaterial          *activeMaterial;
-  GkGpuBuffer         *bufs;
   GkVertexAttachment   vertex;
   GkBBox               bbox; /* local */
   GLuint               flags;
   GLuint               vao;
-  GLsizei              bufc;
   GLsizei              count;
   GLenum               mode;
   bool                 invalidateVertex:1;
+  
+  /* DEPRECATED: */
+  GkGpuBuffer         *bufs;
+  GLsizei              bufc;
 } GkPrimitive;
 
 typedef struct GkPrimInst {
-  GkPrimitive         *prim;
-  GkMaterial          *material;
-  GkBindTexture       *bindTexture;
-  GkMaterial          *activeMaterial;
-  GkTransform         *trans;
-  struct GkModelInst  *modelInst;
-  GkVertexAttachment  *vertexAttachments;
-  GkBBox               bbox;
-  uint32_t             maxJoint;
-  bool                 hasMorph:1;
-  bool                 hasSkin:1;
-  bool                 invalidateVertex:1;
+  GkPrimitive            *prim;
+  GkMaterial             *material;
+  GkBindTexture          *bindTexture;
+  GkMaterial             *activeMaterial;
+  GkTransform            *trans;
+  struct GkGeometryInst  *geomInst;
+  GkVertexAttachment     *vertexAttachments;
+  GkBBox                  bbox;
+  uint32_t                maxJoint;
+  bool                    hasMorph:1;
+  bool                    hasSkin:1;
+  bool                    invalidateVertex:1;
 } GkPrimInst;
 
-typedef enum GkModelFlags {
-  GK_MODEL_FLAGS_NONE      = 0,
-  GK_MODEL_FLAGS_DRAW_BBOX = 1 << 0,
-} GkModelFlags;
+typedef enum GkGeometryFlags {
+  GK_GEOM_FLAGS_NONE      = 0,
+  GK_GEOM_FLAGS_DRAW_BBOX = 1 << 0,
+} GkGeometryFlags;
 
-typedef struct GkModel {
-  GkPipeline      *prog;
-  GkMaterial      *material;
-  GkBindTexture   *bindTexture;
-  GkGLEvents      *events;
-  GkModelInstList *instances; /* TODO: */
-  GkBBox           bbox;   /* local */
-  vec3             center;
-  uint32_t         flags;
-  uint32_t         primc;
-  GkPrimitive      prims[];
-} GkModel;
+typedef struct GkGeometry {
+  GkPipeline         *prog;
+  GkMaterial         *material;
+  GkBindTexture      *bindTexture;
+  GkGLEvents         *events;
+  GkGeometryInstList *instances; /* TODO: */
+  GkBBox              bbox;   /* local */
+  vec3                center;
+  uint32_t            flags;
+  uint32_t            primc;
+  GkPrimitive         prims[];
+} GkGeometry;
 
-typedef struct GkModelInst {
-  struct GkModelInst     *next;
-  GkModel                *model;
+typedef struct GkGeometryInst {
+  struct GkGeometryInst  *next;
+  GkGeometry             *geom;
   GkTransform            *trans;    /* readonly: don't set this manually */
   GkMaterial             *material; /* instances may use different materials */
   GkBindTexture          *bindTexture;
@@ -144,23 +146,43 @@ typedef struct GkModelInst {
   uint64_t                flags;
   int32_t                 primc;
   GkPrimInst              prims[];
-} GkModelInst;
+} GkGeometryInst;
 
 void
-gk_model_add(struct GkContext * __restrict ctx,
-             GkModel * __restrict model,
-             void    * __restrict source);
+gk_geom_add(struct GkContext * __restrict ctx,
+            GkGeometry       * __restrict geom,
+            void             * __restrict source);
 
-GkModel*
-gk_model_find(struct GkContext * __restrict ctx,
-              void * __restrict source);
+GkGeometry*
+gk_geom_find(struct GkContext * __restrict ctx,
+             void             * __restrict source);
 
-GkModelInst*
-gkMakeInstance(GkModel *model);
+GkGeometryInst*
+gkMakeInstance(GkGeometry *geom);
 
 GK_EXPORT
 void
 gkPrimAddBuffer(GkPrimitive * __restrict prim,
                 GkGpuBuffer * __restrict buff);
 
-#endif /* gk_model_h */
+
+GK_EXPORT
+void
+gkVertexAttrib(struct GkContext * __restrict ctx,
+               GkPrimitive      * __restrict prim,
+               GkGpuBuffer      * __restrict buff,
+               const char       * __restrict attribName,
+               GLenum                        type,
+               uint32_t                      bound,
+               size_t                        byteStride,
+               size_t                        byteOffset);
+GK_EXPORT
+void
+gkVertexAttribi(GkPrimitive * __restrict prim,
+                GkGpuBuffer * __restrict buff,
+                uint32_t                 attribIndex,
+                uint32_t                 bound,
+                size_t                   byteStride,
+                size_t                   byteOffset);
+
+#endif /* gk_geometry_h */

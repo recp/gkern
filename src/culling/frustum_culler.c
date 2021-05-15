@@ -49,14 +49,14 @@ GK_EXPORT
 void
 gkCullFrustum(GkScene  * __restrict scene,
               GkCamera * __restrict cam) {
-  GkNodePage   *np;
-  GkSceneImpl  *sceneImpl;
-  GkNode       *node;
-  GkModelInst  *modelInst;
-  GkFrustum    *frustum;
-  GkRenderList *rl[2];
-  vec4         *camPlanes;
-  size_t        i;
+  GkNodePage      *np;
+  GkSceneImpl     *sceneImpl;
+  GkNode          *node;
+  GkGeometryInst  *geomInst;
+  GkFrustum       *frustum;
+  GkRenderList    *rl[2];
+  vec4            *camPlanes;
+  size_t           i;
 
   sceneImpl = (GkSceneImpl *)scene;
   np        = sceneImpl->lastPage;
@@ -91,16 +91,16 @@ gkCullFrustum(GkScene  * __restrict scene,
 
       /* unallocated node */
       if (!(node->flags & GK_NODEF_NODE)
-          || !(modelInst = node->model))
+          || !(geomInst = node->geom))
         continue;
 
-      while (modelInst) {
-        if (glm_aabb_frustum(modelInst->bbox, camPlanes)) {
+      while (geomInst) {
+        if (glm_aabb_frustum(geomInst->bbox, camPlanes)) {
           GkPrimInst *prims, *primInst;
           int32_t     j, primc;
 
-          prims = modelInst->prims;
-          primc = modelInst->primc;
+          prims = geomInst->prims;
+          primc = geomInst->primc;
 
           for (j = 0; j < primc; j++) {
             if (glm_aabb_frustum(prims[j].bbox, camPlanes)) {
@@ -108,9 +108,9 @@ gkCullFrustum(GkScene  * __restrict scene,
 
               primInst = &prims[j];
 
-              (void)gkMaterialFor(scene, modelInst, primInst);
+              (void)gkMaterialFor(scene, geomInst, primInst);
 
-              isTransp = gkPrimIsTransparent(scene, modelInst, primInst);
+              isTransp = gkPrimIsTransparent(scene, geomInst, primInst);
               if (rl[isTransp]->count == rl[isTransp]->size) {
                 rl[isTransp]->size += 512;
                 rl[isTransp] = realloc(rl[isTransp], rnListSize(rl[isTransp]));
@@ -123,10 +123,10 @@ gkCullFrustum(GkScene  * __restrict scene,
             }
           } /* for each prim */
           
-          flist_sp_insert(&frustum->modelInsList, modelInst);
+          flist_sp_insert(&frustum->modelInsList, geomInst);
         }
 
-        modelInst = modelInst->next;
+        geomInst = geomInst->next;
       }
     }
 

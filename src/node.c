@@ -130,8 +130,8 @@ gkPrepareNode(GkScene * __restrict scene,
   /* TODO: */
   /* gkTransformAABB(tr, node->bbox); */
 
-  if (node->model) {
-    GkModelInst *modelInst;
+  if (node->geom) {
+    GkGeometryInst *geomInst;
 
     glm_vec3_scale(scene->center, sceneImpl->centercount, scene->center);
 
@@ -142,20 +142,20 @@ gkPrepareNode(GkScene * __restrict scene,
     }
 
     finalComputed = true;
-    modelInst     = node->model;
+    geomInst     = node->geom;
 
     do {
       GkPrimInst *prims;
-      vec3        modelCenter;
+      vec3        geomCenter;
       int32_t     i, primc;
 
-      modelInst->trans = tr;
-      glm_aabb_transform(modelInst->model->bbox, tr->world, modelInst->bbox);
+      geomInst->trans = tr;
+      glm_aabb_transform(geomInst->geom->bbox, tr->world, geomInst->bbox);
 
-      prims = modelInst->prims;
-      primc = modelInst->primc;
+      prims = geomInst->prims;
+      primc = geomInst->primc;
 
-      glm_vec3_zero(modelCenter);
+      glm_vec3_zero(geomCenter);
 
       for (i = 0; i < primc; i++) {
         glm_aabb_transform(prims[i].prim->bbox, tr->world, prims[i].bbox);
@@ -165,27 +165,27 @@ gkPrepareNode(GkScene * __restrict scene,
       }
 
       glm_mat4_mulv3(tr->world,
-                     modelInst->model->center,
+                     geomInst->geom->center,
                      1.0f,
-                     modelInst->center);
+                     geomInst->center);
 
-      if (modelInst->addedToScene) {
-        glm_vec3_sub(scene->center, modelInst->center, scene->center);
+      if (geomInst->addedToScene) {
+        glm_vec3_sub(scene->center, geomInst->center, scene->center);
       } else {
-        modelInst->addedToScene = true;
+        geomInst->addedToScene = true;
         sceneImpl->centercount++;
       }
 
-      glm_vec3_add(scene->center, modelInst->center, scene->center);
+      glm_vec3_add(scene->center, geomInst->center, scene->center);
 
       if ((morpher = node->morpher)
-          && modelInst->morpher != node->morpher) {
-        gkAttachMorphTo(morpher->morph, modelInst);
-        modelInst->morpher = node->morpher;
+          && geomInst->morpher != node->morpher) {
+        gkAttachMorphTo(morpher->morph, geomInst);
+        geomInst->morpher = node->morpher;
       }
 
-      modelInst = modelInst->next;
-    } while (modelInst);
+      geomInst = geomInst->next;
+    } while (geomInst);
 
     glm_vec3_divs(scene->center, sceneImpl->centercount, scene->center);
   }
@@ -275,7 +275,7 @@ gkPrepareView(GkScene * __restrict scene,
     return;
 
   finalComputed = false;
-  if (node->model) {
+  if (node->geom) {
     while (camItem) {
       camImpl = camItem->data;
       gkCalcFinalTransf(scene, &camImpl->pub, tr);
@@ -304,10 +304,10 @@ GK_EXPORT
 void
 gkApplyView(struct GkScene * __restrict scene,
             GkNode         * __restrict node) {
-  GkNodePage  *np;
-  GkSceneImpl *sceneImpl;
-  GkModelInst *modelInst;
-  size_t       i;
+  GkNodePage     *np;
+  GkSceneImpl    *sceneImpl;
+  GkGeometryInst *geomInst;
+  size_t          i;
 
   sceneImpl = (GkSceneImpl *)scene;
   np        = sceneImpl->lastPage;
@@ -319,12 +319,12 @@ gkApplyView(struct GkScene * __restrict scene,
 
       /* unallocated node */
       if (!(node->flags & GK_NODEF_NODE)
-          || !(modelInst = node->model))
+          || !(geomInst = node->geom))
         continue;
 
-      while (modelInst) {
-        modelInst->trans->flags |= GK_TRANSF_CALC_VIEW;
-        modelInst = modelInst->next;
+      while (geomInst) {
+        geomInst->trans->flags |= GK_TRANSF_CALC_VIEW;
+        geomInst = geomInst->next;
       }
     }
 
@@ -340,7 +340,7 @@ gkApplyView(struct GkScene * __restrict scene,
       if (!(node->flags & GK_NODEF_NODE))
         continue;
 
-      if (node->model || node->light)
+      if (node->geom || node->light)
         gkPrepareView(scene, node);
     }
 
@@ -356,7 +356,7 @@ gkPrepInstSkin(GkScene * __restrict scene) {
   FListItem        *item;
   GkNode           *node;
   GkControllerInst *ctlrInst;
-  GkModelInst      *modelInst;
+  GkGeometryInst   *geomInst;
 
   GkSkin *skin;
   GkNode *joint;
@@ -371,11 +371,11 @@ gkPrepInstSkin(GkScene * __restrict scene) {
       if (ctlrInst->ctlr && ctlrInst->ctlr->type == GK_CONTROLLER_SKIN) {
         skin      = (GkSkin *)ctlrInst->ctlr;
         nJoints   = skin->nJoints;
-        modelInst = skin->base.source;
+        geomInst = skin->base.source;
 
-        if (!modelInst->joints) {
-          modelInst->joints = malloc(sizeof(mat4) * skin->nJoints);
-          glm_mat4_identity_array(modelInst->joints, skin->nJoints);
+        if (!geomInst->joints) {
+          geomInst->joints = malloc(sizeof(mat4) * skin->nJoints);
+          glm_mat4_identity_array(geomInst->joints, skin->nJoints);
         }
 
         if (ctlrInst->joints) {
@@ -385,13 +385,13 @@ gkPrepInstSkin(GkScene * __restrict scene) {
                 &joint->trans->world,
                 &skin->invBindPoses[i],
                 &skin->bindShapeMatrix
-              }, 3, modelInst->joints[i]);
+              }, 3, geomInst->joints[i]);
 
               if (scene->flags & GK_SCENEF_DRAW_BONES) {
-                if (!modelInst->jointsToDraw)
-                  modelInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
+                if (!geomInst->jointsToDraw)
+                  geomInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
 
-                glm_mat4_copy(joint->trans->world, modelInst->jointsToDraw[i]);
+                glm_mat4_copy(joint->trans->world, geomInst->jointsToDraw[i]);
               }
             }
           }
@@ -402,20 +402,20 @@ gkPrepInstSkin(GkScene * __restrict scene) {
                 &joint->trans->world,
                 &skin->invBindPoses[i],
                 &skin->bindShapeMatrix
-              }, 3, modelInst->joints[i]);
+              }, 3, geomInst->joints[i]);
 
               if (scene->flags & GK_SCENEF_DRAW_BONES) {
-                if (!modelInst->jointsToDraw)
-                  modelInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
+                if (!geomInst->jointsToDraw)
+                  geomInst->jointsToDraw = malloc(sizeof(mat4) * skin->nJoints);
 
-                glm_mat4_copy(joint->trans->world, modelInst->jointsToDraw[i]);
+                glm_mat4_copy(joint->trans->world, geomInst->jointsToDraw[i]);
               }
             }
           }
         }
 
         /* TODO: optimize this */
-        gkUniformJoints(scene, modelInst);
+        gkUniformJoints(scene, geomInst);
       }
     } while ((item = item->next));
   }

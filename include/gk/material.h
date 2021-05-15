@@ -25,7 +25,7 @@
 
 struct GkPass;
 struct GkScene;
-struct GkModelInst;
+struct GkGeometryInst;
 struct GkPipeline;
 struct GkPrimitive;
 struct GkPrimInst;
@@ -173,8 +173,8 @@ gkUniformMaterialStruct(struct GkContext  * __restrict ctx,
                         struct GkMaterial * __restrict material);
 
 GkMaterial*
-gkMaterialFor(struct GkScene     *scene,
-              struct GkModelInst *modelInst,
-              struct GkPrimInst  *primInst);
+gkMaterialFor(struct GkScene        *scene,
+              struct GkGeometryInst *geomInst,
+              struct GkPrimInst     *primInst);
 
 #endif /* gk_material_h */

@@ -25,7 +25,7 @@ extern "C" {
 #include "common.h"
 #include "light.h"
 #include "bbox.h"
-#include "model.h"
+#include "geom.h"
 #include "camera.h"
 #include "transform.h"
 #include "controller.h"
@@ -52,7 +52,7 @@ typedef struct GkNode {
   struct GkAnimatable  *anim;
   GkTransform          *trans;
 
-  GkModelInst          *model;
+  GkGeometryInst       *geom;
   GkLight              *light;
   GkCamera             *camera;
   GkControllerInst     *controller;

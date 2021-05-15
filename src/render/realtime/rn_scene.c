@@ -172,16 +172,16 @@ _gk_hide
 void
 gkPerModelInstTask(GkScene   * __restrict scene,
                    FListItem * __restrict iter) {
-  GkModelInst     *modelInst;
+  GkGeometryInst  *geomInst;
   GkInstanceMorph *morpher;
 
   while (iter) {
-    modelInst = iter->data;
+    geomInst = iter->data;
     
     /* 1. Update Morph Weights */
-    if ((morpher = modelInst->morpher)) {
+    if ((morpher = geomInst->morpher)) {
       gkUniformTargetWeights(scene,
-                             modelInst,
+                             geomInst,
                              morpher->overrideWeights,
                              morpher->overrideWeightsCount);
     }

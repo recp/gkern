@@ -64,7 +64,7 @@ gkDrawBones(GkScene * __restrict scene) {
   FListItem        *item;
   GkNode           *node;
   GkControllerInst *ctlrInst;
-  GkModelInst      *modelInst;
+  GkGeometryInst   *geomInst;
   GkPipeline       *prog;
 
   ctx  = gkContextOf(scene);
@@ -90,12 +90,12 @@ gkDrawBones(GkScene * __restrict scene) {
 
       if (ctlrInst->ctlr
           && (skin = (GkSkin *)ctlrInst->ctlr)
-          && (modelInst = skin->base.source)) {
+          && (geomInst = skin->base.source)) {
         /* TODO: optimize this */
         glBufferSubData(GL_UNIFORM_BUFFER,
                         0,
                         sizeof(mat4) * skin->nJoints,
-                        modelInst->jointsToDraw);
+                        geomInst->jointsToDraw);
         glDrawArrays(GL_LINE_STRIP, 0, (GLint)skin->nJoints);
       }
     } while ((item = item->next));

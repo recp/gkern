@@ -31,7 +31,7 @@ struct GkScene;
 struct GkLight;
 struct GkContext;
 struct GkMaterial;
-struct GkModelInst;
+struct GkGeometryInst;
 struct GkPrimInst;
 struct GkNode;
 struct GkPipeline;

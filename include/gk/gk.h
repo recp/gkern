@@ -31,7 +31,7 @@ extern "C" {
 #include "bbox.h"
 #include "geom-types.h"
 #include "image.h"
-#include "model.h"
+#include "geom.h"
 #include "node.h"
 #include "transform.h"
 #include "camera.h"

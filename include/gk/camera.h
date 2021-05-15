@@ -29,7 +29,7 @@ extern "C" {
 #include <cglm/cglm.h>
 
 struct GkScene;
-struct GkModelInst;
+struct GkGeometryInst;
 struct GkMaterial;
 struct GkPrimitive;
 struct GkPrimInst;

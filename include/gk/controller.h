@@ -114,17 +114,17 @@ gkAttachSkin(GkSkin * __restrict skin);
 GK_EXPORT
 void
 gkAttachSkinTo(GkSkin      * __restrict skin,
-               GkModelInst * __restrict modelInst);
+               GkGeometryInst * __restrict modelInst);
 
 GK_EXPORT
 void
 gkUniformJoints(struct GkScene     * __restrict scene,
-                struct GkModelInst * __restrict modelInst);
+                struct GkGeometryInst * __restrict modelInst);
 
 GK_EXPORT
 void
 gkUniformTargetWeights(struct GkScene     * __restrict scene,
-                       struct GkModelInst * __restrict modelInst,
+                       struct GkGeometryInst * __restrict modelInst,
                        float              * __restrict weights,
                        uint32_t                        nWeights);
 
@@ -145,7 +145,7 @@ gkPrepMorph(GkMorph * __restrict morph);
 GK_EXPORT
 void
 gkAttachMorphTo(GkMorph     * __restrict morph,
-                GkModelInst * __restrict modelInst);
+                GkGeometryInst * __restrict modelInst);
 
 GK_EXPORT
 void

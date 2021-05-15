@@ -29,15 +29,15 @@
 #include "rn_prim.h"
 
 GkMaterial*
-gkMaterialFor(GkScene     *scene,
-              GkModelInst *modelInst,
-              GkPrimInst  *primInst) {
-  GkModel     *model;
+gkMaterialFor(GkScene        *scene,
+              GkGeometryInst *geomInst,
+              GkPrimInst     *primInst) {
+  GkGeometry  *geom;
   GkSceneImpl *sceneImpl;
   GkMaterial  *material;
 
   material  = NULL;
-  model     = modelInst->model;
+  geom     = geomInst->geom;
   sceneImpl = (GkSceneImpl *)scene;
 
   if (sceneImpl->overrideMaterial)
@@ -46,8 +46,8 @@ gkMaterialFor(GkScene     *scene,
   if (!(material = primInst->material))
     material = primInst->prim->material;
 
-  if (!material && !(material = modelInst->material))
-    material = model->material;
+  if (!material && !(material = geomInst->material))
+    material = geom->material;
 
   if (!material)
     material = gk_def_material();

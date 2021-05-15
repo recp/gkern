@@ -43,24 +43,24 @@ gkContextFree(GkContext *ctx) {
   free(ctx);
 }
 
-GkModelInst *
-gkMakeInstance(GkModel *model) {
-  GkModelInst *inst, *prevInst;
+GkGeometryInst *
+gkMakeInstance(GkGeometry *geom) {
+  GkGeometryInst *inst, *prevInst;
   GkGpuBuffer *uboJoints, *uboTargetWeights;
   int32_t      primc, i;
 
-  primc    = model->primc;
+  primc    = geom->primc;
   inst     = calloc(1, sizeof(*inst) + sizeof(GkPrimInst) * primc);
   prevInst = NULL;
 
-  if (!model->instances)
-    model->instances = calloc(1, sizeof(*model->instances));
+  if (!geom->instances)
+    geom->instances = calloc(1, sizeof(*geom->instances));
   else
-    prevInst = model->instances->instance;
+    prevInst = geom->instances->instance;
 
-  model->instances->instance = inst;
-  model->instances->instanceCount++;
-  inst->model = model;
+  geom->instances->instance = inst;
+  geom->instances->instanceCount++;
+  inst->geom = geom;
 
   if (prevInst)
     inst->next = prevInst;
@@ -68,12 +68,12 @@ gkMakeInstance(GkModel *model) {
   inst->primc = primc;
   for (i = 0; i < primc; i++) {
     memcpy(&inst->prims[i].bbox,
-           &model->prims[i].bbox,
-           sizeof(model->prims[i].bbox));
+           &geom->prims[i].bbox,
+           sizeof(geom->prims[i].bbox));
 
-    inst->prims[i].material  = model->prims[i].material;
-    inst->prims[i].prim      = &model->prims[i];
-    inst->prims[i].modelInst = inst;
+    inst->prims[i].material  = geom->prims[i].material;
+    inst->prims[i].prim      = &geom->prims[i];
+    inst->prims[i].geomInst = inst;
   }
 
   /* create an UBO for joints to share joints between primitives */

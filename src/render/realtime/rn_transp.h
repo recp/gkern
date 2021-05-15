@@ -23,7 +23,7 @@
 
 bool
 gkPrimIsTransparent(GkScene     * __restrict scene,
-                    GkModelInst * __restrict modelInst,
+                    GkGeometryInst * __restrict modelInst,
                     GkPrimInst  * __restrict primInst);
 
 bool
