@@ -183,7 +183,7 @@ gkPerModelInstTask(GkScene   * __restrict scene,
       gkUniformTargetWeights(scene,
                              geomInst,
                              morpher->overrideWeights,
-                             morpher->overrideWeightsCount);
+                             morpher->nOverrideWeights);
     }
     
     iter = iter->next;

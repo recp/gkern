@@ -95,10 +95,10 @@ typedef struct GkMorph {
 } GkMorph;
 
 typedef struct GkInstanceMorph {
-  GkModel *baseGeometry;
-  GkMorph *morph;
-  float   *overrideWeights; /* override default weights or NULL */
-  uint32_t overrideWeightsCount;
+  GkGeometry    *baseGeometry;
+  GkMorph       *morph;
+  float         *overrideWeights; /* override default weights or NULL */
+  uint32_t       nOverrideWeights;
 } GkInstanceMorph;
 
 typedef struct GkControllerInst {
