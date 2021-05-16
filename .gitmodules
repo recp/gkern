@@ -13,3 +13,6 @@
 [submodule "deps/gpu"]
 	path = deps/gpu
 	url = https://github.com/recp/gpu.git
+[submodule "deps/im"]
+	path = deps/im
+	url = https://github.com/recp/im.git
