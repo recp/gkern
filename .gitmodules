@@ -10,3 +10,6 @@
 [submodule "deps/cmt"]
 	path = deps/cmt
 	url = https://github.com/recp/cmt.git
+[submodule "deps/gpu"]
+	path = deps/gpu
+	url = https://github.com/recp/gpu.git
