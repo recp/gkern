@@ -17,11 +17,12 @@
  */
 
 #include "common.glsl"
+#include "normal.glsl"
 
 GK_STRINGIFY(
 void main() {
   vec4  clr, lightc;
-  vec3  L;
+  vec3  L, N;
   float a, Ld, Ls;
 
 \n#ifdef SHADOWMAP\n
@@ -35,17 +36,16 @@ void main() {
 \n#endif\n
 
   lightc = vec4(light.color.rgb, 1.0) * a;
-
+  N      = normal();
+  
 \n#ifndef TRANSP\n
-  Ld = max(0.0, dot(vNormal, L));
+  Ld = max(0.0, dot(N, L));
   if (Ld == 0.0)
     Ls = 0.0;
   else
-    Ls = pow(max(0.0, dot(reflect(-L, vNormal), vEye)), uShininess);
+    Ls = pow(max(0.0, dot(reflect(-L, N), vEye)), uShininess);
 \n#else\n
-  vec3 N;
-
-  N  = vNormal * sign(dot(vNormal, L));
+  N  = N * sign(dot(N, L));
   Ld = max(0.0, dot(N, L));
   if (Ld == 0.0)
     Ls = 0.0;
