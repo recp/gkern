@@ -188,8 +188,12 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
       gkUniformTex(ctx, mat, specGloss->specGlossMap, "uSpecGloss", prog);
   }
 
-  if (techn->ambient)
+  if (techn->ambient) {
     gkUniformColorDesc(ctx, mat, techn->ambient,  "uAmbient",  prog);
+    /* TODO: */
+    loc = gkUniformLoc(prog, "uIAmbient");
+    glUniform4fv(loc, 1, (vec4){0.7f, 0.7f, 0.7f, 1.0f});
+  }
 
   if (techn->diffuse)
     gkUniformColorDesc(ctx, mat, techn->diffuse,  "uDiffuse",  prog);
