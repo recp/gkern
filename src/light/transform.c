@@ -63,9 +63,10 @@ gkShadowMatrix(struct GkScene *scene,
                       glm_max(-finalBox[1][2], 0.0f),
                      -finalBox[0][2],
                       proj);
+      break;
     }
     case GK_LIGHT_TYPE_POINT:
-
+      break;
     default:
       break;
   }
