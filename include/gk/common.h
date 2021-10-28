@@ -24,8 +24,10 @@
 #include <stdint.h>
 #include <errno.h>
 
-#if defined(_WIN32)
-#  ifdef _gk_dll
+#if defined(_MSC_VER)
+#  ifdef GK_STATIC
+#    define GK_EXPORT
+#  elif defined(GK_EXPORTS)
 #    define GK_EXPORT __declspec(dllexport)
 #  else
 #    define GK_EXPORT __declspec(dllimport)
