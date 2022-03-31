@@ -40,10 +40,8 @@ void main() {
   N      = normal();
   
 \n#ifndef TRANSP\n
-  Ld     = max(0.0, dot(N, L));
+  Ld = max(0.0, dot(N, L));
 \n#else\n
-  vec3 N;
-
   N  = N * sign(dot(N, L));
   Ld = max(0.0, dot(N, L));
 \n#endif\n
