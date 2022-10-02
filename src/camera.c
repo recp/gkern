@@ -77,16 +77,16 @@ gkMakeCameraForScene(GkScene *scene) {
 
     far = glm_vec3_distance(eye, scene->bbox[0]) + dist;
   } else {
-    far  = glm_aabb_size(scene->bbox);
+    far  = glm_aabb_size(scene->bbox) * 2;
     dist = 0.01f;
 
     glm_vec3_copy(target, eye);
 
-    if (glm_eq(eye[0], 0.0f))
+    if (fabsf(scene->bbox[1][0] - scene->bbox[0][0]) <= 0.0001)
       eye[0] += far;
-    if (glm_eq(eye[1], 0.0f))
+    if (fabsf(scene->bbox[1][1] - scene->bbox[0][1]) <= 0.0001)
       eye[1] += far;
-    if (glm_eq(eye[2], 0.0f))
+    if (fabsf(scene->bbox[1][2] - scene->bbox[0][2]) <= 0.0001)
       eye[2] += far;
 
     far *= 2;
