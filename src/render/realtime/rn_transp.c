@@ -54,7 +54,8 @@ gkIsTransparent(GkScene    * __restrict scene,
       if (color)
         return (color->rgba.A * opacity) < 1.0f;
 
-      return opacity < 1.0f;
+      return true;
+      /* return opacity < 1.0f; */
     }
     case GK_OPAQUE_A_ZERO: {
       opacity = 1.0f - tech->transparent->amount;
@@ -62,7 +63,8 @@ gkIsTransparent(GkScene    * __restrict scene,
       if (color)
         return (color->rgba.A * opacity) > 0.0f;
 
-      return opacity < 1.0f;
+      return true;
+      /* return opacity < 1.0f; */
     }
     case GK_OPAQUE_RGB_ONE: {
       opacity = tech->transparent->amount;
@@ -70,7 +72,8 @@ gkIsTransparent(GkScene    * __restrict scene,
       if (color)
         return (glm_luminance(color->vec) * opacity) < 1.0f;
 
-      return opacity < 1.0f;
+      return true;
+      /* return opacity < 1.0f; */
     }
     case GK_OPAQUE_RGB_ZERO: {
       opacity = 1.0f - tech->transparent->amount;
@@ -78,7 +81,8 @@ gkIsTransparent(GkScene    * __restrict scene,
       if (color)
         return (glm_luminance(color->vec) * opacity) > 0.0f;
 
-      return opacity < 1.0f;
+      return true;
+      /* return opacity < 1.0f; */
     }
     case GK_OPAQUE_MASK: {
       return false;
