@@ -18,6 +18,9 @@
 
 #ifndef gk_geom_types_h
 #define gk_geom_types_h
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "common.h"
 
@@ -74,4 +77,7 @@ gkViewportCGRect(CGRect rect, vec4 viewport) {
 GkPoint
 gk_rect_center(GkRect rect);
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* gk_geom_types_h */

@@ -18,6 +18,9 @@
 
 #ifndef gk_transform_h
 #define gk_transform_h
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "common.h"
 #include "geom-types.h"
@@ -57,7 +60,7 @@ typedef struct GkTransformItem {
 } GkTransformItem;
 
 /* some geometries or nodes may not have matrix,
-   so they will use parent's one. */
+ so they will use parent's one. */
 typedef struct GkTransform {
   mat4              local;  /* cached local transform as matrix         */
   mat4              world;  /* cached world transform as matrix         */
@@ -114,4 +117,7 @@ gkTransformCombine(GkTransform * __restrict trans);
 GkPoint
 gk_project2d(GkRect rect, mat4 mvp, vec3 v);
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* gk_transform_h */

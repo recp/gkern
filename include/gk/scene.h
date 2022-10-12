@@ -125,6 +125,13 @@ GK_EXPORT
 bool
 gkSceneIs2D(GkScene *scene);
 
+GK_INLINE
+void
+gkTransformInvalidateWorld(struct GkScene * __restrict scene, struct GkTransform * __restrict trans) {
+  trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
+  scene->flags |=  GK_SCENEF_RENDER;
+}
+
 #ifdef __cplusplus
 }
 #endif
