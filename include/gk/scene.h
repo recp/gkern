@@ -59,6 +59,10 @@ typedef enum GkSceneFlags {
 
 GK_MAKE_C_ENUM(GkSceneFlags)
 
+/*
+TODO: group common node attribs bbox, center, trans and use as common with node
+      to pass funcs which may require node and bbox and trans
+ */
 typedef struct GkScene {
   struct GkContext  *ctx;
   GkCamera          *camera;
@@ -130,6 +134,13 @@ void
 gkTransformInvalidateWorld(struct GkScene * __restrict scene, struct GkTransform * __restrict trans) {
   trans->flags &= ~GK_TRANSF_WORLD_ISVALID;
   scene->flags |=  GK_SCENEF_RENDER;
+}
+
+GK_INLINE
+void
+gkTransformWorldToLocalAndInvalidateWorld(struct GkScene * __restrict scene, struct GkTransform * __restrict transf) {
+  glm_mat4_copy(transf->world, transf->local);
+  gkTransformInvalidateWorld(scene, transf);
 }
 
 #ifdef __cplusplus
