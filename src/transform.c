@@ -224,15 +224,16 @@ gkUniformTransform(struct GkPipeline * __restrict prog,
   vec4             *pmvp, *pmv, *pnm;
   mat4              mvp, mv, nm;
   int               usenm;
-  int32_t           hasMVP, hasMV, hasNM, hasVP;
+  int32_t           hasM, hasMVP, hasMV, hasNM, hasVP;
 
+  hasM   = prog->mi   > -1;
   hasMVP = prog->mvpi > -1;
   hasMV  = prog->mvi  > -1;
   hasNM  = prog->nmi  > -1;
   hasVP  = prog->vpi  > -1;
 
   /* no need to uniform transform or invalid program configurations */
-  if (!(hasMVP | hasMV | hasNM | hasVP))
+  if (!(hasM | hasMVP | hasMV | hasNM | hasVP))
     return;
 
   pmvp = pmv = pnm = NULL;
@@ -244,6 +245,11 @@ gkUniformTransform(struct GkPipeline * __restrict prog,
     pmvp = mvp;
     pmv  = mv;
     pnm  = nm;
+  }
+
+  /* Model Matrix */
+  if (hasM) {
+    gkUniformMat4(prog->mi, trans->world);
   }
 
   /* Model View Projection Matrix */

@@ -33,7 +33,7 @@
 
 static
 void
-gkDefRenderFunc(GkScene * scene) ;
+gkDefRenderFunc(GkScene * scene);
 
 _gk_hide
 void
@@ -155,6 +155,10 @@ gkRenderScene(GkScene * scene) {
 
   scene->trans->flags  |= GK_TRANSF_WORLD_ISVALID;
   scene->camera->flags &= ~GK_UPDT_VIEWPROJ;
+
+  if (sceneImpl->onClear) {
+    sceneImpl->onClear(scene, sceneImpl->onClearObj);
+  }
 
   sceneImpl->rp(scene);
 

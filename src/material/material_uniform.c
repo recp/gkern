@@ -191,8 +191,8 @@ gkUniformMaterial(struct GkContext  * __restrict ctx,
   if (techn->ambient) {
     gkUniformColorDesc(ctx, mat, techn->ambient,  "uAmbient",  prog);
     /* TODO: */
-    loc = gkUniformLoc(prog, "uIAmbient");
-    glUniform4fv(loc, 1, (vec4){0.7f, 0.7f, 0.7f, 1.0f});
+//    loc = gkUniformLoc(prog, "uIAmbient");
+//    glUniform4fv(loc, 1, (vec4){0.1f, 0.1f, 0.1f, 1.0f});
   }
 
   if (techn->diffuse)

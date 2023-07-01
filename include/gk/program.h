@@ -49,10 +49,18 @@ typedef struct GkPipeline {
   uint32_t           refc;
   GLint              progId;
   GLint              mvpi;
+  GLint              mi;
   GLint              mvi;
   GLint              vpi;
   GLint              nmi;
   GLint              nmui;
+  GLint              vi;
+  GLint              pi;
+  GLint              inv_vi;
+  GLint              inv_pi;
+  GLint              inv_vpi;
+  GLint              neari;
+  GLint              fari;
   bool               updtLights;
   bool               updtMaterials;
 } GkPipeline;
@@ -62,6 +70,9 @@ gkProgramLogInfo(GLuint progId, FILE * __restrict file);
 
 bool
 gkProgramIsValid(GLuint progId);
+
+GkPipeline*
+gkAllocPipeline(void);
 
 GkPipeline*
 gkNewPipeline(GkShader *shaders,

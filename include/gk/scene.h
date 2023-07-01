@@ -40,6 +40,8 @@ struct GkLightRef;
 typedef void (*GkRenderPrimFunc)(struct GkScene    *scene,
                                  struct GkPrimInst *primInst);
 
+typedef void (*GkRenderAfterClearFunc)(struct GkScene *scene, void * __restrict obj);
+
 typedef enum GkSceneFlags {
   GK_SCENEF_NONE           = 0,
   GK_SCENEF_DRAW_BBOX      = 1 << 0,
@@ -142,6 +144,12 @@ gkTransformWorldToLocalAndInvalidateWorld(struct GkScene * __restrict scene, str
   glm_mat4_copy(transf->world, transf->local);
   gkTransformInvalidateWorld(scene, transf);
 }
+
+GK_EXPORT
+void
+gkSceneSetOnClear(GkScene                * __restrict scene,
+                  GkRenderAfterClearFunc onClear,
+                  void                   * __restrict obj);
 
 #ifdef __cplusplus
 }

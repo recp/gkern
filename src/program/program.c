@@ -71,10 +71,34 @@ gkProgramIsValid(GLuint progId) {
 }
 
 GkPipeline*
+gkAllocPipeline(void) {
+  GkPipeline *prog;
+  GLuint progId;
+
+  prog          = calloc(1, sizeof(*prog));
+  prog->progId  = progId = glCreateProgram();
+
+  prog->mvpi    = -1;
+  prog->mi      = -1;
+  prog->mvi     = -1;
+  prog->vpi     = -1;
+  prog->nmi     = -1;
+  prog->nmui    = -1;
+  prog->vi      = -1;
+  prog->pi      = -1;
+  prog->inv_vi  = -1;
+  prog->inv_pi  = -1;
+  prog->inv_vpi = -1;
+  prog->refc    =  1;
+
+  return prog;
+}
+
+GkPipeline*
 gkNewPipeline(GkShader *shaders,
               void (*beforeLink)(GkPipeline *prog, void *data),
               void *userData) {
-  static GkPipeline *prog;
+  GkPipeline *prog;
   GLuint progId;
 
   prog = calloc(1, sizeof(*prog));

@@ -42,7 +42,10 @@ typedef struct GkSceneImpl {
   FListItem         *anims;
 
   FListItem         *instSkins;
+  FListItem         *instMorphs;
   GkPipeline        *clearPipeline;
+  GkRenderAfterClearFunc onClear;
+  void              * onClearObj;
 
   GkRenderPathFn     rp;
   GkRenderPathFn     renderFunc;

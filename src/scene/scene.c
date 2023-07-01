@@ -39,3 +39,15 @@ gkAllocScene(GkContext * __restrict context) {
 
   return &sceneImpl->pub;
 }
+
+GK_EXPORT
+void
+gkSceneSetOnClear(GkScene                * __restrict scene,
+                  GkRenderAfterClearFunc onClear,
+                  void                   * __restrict obj) {
+  GkSceneImpl *sceneImpl;
+
+  sceneImpl             = (GkSceneImpl *)scene;
+  sceneImpl->onClear    = onClear;
+  sceneImpl->onClearObj = obj;
+}

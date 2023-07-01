@@ -30,7 +30,7 @@ gkUniformLoc(GkPipeline *prog, const char *name) {
     prog->uniforms = hash_new_str(8);
 
   if ((found = hash_get(prog->uniforms, (void *)name)))
-    return ((GLint)found) - 1;
+    return ((GLint)(uintptr_t)found) - 1;
 
   loc = glGetUniformLocation(prog->progId, name);
   hash_set(prog->uniforms,
