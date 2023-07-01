@@ -1,10 +1,10 @@
-# 🎥 Graphics Kernel ( Render Engine )
+# 🫧 gkern: Graphics Kernel
 
-Basically this is a rendering library/kernel. The main purpose was render [AssetKit](https://github.com/recp/assetkit) content. Then it became general purpose rendering library. You can also call this "Graphics Kit".
+`gkern` is a flexible, highly configurable, and extensible render engine. It's designed for both realtime and offline rendering, with a focus on robustness, performance, and ease of use. It is written in `C` so it is easy to use with other languages.
 
-libgk doesn't depend on AssetKit, so there are another library to load AssetKit content to libgk called [assetkit-gl](https://github.com/recp/assetkit-gl), you can see how to load contents to libgk in this library. Because libgk doesn't provide loading contents, in the future maybe it will.
+📌 Currently the library renders using OpenGL. I'm trying to integrate with `Metal`, `Vulkan`, `DirectX`
 
-Currently this library only renders using OpenGL, but in the future other apis like `Vulkan`, `DirectX`, `Metal` are considered to be supported! 
+HISTORY: The main purpose was render [AssetKit](https://github.com/recp/assetkit) content. Then it became general purpose rendering and graphics library.
 
 # Features:
 - Similar scene data structure with COLLADA/glTF 
