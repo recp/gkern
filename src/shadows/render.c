@@ -19,7 +19,7 @@
 #include "../common.h"
 #include "shadows.h"
 #include "render.h"
-#include "../render/realtime/rn_prim.h"
+#include "../render/realtime/prim.h"
 
 void
 gkRenderShadowMap(GkScene     * __restrict scene,

@@ -23,10 +23,10 @@
 #include "../../program/uniform_cache.h"
 #include "../../state/gpu.h"
 
-#include "rn_light.h"
-#include "rn_material.h"
-#include "rn_pass.h"
-#include "rn_prim.h"
+#include "light.h"
+#include "material.h"
+#include "pass.h"
+#include "prim.h"
 
 void
 gkRenderPass(GkScene    * __restrict scene,

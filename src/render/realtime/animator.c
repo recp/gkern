@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "rn_animator.h"
+#include "animator.h"
 #include "../../../include/gk/gk.h"
 #include "../../../include/gk/animation.h"
 #include "../../../include/gk/animation-keyframe.h"

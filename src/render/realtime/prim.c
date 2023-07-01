@@ -16,18 +16,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../../../common.h"
-#include "../../../../include/gk/prims/builtin-prim.h"
-
-#include "rn_builtin.h"
-#include "rn_prim.h"
+#include "../../common.h"
+#include "prim.h"
+#include "material.h"
+#include "../../../include/gk/prims/cube.h"
 
 void
-gkRenderBuiltinPrim(GkScene   *scene,
-                    GkPrimType primType) {
+gkRenderPrim(GkScene     * __restrict scene,
+             GkPrimitive * __restrict prim) {
+  if (prim->flags & GK_DRAW_ELEMENTS)
+    glDrawElements(prim->mode,
+                   prim->count,
+                   GL_UNSIGNED_INT, /* TODO: ? */
+                   NULL);
+  else if (prim->flags & GK_DRAW_ARRAYS)
+    glDrawArrays(prim->mode, 0, prim->count);
+}
+
+void
+gkRenderPrimInst(GkScene    * __restrict scene,
+                 GkPrimInst * __restrict primInst) {
   GkPrimitive *prim;
-  prim = gkGetBuiltinPrim(primType);
+  
+  prim = primInst->prim;
 
   glBindVertexArray(prim->vao);
-  gkRenderPrim(scene, prim);
+  gkApplyMaterial(scene, primInst);
+
+  if ((scene->flags & GK_SCENEF_DRAW_PRIM_BBOX))
+    gkDrawBBox(scene,
+               primInst->bbox,
+               primInst->trans->world);
 }

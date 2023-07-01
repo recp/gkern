@@ -17,8 +17,8 @@
  */
 
 #include "../../common.h"
-#include "rn_prim.h"
-#include "rn_texture.h"
+#include "prim.h"
+#include "texture.h"
 #include "../../shader/builtin_shader.h"
 #include "../../state/gpu.h"
 #include "../../../include/gk/prims/builtin-prim.h"

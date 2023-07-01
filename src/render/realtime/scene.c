@@ -26,8 +26,8 @@
 #include "../../../include/gk/gpu_state.h"
 #include "../../../include/gk/clear.h"
 #include "../../bbox/scene_bbox.h"
-#include "rn_prim.h"
-#include "rn_animator.h"
+#include "prim.h"
+#include "animator.h"
 
 #include <tm/tm.h>
 

@@ -24,11 +24,11 @@
 #include "../../default/def_light.h"
 #include "../../state/gpu.h"
 
-#include "rn_light.h"
-#include "rn_material.h"
-#include "rn_transp.h"
-#include "rn_pass.h"
-#include "rn_prim.h"
+#include "light.h"
+#include "material.h"
+#include "transp.h"
+#include "pass.h"
+#include "prim.h"
 
 #include <string.h>
 

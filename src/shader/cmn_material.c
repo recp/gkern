@@ -25,7 +25,7 @@
 #include "../../include/gk/vertex.h"
 #include "../../include/gk/shadows.h"
 #include "../../include/gk/transparent.h"
-#include "../render/realtime/rn_transp.h"
+#include "../render/realtime/transp.h"
 #include <ds/forward-list-sep.h>
 
 #include <malloc/malloc.h>

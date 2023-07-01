@@ -23,10 +23,10 @@
 #include "../../state/gpu.h"
 #include "../../default/def_effect.h"
 
-#include "rn_material.h"
-#include "rn_pass.h"
-#include "rn_light.h"
-#include "rn_prim.h"
+#include "material.h"
+#include "pass.h"
+#include "light.h"
+#include "prim.h"
 
 GkMaterial*
 gkMaterialFor(GkScene        *scene,

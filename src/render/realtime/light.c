@@ -25,9 +25,9 @@
 #include "../../shadows/shadows.h"
 #include "../../program/uniform_cache.h"
 
-#include "rn_light.h"
-#include "rn_pass.h"
-#include "rn_prim.h"
+#include "light.h"
+#include "pass.h"
+#include "prim.h"
 
 extern void *GK_SHADOWS_HANDLE;
 

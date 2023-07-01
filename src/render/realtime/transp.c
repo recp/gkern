@@ -19,9 +19,9 @@
 #include "../../common.h"
 #include "../../../include/gk/gk.h"
 
-#include "rn_light.h"
-#include "rn_pass.h"
-#include "rn_transp.h"
+#include "light.h"
+#include "pass.h"
+#include "transp.h"
 
 bool
 gkPrimIsTransparent(GkScene     * __restrict scene,

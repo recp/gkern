@@ -19,7 +19,7 @@
 #include "frustum_culler.h"
 
 #include "../types/impl_scene.h"
-#include "../render/realtime/rn_transp.h"
+#include "../render/realtime/transp.h"
 
 #include "../bbox/scene_bbox.h"
 
