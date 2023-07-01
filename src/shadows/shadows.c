@@ -35,9 +35,9 @@
 #include <ds/forward-list.h>
 
 void *GK_SHADOWS_HANDLE                = &GK_SHADOWS_HANDLE;
-GkShadowTechnType   gk__shadow_techn   = GK_SHADOW_CSM;
-gkSetupShadowsFunc  gk__setupShadowsFn = gkSetupShadowMapCSM;
-gkRenderShadowsFunc gk__rnShadowsFn    = gkRenderShadowMapCSM;
+GkShadowTechnType   gk__shadow_techn   = GK_SHADOW_BASIC_SHADOWMAP;
+gkSetupShadowsFunc  gk__setupShadowsFn = gkSetupBasicShadowMap;
+gkRenderShadowsFunc gk__rnShadowsFn    = gkRenderBasicShadowMap;
 uint32_t            gk__shadSplitCount = 4;
 
 mat4 gk__biasMatrix = {
